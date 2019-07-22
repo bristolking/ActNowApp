@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/liner_projectList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/radioGroupProject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <RadioButton
+                android:id="@+id/projectNameFooter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Get Organized anywhere with the apps."
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:buttonTint="@color/textColor"
+                android:textColor="@color/textColor"/>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_projectDateFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:text="25/01/2019"
+            android:textColor="@color/colorAccent" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/linebackground" />
+
+</LinearLayout>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/dilog">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_addProject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:text="Add to Project"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/tv_pojectaddDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:padding="20dp"
+                android:text="Done"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent" />
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Project name"
+                android:textColor="@color/textColor"
+                android:padding="10dp"
+                android:drawableRight="@drawable/ic_search"
+                android:background="@drawable/square" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/project_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+         <!--   <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Aenean luctus nibh ut tempor ultrices."
+                    android:textSize="18dp"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"/>
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"
+                    android:text="Sed in nisi at ipsum facilisis semper."
+                    android:textSize="18dp"/>
+                <RadioButton
+                    android:id="@+id/radioButton3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"
+                    android:text="Nullam ut arcu vel lacus facilisis cursus"
+                    android:textSize="18dp"/>
+                <RadioButton
+                    android:id="@+id/radioButton4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"
+                    android:text="Aenean luctus nibh ut tempor ultrices."
+                    android:textSize="18dp"/>
+                <RadioButton
+                    android:id="@+id/radioButton5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"
+                    android:text="Duis a libero volutpat,rutrum risus a, lacinia nunc."
+                    android:textSize="18dp"/>
+                <RadioButton
+                    android:id="@+id/radioButton6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Aenean luctus nibh ut tempor ultrices."
+                    android:textSize="18dp"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"/>
+
+                <RadioButton
+                    android:id="@+id/radioButton7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/textColor"
+                    android:textColor="@color/textColor"
+                    android:text="Etiam eu erat porta,ullamcorper dui nec consequat."
+                    android:textSize="18dp"/>
+            </RadioGroup>-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

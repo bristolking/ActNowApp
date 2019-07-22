@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ProjectFooterActivity">
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/content_layout"
+            android:layout_marginTop="60dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/tv_dayWeekely1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonWeekelyTask1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tv_dateWeekelyTask1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/radioButtonWeekelyTask1"
+                        android:paddingLeft="28dp"
+                        android:text="13/02/2019"
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_byWeekely1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask1"
+                        android:layout_toRightOf="@+id/tv_dateWeekelyTask1"
+                        android:text="By: "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_projectNameweekely1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask1"
+                        android:layout_toRightOf="@+id/tv_byWeekely1"
+                        android:text="Project: "
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:foregroundGravity="center"
+                        app:srcCompat="@drawable/ic_usertwo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                tools:ignore="MissingConstraints">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonWeekelyTask2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"  />
+
+                    <TextView
+                        android:id="@+id/tv_dateWeekelyTask2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/radioButtonWeekelyTask2"
+                        android:paddingLeft="28dp"
+                        android:text="13/02/2019, "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_byWeekely2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask2"
+                        android:layout_toRightOf="@+id/tv_dateWeekelyTask2"
+                        android:text="By: "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_projectNameweekely2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask2"
+                        android:layout_toRightOf="@+id/tv_byWeekely2"
+                        android:text="Project: "
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:foregroundGravity="center"
+                        app:srcCompat="@drawable/ic_usertwo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:id="@+id/tv_dayWeekely3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="3 Days ago"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonWeekelyTask3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"  />
+
+                    <TextView
+                        android:id="@+id/tv_dateWeekelyTask3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/radioButtonWeekelyTask3"
+                        android:paddingLeft="28dp"
+                        android:text="13/02/2019, "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_byWeekely3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask3"
+                        android:layout_toRightOf="@+id/tv_dateWeekelyTask3"
+                        android:text="By: "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_projectNameweekely3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask3"
+                        android:layout_toRightOf="@+id/tv_byWeekely3"
+                        android:text="Project: "
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:foregroundGravity="center"
+                        app:srcCompat="@drawable/ic_usertwo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                tools:ignore="MissingConstraints">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonWeekelyTask4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"  />
+
+                    <TextView
+                        android:id="@+id/tv_dateWeekelyTask4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/radioButtonWeekelyTask4"
+                        android:paddingLeft="28dp"
+                        android:text="13/02/2019, "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_byWeekely4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask4"
+                        android:layout_toRightOf="@+id/tv_dateWeekelyTask4"
+                        android:text="By: "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_projectNameweekely4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask4"
+                        android:layout_toRightOf="@+id/tv_byWeekely4"
+                        android:text="Project: "
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:foregroundGravity="center"
+                        app:srcCompat="@drawable/ic_usertwo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                tools:ignore="MissingConstraints">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonWeekelyTask5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"  />
+
+                    <TextView
+                        android:id="@+id/tv_dateWeekelyTask5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/radioButtonWeekelyTask5"
+                        android:paddingLeft="28dp"
+                        android:text="13/02/2019, "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_byWeekely5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask5"
+                        android:layout_toRightOf="@+id/tv_dateWeekelyTask5"
+                        android:text="By: "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_projectNameweekely5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask5"
+                        android:layout_toRightOf="@+id/tv_byWeekely5"
+                        android:text="Project: "
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:foregroundGravity="center"
+                        app:srcCompat="@drawable/ic_usertwo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                tools:ignore="MissingConstraints">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonWeekelyTask"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/black"  />
+
+                    <TextView
+                        android:id="@+id/tv_dateWeekelyTask"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/radioButtonWeekelyTask"
+                        android:paddingLeft="28dp"
+                        android:text="13/02/2019, "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_byWeekely"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask"
+                        android:layout_toRightOf="@+id/tv_dateWeekelyTask"
+                        android:text="By: "
+                        android:textColor="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/tv_projectNameweekely"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/radioButtonWeekelyTask"
+                        android:layout_toRightOf="@+id/tv_byWeekely"
+                        android:text="Project: "
+                        android:textColor="@color/colorAccent" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:foregroundGravity="center"
+                        app:srcCompat="@drawable/ic_usertwo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
+            </LinearLayout>
+        </LinearLayout>
+        <include layout="@layout/time_line_header" />
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>

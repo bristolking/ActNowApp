@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.actnow.android">
+    <!-- <uses-sdk tools:overrideLibrary="com.abdeveloper.library" /> -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".ANApplications"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activities.TimeLineActivity"></activity>
+        <activity android:name=".activities.ApprovalsActivity" />
+        <activity android:name=".activities.TodayTaskActivity" />
+        <activity android:name=".activities.settings.notification.GotoprimaryActivity" />
+        <activity android:name=".activities.settings.notification.SubscribedemailActivity" />
+        <activity android:name=".activities.settings.notification.SharingActivity" />
+        <activity android:name=".activities.settings.notification.DailyReviewActivity" />
+        <activity android:name=".activities.taskchart.WeekelyTaskChartActivity" />
+        <activity android:name=".activities.taskchart.YearlyTaskChartActivity" />
+        <activity android:name=".activities.taskchart.MonthlyTaskChartActivity" />
+        <activity android:name=".activities.taskchart.DailyTaskChartActivity" />
+        <activity
+            android:name=".activities.ThisWeekActivity"
+            android:label="THISWEEK" />
+        <activity android:name=".activities.monthly.ProjectMonthlyActivity" />
+        <activity android:name=".activities.monthly.MonthlyTaskListActivity" />
+        <activity android:name=".activities.settings.HelpFeedBackActivity" />
+        <activity android:name=".activities.settings.EditAccountActivity" />
+        <activity android:name=".activities.settings.notification.NotificationActivity" />
+        <activity android:name=".activities.settings.AccountSettingActivity" />
+        <activity android:name=".activities.settings.SettingsActivity" />
+        <activity android:name=".activities.tasks.TaskAddListActivity" />
+        <activity android:name=".activities.ProjectFooterActivity" />
+        <activity android:name=".activities.taskspinner.OverDueTaskActivity" />
+        <activity android:name=".activities.taskspinner.PriorityTaskActivity" />
+        <activity android:name=".activities.ChangePasswordActivity" />
+        <activity android:name=".activities.OTPActivity" />
+        <activity android:name=".activities.settings.ProductivityActivity" />
+        <activity android:name=".activities.settings.ThemeActivity" />
+        <activity android:name=".activities.settings.PremiumActivity" />
+        <activity android:name=".activities.insights.TeamActivity" />
+        <activity android:name=".activities.insights.ProjectActivity" />
+        <activity android:name=".activities.insights.PersonalActivity" />
+        <activity android:name=".activities.ideas.ViewIdeasActivity" />
+        <activity android:name=".activities.individuals.ViewIndividualsActivity" />
+        <activity android:name=".activities.projects.EditProjectActivity" />
+        <activity android:name=".activities.projects.ViewProjectsActivity" />
+        <activity android:name=".activities.tasks.EditTaskActivity" />
+        <activity android:name=".activities.tasks.ViewTasksActivity" />
+        <activity android:name=".activities.ForgotPasswordActivity" />
+        <activity android:name=".activities.SignUpActivity" />
+        <activity android:name=".activities.SignInActivity" />
+        <activity android:name=".activities.MeActivity" />
+        <activity android:name=".activities.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>

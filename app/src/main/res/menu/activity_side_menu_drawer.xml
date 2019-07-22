@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_today"
+            android:icon="@drawable/ic_calendar"
+            android:title="Today" />
+        <item
+            android:id="@+id/nav_timeLog"
+            android:icon="@drawable/ic_006_clock"
+            android:title="TimeLog" />
+        <item
+            android:id="@+id/nav_filter"
+            android:icon="@drawable/ic_filter"
+            android:title="Filters" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_005_user"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_premium"
+            android:icon="@drawable/ic_007_money"
+            android:title="Premium" />
+        <item
+            android:id="@+id/nav_thisweek"
+            android:icon="@drawable/ic_calendar"
+            android:title="Thisweek" />
+    </group>
+
+</menu>
