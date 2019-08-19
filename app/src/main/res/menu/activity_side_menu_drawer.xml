@@ -9,9 +9,9 @@
             android:icon="@drawable/ic_calendar"
             android:title="Today" />
         <item
-            android:id="@+id/nav_timeLog"
+            android:id="@+id/nav_timeLine"
             android:icon="@drawable/ic_006_clock"
-            android:title="TimeLog" />
+            android:title="TimeLine" />
         <item
             android:id="@+id/nav_filter"
             android:icon="@drawable/ic_filter"

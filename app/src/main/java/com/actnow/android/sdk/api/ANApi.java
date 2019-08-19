@@ -1,6 +1,6 @@
 package com.actnow.android.sdk.api;
 
-import com.actnow.android.sdk.responses.CheckOtpReponse;
+import com.actnow.android.sdk.responses.CheckOtpResponse;
 import com.actnow.android.sdk.responses.OverDueTaskListResponse;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
@@ -12,7 +12,6 @@ import com.actnow.android.sdk.responses.SignInResponse;
 import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.TaskAddResponse;
-import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
@@ -31,16 +30,16 @@ public interface ANApi {
 
     @FormUrlEncoded
     @POST("app/signup")
-    Call<SignUpResponse> userSignUp(@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String mail, @Field(Parameters.MOBILENO) String mobileNumber, @Field(Parameters.ORGANIZATIONNAME) String organizationName, @Field(Parameters.PASSWORD) String password);
+    Call<SignUpResponse> userSignUp(@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String mail, @Field(Parameters.MOBILENO) String mobileNumber,@Field(Parameters.PASSWORD) String password);
 
     @GET("app/send_otp/{mobile_number}")
     Call<SendOtpResponse> sendOtp(@Path("mobile_number") String mobile_number);
 
     @GET("app/check_otp/{mobile_number}/{otp}")
-    Call<CheckOtpReponse> checkOTP(@Path("mobile_number") String mobile_number, @Path("otp") String otp);
+    Call<CheckOtpResponse> checkOTP(@Path("mobile_number") String mobile_number, @Path("otp") String otp);
 
     @GET("app/change_password/{mobile_number}/{password}")
-    Call<CheckOtpReponse> changePassword(@Path("mobile_number") String mobile_number, @Path("password") String password);
+    Call<CheckOtpResponse> changePassword(@Path("mobile_number") String mobile_number, @Path("password") String password);
 
     @GET("app/tasks/priority/{id}")
     Call<PriortyTaskListResponse> checkPriorityTaskList(@Path("id") String id);
@@ -79,5 +78,7 @@ public interface ANApi {
     @FormUrlEncoded
     @POST("app/update_profile/{id}")
     Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id,@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password);
-
+    @FormUrlEncoded
+    @POST("app/organization/add/{id}")
+    Call<SendOtpResponse> checkOrgCode(@Path("id")String id,@Field(Parameters.NAME)String name);
 }

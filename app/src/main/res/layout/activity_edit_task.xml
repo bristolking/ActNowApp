@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.tasks.ViewTasksActivity"
+    android:background="@color/color"
+    tools:context=".activities.tasks.EditTaskActivity"
     tools:openDrawer="right">
 
     <include layout="@layout/app_bar_side_menu" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/progress_bar"
@@ -57,14 +57,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <!--     <com.guna.libmultispinner.MultiSelectionSpinner
-                         android:id="@+id/spinner_projectOwnerId"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:layout_gravity="center"
-                         android:layout_weight="1"
-                         android:padding="20dp"/>-->
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/name_text_in_newTaskTitle"
                     android:layout_width="match_parent"
@@ -223,9 +215,54 @@
                         android:textColor="@color/textColor" />
                 </RelativeLayout>
             </LinearLayout>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp">
+                <Spinner
+                    android:id="@+id/spinner_ReaptEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Repat Option"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:fontFamily="@font/montserrat"
+                    app:met_floatingLabel="normal" />
+                <Spinner
+                    android:id="@+id/spinner_weekleyEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:fontFamily="@font/montserrat"
+                    app:met_floatingLabel="normal" />
+                <Spinner
+                    android:id="@+id/spinner_monthlyEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:fontFamily="@font/montserrat"
+                    app:met_floatingLabel="normal" />
+                <Spinner
+                    android:id="@+id/spinner_yearlyEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="BATTERY TYPE"
+                    android:visibility="gone"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:fontFamily="@font/montserrat"
+                    app:met_floatingLabel="normal" />
+            </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="10dp"
+            android:layout_marginBottom="50dp">
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/name_text_in_commentNewTask"
+                android:id="@+id/name_text_in_commentNewEditTask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
@@ -235,8 +272,8 @@
                     android:hint="Write a Comment....."
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-    </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 
     <include layout="@layout/footer" />
 

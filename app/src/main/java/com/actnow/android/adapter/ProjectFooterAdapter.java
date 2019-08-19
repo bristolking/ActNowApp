@@ -10,7 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.actnow.android.R;
-import com.actnow.android.activities.ProjectFooterActivity;
+import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         ProjectListResponseRecords projectListResponseRecords= projectListResponseRecordsList.get(i);
         myViewHolder.mProjectNameFooter.setText(projectListResponseRecords.getName());
-        myViewHolder.mProjectDate.setText(projectListResponseRecords.getDue_date());
+       // myViewHolder.mProjectDate.setText(projectListResponseRecords.getDue_date());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             mProjectNameFooter = (RadioButton)itemView.findViewById(R.id.projectNameFooter);
-            mProjectDate =(TextView)itemView.findViewById(R.id.tv_projectDateFooter);
+           // mProjectDate =(TextView)itemView.findViewById(R.id.tv_projectDateFooter);
         }
     }
 }

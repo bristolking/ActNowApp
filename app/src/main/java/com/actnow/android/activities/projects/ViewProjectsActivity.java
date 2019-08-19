@@ -2,6 +2,8 @@ package com.actnow.android.activities.projects;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -9,16 +11,21 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import android.view.Display;
 import android.view.MenuItem;
 
 import android.view.View;
 
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import android.widget.Spinner;
@@ -28,7 +35,7 @@ import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.activities.ProjectFooterActivity;
+import com.actnow.android.activities.ColorPicker;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
@@ -50,11 +57,12 @@ import static android.view.View.GONE;
 
 public class ViewProjectsActivity extends AppCompatActivity {
     EditText  mProjectName,mProjectOwnerName,mDateProject, mWriteComment;
-    View mProjectAddIndividual;
+    View mProjectAddIndividual,mProjectColor;
    // MultiSelectionSpinner multiSelectionSpinner;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     MultiSelectDialog mIndividuvalDialog;
+    private int mPickedColor = Color.WHITE;
 
     final Context context = this;
     String id;
@@ -64,6 +72,8 @@ public class ViewProjectsActivity extends AppCompatActivity {
     ArrayList<Integer> individualCheckBox;
     JSONArray individuvalArray;
     TextView mIndividualCheckBox;
+
+    ImageView mImgeCircleColor;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +111,14 @@ public class ViewProjectsActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                ImageView mImageProfile= (ImageView)findViewById(R.id.img_profile);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        startActivity(i);
+                    }
+                });
                 TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -113,7 +130,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
                                 startActivity(iToady);
                                 finish();
                                 break;
-                            case R.id.nav_timeLog:
+                            case R.id.nav_timeLine:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_filter:
@@ -142,11 +159,22 @@ public class ViewProjectsActivity extends AppCompatActivity {
                         return false;
                     }
                 });
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutProjectView);
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutProjectView);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
+                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
             }
         });
     }
@@ -156,7 +184,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
         mContentLayout = findViewById(R.id.content_layout);
         mProjectName = findViewById(R.id.et_newProjectName);
         mProjectOwnerName= findViewById(R.id.et_newProjectOwnerName);
-        mWriteComment = findViewById(R.id.et_commentNewProject);
+        /*mWriteComment = findViewById(R.id.et_commentNewProject);*/
 
         mProjectAddIndividual = (View) findViewById(R.id.liner_IndividualProject);
         mIndividualCheckBox = (TextView) findViewById(R.id.tv_indivdualProjectText);
@@ -173,6 +201,63 @@ public class ViewProjectsActivity extends AppCompatActivity {
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get(UserPrefUtils.ID);
         requestDynamicContent(id);
+        mProjectColor = findViewById(R.id.liner_newPojectColor);
+        mImgeCircleColor = findViewById(R.id.img_newProjectcolor);
+
+        mProjectColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GridView gv = (GridView) ColorPicker.getColorPicker(ViewProjectsActivity.this);
+
+                // Initialize a new AlertDialog.Builder object
+                AlertDialog.Builder builder = new AlertDialog.Builder(ViewProjectsActivity.this);
+
+                // Set the alert dialog content to GridView (color picker)
+                builder.setView(gv);
+
+                // Initialize a new AlertDialog object
+                final AlertDialog dialog = builder.create();
+
+                // Show the color picker window
+                dialog.show();
+
+                // Set the color picker dialog size
+                dialog.getWindow().setLayout(
+                        getScreenSize().x - mProjectColor.getPaddingLeft() - mProjectColor.getPaddingRight(),
+                        getScreenSize().y - getStatusBarHeight() - mProjectColor.getPaddingTop() - mProjectColor.getPaddingBottom());
+
+                // Set an item click listener for GridView widget
+                gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        // Get the pickedColor from AdapterView
+                        mPickedColor = (int) parent.getItemAtPosition(position);
+
+                        // Set the layout background color as picked color
+                        mImgeCircleColor.setBackgroundColor(mPickedColor);
+
+                        // close the color picker
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+    private Point getScreenSize(){
+        WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        //Display dimensions in pixels
+        display.getSize(size);
+        return size;
+    }
+    public int getStatusBarHeight() {
+        int height = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            height = getResources().getDimensionPixelSize(resourceId);
+        }
+        return height;
     }
     private void requestDynamicContent(String id) {
         System.out.println("id"+id);
@@ -237,7 +322,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
         mProjectName.setError(null);
         projectName = mProjectName.getText().toString();
         String mIndividualCheckBox = String.valueOf(individuvalArray);
-        individuvalArray.remove(0);
+        //individuvalArray.remove(0);
         System.out.println("aray"+individuvalArray);
         boolean cancel = false;
         View focusView = null;
@@ -252,7 +337,6 @@ public class ViewProjectsActivity extends AppCompatActivity {
             HashMap<String, String> userId = session.getUserDetails();
             String id = userId.get(UserPrefUtils.ID);
             requestCrateTask(id, projectName, String.valueOf(individuvalArray).replace("[", "").replace("]", ""));
-            //System.out.println("data"+ id+ projectName+individuvalName);
         }
     }
     private void requestCrateTask(String a, String b, String c) {
@@ -279,41 +363,16 @@ public class ViewProjectsActivity extends AppCompatActivity {
     }
     private void footer() {
         ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
-        imageGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageGallery.setVisibility(GONE);
         ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
-        imageAttachament.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
+        imageAttachament.setVisibility(GONE);
 
-            }
-        });
         ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
-        imageCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageCamera.setVisibility(GONE);
         ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
-        imageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
         imageProfile.setVisibility(GONE);
-        ImageView imageEdit = (ImageView) findViewById(R.id.image_edit);
-        imageEdit.setVisibility(GONE);
         TextView tv_create = (TextView) findViewById(R.id.tv_create);
+        tv_create.setText("Create");
         tv_create.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -321,8 +380,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
                 attemptCreateProject();
             }
         });
-        TextView tv_update = (TextView) findViewById(R.id.tv_upadte);
-        tv_update.setVisibility(GONE);
+
     }
     @Override
     public void onBackPressed() {

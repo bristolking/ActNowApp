@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.CheckOtpReponse;
+import com.actnow.android.sdk.responses.CheckOtpResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -64,10 +64,10 @@ public class OTPActivity extends AppCompatActivity {
 
     }
     private  void requestCheckOTP(final String mobile_number, String otp ){
-        Call<CheckOtpReponse> call= ANApplications.getANApi().checkOTP(mobile_number,otp);
-        call.enqueue(new Callback<CheckOtpReponse>() {
+        Call<CheckOtpResponse> call= ANApplications.getANApi().checkOTP(mobile_number,otp);
+        call.enqueue(new Callback<CheckOtpResponse>() {
             @Override
-            public void onResponse(Call<CheckOtpReponse> call, Response<CheckOtpReponse> response) {
+            public void onResponse(Call<CheckOtpResponse> call, Response<CheckOtpResponse> response) {
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
                 if (response.isSuccessful()){
                     //System.out.println("response"+response.raw());
@@ -84,7 +84,7 @@ public class OTPActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onFailure(Call<CheckOtpReponse> call, Throwable t) {
+            public void onFailure(Call<CheckOtpResponse> call, Throwable t) {
                 Log.d("OTPActivity",t.toString());
 
 

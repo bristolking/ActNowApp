@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/image_bulbTask"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="4dp"
+            android:layout_weight="1.5"
+            app:srcCompat="@drawable/ic_lightbulb" />
+
+        <EditText
+            android:id="@+id/edit_searchTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:layout_weight="1.5"
+            android:background="@drawable/rounded_square"
+            android:drawableRight="@drawable/ic_search"
+            android:hint="Quick Find"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/button_searchTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:layout_weight="1.5"
+            android:background="@drawable/rounded_square"
+            android:backgroundTint="@color/colorYellow"
+            android:padding="5dp"
+            android:text="Advanced Search"
+            android:textColor="@color/colorWhite" />
+    </LinearLayout>
+</LinearLayout>

@@ -75,7 +75,14 @@ public class PriorityTaskActivity extends AppCompatActivity  {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                ImageView mImageProfile= (ImageView)findViewById(R.id.img_profile);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        startActivity(i);
+                    }
+                });
                 TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -88,7 +95,7 @@ public class PriorityTaskActivity extends AppCompatActivity  {
                                 startActivity(iToady);
                                 finish();
                                 break;
-                            case R.id.nav_timeLog:
+                            case R.id.nav_timeLine:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_filter:
@@ -117,11 +124,22 @@ public class PriorityTaskActivity extends AppCompatActivity  {
                         return false;
                     }
                 });
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
+                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
             }
         });
         final Spinner spinner = (Spinner) findViewById(R.id.spinner);

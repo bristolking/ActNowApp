@@ -6,9 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.taskspinner.PriorityTaskActivity"
-    tools:openDrawer="right">
+    android:background="@color/color"
+    tools:openDrawer="right"
+    tools:context=".activities.taskspinner.PriorityTaskActivity">
+
     <include layout="@layout/app_bar_side_menu" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

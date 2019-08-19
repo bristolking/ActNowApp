@@ -39,7 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
         msignUpEmail= findViewById(R.id.et_signUpEmail);
         msignUpPassword=findViewById(R.id.et_sinUpPassword);
         msignUpMobile =findViewById(R.id.et_signUpmobile);
-        mOrganizationName = findViewById(R.id.et_organizationName);
+       /* mOrganizationName = findViewById(R.id.et_organizationName);*/
         msignUpButton= findViewById(R.id.bt_signUp);
         msignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,8 +57,8 @@ public class SignUpActivity extends AppCompatActivity {
         String mobile=msignUpMobile.getText().toString();
         msignUpPassword.setError(null);
         String password= msignUpPassword.getText().toString();
-        mOrganizationName.setError(null);
-        String  organizationName = mOrganizationName.getText().toString();
+        /*mOrganizationName.setError(null);
+        String  organizationName = mOrganizationName.getText().toString();*/
         boolean cancel= false;
         View focusView= null;
         if (TextUtils.isEmpty(name)){
@@ -73,10 +73,10 @@ public class SignUpActivity extends AppCompatActivity {
             msignUpMobile.setError(getString(R.string.error_required));
             focusView=msignUpMobile;
             cancel=true;
-        }if (TextUtils.isEmpty(organizationName)){
+      /*  }if (TextUtils.isEmpty(organizationName)){
             mOrganizationName.setError(getString(R.string.error_required));
             focusView=mOrganizationName;
-            cancel=true;
+            cancel=true;*/
         }if (TextUtils.isEmpty(password)){
             msignUpPassword.setError(getString(R.string.error_required));
             focusView=msignUpPassword;
@@ -84,30 +84,30 @@ public class SignUpActivity extends AppCompatActivity {
         }if(cancel){
             focusView.requestFocus();
         }else{
-            requestSignUp(name,email,mobile,organizationName,password);
-            System.out.println("signup"+name+email+mobile+organizationName+password);
+            requestSignUp(name,email,mobile,password);
+           // System.out.println("signup"+name+email+mobile+password);
         }
     }
-    private void requestSignUp(String userName,String userEmail,String mobileNumber,String userorganizationName,String userPassword ){
+    private void requestSignUp(String userName,String userEmail,String mobileNumber,String userPassword ){
 
-        System.out.println("data1"+ userName+ userEmail+ mobileNumber+ userorganizationName+userPassword);
+        //System.out.println("data1"+ userName+ userEmail+ mobileNumber+ userPassword);
 
-        Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,mobileNumber,userorganizationName,userPassword);
+        Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,mobileNumber,userPassword);
 
         call.enqueue(new Callback<SignUpResponse>() {
             @Override
             public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
-                System.out.println("api"+ response.raw());
+                //System.out.println("api"+ response.raw());
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
                 if (response.isSuccessful()){
-                    System.out.println("respone"+response.raw());
+                    //System.out.println("respone"+response.raw());
                     if (response.body().getSuccess().equals("true")){
-                        System.out.println("data"+response.body().getSuccess());
-                       SignUpResponse response2= response.body();
-                       session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrganization_id(),response2.getProvider_id(),response2.getProvider_name(),response2.getDb_name());
-
-                        AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
+                        //System.out.println("data"+response.body().getSuccess());
+                        SignUpResponse response2= response.body();
                         activityLogin();
+                        session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrganization_id(),response2.getProvider_id(),response2.getProvider_name(),response2.getDb_name());
+                        AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
+
                     } else {
                         Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
                     }
@@ -122,11 +122,8 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
     private void activityLogin() {
-        Intent login=new Intent(getApplicationContext(),SignInActivity.class);
+        Intent login=new Intent(SignUpActivity.this,TodayTaskActivity.class);
         startActivity(login);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
-        finish();
-
     }
     private static long back_pressed;
     @Override

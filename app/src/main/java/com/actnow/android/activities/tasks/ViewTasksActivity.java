@@ -1,6 +1,5 @@
 package com.actnow.android.activities.tasks;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -8,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ReceiverCallNotAllowedException;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -17,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,7 +25,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -48,7 +48,6 @@ import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskAddResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.json.JSONArray;
 
@@ -85,30 +84,22 @@ public class ViewTasksActivity extends AppCompatActivity {
 
     String[] listItems;
     boolean[] checkedItems;
-    ArrayList<Integer> mUserPriorty=new ArrayList<>();
+    ArrayList<Integer> mUserPriorty = new ArrayList<>();
 
-    MaterialBetterSpinner mSpinnerReptOption,mSpinnerWeekely,mSpinnerMonthly,mSpinnerYearly;
-    String[] reapt = {"Daily", "Weekley", "Monthly", "Yearly"};
-    String[] weekely ={"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-    String[] days= {"1","2","3","4","5","6","7","8","9","10",
-            "11","12","13","14","15","16","17","18","19","20",
-            "21","22","23","24","25","26","27","28","29","30","31"};
+    Spinner mSpinnerReptOption, mSpinnerWeekely, mSpinnerMonthly, mSpinnerYearly;
 
-    String[]  monthly={"JAN","FEB","MAR","APR","MAY","JUN","JULY","AUG","SEP","OCT","NOV","DEC"};
+    String[] reapt = {"Daily", "Weekly", "Monthly", "Yearly"};
+    String[] weekly = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10","11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+    String[] monthly = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
-    //ArrayAdapter<String> arrayAdapterReapt,arrayAdapterWeekley,arrayAdapterMonthly;
 
-    List<String> reaptSpinner;
     ArrayAdapter<String> arrayAdapterReapt;
-    List<String> weekleySpinner;
     ArrayAdapter<String> arrayAdapterWeekley;
-    List<String> monthlySpinner;
     ArrayAdapter<String> arrayAdapterMonthly;
-    List<String> yearlySpinner;
     ArrayAdapter<String> arrayAdapterYearly;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,8 +143,16 @@ public class ViewTasksActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                ImageView mImageProfile= (ImageView)findViewById(R.id.img_profile);
-                TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        startActivity(i);
+                    }
+                });
+
+                TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -164,7 +163,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                                 startActivity(iToady);
                                 finish();
                                 break;
-                            case R.id.nav_timeLog:
+                            case R.id.nav_timeLine:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_filter:
@@ -175,34 +174,45 @@ public class ViewTasksActivity extends AppCompatActivity {
                                 String id = userId.get(UserPrefUtils.ID);
                                 String name = userId.get(UserPrefUtils.NAME);
                                 String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile=new Intent(ViewTasksActivity.this, EditAccountActivity.class);
+                                Intent iprofile = new Intent(ViewTasksActivity.this, EditAccountActivity.class);
                                 iprofile.putExtra("id", id);
                                 iprofile.putExtra("name", name);
                                 iprofile.putExtra("email", accountEmail);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium=new Intent(ViewTasksActivity.this, PremiumActivity.class);
+                                Intent ipremium = new Intent(ViewTasksActivity.this, PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek= new Intent(ViewTasksActivity.this, ThisWeekActivity.class);
+                                Intent ithisweek = new Intent(ViewTasksActivity.this, ThisWeekActivity.class);
                                 startActivity(ithisweek);
                                 break;
                         }
                         return false;
                     }
                 });
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutTaskView);
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutTaskView);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
+                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
+
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initializeViews() {
         //spinner();
         mProgressView = findViewById(R.id.progress_bar);
@@ -214,7 +224,6 @@ public class ViewTasksActivity extends AppCompatActivity {
         mPriorty = findViewById(R.id.tv_taskPriorty);
         final Calendar myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 myCalendar.set(Calendar.YEAR, year);
@@ -226,7 +235,6 @@ public class ViewTasksActivity extends AppCompatActivity {
             }
         };
         mDueDateTask.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
                 new DatePickerDialog(ViewTasksActivity.this, datePickerListener, myCalendar
@@ -262,52 +270,54 @@ public class ViewTasksActivity extends AppCompatActivity {
         requestDynamicProjectList();
         attemptCreateTask();
 
+        mSpinnerReptOption = (Spinner) findViewById(R.id.spinnerReapt);
+        mSpinnerWeekely = (Spinner) findViewById(R.id.spinner_weekley);
+        mSpinnerMonthly = (Spinner) findViewById(R.id.spinner_monthly);
+        mSpinnerYearly = (Spinner) findViewById(R.id.spinner_yearly);
 
-        mSpinnerReptOption = (MaterialBetterSpinner) findViewById(R.id.spinnerReapt);
-        // reaptSpinner = new ArrayList<String>();
-
-        mSpinnerWeekely = (MaterialBetterSpinner) findViewById(R.id.spinner_weekley);
-        // weekleySpinner = new ArrayList<String>();
-
-
-        mSpinnerMonthly = (MaterialBetterSpinner) findViewById(R.id.spinner_monthly);
-        monthlySpinner = new ArrayList<String>();
-
-        mSpinnerYearly = (MaterialBetterSpinner) findViewById(R.id.spinner_yearly);
-        //yearlySpinner = new ArrayList<String>();
-
-        //arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line,reapt);
-
-        arrayAdapterWeekley = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, weekely);
-        mSpinnerWeekely.setAdapter(arrayAdapterWeekley);
 
         arrayAdapterMonthly = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, days);
-
-
+        mSpinnerMonthly.setAdapter(arrayAdapterMonthly);
         arrayAdapterYearly = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, monthly);
         mSpinnerYearly.setAdapter(arrayAdapterYearly);
+
+        arrayAdapterWeekley = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, weekly);
+        arrayAdapterWeekley.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerWeekely.setAdapter(arrayAdapterWeekley);
 
         arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, reapt);
         mSpinnerReptOption.setAdapter(arrayAdapterReapt);
 
-        mSpinnerReptOption.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mSpinnerReptOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // weekleySpinner.clear();
-                arrayAdapterWeekley.clear();
-                //monthlySpinner.clear();
-                arrayAdapterMonthly.clear();
-                arrayAdapterYearly.clear();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getSelectedItem().toString();
 
-                mSpinnerWeekely.setText("");
-                mSpinnerMonthly.setText("");
-                mSpinnerYearly.setText("");
+                if (selectedItem.contentEquals("Weekly")) {
+                    mSpinnerWeekely.setVisibility(View.VISIBLE);
+                    mSpinnerMonthly.setVisibility(GONE);
+                    mSpinnerYearly.setVisibility(GONE);
+                }if (selectedItem.equals("Monthly")){
+                    mSpinnerMonthly.setVisibility(View.VISIBLE);
+                    mSpinnerWeekely.setVisibility(GONE);
+                    mSpinnerYearly.setVisibility(GONE);
 
-
+                }if (selectedItem.equals("Yearly")){
+                    mSpinnerYearly.setVisibility(View.VISIBLE);
+                    mSpinnerMonthly.setVisibility(View.VISIBLE);
+                    mSpinnerWeekely.setVisibility(GONE);
+                }if (selectedItem.equals("Daily")){
+                    mSpinnerYearly.setVisibility(GONE);
+                    mSpinnerMonthly.setVisibility(GONE);
+                    mSpinnerWeekely.setVisibility(GONE);
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
 
+    }
     private void requestDynamicProjectList() {
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse(id);
         call.enqueue(new Callback<ProjectListResponse>() {
@@ -339,7 +349,6 @@ public class ViewTasksActivity extends AppCompatActivity {
             for (int i = 0; project_records.size() > i; i++) {
                 ProjectListResponseRecords projectListResponseRecords = project_records.get(i);
                 listOfProjectNames.add(new MultiSelectModel(Integer.parseInt(projectListResponseRecords.getProject_id()), projectListResponseRecords.getName()));
-                System.out.println("output" + projectListResponseRecords);
             }
             mProjectDialog = new MultiSelectDialog()
                     .title("Project") //setting title for dialog
@@ -373,9 +382,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         call.enqueue(new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                System.out.println("naga" + response.raw());
                 if (response.isSuccessful()) {
-                    System.out.println("raw" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setLoadCheckBox(response.body().getOrgn_users_records());
                     } else {
@@ -395,12 +402,10 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        System.out.println("check" + orgn_users_records);
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
                 listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
-                System.out.println("dta" + listOfIndividuval);
             }
             mIndividuvalDialog = new MultiSelectDialog()
                     .title("Individuval") //setting title for dialog
@@ -433,22 +438,32 @@ public class ViewTasksActivity extends AppCompatActivity {
                 final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
-                dialog.setContentView(R.layout.remainder);
-                CalendarView calendarView = (CalendarView) dialog.findViewById(R.id.calendarView);
-                final TextView tv_raminderDate = (TextView) dialog.findViewById(R.id.tv_popreminderDate);
-                if (calendarView != null) {
-                    calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-                        @Override
-                        public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                            String msg = "Selected date is " + year + "/" + (month + 1) + "/" + dayOfMonth;
-                            Toast.makeText(ViewTasksActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            tv_raminderDate.setText(month + "/" + dayOfMonth + "/" + year);
-                        }
-                    });
-                }
-                final TextView tv_raminderTime = (TextView) dialog.findViewById(R.id.tv_popreminderTime);
-                TextView tv_addTime = (TextView) dialog.findViewById(R.id.tv_addTime);
-                tv_addTime.setOnClickListener(new View.OnClickListener() {
+                dialog.setContentView(R.layout.remainder_list_add);
+                 //RecyclerView mRecyclerViewReminderList = (RecyclerView)dialog.findViewById(R.id.projectfooter_recyclerView);
+
+                final Calendar remianderCalender = Calendar.getInstance();
+                final EditText ed_dateRaminder = (EditText) dialog.findViewById(R.id.ed_dateReminder);
+                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        remianderCalender.set(Calendar.YEAR, year);
+                        remianderCalender.set(Calendar.MONTH, monthOfYear);
+                        remianderCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        String myFormat = "yyyy-MM-dd"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+                        ed_dateRaminder.setText(sdf.format(remianderCalender.getTime()));
+                    }
+                };
+                ed_dateRaminder.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                    public void onClick(View v) {
+                        new DatePickerDialog(ViewTasksActivity.this, date, remianderCalender
+                                .get(Calendar.YEAR), remianderCalender.get(Calendar.MONTH),
+                                remianderCalender.get(Calendar.DAY_OF_MONTH)).show();
+                    }
+                });
+                final EditText ed_timeRemiander = (EditText) dialog.findViewById(R.id.ed_timeReminder);
+                ed_timeRemiander.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Calendar mcurrentTime = Calendar.getInstance();
@@ -458,17 +473,40 @@ public class ViewTasksActivity extends AppCompatActivity {
                         mTimePicker = new TimePickerDialog(ViewTasksActivity.this, new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                tv_raminderTime.setText(selectedHour + ":" + selectedMinute);
+                                ed_timeRemiander.setText(selectedHour + ":" + selectedMinute);
                             }
                         }, hour, minute, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
                         mTimePicker.show();
                     }
                 });
+                final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
+                mAddTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                TextView mCancelTextView =(TextView)dialog.findViewById(R.id.tv_remainderCancel);
+                mCancelTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                ImageView mImgDropRemainder =(ImageView)dialog.findViewById(R.id.imge_reminderDropDown);
+                mImgDropRemainder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+
+                    }
+                });
+
                 dialog.show();
             }
         });
-        mPriorityNewTask =  findViewById(R.id.re_priorityNewTask);
+        mPriorityNewTask = findViewById(R.id.re_priorityNewTask);
         listItems = getResources().getStringArray(R.array.priorty);
         checkedItems = new boolean[listItems.length];
         mPriorityNewTask.setOnClickListener(new View.OnClickListener() {
@@ -479,10 +517,10 @@ public class ViewTasksActivity extends AppCompatActivity {
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position, boolean isChecked) {
-                        if (isChecked){
-                            if (! mUserPriorty.contains(position)){
+                        if (isChecked) {
+                            if (!mUserPriorty.contains(position)) {
                                 mUserPriorty.add(position);
-                            }else {
+                            } else {
                                 mUserPriorty.remove(position);
                             }
                         }
@@ -493,10 +531,10 @@ public class ViewTasksActivity extends AppCompatActivity {
                 mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String item =" ";
-                        for (int i=0;i<mUserPriorty.size();i++){
+                        String item = " ";
+                        for (int i = 0; i < mUserPriorty.size(); i++) {
                             item = item + listItems[mUserPriorty.get(i)];
-                            if (i != mUserPriorty.size()-1){
+                            if (i != mUserPriorty.size() - 1) {
                                 item = item + " ";
                             }
                         }
@@ -517,9 +555,9 @@ public class ViewTasksActivity extends AppCompatActivity {
             }
         });
     }
-    @TargetApi(Build.VERSION_CODES.KITKAT)
+
     private void attemptCreateTask() {
-        String priorty= mPriorty.getText().toString();
+        String priorty = mPriorty.getText().toString();
         String taskName = mTaskProjectName.getText().toString();
         String individuvalName = String.valueOf(individuvalArray);
         //individuvalArray.remove(0);
@@ -536,21 +574,17 @@ public class ViewTasksActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            requestCrateTask(id, taskName,duedate,String.valueOf(individuvalArray).replace("[", "").replace("]", ""),priorty);
+            requestCrateTask(id, taskName, duedate, String.valueOf(individuvalArray).replace("[", "").replace("]", ""), priorty);
         }
     }
 
     private void requestCrateTask(String id, String a, String b, String c, String d) {
-        System.out.println("number" + id + a + b + c + d);
         Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse(id, a, b, c, d);
         call.enqueue(new Callback<TaskAddResponse>() {
             @Override
             public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
-                // System.out.println("api" + response.raw());
                 if (response.isSuccessful()) {
-                    System.out.println("response" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
-                        System.out.println("data" + response.body().getSuccess());
                         Intent i = new Intent(ViewTasksActivity.this, TaskAddListActivity.class);
                         startActivity(i);
                     } else {
@@ -570,43 +604,22 @@ public class ViewTasksActivity extends AppCompatActivity {
 
     private void footer() {
         ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
-        imageGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-            }
-        });
+        imageGallery.setVisibility(GONE);
         ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
-        imageAttachament.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageAttachament.setVisibility(GONE);
         ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
-        imageCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageCamera.setVisibility(GONE);
         ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
         imageProfile.setVisibility(GONE);
-        ImageView imageEdit = (ImageView) findViewById(R.id.image_edit);
-        imageEdit.setVisibility(GONE);
         TextView tv_create = (TextView) findViewById(R.id.tv_create);
+        tv_create.setText("Create");
         tv_create.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
             public void onClick(View v) {
                 attemptCreateTask();
 
             }
         });
-        TextView tv_update = (TextView) findViewById(R.id.tv_upadte);
-        tv_update.setVisibility(GONE);
+
     }
 
 

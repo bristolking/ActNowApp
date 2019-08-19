@@ -1,13 +1,18 @@
 package com.actnow.android.activities.monthly;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,11 +20,15 @@ import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.activities.MeActivity;
+import com.actnow.android.activities.ThisWeekActivity;
+import com.actnow.android.activities.TimeLineActivity;
+import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.settings.EditAccountActivity;
+import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.taskchart.DailyTaskChartActivity;
-import com.actnow.android.activities.taskspinner.PriorityTaskActivity;
+import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectFooterAdapter;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
@@ -39,6 +48,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.view.View.GONE;
+
 public class ProjectMonthlyActivity extends AppCompatActivity {
     UserPrefUtils session;
     View mProgressView, mContentLayout;
@@ -56,50 +67,118 @@ public class ProjectMonthlyActivity extends AppCompatActivity {
         session = new UserPrefUtils(getApplicationContext());
         setContentView(R.layout.activity_project_monthly);
         initializeViews();
-
-        appHeader();
+        appHeaderTwo();
         appFooter();
     }
 
-    private void appHeader() {
-        TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1);
-        TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2);
-        btnLink2.setOnClickListener(new View.OnClickListener() {
+    private void appHeaderTwo() {
+        ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
+        imgeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(mContentLayout, "Work in progress!", Snackbar.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
-        TextView btnLink3 = (TextView) findViewById(R.id.btn_link_3);
-        btnLink3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(mContentLayout, "Work in progress!", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-        TextView btnLink4 = (TextView) findViewById(R.id.btn_link_4);
-
-        btnLink1.setText("Projects");
+        TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
+        TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
+        btnLink2.setVisibility(GONE);
+        btnLink1.setText("Project");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        btnLink2.setText("Approvals");
-        btnLink3.setText("Time Log");
-        btnLink4.setVisibility(View.GONE);
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendar);
-        btnCalendar.setImageResource(R.drawable.ic_calendar_red);
-        ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notifications);
+
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
+        btnCalendar.setVisibility(GONE);
+        ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
         btnNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Snackbar.make(mContentLayout, "Work in progress!", Snackbar.LENGTH_SHORT).show();
             }
         });
-        ImageView btnSettings = (ImageView) findViewById(R.id.btn_settings);
+        ImageView btnSettings = (ImageView) findViewById(R.id.btn_settingsAppHeaderTwo);
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // session.logoutUser();
-                Intent i = new Intent(ProjectMonthlyActivity.this, SettingsActivity.class);
+                HashMap<String, String> userId = session.getUserDetails();
+                String accountEmail = userId.get(UserPrefUtils.EMAIL);
+                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                i.putExtra("email", accountEmail);
                 startActivity(i);
+                finish();
+            }
+        });
+        ImageView btnMenu = (ImageView) findViewById(R.id.img_menuTopTwo);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                HashMap<String, String> userId = session.getUserDetails();
+                String id = userId.get(UserPrefUtils.ID);
+                String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        startActivity(i);
+                    }
+                });
+                TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
+                mTextName.setText(taskOwnerName);
+                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_today:
+                                Intent iToady = new Intent(getApplicationContext(), TodayTaskActivity.class);
+                                startActivity(iToady);
+                                finish();
+                                break;
+                            case R.id.nav_timeLine:
+                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                startActivity(iTimeLine);
+                                break;
+                            case R.id.nav_filter:
+                                Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.nav_profile:
+                                HashMap<String, String> userId = session.getUserDetails();
+                                String id = userId.get(UserPrefUtils.ID);
+                                String name = userId.get(UserPrefUtils.NAME);
+                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
+                                Intent iprofile=new Intent(getApplicationContext(), EditAccountActivity.class);
+                                iprofile.putExtra("id", id);
+                                iprofile.putExtra("name", name);
+                                iprofile.putExtra("email", accountEmail);
+                                startActivity(iprofile);
+                                break;
+                            case R.id.nav_premium:
+                                Intent ipremium=new Intent(getApplicationContext(), PremiumActivity.class);
+                                startActivity(ipremium);
+                                break;
+                            case R.id.nav_thisweek:
+                                Intent iThisWeek =new Intent(getApplicationContext(), ThisWeekActivity.class);
+                                startActivity(iThisWeek);
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_projectMonth);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
             }
         });
     }
@@ -205,7 +284,7 @@ public class ProjectMonthlyActivity extends AppCompatActivity {
         btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activityMe();
+                activityToady();
             }
         });
         View btnProject = findViewById(R.id.btn_projects);
@@ -237,17 +316,13 @@ public class ProjectMonthlyActivity extends AppCompatActivity {
         txtProject.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 
-    private void activityMe() {
-        Intent i = new Intent(getApplicationContext(), MeActivity.class);
+    private void activityToady() {
+        Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
-
     }
-
     private void activityTasks() {
-        /*Intent i = new Intent(getApplicationContext(), ViewTasksActivity.class);
-        startActivity(i);*/
-        Intent i = new Intent(getApplicationContext(), PriorityTaskActivity.class);
+        Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }

@@ -62,9 +62,8 @@ public class AccountSettingActivity extends AppCompatActivity {
         TextView tv_title = (TextView) findViewById(R.id.txt_titlesetting);
         tv_title.setText("ACCOUNT");
         TextView tv_settingDone = (TextView) findViewById(R.id.tv_settingDone);
-        tv_settingDone.setVisibility(GONE);
-        TextView tv_settingEdit = (TextView) findViewById(R.id.tv_settingEdit);
-        tv_settingEdit.setOnClickListener(new View.OnClickListener() {
+        tv_settingDone.setText("EDIT");
+        tv_settingDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
@@ -117,5 +116,9 @@ public class AccountSettingActivity extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 
 }

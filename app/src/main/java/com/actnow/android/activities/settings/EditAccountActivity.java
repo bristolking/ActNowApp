@@ -1,9 +1,15 @@
 package com.actnow.android.activities.settings;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -15,7 +21,13 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.utils.UserPrefUtils;
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -32,6 +44,8 @@ public class EditAccountActivity extends AppCompatActivity {
     String id;
     String name;
     String accountEmail;
+    String getId;
+    Bitmap bitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +82,7 @@ public class EditAccountActivity extends AppCompatActivity {
                 accountUpadte();
             }
         });
-        TextView tv_settingEdit = (TextView) findViewById(R.id.tv_settingEdit);
-        tv_settingEdit.setVisibility(GONE);
+
     }
     private void initializeViews() {
         mName = findViewById(R.id.tv_name);
@@ -78,6 +91,60 @@ public class EditAccountActivity extends AppCompatActivity {
         mEditName = findViewById(R.id.et_editName);
         mEditEmail = findViewById(R.id.et_editEmail);
         mEditPassWord = findViewById(R.id.et_editPassword);
+
+        mProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseFile();
+
+            }
+        });
+    }
+    private  void  chooseFile(){
+        Intent i = new Intent();
+         i.setType("image/*");
+         i.setAction(Intent.ACTION_GET_CONTENT);
+         startActivityForResult(Intent.createChooser(i,"select picture"),1);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData()!= null){
+            Uri filePath = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
+                mProfilePhoto.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            UploadPicture(getId,getStringImage(bitmap));
+
+        }
+    }
+
+    private void UploadPicture(String id, String photo) {
+
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Uploading......");
+        progressDialog.show();
+
+        //StringRequest stringRequest = new StringRequest(Request.Method.POST,urlUpload)
+
+
+
+    }
+    public String  getStringImage(Bitmap bitmap){
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+
+         byte[]  imageByteArray = byteArrayOutputStream.toByteArray();
+         String encodeImages = Base64.encodeToString(imageByteArray,Base64.DEFAULT);
+
+        return  encodeImages;
+
     }
     private void accountUpadte() {
         mEditName.setError(null);
@@ -137,6 +204,9 @@ public class EditAccountActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
 

@@ -1,7 +1,9 @@
 package com.actnow.android.activities.tasks;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,10 +18,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
@@ -42,9 +48,12 @@ import com.actnow.android.utils.UserPrefUtils;
 
 import org.json.JSONArray;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +84,22 @@ public class EditTaskActivity extends AppCompatActivity {
     boolean[] checkedItems;
     ArrayList<Integer> mUserPriorty=new ArrayList<>();
     TextView mPriortyEditTask;
+
+    Spinner mSpinnerEditReptOption, mSpinnerEditWeekely, mSpinnerEditMonthly, mSpinnerEditYearly;
+
+    ArrayAdapter<String> arrayAdapterReapt;
+    ArrayAdapter<String> arrayAdapterWeekley;
+    ArrayAdapter<String> arrayAdapterMonthly;
+    ArrayAdapter<String> arrayAdapterYearly;
+
+    String[] reapt = {"Daily", "Weekly", "Monthly", "Yearly"};
+    String[] weekly = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+            "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+
+    String[] monthly = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +141,14 @@ public class EditTaskActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                ImageView mImageProfile= (ImageView)findViewById(R.id.img_profile);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        startActivity(i);
+                    }
+                });
                 TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -128,7 +160,7 @@ public class EditTaskActivity extends AppCompatActivity {
                                 startActivity(iToady);
                                 finish();
                                 break;
-                            case R.id.nav_timeLog:
+                            case R.id.nav_timeLine:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_filter:
@@ -157,16 +189,28 @@ public class EditTaskActivity extends AppCompatActivity {
                         return false;
                     }
                 });
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutTaskEditView);
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutTaskEditView);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
+                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
             }
         });
     }
 
     private void initializeViews() {
+        spinnerEdit();
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mTaskEditName = findViewById(R.id.et_newEditTaskName);
@@ -181,7 +225,68 @@ public class EditTaskActivity extends AppCompatActivity {
                 final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
-                dialog.setContentView(R.layout.remainder);
+                dialog.setContentView(R.layout.remainder_list_add);
+                final Calendar remianderCalender = Calendar.getInstance();
+                final EditText ed_dateRaminder = (EditText) dialog.findViewById(R.id.ed_dateReminder);
+                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        remianderCalender.set(Calendar.YEAR, year);
+                        remianderCalender.set(Calendar.MONTH, monthOfYear);
+                        remianderCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        String myFormat = "yyyy-MM-dd"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
+                        ed_dateRaminder.setText(sdf.format(remianderCalender.getTime()));
+                    }
+                };
+                ed_dateRaminder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new DatePickerDialog(getApplicationContext(), date, remianderCalender
+                                .get(Calendar.YEAR), remianderCalender.get(Calendar.MONTH),
+                                remianderCalender.get(Calendar.DAY_OF_MONTH)).show();
+                    }
+                });
+                final EditText ed_timeRemiander = (EditText) dialog.findViewById(R.id.ed_timeReminder);
+                ed_timeRemiander.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Calendar mcurrentTime = Calendar.getInstance();
+                        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                        int minute = mcurrentTime.get(Calendar.MINUTE);
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(getApplicationContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                                ed_timeRemiander.setText(selectedHour + ":" + selectedMinute);
+                            }
+                        }, hour, minute, true);//Yes 24 hour time
+                        mTimePicker.setTitle("Select Time");
+                        mTimePicker.show();
+                    }
+                });
+                final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
+                mAddTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                TextView mCancelTextView =(TextView)dialog.findViewById(R.id.tv_remainderCancel);
+                mCancelTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                ImageView mImgDropRemainder =(ImageView)dialog.findViewById(R.id.imge_reminderDropDown);
+                mImgDropRemainder.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+
+                    }
+                });
                 dialog.show();
             }
         });
@@ -262,6 +367,61 @@ public class EditTaskActivity extends AppCompatActivity {
         requestDynamicProjectList(id);
 
     }
+
+    private void spinnerEdit() {
+
+        mSpinnerEditReptOption = (Spinner) findViewById(R.id.spinner_ReaptEdit);
+        mSpinnerEditWeekely = (Spinner) findViewById(R.id.spinner_weekleyEdit);
+        mSpinnerEditMonthly = (Spinner) findViewById(R.id.spinner_monthlyEdit);
+        mSpinnerEditYearly = (Spinner) findViewById(R.id.spinner_yearlyEdit);
+
+        arrayAdapterMonthly = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, days);
+        mSpinnerEditMonthly.setAdapter(arrayAdapterMonthly);
+
+        arrayAdapterYearly = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, monthly);
+        mSpinnerEditYearly.setAdapter(arrayAdapterYearly);
+
+        arrayAdapterWeekley = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, weekly);
+        mSpinnerEditWeekely.setAdapter(arrayAdapterWeekley);
+
+        arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, reapt);
+        mSpinnerEditReptOption.setAdapter(arrayAdapterReapt);
+
+        mSpinnerEditReptOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = parent.getSelectedItem().toString();
+
+                if (selectedItem.equals("Weekly")) {
+                    mSpinnerEditWeekely.setVisibility(View.VISIBLE);
+                    mSpinnerEditMonthly.setVisibility(GONE);
+                    mSpinnerEditYearly.setVisibility(GONE);
+                }if (selectedItem.equals("Monthly")){
+                    mSpinnerEditMonthly.setVisibility(View.VISIBLE);
+                    mSpinnerEditWeekely.setVisibility(GONE);
+                    mSpinnerEditYearly.setVisibility(GONE);
+
+                }if (selectedItem.equals("Yearly")){
+                    mSpinnerEditYearly.setVisibility(View.VISIBLE);
+                    mSpinnerEditMonthly.setVisibility(View.VISIBLE);
+                    mSpinnerEditWeekely.setVisibility(GONE);
+                }if (selectedItem.equals("Daily")){
+                    mSpinnerEditYearly.setVisibility(GONE);
+                    mSpinnerEditMonthly.setVisibility(GONE);
+                    mSpinnerEditWeekely.setVisibility(GONE);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
+
     private void requestDynamicContent(String id) {
         Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
         call.enqueue(new Callback<CheckBoxResponse>() {
@@ -384,43 +544,18 @@ public class EditTaskActivity extends AppCompatActivity {
 
     private void footer() {
         ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
-        imageGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageGallery.setVisibility(GONE);
         ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
-        imageAttachament.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
+        imageAttachament.setVisibility(GONE);
 
-            }
-        });
         ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
-        imageCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageCamera.setVisibility(GONE);
         ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
-        imageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
+        imageProfile.setVisibility(GONE);
 
-            }
-        });
-        ImageView imageEdit = (ImageView) findViewById(R.id.image_edit);
-        imageEdit.setVisibility(GONE);
         TextView tv_create = (TextView) findViewById(R.id.tv_create);
-        tv_create.setVisibility(GONE);
-        TextView tv_update = (TextView) findViewById(R.id.tv_upadte);
-        tv_update.setOnClickListener(new View.OnClickListener() {
+        tv_create.setText("Update");
+        tv_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(EditTaskActivity.this, TaskAddListActivity.class);

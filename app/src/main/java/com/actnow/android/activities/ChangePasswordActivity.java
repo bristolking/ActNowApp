@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.CheckOtpReponse;
+import com.actnow.android.sdk.responses.CheckOtpResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -78,10 +78,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassWrodRequst(String mobile_number, String password) {
-        Call<CheckOtpReponse> call = ANApplications.getANApi().changePassword(mobile_number, password);
-        call.enqueue(new Callback<CheckOtpReponse>() {
+        Call<CheckOtpResponse> call = ANApplications.getANApi().changePassword(mobile_number, password);
+        call.enqueue(new Callback<CheckOtpResponse>() {
             @Override
-            public void onResponse(Call<CheckOtpReponse> call, Response<CheckOtpReponse> response) {
+            public void onResponse(Call<CheckOtpResponse> call, Response<CheckOtpResponse> response) {
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
@@ -95,7 +95,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onFailure(Call<CheckOtpReponse> call, Throwable t) {
+            public void onFailure(Call<CheckOtpResponse> call, Throwable t) {
                 Log.d("ChangePasswordActivity",t.toString());
 
 

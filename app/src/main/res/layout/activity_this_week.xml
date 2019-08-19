@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.ThisWeekActivity"
-    tools:openDrawer="right">
+    android:background="@color/color"
+    tools:openDrawer="right"
+    tools:context=".activities.ThisWeekActivity">
 
-    <include layout="@layout/app_bar_side_menu" />
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
@@ -27,9 +27,12 @@
         android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
             android:orientation="vertical">
+
+            <include layout="@layout/bulb_qucik_advanced"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -40,7 +43,7 @@
                     android:id="@+id/tv_titleThisWeek"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Task Names"
+                    android:text="Tasks Names"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorPrimary" />
                 <android.support.v7.widget.RecyclerView
@@ -49,9 +52,10 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
+        <include layout="@layout/app_header_two"/>
+        <include layout="@layout/app_footer"/>
 
     </RelativeLayout>
-
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

@@ -14,5 +14,7 @@
     <color name="textColor">#666666</color>
     <color name="background">#f0f0f0</color>
     <color name="linebackground">#d0d0d0</color>
+    <color name="color">#fafafa</color>
+
 
 </resources>

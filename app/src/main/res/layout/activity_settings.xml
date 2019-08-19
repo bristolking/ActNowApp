@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".activities.settings.SettingsActivity">
-    <include layout="@layout/settings_app_header" />
+    <include layout="@layout/notification_header" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,7 +41,7 @@
                             android:id="@+id/re_actNowPremium"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/colorWhite"
+                            android:background="@color/color"
                             android:orientation="horizontal"
                             android:padding="10dp">
 
@@ -93,7 +93,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:background="@color/colorWhite"
+                                android:background="@color/color"
                                 android:padding="10dp">
                                 <ImageView
                                     android:id="@+id/image_userAccount"
@@ -108,13 +108,13 @@
                                     android:id="@+id/tv_account"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_centerVertical="true"
                                     android:layout_toRightOf="@+id/image_userAccount"
                                     android:text="Account"
+                                    android:layout_centerInParent="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_centerHorizontal="true"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                    android:textColor="@color/black"
-                                    android:textStyle="normal" />
+                                    android:textColor="@color/black" />
 
                                 <ImageView
                                     android:layout_width="20dp"
@@ -135,7 +135,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:background="@color/colorWhite"
+                            android:background="@color/color"
                             android:orientation="horizontal"
                             android:padding="10dp">
                             <ImageView
@@ -181,8 +181,7 @@
                                 android:id="@+id/re_help"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/colorWhite"
-                                android:orientation="horizontal"
+                                android:background="@color/color"                                android:orientation="horizontal"
                                 android:padding="10dp">
 
                                 <ImageView
@@ -224,7 +223,7 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/colorWhite"
+                                android:background="@color/color"
                                 android:orientation="horizontal"
                                 android:padding="10dp">
 
@@ -267,7 +266,7 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/colorWhite"
+                            android:background="@color/color"
                             android:orientation="horizontal"
                             android:padding="10dp">
                             <ImageView
@@ -309,21 +308,15 @@
                             android:layout_height="1dp"
                             android:layout_below="@id/image_sync"
                             android:background="@color/linebackground" />
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginTop="@dimen/marginTop"
-                                android:background="@color/linebackground" />
                             <Button
                                 android:id="@+id/setting_logout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/colorWhite"
+                                android:background="@color/color"
                                 android:text="LOGOUT"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorAccent" />

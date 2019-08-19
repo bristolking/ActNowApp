@@ -110,13 +110,11 @@ public class SignInActivity extends AppCompatActivity {
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
                 if (response.isSuccessful()){
-                    //System.out.println("response"+response.raw());
                     if (response.body().getSuccess().equals("true")){
                         SignInResponse response1 = response.body();
-                       // System.out.println("response1"+response.body());
                         session.createLoginSession(response1.getId(),response1.getName(),response1.getEmail(),response1.getMobile_number(),response1.getOrganization_id(),response1.getUser_type(),response1.getProvider_id(),response1.getProvider_name());
                         //AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
-                        activityMe();
+                       activityMe();
                     } else {
                         Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
                     }
@@ -126,22 +124,13 @@ public class SignInActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<SignInResponse> call, Throwable t) {
-                Log.d("SignInActivity ",t.toString());
+                Log.d("CallBack", " Throwable is " + t);
             }
         });
     }
     private void activityMe(){
-        /*Intent me = new Intent(getApplicationContext(),MeActivity.class);
-        startActivity(me);*/
-        HashMap<String, String> userId = session.getUserDetails();
-       // String id = userId.get(UserPrefUtils.ID);
-       // String taskOwnerName= userId.get(UserPrefUtils.NAME);
-        Intent i =new Intent(SignInActivity.this, TaskAddListActivity.class);
-      /*  i.putExtra("id", id);
-        i.putExtra("taskOwnerName", taskOwnerName);*/
+        Intent i =new Intent(SignInActivity.this, TodayTaskActivity.class);
         startActivity(i);
-       // System.out.println("send"+  id+ taskOwnerName);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
         finish();
     }
 

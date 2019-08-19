@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProjectFooterActivity">
+    android:background="@color/color"
+    tools:context=".activities.TimeLineActivity">
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
@@ -25,8 +26,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_layout"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="50dp"
             android:orientation="vertical">
+
+            <include layout="@layout/bulb_qucik_advanced"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,7 +55,7 @@
                         android:id="@+id/radioButtonWeekelyTask1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:text="Task1"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/black" />
 
@@ -62,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/radioButtonWeekelyTask1"
                         android:paddingLeft="28dp"
-                        android:text="13/02/2019"
+                        android:text="13/06/2019"
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -71,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask1"
                         android:layout_toRightOf="@+id/tv_dateWeekelyTask1"
-                        android:text="By: "
+                        android:text=" Project : "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -80,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask1"
                         android:layout_toRightOf="@+id/tv_byWeekely1"
-                        android:text="Project: "
+                        android:text="Cancri "
                         android:textColor="@color/colorAccent" />
 
                     <ImageView
@@ -112,7 +115,7 @@
                         android:id="@+id/radioButtonWeekelyTask2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:text="Task2"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/black"  />
 
@@ -122,7 +125,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/radioButtonWeekelyTask2"
                         android:paddingLeft="28dp"
-                        android:text="13/02/2019, "
+                        android:text="13/06/2019, "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -131,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask2"
                         android:layout_toRightOf="@+id/tv_dateWeekelyTask2"
-                        android:text="By: "
+                        android:text=" Project : "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -140,7 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask2"
                         android:layout_toRightOf="@+id/tv_byWeekely2"
-                        android:text="Project: "
+                        android:text="Cancri"
                         android:textColor="@color/colorAccent" />
 
                     <ImageView
@@ -181,7 +184,7 @@
                         android:id="@+id/radioButtonWeekelyTask3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:text="Task3"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/black"  />
 
@@ -191,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/radioButtonWeekelyTask3"
                         android:paddingLeft="28dp"
-                        android:text="13/02/2019, "
+                        android:text="20/05/2019, "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -200,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask3"
                         android:layout_toRightOf="@+id/tv_dateWeekelyTask3"
-                        android:text="By: "
+                        android:text=" Project :"
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -209,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask3"
                         android:layout_toRightOf="@+id/tv_byWeekely3"
-                        android:text="Project: "
+                        android:text=" Cancri"
                         android:textColor="@color/colorAccent" />
 
                     <ImageView
@@ -241,7 +244,7 @@
                         android:id="@+id/radioButtonWeekelyTask4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:text="Task"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/black"  />
 
@@ -251,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/radioButtonWeekelyTask4"
                         android:paddingLeft="28dp"
-                        android:text="13/02/2019, "
+                        android:text="25/05/2019, "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -260,7 +263,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask4"
                         android:layout_toRightOf="@+id/tv_dateWeekelyTask4"
-                        android:text="By: "
+                        android:text="Project : "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -269,7 +272,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask4"
                         android:layout_toRightOf="@+id/tv_byWeekely4"
-                        android:text="Project: "
+                        android:text="Cancri "
                         android:textColor="@color/colorAccent" />
 
                     <ImageView
@@ -302,7 +305,7 @@
                         android:id="@+id/radioButtonWeekelyTask5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:text="Task"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/black"  />
 
@@ -312,7 +315,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/radioButtonWeekelyTask5"
                         android:paddingLeft="28dp"
-                        android:text="13/02/2019, "
+                        android:text="30/05/2019, "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -321,7 +324,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask5"
                         android:layout_toRightOf="@+id/tv_dateWeekelyTask5"
-                        android:text="By: "
+                        android:text="Project : "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -330,7 +333,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask5"
                         android:layout_toRightOf="@+id/tv_byWeekely5"
-                        android:text="Project: "
+                        android:text=" Cancri"
                         android:textColor="@color/colorAccent" />
 
                     <ImageView
@@ -362,7 +365,7 @@
                         android:id="@+id/radioButtonWeekelyTask"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aliquam saittis urna adictum vulutate"
+                        android:text="Task"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/black"  />
 
@@ -372,7 +375,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/radioButtonWeekelyTask"
                         android:paddingLeft="28dp"
-                        android:text="13/02/2019, "
+                        android:text="20/04/2019, "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -381,7 +384,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask"
                         android:layout_toRightOf="@+id/tv_dateWeekelyTask"
-                        android:text="By: "
+                        android:text="Project:  "
                         android:textColor="@color/colorAccent" />
 
                     <TextView
@@ -390,7 +393,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/radioButtonWeekelyTask"
                         android:layout_toRightOf="@+id/tv_byWeekely"
-                        android:text="Project: "
+                        android:text="Cancri "
                         android:textColor="@color/colorAccent" />
 
                     <ImageView
@@ -408,5 +411,6 @@
             </LinearLayout>
         </LinearLayout>
         <include layout="@layout/time_line_header" />
+        <include layout="@layout/app_footer"/>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

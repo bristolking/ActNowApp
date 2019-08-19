@@ -11,7 +11,8 @@ import android.widget.TextView;
 import com.actnow.android.R;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
 import com.actnow.android.activities.monthly.MonthlyTaskListActivity;
-import com.actnow.android.activities.taskchart.DailyTaskChartActivity;
+import com.actnow.android.activities.projects.ProjectFooterActivity;
+import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.taskspinner.PriorityTaskActivity;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -38,13 +39,13 @@ public class MeActivity extends AppCompatActivity {
     private void appHeader() {
         TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1);
         TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2);
-        TextView btnLink3 = (TextView) findViewById(R.id.btn_link_3);
+       /* TextView btnLink3 = (TextView) findViewById(R.id.btn_link_3);*/
         TextView btnLink4 = (TextView) findViewById(R.id.btn_link_4);
 
         btnLink1.setText("Daily");
         btnLink2.setText("Weekly");
         btnLink2.setTextColor(getResources().getColor(R.color.colorAccent));
-        btnLink3.setText("Monthly");
+        /*btnLink3.setText("Monthly");*/
         btnLink4.setText("Yearly");
 
         ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendar);
@@ -102,9 +103,9 @@ public class MeActivity extends AppCompatActivity {
             }
         });
 
-        ImageView imgMe = (ImageView) findViewById(R.id.img_me);
-        imgMe.setImageResource(R.drawable.ic_me_red);
-        TextView txtMe = (TextView) findViewById(R.id.txt_me);
+        ImageView imgMe = (ImageView) findViewById(R.id.img_today);
+        imgMe.setImageResource(R.drawable.ic_today_red);
+        TextView txtMe = (TextView) findViewById(R.id.txt_today);
         txtMe.setTextColor(getResources().getColor(R.color.colorAccent));
     }
 

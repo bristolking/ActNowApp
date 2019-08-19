@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProjectFooterActivity">
+    android:id="@+id/drawer_approval"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="right"
+    android:background="@color/color"
+    tools:context=".activities.ApprovalsActivity">
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
@@ -25,50 +29,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_layout"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-                <RelativeLayout
+                android:orientation="horizontal"
+                android:padding="8dp">
+                <ImageView
+                    android:id="@+id/image_approvalbuldProject"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-                    <ImageView
-                        android:id="@+id/image_buldProject"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:layout_weight="0.1"
-                        android:padding="5dp"
-                        app:srcCompat="@drawable/ic_lightbulb" />
-                </RelativeLayout>
+                    android:layout_height="45dp"
+                    app:srcCompat="@drawable/ic_lightbulb"
+                    android:layout_alignParentLeft="true"
+                    android:layout_weight="1.5"
+                    android:layout_margin="4dp"/>
                 <EditText
-                    android:id="@+id/edit_searchProject"
+                    android:id="@+id/edit_searchApproval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
-                    android:layout_weight="1"
                     android:background="@drawable/rounded_square"
-                    android:backgroundTint="@color/colorWhite"
                     android:drawableRight="@drawable/ic_search"
                     android:hint="Quick Find"
-                    android:padding="5dp" />
+                    android:layout_weight="1.5"
+                    android:padding="10dp"
+                    android:layout_margin="5dp"
+                    android:layout_centerHorizontal="true"/>
                 <Button
-                    android:id="@+id/button_searchProject"
+                    android:id="@+id/button_searchApproval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.2"
                     android:background="@drawable/rounded_square"
                     android:backgroundTint="@color/colorYellow"
                     android:text="Advanced Search"
-                    android:textColor="@color/colorWhite" />
+                    android:layout_weight="1.5"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:textColor="@color/colorWhite"
+                    android:layout_alignParentRight="true"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
@@ -78,308 +80,10 @@
                     android:text="Approvals"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorPrimary" />
-               <!-- <android.support.v7.widget.RecyclerView
-                    android:id="@+id/projectfooter_recyclerView"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/approval_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />-->
-                <LinearLayout
-                    android:id="@+id/liner_projectList1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                    android:id="@+id/liner_projectList2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                    android:id="@+id/liner_projectList3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                    android:id="@+id/liner_projectList4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                    android:id="@+id/liner_projectList5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                android:id="@+id/liner_projectList6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <RadioGroup
-                    android:id="@+id/radioGroupProject6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5">
-
-                    <RadioButton
-                        android:id="@+id/projectNameFooter6"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Get Organized anywhere with the apps."
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:buttonTint="@color/textColor"
-                        android:textColor="@color/textColor"/>
-                </RadioGroup>
-                <TextView
-                    android:id="@+id/tv_projectDateFooter6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_weight="1.5"
-                    android:text="25/01/2019"
-                    android:textColor="@color/colorAccent" />
-            </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" /><LinearLayout
-                android:id="@+id/liner_projectList7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <RadioGroup
-                    android:id="@+id/radioGroupProject7"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5">
-
-                    <RadioButton
-                        android:id="@+id/projectNameFooter7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Get Organized anywhere with the apps."
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:buttonTint="@color/textColor"
-                        android:textColor="@color/textColor"/>
-                </RadioGroup>
-                <TextView
-                    android:id="@+id/tv_projectDateFooter7"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_weight="1.5"
-                    android:text="25/01/2019"
-                    android:textColor="@color/colorAccent" />
-            </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                    android:id="@+id/liner_projectList8"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject8"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter8"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-                <LinearLayout
-                    android:id="@+id/liner_projectList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <RadioGroup
-                        android:id="@+id/radioGroupProject"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5">
-
-                        <RadioButton
-                            android:id="@+id/projectNameFooter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Get Organized anywhere with the apps."
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:buttonTint="@color/textColor"
-                            android:textColor="@color/textColor"/>
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/tv_projectDateFooter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1.5"
-                        android:text="25/01/2019"
-                        android:textColor="@color/colorAccent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
-
-
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </LinearLayout>
@@ -395,8 +99,15 @@
             app:srcCompat="@drawable/ic_add_circular"
             tools:ignore="VectorDrawableCompat" />-->
 
-        <include layout="@layout/app_header" />
+        <include layout="@layout/app_header_two" />
         <include layout="@layout/app_footer" />
-
     </RelativeLayout>
-</android.support.constraint.ConstraintLayout>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_side_menu"
+        app:menu="@menu/activity_side_menu_drawer" />
+</android.support.v4.widget.DrawerLayout>

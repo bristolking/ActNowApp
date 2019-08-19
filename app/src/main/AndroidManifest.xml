@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.actnow.android">
-    <!-- <uses-sdk tools:overrideLibrary="com.abdeveloper.library" /> -->
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,17 +15,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.TimeLineActivity"></activity>
+        <activity android:name=".activities.OrngActivity"></activity>
+        <activity android:name=".activities.CommentsActivity" />
+        <activity android:name=".activities.tasks.YearlyTaskListActivity" />
+        <activity android:name=".activities.tasks.RepetitiveTaskListActivity" />
+        <activity android:name=".activities.tasks.MonthlyTaskListSpinnerActivity" />
+        <activity android:name=".activities.tasks.WeeklyTaskListActivity" />
+        <activity android:name=".activities.tasks.DailyTaskListActivity" />
+        <activity android:name=".activities.projects.ProjectTaskListActivity" />
+        <activity android:name=".activities.TimeLineActivity" />
         <activity android:name=".activities.ApprovalsActivity" />
         <activity android:name=".activities.TodayTaskActivity" />
         <activity android:name=".activities.settings.notification.GotoprimaryActivity" />
         <activity android:name=".activities.settings.notification.SubscribedemailActivity" />
         <activity android:name=".activities.settings.notification.SharingActivity" />
         <activity android:name=".activities.settings.notification.DailyReviewActivity" />
-        <activity android:name=".activities.taskchart.WeekelyTaskChartActivity" />
-        <activity android:name=".activities.taskchart.YearlyTaskChartActivity" />
-        <activity android:name=".activities.taskchart.MonthlyTaskChartActivity" />
-        <activity android:name=".activities.taskchart.DailyTaskChartActivity" />
+        <activity android:name=".activities.insights.WeekelyTaskChartActivity" />
+        <activity android:name=".activities.insights.YearlyTaskChartActivity" />
+        <activity android:name=".activities.insights.MonthlyTaskChartActivity" />
+        <activity android:name=".activities.insights.DailyTaskChartActivity" />
         <activity
             android:name=".activities.ThisWeekActivity"
             android:label="THISWEEK" />
@@ -38,7 +45,7 @@
         <activity android:name=".activities.settings.AccountSettingActivity" />
         <activity android:name=".activities.settings.SettingsActivity" />
         <activity android:name=".activities.tasks.TaskAddListActivity" />
-        <activity android:name=".activities.ProjectFooterActivity" />
+        <activity android:name=".activities.projects.ProjectFooterActivity" />
         <activity android:name=".activities.taskspinner.OverDueTaskActivity" />
         <activity android:name=".activities.taskspinner.PriorityTaskActivity" />
         <activity android:name=".activities.ChangePasswordActivity" />

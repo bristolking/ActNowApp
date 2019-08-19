@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date&amp;Time"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/liner_reminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8"
+                android:background="@drawable/square"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/ed_dateReminder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.2"
+                    android:clickable="true"
+                    android:editable="false"
+                    android:gravity="center"
+                    android:hint="2019-08-12"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/colorAccent"
+                    android:textColorHint="@color/black" />
+
+                <EditText
+                    android:id="@+id/ed_timeReminder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:clickable="true"
+                    android:editable="false"
+                    android:hint="00:00:00"
+                    android:textColor="@color/colorAccent"
+                    android:textColorHint="@color/black" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imge_reminderDropDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/liner_reminder"
+                android:layout_weight="0.1"
+                android:background="@drawable/square"
+                android:padding="11dp"
+                android:src="@drawable/spinnerdownarrow" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

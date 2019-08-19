@@ -2,19 +2,26 @@ package com.actnow.android.activities.projects;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,7 +32,7 @@ import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 
-import com.actnow.android.activities.ProjectFooterActivity;
+import com.actnow.android.activities.ColorPicker;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
@@ -52,7 +59,7 @@ public class EditProjectActivity extends AppCompatActivity {
 
     EditText mEditProjectName, mEditProjectOwnerName, mWriteCommentEdit;
     //TextView mProjectEditName, mDateProjectEdit,mWriteCommentEdit;
-    View mProjectIndividualEdit;
+    View mProjectIndividualEdit, mProjectColorEdit;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     final Context context = this;
@@ -66,6 +73,9 @@ public class EditProjectActivity extends AppCompatActivity {
     ArrayList<Integer> individualCheckBox;
     JSONArray individuvalArray;
     TextView mIndividualCheckBoxProject;
+    private int mPickedColor = Color.WHITE;
+
+    ImageView mImgePojectEditColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +93,12 @@ public class EditProjectActivity extends AppCompatActivity {
             //id = (String) b.get("id");
             projectOwnerName = (String) b.get("projectOwnerName");
             mEditProjectOwnerName.setText(" " + projectOwnerName);
-            projectName =(String)b.get("projectName");
-            mEditProjectName.setText(""+projectName);
-            System.out.println("passsed" + projectOwnerName + id+projectName);
+            projectName = (String) b.get("projectName");
+            mEditProjectName.setText("" + projectName);
+            System.out.println("passsed" + projectOwnerName + id + projectName);
         }
     }
+
     private void header() {
         ImageView imgeBack = (ImageView) findViewById(R.id.image_back);
         imgeBack.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +119,15 @@ public class EditProjectActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                ImageView mImageProfile= (ImageView)findViewById(R.id.img_profile);
-                TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), EditAccountActivity.class);
+                        startActivity(i);
+                    }
+                });
+                TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -120,7 +138,7 @@ public class EditProjectActivity extends AppCompatActivity {
                                 startActivity(iToady);
                                 finish();
                                 break;
-                            case R.id.nav_timeLog:
+                            case R.id.nav_timeLine:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_filter:
@@ -131,29 +149,40 @@ public class EditProjectActivity extends AppCompatActivity {
                                 String id = userId.get(UserPrefUtils.ID);
                                 String name = userId.get(UserPrefUtils.NAME);
                                 String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile=new Intent(EditProjectActivity.this, EditAccountActivity.class);
+                                Intent iprofile = new Intent(EditProjectActivity.this, EditAccountActivity.class);
                                 iprofile.putExtra("id", id);
                                 iprofile.putExtra("name", name);
                                 iprofile.putExtra("email", accountEmail);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium=new Intent(EditProjectActivity.this, PremiumActivity.class);
+                                Intent ipremium = new Intent(EditProjectActivity.this, PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek= new Intent(EditProjectActivity.this, ThisWeekActivity.class);
+                                Intent ithisweek = new Intent(EditProjectActivity.this, ThisWeekActivity.class);
                                 startActivity(ithisweek);
                                 break;
                         }
                         return false;
                     }
                 });
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutProjectEditView);
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutProjectEditView);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
+                ImageView imgeClose = (ImageView) findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
             }
         });
     }
@@ -163,7 +192,7 @@ public class EditProjectActivity extends AppCompatActivity {
         mContentLayout = findViewById(R.id.content_layout);
         mEditProjectName = findViewById(R.id.et_newProjectEditName);
         mEditProjectOwnerName = findViewById(R.id.et_EditProjectOwnerName);
-        mWriteCommentEdit = findViewById(R.id.et_commentNewProjectEdit);
+        /* mWriteCommentEdit = findViewById(R.id.et_commentNewProjectEdit);*/
 
 
         mProjectIndividualEdit = (View) findViewById(R.id.liner_individualEdit);
@@ -180,15 +209,73 @@ public class EditProjectActivity extends AppCompatActivity {
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get(UserPrefUtils.ID);
         requestDynamicContent(id);
+        mProjectColorEdit = findViewById(R.id.liner_projectEditColor);
+        mImgePojectEditColor = findViewById(R.id.image_projectColorEdit);
+        mProjectColorEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GridView gv = (GridView) ColorPicker.getColorPicker(EditProjectActivity.this);
+
+                // Initialize a new AlertDialog.Builder object
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditProjectActivity.this);
+
+                // Set the alert dialog content to GridView (color picker)
+                builder.setView(gv);
+
+                // Initialize a new AlertDialog object
+                final AlertDialog dialog = builder.create();
+
+                // Show the color picker window
+                dialog.show();
+
+                // Set the color picker dialog size
+                dialog.getWindow().setLayout(
+                        getScreenSize().x - mProjectColorEdit.getPaddingLeft() - mProjectColorEdit.getPaddingRight(),
+                        getScreenSize().y - getStatusBarHeight() - mProjectColorEdit.getPaddingTop() - mProjectColorEdit.getPaddingBottom());
+
+                // Set an item click listener for GridView widget
+                gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        // Get the pickedColor from AdapterView
+                        mPickedColor = (int) parent.getItemAtPosition(position);
+
+                        // Set the layout background color as picked color
+                        mImgePojectEditColor.setBackgroundColor(mPickedColor);
+
+                        // close the color picker
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+
     }
+    private Point getScreenSize(){
+        WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        //Display dimensions in pixels
+        display.getSize(size);
+        return size;
+    }
+    public int getStatusBarHeight() {
+        int height = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            height = getResources().getDimensionPixelSize(resourceId);
+        }
+        return height;
+    }
+
     private void requestDynamicContent(String id) {
         Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
         call.enqueue(new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                System.out.println("naga"+ response.raw());
+                System.out.println("naga" + response.raw());
                 if (response.isSuccessful()) {
-                    System.out.println("raw"+ response.raw());
+                    System.out.println("raw" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setLoadCheckBox(response.body().getOrgn_users_records());
                     } else {
@@ -205,13 +292,14 @@ public class EditProjectActivity extends AppCompatActivity {
             }
         });
     }
+
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        System.out.println("check"+ orgn_users_records);
+        System.out.println("check" + orgn_users_records);
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
                 listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
-                System.out.println("dta"+ listOfIndividuval);
+                System.out.println("dta" + listOfIndividuval);
             }
             mIndividuvalDialog = new MultiSelectDialog()
                     .title("Individuval") //setting title for dialog
@@ -238,11 +326,13 @@ public class EditProjectActivity extends AppCompatActivity {
                     });
         }
     }
+
     private void attemptUpdateTask() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
-        requestCrateTask(id,  passed_code,passed_name);
+        requestCrateTask(id, passed_code, passed_name);
     }
+
     private void requestCrateTask(String id, String passed_code, String projectName) {
         Call<ProjectEditResponse> call = ANApplications.getANApi().checkProjectEditResponse(id, passed_code, projectName);
         call.enqueue(new Callback<ProjectEditResponse>() {
@@ -259,51 +349,27 @@ public class EditProjectActivity extends AppCompatActivity {
                     AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                 }
             }
+
             @Override
             public void onFailure(Call<ProjectEditResponse> call, Throwable t) {
                 Log.d("CallBack", " Throwable is " + t);
             }
         });
     }
-    private void footer () {
+
+    private void footer() {
         ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
-        imageGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageGallery.setVisibility(GONE);
         ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
-        imageAttachament.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
+        imageAttachament.setVisibility(GONE);
 
-            }
-        });
         ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
-        imageCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        imageCamera.setVisibility(GONE);
         ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
-        imageProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        ImageView imageEdit = (ImageView) findViewById(R.id.image_edit);
-        imageEdit.setVisibility(GONE);
+        imageProfile.setVisibility(GONE);
         TextView tv_create = (TextView) findViewById(R.id.tv_create);
-        tv_create.setVisibility(GONE);
-        TextView tv_update = (TextView) findViewById(R.id.tv_upadte);
-        tv_update.setOnClickListener(new View.OnClickListener() {
+        tv_create.setText("Update");
+        tv_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
@@ -313,6 +379,7 @@ public class EditProjectActivity extends AppCompatActivity {
             }
         });
     }
+
     public void onBackPressed() {
         super.onBackPressed();
     }

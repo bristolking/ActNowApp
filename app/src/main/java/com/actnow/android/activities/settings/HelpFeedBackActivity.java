@@ -29,11 +29,12 @@ public class HelpFeedBackActivity extends AppCompatActivity {
         tv_title.setText("HELP&FEEDBACK");
         TextView tv_settingDone = (TextView) findViewById(R.id.tv_settingDone);
         tv_settingDone.setVisibility(GONE);
-        TextView tv_settingEdit = (TextView) findViewById(R.id.tv_settingEdit);
-        tv_settingEdit.setVisibility(GONE);
     }
     private void initializeViews() {
 
+    }
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
 }

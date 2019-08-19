@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp"
-        android:background="@color/colorWhite"
+        android:background="#fefefe"
         android:layout_alignParentBottom="true">
 
         <ImageView
@@ -33,11 +33,11 @@
             android:padding="10dp"
             app:srcCompat="@drawable/ic_photo_camera" />
         <ImageView
-            android:id="@+id/image_edit"
+            android:id="@+id/image_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            app:srcCompat="@drawable/ic_edit" />
+            app:srcCompat="@drawable/ic_useradd" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,24 +53,7 @@
                 android:text=" Create"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorAccent" />
-            <TextView
-                android:id="@+id/tv_upadte"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="Update"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorAccent" />
 
-            <ImageView
-                android:id="@+id/image_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:paddingRight="75dp"
-                app:srcCompat="@drawable/ic_add_user" />
         </RelativeLayout>
     </LinearLayout>
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/textColor">
+        <TextView
+            android:id="@+id/tv_sanckbarCompleted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Completed"
+            android:textColor="@color/color"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        <TextView
+            android:id="@+id/tv_sanckbarUndo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UNDO"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/orange"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>/>
+    </RelativeLayout>
+
+</RelativeLayout>

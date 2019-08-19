@@ -58,21 +58,6 @@ public class ThisWeekAdapter extends RecyclerView.Adapter<ThisWeekAdapter.ViewHo
             mRadiobuttonTaskName = (RadioButton) itemView.findViewById(R.id.thisweekTaskName);
             mDateThisWeek = (TextView) itemView.findViewById(R.id.tv_dateTaskThisweek);
 
-    /*        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-EEE, MM, yyyy");
-            String stringDate2 = sdf2.format(new Date());
-            System.out.println("Today is : " + stringDate2);
-            mTilte.setText(stringDate2);*/
-            /*Calendar now = Calendar.getInstance();
-            mDateThisWeek.setText((now.get(Calendar.MONTH) + 1) + "-" + now.get(Calendar.DATE) + "-" + now.get(Calendar.YEAR));
-           // System.out.println("Current date : " + (now.get(Calendar.MONTH) + 1) + "-" + now.get(Calendar.DATE) + "-" + now.get(Calendar.YEAR));
-
-            String[] strDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday",
-                    "Friday", "Saturday" };
-            // Day_OF_WEEK starts from 1 while array index starts from 0
-            //System.out.println("Current day is : " + strDays[now.get(Calendar.DAY_OF_WEEK) - 1]);
-            mTilte.setText(strDays[now.get(Calendar.DAY_OF_WEEK) - 1]);
-*/
-
         }
     }
 }

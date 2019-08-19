@@ -4,46 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    android:background="@color/colorWhite">
+    android:background="@drawable/borderbottom">
 
     <ImageView
         android:id="@+id/image_backsetting"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="10dp"
         app:srcCompat="@drawable/ic_back"
         tools:ignore="VectorDrawableCompat" />
 
     <TextView
         android:id="@+id/txt_titlesetting"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp"
         android:text="TITLE"
-        android:textAlignment="center"
         android:textAllCaps="true"
+        android:paddingLeft="55dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorAccent" />
+    <ImageView
+        android:id="@+id/img_filterProject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        app:srcCompat="@drawable/ic_tabs" />
 
     <ImageView
-        android:id="@+id/img_filterByEvent"
+        android:id="@+id/img_byEvent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:paddingRight="15dp"
         app:srcCompat="@drawable/ic_menu_events" />
-
-    <ImageView
-        android:id="@+id/img_filterbyProject"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:paddingRight="55dp"
-        app:srcCompat="@drawable/ic_tabs" />
 
 </RelativeLayout>
