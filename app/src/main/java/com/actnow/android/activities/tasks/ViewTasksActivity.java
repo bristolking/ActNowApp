@@ -7,16 +7,15 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ReceiverCallNotAllowedException;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -41,10 +41,13 @@ import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
+import com.actnow.android.adapter.ProjectFooterAdapter;
+import com.actnow.android.adapter.ReminderListAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
+import com.actnow.android.sdk.responses.ReminderModel;
 import com.actnow.android.sdk.responses.TaskAddResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
@@ -90,7 +93,7 @@ public class ViewTasksActivity extends AppCompatActivity {
 
     String[] reapt = {"Daily", "Weekly", "Monthly", "Yearly"};
     String[] weekly = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-    String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10","11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
+    String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
     String[] monthly = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
 
@@ -99,6 +102,11 @@ public class ViewTasksActivity extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapterMonthly;
     ArrayAdapter<String> arrayAdapterYearly;
 
+
+    private RecyclerView recyclerView;
+    RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<ReminderModel> reminderModelArrayList = new ArrayList<ReminderModel>();
+    ReminderListAdapter mReminderListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +155,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        Intent i = new Intent(getApplicationContext(), EditAccountActivity.class);
                         startActivity(i);
                     }
                 });
@@ -197,7 +205,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
-                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                ImageView imgeClose = (ImageView) findViewById(R.id.nav_close);
                 imgeClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -297,27 +305,32 @@ public class ViewTasksActivity extends AppCompatActivity {
                     mSpinnerWeekely.setVisibility(View.VISIBLE);
                     mSpinnerMonthly.setVisibility(GONE);
                     mSpinnerYearly.setVisibility(GONE);
-                }if (selectedItem.equals("Monthly")){
+                }
+                if (selectedItem.equals("Monthly")) {
                     mSpinnerMonthly.setVisibility(View.VISIBLE);
                     mSpinnerWeekely.setVisibility(GONE);
                     mSpinnerYearly.setVisibility(GONE);
 
-                }if (selectedItem.equals("Yearly")){
+                }
+                if (selectedItem.equals("Yearly")) {
                     mSpinnerYearly.setVisibility(View.VISIBLE);
                     mSpinnerMonthly.setVisibility(View.VISIBLE);
                     mSpinnerWeekely.setVisibility(GONE);
-                }if (selectedItem.equals("Daily")){
+                }
+                if (selectedItem.equals("Daily")) {
                     mSpinnerYearly.setVisibility(GONE);
                     mSpinnerMonthly.setVisibility(GONE);
                     mSpinnerWeekely.setVisibility(GONE);
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
     }
+
     private void requestDynamicProjectList() {
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse(id);
         call.enqueue(new Callback<ProjectListResponse>() {
@@ -329,7 +342,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals("true")) {
                         setProjectFooterList(response.body().getProject_records());
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+//                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
                     AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
@@ -439,7 +452,16 @@ public class ViewTasksActivity extends AppCompatActivity {
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
                 dialog.setContentView(R.layout.remainder_list_add);
-                 //RecyclerView mRecyclerViewReminderList = (RecyclerView)dialog.findViewById(R.id.projectfooter_recyclerView);
+                final TextView mName = (TextView) dialog.findViewById(R.id.tv_userNameRaminder);
+                /*recyclerView = (RecyclerView)findViewById(R.id.recylerView_remainder);
+               // recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+                mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setHasFixedSize(true);*/
+                //recyclerView.setItemAnimator(new DefaultItemAnimator());
+                //mReminderListAdapter = new ReminderListAdapter(reminderModelArrayList, R.layout.remainder_list, getApplicationContext());
+               // recyclerView.setAdapter(mReminderListAdapter);
 
                 final Calendar remianderCalender = Calendar.getInstance();
                 final EditText ed_dateRaminder = (EditText) dialog.findViewById(R.id.ed_dateReminder);
@@ -455,7 +477,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     }
                 };
                 ed_dateRaminder.setOnClickListener(new View.OnClickListener() {
-                     @Override
+                    @Override
                     public void onClick(View v) {
                         new DatePickerDialog(ViewTasksActivity.this, date, remianderCalender
                                 .get(Calendar.YEAR), remianderCalender.get(Calendar.MONTH),
@@ -480,21 +502,29 @@ public class ViewTasksActivity extends AppCompatActivity {
                         mTimePicker.show();
                     }
                 });
-                final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
+                final TextView mAddTextView = (TextView) dialog.findViewById(R.id.tv_remainderAdd);
                 mAddTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                        String date = ed_dateRaminder.getText().toString();
+                        String time = ed_timeRemiander.getText().toString();
+                        String name = mName.getText().toString();
+                        ReminderModel model = new ReminderModel(date);
+                        reminderModelArrayList.add(model);
+                        ReminderModel model1 = new ReminderModel(time);
+                        reminderModelArrayList.add(model1);
+                        ReminderModel model2 = new ReminderModel(name);
+                        reminderModelArrayList.add(model2);
                     }
                 });
-                TextView mCancelTextView =(TextView)dialog.findViewById(R.id.tv_remainderCancel);
+                TextView mCancelTextView = (TextView) dialog.findViewById(R.id.tv_remainderCancel);
                 mCancelTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
                     }
                 });
-                ImageView mImgDropRemainder =(ImageView)dialog.findViewById(R.id.imge_reminderDropDown);
+                ImageView mImgDropRemainder = (ImageView) dialog.findViewById(R.id.imge_reminderDropDown);
                 mImgDropRemainder.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -513,7 +543,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ViewTasksActivity.this);
-                mBuilder.setTitle("ADD TO PROJECT");
+                mBuilder.setTitle("ADD TO PRIORITY");
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position, boolean isChecked) {

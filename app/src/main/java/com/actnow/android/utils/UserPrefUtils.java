@@ -27,7 +27,7 @@ public class UserPrefUtils {
     public static final String TYPE = "type";
     public static final String PROVIDERID = "provider_id";
     public static final String PROVIDERNAME = "provider_name";
-    public  final  static String ORGANIZATIONNAME ="organizationName";
+    public  final  static String ORGANIZATIONNAME ="orgn_code";
     public static final String DUE_DATE="due_date";
     public static final String CREATED_DATE="created_date";
     public static final String UPDATED_DATE="updated_date";
@@ -38,25 +38,18 @@ public class UserPrefUtils {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String id, String name, String email, String mobile, String type, String provider_id,String organizationName, String provider_name) {
+    public void createLoginSession(String id, String name, String email, String mobile, String orgn_code,String type, String provider_id, String provider_name) {
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(ID, id);
         editor.putString(NAME, name);
         editor.putString(EMAIL, email);
         editor.putString(MOBILE, mobile);
+        editor.putString(ORGANIZATIONNAME,orgn_code);
         editor.putString(TYPE, type);
         editor.putString(PROVIDERID, provider_id);
         editor.putString(PROVIDERNAME, provider_name);
-        editor.putString(ORGANIZATIONNAME,organizationName);
         editor.commit();
     }
-   /* public void upDateProfile(String id, String name, String email, String password){
-        editor.putString(NAME,name);
-        editor.putString(EMAIL, email);
-        editor.putString(PASSWORD,password);
-        editor.commit();
-    }*/
-
     public void checkLogin() {
         if (!this.isLoggedIn()) {
             Intent i = new Intent(_context, SignInActivity.class);

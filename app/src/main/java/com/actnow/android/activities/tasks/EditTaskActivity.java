@@ -298,7 +298,7 @@ public class EditTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(EditTaskActivity.this);
-                mBuilder.setTitle("ADD TO PROJECT");
+                mBuilder.setTitle("ADD TO PRIORITY");
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position, boolean isChecked) {

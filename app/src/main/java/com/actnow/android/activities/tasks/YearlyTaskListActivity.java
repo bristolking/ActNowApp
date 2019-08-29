@@ -40,7 +40,9 @@ public class YearlyTaskListActivity extends AppCompatActivity {
     UserPrefUtils session;
     Spinner mSpinnerYearlyTaskList;
     ArrayAdapter<String> arrayAdapterYearly;
-    String[] repetitive = {"Yearly", "Daily", "Weekly", "Monthly"};
+    //String[] repetitive = {"Yearly", "Daily", "Weekly", "Monthly"};
+    String[] repetitive = {"YEARLY", "DAILY", "WEEKLY", "MONTHLY"};
+
     View mProgressView, mContentLayout;
     TextView mDailyOverdue, mDailyPriority, mDailyAssigned;
 

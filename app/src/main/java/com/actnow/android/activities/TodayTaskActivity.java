@@ -44,28 +44,20 @@ import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
-import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.adapter.ThisWeekAdapter;
-import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
 import org.json.JSONArray;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,12 +80,10 @@ public class TodayTaskActivity extends AppCompatActivity {
     ImageView mImageBulbTask;
 
     private String selectedType = "";
-    private String orgn_code = null;
-
     ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
     ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
 
+    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
     ArrayList<Integer> individualCheckBox, projectListCheckBox;
     JSONArray individuvalArray;
     JSONArray projectArray;
@@ -173,7 +163,6 @@ public class TodayTaskActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
                                 Toast.makeText(getApplicationContext(), "Selected TodayTaskChart", Toast.LENGTH_SHORT).show();
-
                                 break;
                             case R.id.nav_timeLine:
                                 Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
@@ -226,12 +215,17 @@ public class TodayTaskActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-       /* if (orgn_code == null){
+        HashMap<String, String> userId = session.getUserDetails();
+        String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        System.out.println("orgn_code"+orgn_code);
+
+        if (orgn_code == null){
             Intent i = new Intent(TodayTaskActivity.this,OrngActivity.class);
             startActivity(i);
         }else {
 
-        }*/
+        }
+
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         requestDynamicContent();
@@ -270,7 +264,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         mTodayRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
         mTodayRecyclerView.setAdapter(mTaskListAdapter);
-        HashMap<String, String> userId = session.getUserDetails();
+
         String id = userId.get(UserPrefUtils.ID);
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
         call.enqueue(new Callback<TaskListResponse>() {
@@ -292,6 +286,8 @@ public class TodayTaskActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
+                Log.d("CallBack", " Throwable is " + t);
+
             }
         });
     }

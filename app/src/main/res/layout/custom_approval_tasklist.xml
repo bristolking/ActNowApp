@@ -51,6 +51,13 @@
             android:layout_weight="1"
             android:text="25/05/2019"
             android:textColor="@color/colorAccent" />
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/colorAccent" />
     </LinearLayout>
 
     <RelativeLayout
@@ -90,7 +97,7 @@
             android:textColor="@color/black" />
 
         <ImageView
-            android:id="@+id/img_commentTaskList"
+            android:id="@+id/img_approvalcommentTaskList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

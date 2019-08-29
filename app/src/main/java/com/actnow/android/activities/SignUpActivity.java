@@ -104,8 +104,8 @@ public class SignUpActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals("true")){
                         //System.out.println("data"+response.body().getSuccess());
                         SignUpResponse response2= response.body();
+                        session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name());
                         activityLogin();
-                        session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrganization_id(),response2.getProvider_id(),response2.getProvider_name(),response2.getDb_name());
                         AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
 
                     } else {
@@ -122,7 +122,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
     private void activityLogin() {
-        Intent login=new Intent(SignUpActivity.this,TodayTaskActivity.class);
+        Intent login=new Intent(SignUpActivity.this,OrngActivity.class);
         startActivity(login);
     }
     private static long back_pressed;

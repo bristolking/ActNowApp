@@ -83,7 +83,9 @@ public class TaskAddListActivity extends AppCompatActivity {
     int someIndex;
 
 
-    String[] repetitive = {"","Daily", "Weekly", "Monthly", "Yearly"};
+    //String[] repetitive = {"","Daily", "Weekly", "Monthly", "Yearly"};
+    String[] repetitive = {"","DAILY", "WEEKLY", "MONTHLY", "YEARLY"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

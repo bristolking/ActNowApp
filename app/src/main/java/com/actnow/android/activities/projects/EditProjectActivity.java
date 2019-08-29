@@ -2,56 +2,37 @@ package com.actnow.android.activities.projects;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Point;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
 import android.util.Log;
-import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-
-import com.actnow.android.activities.ColorPicker;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectEditResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 import static android.view.View.GONE;
 
@@ -63,18 +44,16 @@ public class EditProjectActivity extends AppCompatActivity {
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     final Context context = this;
-    String passed_name;
-    String passed_code;
-    String id;
     String projectOwnerName;
     String projectName;
-    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    String projectcode;
+    /*    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
     MultiSelectDialog mIndividuvalDialog;
     ArrayList<Integer> individualCheckBox;
-    JSONArray individuvalArray;
+    JSONArray individuvalArray;*/
     TextView mIndividualCheckBoxProject;
-    private int mPickedColor = Color.WHITE;
-
+    TextView mColorCodePojectEdit;
+    int DefaultColor ;
     ImageView mImgePojectEditColor;
 
     @Override
@@ -83,19 +62,19 @@ public class EditProjectActivity extends AppCompatActivity {
         session = new UserPrefUtils(getApplicationContext());
         setContentView(R.layout.activity_edit_project);
         initializeViews();
-        HashMap<String, String> userId = session.getUserDetails();
-        id = userId.get(UserPrefUtils.ID);
+     /*   HashMap<String, String> userId = session.getUserDetails();
+        id = userId.get(UserPrefUtils.ID);*/
         header();
         footer();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
             //id = (String) b.get("id");
+            projectcode =(String)b.get("projectcode");
             projectOwnerName = (String) b.get("projectOwnerName");
             mEditProjectOwnerName.setText(" " + projectOwnerName);
             projectName = (String) b.get("projectName");
             mEditProjectName.setText("" + projectName);
-            System.out.println("passsed" + projectOwnerName + id + projectName);
         }
     }
 
@@ -192,9 +171,98 @@ public class EditProjectActivity extends AppCompatActivity {
         mContentLayout = findViewById(R.id.content_layout);
         mEditProjectName = findViewById(R.id.et_newProjectEditName);
         mEditProjectOwnerName = findViewById(R.id.et_EditProjectOwnerName);
-        /* mWriteCommentEdit = findViewById(R.id.et_commentNewProjectEdit);*/
+
+        //requestDynamicContent(id);
+        mProjectColorEdit = findViewById(R.id.liner_projectEditColor);
+        mImgePojectEditColor = findViewById(R.id.image_projectColorEdit);
+        mProjectColorEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenColorPickerDialog(false);
+            }
+        });
+
+    }
+    private void OpenColorPickerDialog(boolean AlphaSupport) {
+
+        AmbilWarnaDialog ambilWarnaDialog = new AmbilWarnaDialog(EditProjectActivity.this, DefaultColor, AlphaSupport, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onOk(AmbilWarnaDialog ambilWarnaDialog, int color) {
+                DefaultColor = color;
+                mColorCodePojectEdit = (TextView)findViewById(R.id.tv_projectEditTextView);
+                mImgePojectEditColor.setBackgroundColor(color);
+            }
+            @Override
+            public void onCancel(AmbilWarnaDialog ambilWarnaDialog) {
+                Toast.makeText(EditProjectActivity.this, "Color Picker Closed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        ambilWarnaDialog.show();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void attemptUpdateTask() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        String orgn_code= userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        int color = context.getColor(R.color.colorYellow);
+        requestCrateTask(id, projectcode,projectName, String.valueOf(color),orgn_code);
+        System.out.println("daa"+ id+projectcode+projectName+color+orgn_code);
+    }
+    private void requestCrateTask(String id, String project_code,String name,String color,String orgn_code) {
+        //System.out.println("null"+ id+project_code+projectName+color+orgn_code);
+        Call<ProjectEditResponse> call = ANApplications.getANApi().checkProjectEditResponse(id,project_code,name,color,orgn_code);
+        call.enqueue(new Callback<ProjectEditResponse>() {
+            @Override
+            public void onResponse(Call<ProjectEditResponse> call, Response<ProjectEditResponse> response) {
+                System.out.println("content"+ response.raw());
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals("true")) {
+                        System.out.println("naaa"+response.body().getSuccess());
+                        Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
+                        startActivity(i);
+                    } else {
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProjectEditResponse> call, Throwable t) {
+                Log.d("CallBack", " Throwable is " + t);
+            }
+        });
+    }
+
+    private void footer() {
+        ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
+        imageGallery.setVisibility(GONE);
+        ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
+        imageAttachament.setVisibility(GONE);
+
+        ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
+        imageCamera.setVisibility(GONE);
+        ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
+        imageProfile.setVisibility(GONE);
+        TextView tv_create = (TextView) findViewById(R.id.tv_create);
+        tv_create.setText("Update");
+        tv_create.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                attemptUpdateTask();
+            }
+        });
+    }
+
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+}
 
 
+/*  mWriteCommentEdit = findViewById(R.id.et_commentNewProjectEdit);
         mProjectIndividualEdit = (View) findViewById(R.id.liner_individualEdit);
         mIndividualCheckBoxProject = (TextView) findViewById(R.id.tv_individuvalEditProject);
         mIndividuvalDialog = new MultiSelectDialog();
@@ -205,70 +273,8 @@ public class EditProjectActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
             }
-        });
-        HashMap<String, String> userId = session.getUserDetails();
-        id = userId.get(UserPrefUtils.ID);
-        requestDynamicContent(id);
-        mProjectColorEdit = findViewById(R.id.liner_projectEditColor);
-        mImgePojectEditColor = findViewById(R.id.image_projectColorEdit);
-        mProjectColorEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GridView gv = (GridView) ColorPicker.getColorPicker(EditProjectActivity.this);
-
-                // Initialize a new AlertDialog.Builder object
-                AlertDialog.Builder builder = new AlertDialog.Builder(EditProjectActivity.this);
-
-                // Set the alert dialog content to GridView (color picker)
-                builder.setView(gv);
-
-                // Initialize a new AlertDialog object
-                final AlertDialog dialog = builder.create();
-
-                // Show the color picker window
-                dialog.show();
-
-                // Set the color picker dialog size
-                dialog.getWindow().setLayout(
-                        getScreenSize().x - mProjectColorEdit.getPaddingLeft() - mProjectColorEdit.getPaddingRight(),
-                        getScreenSize().y - getStatusBarHeight() - mProjectColorEdit.getPaddingTop() - mProjectColorEdit.getPaddingBottom());
-
-                // Set an item click listener for GridView widget
-                gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        // Get the pickedColor from AdapterView
-                        mPickedColor = (int) parent.getItemAtPosition(position);
-
-                        // Set the layout background color as picked color
-                        mImgePojectEditColor.setBackgroundColor(mPickedColor);
-
-                        // close the color picker
-                        dialog.dismiss();
-                    }
-                });
-            }
-        });
-
-    }
-    private Point getScreenSize(){
-        WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        //Display dimensions in pixels
-        display.getSize(size);
-        return size;
-    }
-    public int getStatusBarHeight() {
-        int height = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            height = getResources().getDimensionPixelSize(resourceId);
-        }
-        return height;
-    }
-
-    private void requestDynamicContent(String id) {
+        });*/
+/*  *//*private void requestDynamicContent(String id) {
         Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
         call.enqueue(new Callback<CheckBoxResponse>() {
             @Override
@@ -324,65 +330,7 @@ public class EditProjectActivity extends AppCompatActivity {
                             Log.d("TAG", "Dialog cancelled");
                         }
                     });
-        }
-    }
-
-    private void attemptUpdateTask() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        requestCrateTask(id, passed_code, passed_name);
-    }
-
-    private void requestCrateTask(String id, String passed_code, String projectName) {
-        Call<ProjectEditResponse> call = ANApplications.getANApi().checkProjectEditResponse(id, passed_code, projectName);
-        call.enqueue(new Callback<ProjectEditResponse>() {
-            @Override
-            public void onResponse(Call<ProjectEditResponse> call, Response<ProjectEditResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
-                        startActivity(i);
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ProjectEditResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
-            }
-        });
-    }
-
-    private void footer() {
-        ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
-        imageGallery.setVisibility(GONE);
-        ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
-        imageAttachament.setVisibility(GONE);
-
-        ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
-        imageCamera.setVisibility(GONE);
-        ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
-        imageProfile.setVisibility(GONE);
-        TextView tv_create = (TextView) findViewById(R.id.tv_create);
-        tv_create.setText("Update");
-        tv_create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
-                startActivity(i);
-                finish();
-                attemptUpdateTask();
-            }
-        });
-    }
-
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-}
+        }*//*
+    }*/
 
 

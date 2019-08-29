@@ -1,11 +1,8 @@
 package com.actnow.android.activities;
 
-import android.Manifest;
-import android.app.Dialog;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -13,38 +10,49 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
+import com.actnow.android.adapter.FileAdapter;
+import com.actnow.android.adapter.ProjectCommentListAdapter;
+import com.actnow.android.sdk.responses.ProjectCommentListResponse;
+import com.actnow.android.sdk.responses.ProjectCommentRecordsList;
+import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.UserPrefUtils;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.UUID;
 
-import static android.view.Gravity.TOP;
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static android.view.View.GONE;
 
 
@@ -52,8 +60,15 @@ public class CommentsActivity extends AppCompatActivity {
     final Context context = this;
     View mProgressView, mContentLayout;
     UserPrefUtils session;
+    RecyclerView mCommentRecylcerView;
+    RecyclerView.LayoutManager mLayoutManager;
+    ProjectCommentListAdapter mProjectCommentListAdapter;
+    private FileAdapter fileAdapter;
+    ArrayList<String> fileArray;
+    //private ArrayList<CommentModel> commentModelArrayList = new ArrayList<CommentModel>();
 
-    String messageText;
+    ArrayList<ProjectCommentRecordsList> projectCommentRecordsListArrayList = new ArrayList<>();
+    //ArrayList<String> fiveImgUris = new ArrayList<String>();
 
 
     private final int requestCode = 20;
@@ -63,26 +78,38 @@ public class CommentsActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private Uri filePath;
 
-    ArrayAdapter<String> adapter;
-    ArrayList<String> itemList;
     EditText mEditAddComment;
     ImageView mImgAttachament;
-    ListView mListView;
     ImageView imageGallery;
     int clickCounter = 0;
+
+    String project_code;
+    String projectId;
+
+    MultipartBody.Part[] surveyImagesParts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         session = new UserPrefUtils(getApplicationContext());
         setContentView(R.layout.activity_comments);
+        Intent iin = getIntent();
+        Bundle b = iin.getExtras();
+        if (b != null) {
+            project_code = (String) b.get("projectcode");
+            projectId = (String) b.get("projectid");
+            System.out.println("values" + projectId + project_code);
+
+        }
         appHeaderTwo();
         initializeViews();
         footer();
 
+
     }
 
     private void appHeaderTwo() {
-        ImageView imgeBack = ( ImageView) findViewById(R.id.image_back_two);
+        ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
         imgeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,85 +220,111 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        requestStoragePermission();
-        String[] items = {""};
-        itemList =new ArrayList<String>(Arrays.asList("GOOD"));
-        adapter = new ArrayAdapter<String>(this, R.layout.custom_comment_list,R.id.tv_commentText,itemList);
+        mProgressView = findViewById(R.id.progress_bar);
+        mContentLayout = findViewById(R.id.content_layout);
         mEditAddComment = (EditText) findViewById(R.id.et_commentEdit);
-        ImageView imgMenu = (ImageView)findViewById(R.id.img_menuComment);
-        mListView = (ListView) findViewById(R.id.listView);
-        mListView.setAdapter(adapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mCommentRecylcerView = (RecyclerView) findViewById(R.id.rv_recyclerViewComment);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mCommentRecylcerView.setLayoutManager(mLayoutManager);
+        mCommentRecylcerView.setItemAnimator(new DefaultItemAnimator());
+        mProjectCommentListAdapter = new ProjectCommentListAdapter(projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext());
+        mCommentRecylcerView.setAdapter(mProjectCommentListAdapter);
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        System.out.println("data"+ id+project_code+ orgn_code);
+        Call<ResponseBody> call2 = ANApplications.getANApi().checkProjectCommentList(id,project_code,orgn_code);
+        call2.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(true);
-                dialog.setContentView(R.layout.comment_edit_delete);
-                int location[]=new int[2];
-                mListView.getLocationOnScreen(location);
-                Window window = dialog.getWindow();
-                TextView tv_Edit =(TextView)dialog.findViewById(R.id.tv_editComment);
-                TextView tv_Delete =(TextView)dialog.findViewById(R.id.tv_deleteComment);
-                tv_Edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("sucess"+response.raw());
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")) {
+                                JSONArray comment = jsonObject.getJSONArray( "comment_records");
+                                setLoad(comment);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
-                tv_Delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                WindowManager.LayoutParams wlp = dialog.getWindow().getAttributes();
-                wlp.gravity = Gravity.RIGHT|TOP;
-                wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-                wlp.x = 1; // The new position of the X coordinates
-                wlp.y = 1; // The new position of the Y coordinates
-                wlp.width = 300;// Width
-                wlp.height= 300;
-                window.setAttributes(wlp);
-                dialog.show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("CallBack", " Throwable is " + t);
+
             }
         });
 
-       /* itemList =new ArrayList<String>(Arrays.asList(""));
-        mEditAddComment = (EditText) findViewById(R.id.et_commentEdit);
 
-        adapter=new CustomListAdapter(this, itemList, imgid);
-        list=(ListView)findViewById(R.id.listView);
-        list.setAdapter(adapter);
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-
-                //String Slecteditem= itemname[+position];
-                Toast.makeText(getApplicationContext(), Slecteditem, Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
     }
+
+    private void setLoad(JSONArray details) {
+
+        for (int i=0; details.length()>i;i++){
+            ProjectCommentRecordsList projectCommentRecordsList = new ProjectCommentRecordsList();
+
+            try {
+                JSONObject values = details.getJSONObject( i );
+                String comment= values.getString( "comment" );
+                /*String files = values.getString("files");
+                JSONArray jsonArray = new JSONArray(files);
+                fileArray = new ArrayList<String>();
+                for (int j = 0; j < jsonArray.length(); j++) {
+                    fileArray.add(jsonArray.getString(j));
+                }*/
+                populateImagesFromGallery(fileArray);
+                projectCommentRecordsList.setComment( comment );
+                //projectCommentRecordsList.setFiles( files );
+                System.out.println( "www"+ comment );
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            projectCommentRecordsListArrayList.add(projectCommentRecordsList);
+
+        }
+        mCommentRecylcerView.setAdapter(new ProjectCommentListAdapter(projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext()));
+
+    }
+
+
+
+    private void populateImagesFromGallery(ArrayList<String> imageUrls) {
+        initializeRecyclerView(imageUrls);
+    }
+
+    private void initializeRecyclerView(ArrayList<String> imageUrls) {
+        fileAdapter = new FileAdapter(this, imageUrls);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
+        mCommentRecylcerView = findViewById(R.id.rv_recyclerViewComment);
+        mCommentRecylcerView.setLayoutManager(layoutManager);
+        mCommentRecylcerView.setItemAnimator(new DefaultItemAnimator());
+        mCommentRecylcerView.setAdapter(fileAdapter);
+    }
+
 
     private void footer() {
         imageGallery = (ImageView) findViewById(R.id.image_gallery);
         imageGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+                //showFileChooser();
             }
         });
         ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
         imageAttachament.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFileChooser();
+                //showFileChooser();
 
             }
         });
@@ -289,118 +342,42 @@ public class CommentsActivity extends AppCompatActivity {
         TextView tv_create = (TextView) findViewById(R.id.tv_create);
         tv_create.setText("Add Comment");
         tv_create.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onClick(View v) {
-                submit();
+                addTheComment();
+                // Toast.makeText(getApplicationContext(), "selte", Toast.LENGTH_LONG).show();
+
             }
         });
 
     }
 
-    private void submit() {
-        String newItem = mEditAddComment.getText().toString();
-        mEditAddComment.setText(" ");
-        itemList.add(newItem);
-        mImgAttachament=(ImageView)findViewById(R.id.img_userprofileComment);
-        //int newImage = imageGallery.getImageAlpha();
-        //itemList.add(String.valueOf(newImage));
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private void addTheComment() {
+        mEditAddComment.setError(null);
+        String comment = mEditAddComment.getText().toString();
+        //String file = mImgAttachament.getDisplay().toString();
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty(comment)) {
+            mEditAddComment.setError(getString(R.string.error_required));
+            focusView = mEditAddComment;
+            cancel = true;
+        }
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
 
-        adapter.notifyDataSetChanged();
-    }
+            HashMap<String, String> userId = session.getUserDetails();
+            String id = userId.get(UserPrefUtils.ID);
+            String orng_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
 
-
-    public void uploadMultipart() {
-        //getting name for the image
-        // String name = editText.getText().toString().trim();
-
-        //getting the actual path of the image
-        String path = getPath(filePath);
-
-        //Uploading code
-        try {
-            String uploadId = UUID.randomUUID().toString();
-
-          /*  //Creating a multi part request
-            new MultipartUploadRequest(this, uploadId, SyncStateContract.Constants.UPLOAD_URL)
-                    .addFileToUpload(path, "image") //Adding file
-                    .addParameter("name", name) //Adding text parameter to the request
-                    .setNotificationConfig(new UploadNotificationConfig())
-                    .setMaxRetries(2)
-                    .startUpload(); //Starting the upload*/
-
-        } catch (Exception exc) {
-            Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-               // mImgAttachament=(ImageView)findViewById(R.id.img_userprofileComment);
-                imageGallery.setImageBitmap(bitmap);
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //method to get the file path from uri
-    public String getPath(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
-        cursor.close();
-
-        cursor = getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        cursor.close();
-
-        return path;
-    }
-
-
-    //Requesting permission
-    private void requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-            return;
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-        }
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if (requestCode == STORAGE_PERMISSION_CODE) {
-
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission granted now you can read the storage", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 
     public void onBackPressed() {
         super.onBackPressed();

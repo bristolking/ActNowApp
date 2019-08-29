@@ -39,7 +39,9 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
     UserPrefUtils session;
     Spinner mSpinnerMonthlyTaskList;
     ArrayAdapter<String> arrayAdapterWeekly;
-    String[] repetitive = {"Monthly", "Yearly", "Daily", "Weekly",};
+   // String[] repetitive = {"Monthly", "Yearly", "Daily", "Weekly",};
+    String[] repetitive = {"MONTHLY", "YEARLY", "DAILY", "WEEKLY",};
+
     View mProgressView, mContentLayout;
     TextView mDailyOverdue, mDailyPriority, mDailyAssigned;
 
@@ -177,9 +179,6 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        /* mDailyOverdue = (TextView)findViewById(R.id.tv_taskListDailyOverdue);
-        mDailyPriority =(TextView)findViewById(R.id.tv_taskListDailyPriority);
-        mDailyAssigned =(TextView)findViewById(R.id.tv_taskListDailyAssigned);*/
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         View view = (View) findViewById(R.id.liner_taskMonthlyList);

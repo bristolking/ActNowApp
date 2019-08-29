@@ -29,7 +29,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.8"
                 android:background="@drawable/square"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="2dp">
 
                 <EditText
                     android:id="@+id/ed_dateReminder"
@@ -67,4 +68,26 @@
                 android:src="@drawable/spinnerdownarrow" />
         </LinearLayout>
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_remainderAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="120dp"
+            android:text="Add"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent" />
+        <TextView
+            android:id="@+id/tv_remainderCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingRight="30dp"
+            android:text="Cancel"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent" />
+    </RelativeLayout>
 </LinearLayout>

@@ -5,10 +5,8 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,14 +21,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -40,9 +35,7 @@ import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
-import com.actnow.android.activities.tasks.DailyTaskListActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
-import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.databse.TaskDatabaseHelper;
@@ -185,12 +178,14 @@ public class OverdueFragment extends Fragment {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
-                    AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
+                 //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
+                Log.d("CallBack", " Throwable is " + t);
+
             }
         });
     }
@@ -328,7 +323,7 @@ public class OverdueFragment extends Fragment {
                                 }
                             });
                             final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
-                            mAddTextView.setOnClickListener(new View.OnClickListener() {
+                            mAddTextView.setOnClickListener( new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Toast.makeText(getActivity(), "Work in Progress!", Toast.LENGTH_SHORT).show();

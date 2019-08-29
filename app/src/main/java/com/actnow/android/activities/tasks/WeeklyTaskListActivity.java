@@ -39,7 +39,9 @@ public class WeeklyTaskListActivity extends AppCompatActivity {
     UserPrefUtils session;
     Spinner mSpinnerWeeklyTaskList;
     ArrayAdapter<String> arrayAdapterWeekly;
-    String[] repetitive = {  "Weekly", "Monthly", "Yearly","Daily"};
+    //String[] repetitive = {  "Weekly", "Monthly", "Yearly","Daily"};
+    String[] repetitive = { "WEEKELY", "MONTHLY", "YEARLY","DAILY"};
+
     View mProgressView, mContentLayout;
     TextView mDailyOverdue,mDailyPriority,mDailyAssigned;
 

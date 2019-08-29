@@ -51,8 +51,10 @@ import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +78,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
     ImageView mImgBulbProject;
     Button mButtonProjectAdvanced;
     String id;
-    String name;
+
     int textlength = 0;
     private String selectedType = "";
 
@@ -268,7 +270,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
             public void onResponse(Call<ProjectListResponse> call, Response<ProjectListResponse> response) {
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    System.out.println("name" + response.raw());
+                   // System.out.println("name" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setProjectFooterList(response.body().getProject_records());
                     } else {
@@ -293,6 +295,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
                 projectListResponseRecords1.setName(projectListResponseRecords.getName());
                 projectListResponseRecords1.setDue_date(projectListResponseRecords.getDue_date());
+                projectListResponseRecords1.setProject_code((projectListResponseRecords.getProject_code()));
+                projectListResponseRecords1.setProject_id(projectListResponseRecords.getProject_id());
                 projectListResponseRecordsArrayList.add(projectListResponseRecords1);
             }
             mRecyclerViewProjectFooter.setAdapter(new ProjectFooterAdapter(projectListResponseRecordsArrayList, R.layout.custom_project_footer, getApplicationContext()));
@@ -303,12 +307,15 @@ public class ProjectFooterActivity extends AppCompatActivity {
                     View view1 = (View) findViewById(R.id.liner_projectList);
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById(R.id.radioGroupProject);
                     final RadioButton mRadioButtonProjectName = (RadioButton) view.findViewById(R.id.projectNameFooter);
+                    final TextView mProjectCode= (TextView)view.findViewById(R.id.tv_projectCode);
+                    final TextView mProjectId =(TextView)view.findViewById(R.id.tv_projectId);
                     mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.projectNameFooter) {
                                 if (checkedId == R.id.projectNameFooter) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
+                                    String projectcode = mProjectCode.getText().toString();
                                     HashMap<String, String> userId = session.getUserDetails();
                                     String id = userId.get(UserPrefUtils.ID);
                                     String projectOwnerName = userId.get(UserPrefUtils.NAME);
@@ -317,6 +324,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     i.putExtra("projectName", s);
                                     i.putExtra("id", id);
                                     i.putExtra("projectOwnerName", projectOwnerName);
+                                    i.putExtra("projectcode",projectcode);
                                     startActivity(i);
 
                                 } else if (checkedId == 0) {
@@ -330,8 +338,13 @@ public class ProjectFooterActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             String s = mRadioButtonProjectName.getText().toString();
+                            String project_code = mProjectCode.getText().toString();
+                            String projectId = mProjectId.getText().toString();
                             Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
                             i.putExtra("projectName", s);
+                            i.putExtra("projectcode",project_code);
+                            i.putExtra("projectid",projectId);
+                            System.out.println("comment"+id+s+projectId+project_code);
                             startActivity(i);
                         }
                     });
@@ -340,8 +353,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
-
-                            //Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_LONG).show();
 
                         }
                     });
@@ -353,10 +364,13 @@ public class ProjectFooterActivity extends AppCompatActivity {
                             String id = userId.get(UserPrefUtils.ID);
                             String projectOwnerName = userId.get(UserPrefUtils.NAME);
                             String s = mRadioButtonProjectName.getText().toString();
+                            String projectcode = mProjectCode.getText().toString();
                             Intent i = new Intent(getApplicationContext(), EditProjectActivity.class);
                             i.putExtra("projectName", s);
                             i.putExtra("id", id);
                             i.putExtra("projectOwnerName", projectOwnerName);
+                            i.putExtra("projectcode",projectcode);
+                            System.out.println("i"+s+id+projectOwnerName+projectcode);
                             startActivity(i);
                         }
                     });

@@ -32,6 +32,7 @@
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
             android:paddingLeft="10dp"
+            android:textAllCaps="true"
             android:textColor="@color/colorPrimaryDark"
             android:text="Link 1"/>
         <TextView
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
+            android:textAllCaps="true"
             android:textColor="@color/colorPrimaryDark"
             android:text="Link 2"/>
     </LinearLayout>

@@ -77,7 +77,7 @@
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
-            <LinearLayout
+          <!--  <LinearLayout
                 android:id="@+id/liner_individualEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,12 +101,11 @@
                     android:text="Individual"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/textColor" />
-            </LinearLayout>
+            </LinearLayout>-->
             <LinearLayout
                 android:id="@+id/liner_projectEditColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -116,6 +115,7 @@
                     app:srcCompat="@drawable/ic_plus" />
 
                 <TextView
+                    android:id="@+id/tv_projectEditTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"

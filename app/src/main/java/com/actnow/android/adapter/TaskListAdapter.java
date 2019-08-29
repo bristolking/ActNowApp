@@ -1,13 +1,11 @@
 package com.actnow.android.adapter;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -57,17 +55,5 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             mTaskPriorty = itemView.findViewById(R.id.tv_taskListPriority);
         }
     }
-    public void removeItem(int position) {
-        taskListRecordsList.remove(position);
-        // notify the item removed by position
-        // to perform recycler view delete animations
-        // NOTE: don't call notifyDataSetChanged()
-        notifyItemRemoved(position);
-    }
 
-    public void restoreItem( TaskListRecords taskListRecords, int position) {
-        taskListRecordsList.add(position, taskListRecords);
-        // notify item added by position
-        notifyItemInserted(position);
-    }
 }

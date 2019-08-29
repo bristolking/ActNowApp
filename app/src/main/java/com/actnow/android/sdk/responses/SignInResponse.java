@@ -9,7 +9,7 @@ public class SignInResponse {
     private String mobile_number;
     private String provider_id;
     private String provider_name;
-    private String organization_id;
+    private String orgn_code;
     private String db_name;
     private String user_type;
 
@@ -77,12 +77,12 @@ public class SignInResponse {
         this.provider_name = provider_name;
     }
 
-    public String getOrganization_id() {
-        return organization_id;
+    public String getOrgn_code() {
+        return orgn_code;
     }
 
-    public void setOrganization_id(String organization_id) {
-        this.organization_id = organization_id;
+    public void setOrgn_code(String orgn_code) {
+        this.orgn_code = orgn_code;
     }
 
     public String getDb_name() {
@@ -112,7 +112,7 @@ public class SignInResponse {
                 ", mobile_number='" + mobile_number + '\'' +
                 ", provider_id='" + provider_id + '\'' +
                 ", provider_name='" + provider_name + '\'' +
-                ", organization_id='" + organization_id + '\'' +
+                ", orgn_code='" + orgn_code + '\'' +
                 ", db_name='" + db_name + '\'' +
                 ", user_type='" + user_type + '\'' +
                 '}';

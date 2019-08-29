@@ -24,33 +24,39 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
     }
 
     public ProjectFooterAdapter(ProjectFooterActivity projectFooterActivity, ArrayList<ProjectListResponseRecords> projectListResponseRecordsList) {
-        this.projectListResponseRecordsList= projectListResponseRecordsList;
+        this.projectListResponseRecordsList = projectListResponseRecordsList;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View  view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.custom_project_footer,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.custom_project_footer, viewGroup, false);
         return new MyViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        ProjectListResponseRecords projectListResponseRecords= projectListResponseRecordsList.get(i);
+        ProjectListResponseRecords projectListResponseRecords = projectListResponseRecordsList.get(i);
         myViewHolder.mProjectNameFooter.setText(projectListResponseRecords.getName());
-       // myViewHolder.mProjectDate.setText(projectListResponseRecords.getDue_date());
+        myViewHolder.mProjectCode.setText(projectListResponseRecords.getProject_code());
+        myViewHolder.mProjectId.setText(projectListResponseRecords.getProject_id());
     }
 
     @Override
     public int getItemCount() {
         return projectListResponseRecordsList.size();
     }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         RadioButton mProjectNameFooter;
-        TextView mProjectDate;
+        TextView mProjectCode;
+        TextView mProjectId;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            mProjectNameFooter = (RadioButton)itemView.findViewById(R.id.projectNameFooter);
-           // mProjectDate =(TextView)itemView.findViewById(R.id.tv_projectDateFooter);
+            mProjectNameFooter = (RadioButton) itemView.findViewById(R.id.projectNameFooter);
+            mProjectCode = (TextView) itemView.findViewById(R.id.tv_projectCode);
+            mProjectId =(TextView)itemView.findViewById(R.id.tv_projectId);
         }
     }
 }

@@ -88,28 +88,35 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="center"
-                        android:layout_weight="0.4">
+                        android:layout_weight="0.4"
+                        android:paddingLeft="15dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Overdue"
-                            android:padding="8dp"
+                            android:textAllCaps="true"
+                            android:layout_margin="4dp"
+                            android:padding="4dp"
                             android:textColor="@color/black"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Priority"
+                            android:textAllCaps="true"
+                            android:layout_margin="4dp"
+                            android:padding="4dp"
                             android:textColor="@color/black"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:padding="8dp"/>
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Assigned"
+                            android:layout_margin="4dp"
+                            android:padding="4dp"
+                            android:textAllCaps="true"
                             android:textColor="@color/black"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:padding="8dp"/>
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
                     </LinearLayout>
                 <Spinner
                     android:id="@+id/spinnerDailyTaskList"
@@ -124,291 +131,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/colorAccent" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Daily"
-                        android:textColor="@color/black"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5">
-
-                            <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:buttonTint="@color/textColor"
-                                android:text="Task1"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/textColor" />
-                        </RadioGroup>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_weight="1.5"
-                            android:text="20/06/2019"
-                            android:textColor="@color/colorAccent" />
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Project :"
-                            android:textColor="@color/colorAccent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingLeft="60dp"
-                            android:text="CancriTech"
-                            android:textColor="@color/black" />
-                    </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/linebackground" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5">
-
-                            <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:buttonTint="@color/textColor"
-                                android:text="Task2"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/textColor" />
-                        </RadioGroup>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_weight="1.5"
-                            android:text="25/06/2019"
-                            android:textColor="@color/colorAccent" />
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Project :"
-                            android:textColor="@color/colorAccent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingLeft="60dp"
-                            android:text="CancriTech"
-                            android:textColor="@color/black" />
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/linebackground" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5">
-
-                            <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:buttonTint="@color/textColor"
-                                android:text="Task3"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/textColor" />
-                        </RadioGroup>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_weight="1.5"
-                            android:text="30/06/2019"
-                            android:textColor="@color/colorAccent" />
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Project :"
-                            android:textColor="@color/colorAccent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingLeft="60dp"
-                            android:text="CancriTech"
-                            android:textColor="@color/black" />
-                    </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/linebackground" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5">
-
-                            <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:buttonTint="@color/textColor"
-                                android:text="Task4"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/textColor" />
-                        </RadioGroup>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_weight="1.5"
-                            android:text="31/06/2019"
-                            android:textColor="@color/colorAccent" />
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Project :"
-                            android:textColor="@color/colorAccent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingLeft="60dp"
-                            android:text="CancriTech"
-                            android:textColor="@color/colorAccent" />
-                    </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/linebackground" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5">
-
-                            <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:buttonTint="@color/textColor"
-                                android:text="Task5"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/textColor" />
-                        </RadioGroup>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_weight="1.5"
-                            android:text="01/07/2019"
-                            android:textColor="@color/colorAccent" />
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Project :"
-                            android:textColor="@color/colorAccent" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingLeft="60dp"
-                            android:text="CancriTech"
-                            android:textColor="@color/black" />
-                    </RelativeLayout>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/linebackground" />
-                </LinearLayout>
-                <!-- <include layout="@layout/taskcustomoverdue" />-->
-
-                <!-- <View
-                     android:layout_width="match_parent"
-                     android:layout_height="2dp"
-                     android:background="@color/colorAccent" />
                  <LinearLayout
                      android:layout_width="match_parent"
                      android:layout_height="match_parent"
@@ -422,10 +144,10 @@
                          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                          android:textColor="@color/colorPrimary" />
                      <android.support.v7.widget.RecyclerView
-                         android:id="@+id/task_recyclerView"
+                         android:id="@+id/dailytask_recyclerView"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content" />
-                 </LinearLayout>-->
+                 </LinearLayout>
             </LinearLayout>
 
             <include layout="@layout/app_header_two" />
@@ -433,6 +155,16 @@
             <include layout="@layout/app_footer" />
 
         </RelativeLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_dailyTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="65dp"
+            app:srcCompat="@drawable/ic_add_circular" />
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

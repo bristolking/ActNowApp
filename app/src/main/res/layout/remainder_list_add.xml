@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/color">
-
+    android:layout_height="match_parent"
+    android:background="@color/color"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,214 +15,17 @@
             android:text="Reminders"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorAccent" />
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/linebackground" />
     </LinearLayout>
+   <view class="android.support.v7.app.AlertController$RecycleListView"
+       android:layout_width="match_parent"
+       android:layout_height="400dp"
+       android:id="@+id/recylerView_remainder">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                app:srcCompat="@drawable/ic_alarm_clock" />
-
-            <TextView
-                android:id="@+id/tv_dateRemainder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="-0.1"
-                android:text="2019-06-19"
-                android:textColor="@color/colorAccent" />
-
-            <TextView
-                android:id="@+id/tv_timeRemainder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:text="00:00:00"
-                android:textColor="@color/colorAccent" />
-
-            <ImageView
-                android:id="@+id/remanider_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                app:srcCompat="@drawable/ic_delete" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_userNameRaminder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:text="Admin"
-            android:textColor="@color/black"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/linebackground" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                app:srcCompat="@drawable/ic_alarm_clock" />
-
-            <TextView
-                android:id="@+id/tv_dateRemainder1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="-0.1"
-                android:text="2019-06-19"
-                android:textColor="@color/colorAccent" />
-
-            <TextView
-                android:id="@+id/tv_timeRemainder1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:text="00:00:00"
-                android:textColor="@color/colorAccent" />
-
-            <ImageView
-                android:id="@+id/remanider_delete1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                app:srcCompat="@drawable/ic_delete" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_userNameRaminder1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:text="Admin"
-            android:textColor="@color/black"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/linebackground" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                app:srcCompat="@drawable/ic_alarm_clock" />
-
-            <TextView
-                android:id="@+id/tv_dateRemainder2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="-0.1"
-                android:text="2019-06-19"
-                android:textColor="@color/colorAccent" />
-
-            <TextView
-                android:id="@+id/tv_timeRemainder2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:text="00:00:00"
-                android:textColor="@color/colorAccent" />
-
-            <ImageView
-                android:id="@+id/remanider_delete2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                app:srcCompat="@drawable/ic_delete" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_userNameRaminder2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:text="Admin"
-            android:textColor="@color/black"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/linebackground" />
-
+   </view>
     <include layout="@layout/custom_date_time_picker" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/tv_remainderAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="120dp"
-            android:text="Add"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorAccent" />
-
-        <TextView
-            android:id="@+id/tv_remainderCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="30dp"
-            android:text="Cancel"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorAccent" />
-    </RelativeLayout>
 </LinearLayout>

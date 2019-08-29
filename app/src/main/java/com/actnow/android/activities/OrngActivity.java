@@ -1,6 +1,7 @@
 package com.actnow.android.activities;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,9 +12,8 @@ import android.widget.EditText;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.CheckOtpResponse;
 import com.actnow.android.sdk.responses.SendOtpResponse;
-import com.actnow.android.sdk.responses.SignInResponse;
+import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
 import java.util.HashMap;
@@ -27,6 +27,7 @@ public class OrngActivity extends AppCompatActivity {
     View mProgressView, mContentLayout;
     EditText mOrngCode;
     Button mOrngCodeSubmit;
+    String ornCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class OrngActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        mProgressView = findViewById(R.id.progress_bar);
+        mContentLayout = findViewById(R.id.content_layout);
         mOrngCode = findViewById(R.id.et_orngCodeEdit);
         mOrngCodeSubmit = findViewById(R.id.bt_orngCode);
         mOrngCodeSubmit.setOnClickListener(new View.OnClickListener() {
@@ -49,7 +52,7 @@ public class OrngActivity extends AppCompatActivity {
 
     private void attemptCreateOrngCode() {
         mOrngCode.setError(null);
-        String ornCode = mOrngCode.getText().toString();
+        ornCode = mOrngCode.getText().toString();
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty(ornCode)) {
@@ -67,7 +70,7 @@ public class OrngActivity extends AppCompatActivity {
         }
     }
 
-    private void requestCreateOrnCode(String id, String name) {
+    private void requestCreateOrnCode(String id, final String name) {
         System.out.println("data"+ id+name);
         Call<SendOtpResponse> call = ANApplications.getANApi().checkOrgCode(id, name);
         call.enqueue(new Callback<SendOtpResponse>() {
@@ -77,10 +80,25 @@ public class OrngActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     System.out.println("res"+ response.raw());
                     if (response.body().getSuccess().equals("true")){
-                        System.out.println("ok"+ response.message());
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get(UserPrefUtils.ID);
+                        String name2 = userId.get(UserPrefUtils.NAME);
+                        String email= userId.get(UserPrefUtils.EMAIL);
+                        String mobile = userId.get(UserPrefUtils.MOBILE);
+                        String type = userId.get(UserPrefUtils.TYPE);
+                        String provider_id= userId.get(UserPrefUtils.PROVIDERNAME);
+                        String provider_name = userId.get(UserPrefUtils.PROVIDERID);
+                        session.createLoginSession(id,name2,email,mobile,name,type,provider_id,provider_name);
+                        System.out.println("ok"+ name2+email+mobile+type+provider_id+ornCode+provider_name);
+
                         Intent i = new Intent(OrngActivity.this,TodayTaskActivity.class);
                         startActivity(i);
+                        finish();
+                    }else {
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
+                }else {
+                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                 }
             }
             @Override

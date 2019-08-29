@@ -112,7 +112,8 @@ public class SignInActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
                         SignInResponse response1 = response.body();
-                        session.createLoginSession(response1.getId(),response1.getName(),response1.getEmail(),response1.getMobile_number(),response1.getOrganization_id(),response1.getUser_type(),response1.getProvider_id(),response1.getProvider_name());
+                        session.createLoginSession(response1.getId(),response1.getName(),response1.getEmail(),response1.getMobile_number(),response1.getOrgn_code(),response1.getUser_type(),response1.getProvider_id(),response1.getProvider_name());
+                        System.out.println("response1"+getTaskId());
                         //AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
                        activityMe();
                     } else {
