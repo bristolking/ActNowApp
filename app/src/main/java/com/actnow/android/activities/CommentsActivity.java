@@ -243,7 +243,16 @@ public class CommentsActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response.body().string());
                             if (jsonObject.getString("success").equals("true")) {
-                                JSONArray comment = jsonObject.getJSONArray( "comment_records");
+                                System.out.println( "nul"+ response.body().toString());
+                               JSONArray comment = jsonObject.getJSONArray( "comment_records");
+/*
+                                String files = details.getString("images");
+                                JSONArray jsonArray = new JSONArray(files);
+                                fileArray = new ArrayList<String>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    fileArray.add(jsonArray.getString(i));
+                                }
+                                populateImagesFromGallery(fileArray);*/
                                 setLoad(comment);
                             }
                         } catch (JSONException e) {
@@ -274,28 +283,17 @@ public class CommentsActivity extends AppCompatActivity {
             try {
                 JSONObject values = details.getJSONObject( i );
                 String comment= values.getString( "comment" );
-                /*String files = values.getString("files");
-                JSONArray jsonArray = new JSONArray(files);
-                fileArray = new ArrayList<String>();
-                for (int j = 0; j < jsonArray.length(); j++) {
-                    fileArray.add(jsonArray.getString(j));
-                }*/
-                populateImagesFromGallery(fileArray);
-                projectCommentRecordsList.setComment( comment );
-                //projectCommentRecordsList.setFiles( files );
-                System.out.println( "www"+ comment );
+                 projectCommentRecordsList.setComment( comment );
+                 System.out.println( "www"+ comment );
 
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             projectCommentRecordsListArrayList.add(projectCommentRecordsList);
-
         }
         mCommentRecylcerView.setAdapter(new ProjectCommentListAdapter(projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext()));
-
     }
-
 
 
     private void populateImagesFromGallery(ArrayList<String> imageUrls) {
