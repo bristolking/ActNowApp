@@ -283,7 +283,14 @@ public class CommentsActivity extends AppCompatActivity {
             try {
                 JSONObject values = details.getJSONObject( i );
                 String comment= values.getString( "comment" );
-                 projectCommentRecordsList.setComment( comment );
+                 /*String files = values.getString("files");
+                JSONArray jsonArray = new JSONArray(files);
+                fileArray = new ArrayList<String>();
+                for (int j = 0; j < jsonArray.length(); j++) {
+                    fileArray.add(jsonArray.getString(j));
+                }*/
+
+                projectCommentRecordsList.setComment( comment );
                  System.out.println( "www"+ comment );
 
 
