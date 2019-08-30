@@ -19,7 +19,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-public class ProjectCommentListAdapter  extends RecyclerView.Adapter<ProjectCommentListAdapter.ViewHolder> {
+public class ProjectCommentListAdapter extends RecyclerView.Adapter<ProjectCommentListAdapter.ViewHolder> {
     private ArrayList<ProjectCommentRecordsList> mProjectCommentRecordsList;
 
     public ProjectCommentListAdapter(ArrayList<ProjectCommentRecordsList> projectCommentRecordsListArrayList, int custom_project_footer, Context applicationContext) {
@@ -29,14 +29,17 @@ public class ProjectCommentListAdapter  extends RecyclerView.Adapter<ProjectComm
     @NonNull
     @Override
     public ProjectCommentListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_custom_list,viewGroup,false);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from( viewGroup.getContext() ).inflate( R.layout.comment_custom_list, viewGroup, false );
+        return new ViewHolder( view );
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProjectCommentListAdapter.ViewHolder viewHolder, int i) {
-        ProjectCommentRecordsList projectCommentRecordsList = mProjectCommentRecordsList.get(i);
-        viewHolder.mProjectComment.setText(projectCommentRecordsList.getComment());
+        ProjectCommentRecordsList projectCommentRecordsList = mProjectCommentRecordsList.get( i );
+        viewHolder.mProjectComment.setText( projectCommentRecordsList.getComment() );
+        viewHolder.mCommentDate.setText( projectCommentRecordsList.getCreated_date());
+        viewHolder.mCommentUserName.setText( projectCommentRecordsList.getUser_name());
+
 
        /* String imgUrl = projectCommentRecordsList.getFiles();
         //   System.out.println("image" + imgUrl);
@@ -48,9 +51,9 @@ public class ProjectCommentListAdapter  extends RecyclerView.Adapter<ProjectComm
         //System.out.println("cooomment"+ projectCommentRecordsList.getComment());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            viewHolder.mProjectComment.setText( Html.fromHtml(projectCommentRecordsList.getComment(), Html.FROM_HTML_MODE_COMPACT));
+            viewHolder.mProjectComment.setText( Html.fromHtml( projectCommentRecordsList.getComment(), Html.FROM_HTML_MODE_COMPACT ) );
         } else {
-            viewHolder.mProjectComment.setText(Html.fromHtml(projectCommentRecordsList.getComment()));
+            viewHolder.mProjectComment.setText( Html.fromHtml( projectCommentRecordsList.getComment() ) );
         }
     }
 
@@ -60,13 +63,16 @@ public class ProjectCommentListAdapter  extends RecyclerView.Adapter<ProjectComm
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mProjectComment;
+        TextView mProjectComment, mCommentDate, mCommentUserName;
         TextView mProjectCode;
         ImageView imgComment;
+
         public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mProjectComment = (TextView)itemView.findViewById(R.id.tv_commentText);
-            imgComment =(ImageView) itemView.findViewById(R.id.img_attachamentComment);
+            super( itemView );
+            mProjectComment = (TextView) itemView.findViewById( R.id.tv_commentText );
+            imgComment = (ImageView) itemView.findViewById( R.id.img_attachamentComment );
+            mCommentUserName = (TextView) itemView.findViewById( R.id.tv_userNameComment );
+            mCommentDate = (TextView) itemView.findViewById( R.id.tv_commentDate );
 
         }
     }

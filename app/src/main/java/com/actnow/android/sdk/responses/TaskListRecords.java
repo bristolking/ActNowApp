@@ -2,8 +2,8 @@ package com.actnow.android.sdk.responses;
 
  public class TaskListRecords {
      private String task_id;
-     private String name;
      private String task_code;
+     private String name;
      private String project_code;
      private String priority;
      private String due_date;
@@ -14,7 +14,6 @@ package com.actnow.android.sdk.responses;
      private String created_date;
      private String updated_by;
      private String updated_date;
-     private String orgn_code;
      private String remindars_count;
 
      public String getTask_id() {
@@ -25,20 +24,20 @@ package com.actnow.android.sdk.responses;
          this.task_id = task_id;
      }
 
-     public String getName() {
-         return name;
-     }
-
-     public void setName(String name) {
-         this.name = name;
-     }
-
      public String getTask_code() {
          return task_code;
      }
 
      public void setTask_code(String task_code) {
          this.task_code = task_code;
+     }
+
+     public String getName() {
+         return name;
+     }
+
+     public void setName(String name) {
+         this.name = name;
      }
 
      public String getProject_code() {
@@ -121,14 +120,6 @@ package com.actnow.android.sdk.responses;
          this.updated_date = updated_date;
      }
 
-     public String getOrgn_code() {
-         return orgn_code;
-     }
-
-     public void setOrgn_code(String orgn_code) {
-         this.orgn_code = orgn_code;
-     }
-
      public String getRemindars_count() {
          return remindars_count;
      }
@@ -141,8 +132,8 @@ package com.actnow.android.sdk.responses;
      public String toString() {
          return "TaskListRecords{" +
                  "task_id='" + task_id + '\'' +
-                 ", name='" + name + '\'' +
                  ", task_code='" + task_code + '\'' +
+                 ", name='" + name + '\'' +
                  ", project_code='" + project_code + '\'' +
                  ", priority='" + priority + '\'' +
                  ", due_date='" + due_date + '\'' +
@@ -153,7 +144,6 @@ package com.actnow.android.sdk.responses;
                  ", created_date='" + created_date + '\'' +
                  ", updated_by='" + updated_by + '\'' +
                  ", updated_date='" + updated_date + '\'' +
-                 ", orgn_code='" + orgn_code + '\'' +
                  ", remindars_count='" + remindars_count + '\'' +
                  '}';
      }

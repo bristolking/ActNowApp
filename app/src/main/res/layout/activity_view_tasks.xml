@@ -257,15 +257,6 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:fontFamily="@font/montserrat"
                     app:met_floatingLabel="normal" />
-               <!-- <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/spinner_yearly"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="BATTERY TYPE"
-                    android:visibility="gone"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:fontFamily="@font/montserrat"
-                    app:met_floatingLabel="normal" />-->
             </LinearLayout>
         </LinearLayout>
 
