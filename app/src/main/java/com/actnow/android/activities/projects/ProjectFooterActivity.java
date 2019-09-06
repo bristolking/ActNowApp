@@ -33,28 +33,24 @@ import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
-import com.actnow.android.activities.monthly.ProjectMonthlyActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectFooterAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -254,7 +250,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
         individualCheckBox = new ArrayList<Integer>();
         individualCheckBox.add(0);
 
-        requestDynamicContent();
+      //  requestDynamicContent();
 
         mRecyclerViewProjectFooter = findViewById(R.id.projectfooter_recyclerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -352,8 +348,9 @@ public class ProjectFooterActivity extends AppCompatActivity {
                     mImageUserAddProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
-
+                            Intent i =new Intent( getApplicationContext(), InvitationActivity.class);
+                            startActivity(i);
+                            //mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
                         }
                     });
                     ImageView mImgeEdit = (ImageView) view.findViewById(R.id.img_editPencilProjectList);
@@ -441,7 +438,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
     }
 
 
-    private void requestDynamicContent() {
+   /* private void requestDynamicContent() {
         HashMap<String, String> userId = session.getUserDetails();
         String  id = userId.get(UserPrefUtils.ID);
         Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
@@ -450,7 +447,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
+                        //setLoadCheckBox(response.body().getOrgn_users_records());
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -466,8 +463,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
         });
 
     }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
+*/
+   /* private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
@@ -497,7 +494,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                         }
                     });
         }
-    }
+    }*/
 
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);

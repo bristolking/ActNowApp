@@ -300,6 +300,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 taskListRecordsArrayList.add(taskListRecords1);
 
 

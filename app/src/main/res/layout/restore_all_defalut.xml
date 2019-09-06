@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/color">
     <RelativeLayout
+        android:id="@+id/re_deleteProjectDailog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="right"
@@ -15,6 +16,5 @@
             android:text="Restore all defaults"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black" />
-
     </RelativeLayout>
 </RelativeLayout>

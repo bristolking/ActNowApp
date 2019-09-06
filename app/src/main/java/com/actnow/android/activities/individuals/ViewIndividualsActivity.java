@@ -2,7 +2,6 @@ package com.actnow.android.activities.individuals;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,7 +14,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,7 +46,6 @@ import com.actnow.android.utils.UserPrefUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 
 import retrofit2.Call;
@@ -201,12 +201,6 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-     /*   AssetManager am = context.getApplicationContext().getAssets();
-        typeface = Typeface.createFromAsset(am,
-                String.format(Locale.US, "fonts/%s", "abc.ttf"));
-        mIndividualQucikSearch.setTypeface(typeface);
-        mIndividualButtonAdavancedSearch.setTypeface(typeface);
-*/
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mIndividualImageBulbTask = findViewById(R.id.image_bulbIndividuals);
@@ -297,6 +291,83 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox1);
             }
             mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
+            mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    //View view1 = (View) findViewById(R.id.liner_projectList);
+
+                    /*CheckBox checkBox =(CheckBox)view.findViewById(R.id.ownerOne);
+                    final ImageView imgMenu =(ImageView)view.findViewById( R.id.);
+                    imgMenu.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            imgMenu.setVisibility(GONE);
+
+                        }
+                    } );*/
+
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
+        }
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+    }
+
+    /**
+     * RecyclerView: Implementing single item click and long press (Part-II)
+     * <p>
+     * - creating an innerclass implementing RevyvlerView.OnItemTouchListener
+     * - Pass clickListener interface as parameter
+     */
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private ProjectFooterActivity.ClickListener clicklistener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(ViewIndividualsActivity context, final RecyclerView mRecylerViewSingleSub, ProjectFooterActivity.ClickListener clickListener) {
+            this.clicklistener = clickListener;
+
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clicklistener != null) {
+                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
 

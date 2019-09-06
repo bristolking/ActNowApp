@@ -2,29 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color"
     android:orientation="vertical">
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/re_viewIntivitation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="4dp">
             <CheckBox
                 android:id="@+id/ownerOne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/textColor"
                 android:textColor="@color/textColor"
-                android:layout_weight="1"
-                android:text="nagrjuna"
-                android:textSize="18dp"/>
+                android:text="Nagrjuna"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"/>
             <TextView
                 android:id="@+id/tv_individualDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="2019-06-29"
                 android:visibility="gone"
-                android:layout_weight="1"
-                android:textColor="@color/colorAccent"/>
-        </LinearLayout>
+                android:textColor="@color/colorAccent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+            <ImageView
+                android:id="@+id/img_menuSharingIndividual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_menu_black"/>
+        </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/linebackground"/>
 </LinearLayout>

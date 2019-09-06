@@ -13,6 +13,7 @@ import com.actnow.android.sdk.responses.SignInResponse;
 import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.TaskAddResponse;
+import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
@@ -45,6 +46,20 @@ public interface ANApi {
     @GET("app/change_password/{mobile_number}/{password}")
     Call<CheckOtpResponse> changePassword(@Path("mobile_number") String mobile_number, @Path("password") String password);
 
+    @GET("app/user_details/{id}")
+    Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
+
+    @FormUrlEncoded
+    @POST("app/update_profile/{id}")
+    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id,@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password);
+
+    @FormUrlEncoded
+    @POST("app/organization/add/{id}")
+    Call<SendOtpResponse> checkOrgCode(@Path("id")String id,@Field(Parameters.NAME)String name);
+
+    @GET("app/organization/users/{id}")
+    Call<CheckBoxResponse> checktheSpinnerResponse(@Path("id") String id);
+
     @GET("app/tasks/priority/{id}")
     Call<PriortyTaskListResponse> checkPriorityTaskList(@Path("id") String id);
 
@@ -61,38 +76,35 @@ public interface ANApi {
     @FormUrlEncoded
     @POST("app/project/edit/{id}/{code}")
     Call<ProjectEditResponse> checkProjectEditResponse(@Path("id") String id,@Path("code") String project_code,@Field(Parameters.NAME) String name,@Field(Parameters.COLOR) String color,@Field("orgn_code") String orgn_code );
-/*
-    @GET("app/project/get/{id}/{projectCode}")
-    Call<ProjectDetailsById> checkProjectdetailsbyid(@Path("id") String id, @Path("projectCode") String project_code);*/
-
-    @GET("app/organization/users/{id}")
-    Call<CheckBoxResponse> checktheSpinnerResponse(@Path("id") String id);
-
-    @FormUrlEncoded
-    @POST("app/task/add/{id}")
-    Call<TaskAddResponse> checkTaskAddResponse(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.DUE_DATE) String due_date, @Field(Parameters.TASKMEMBERS) String task_members,@Field(Parameters.PRIORITY) String priority);
-
-    @GET("app/task/list/{id}")
-    Call<TaskListResponse> checkTheTaskListResponse(@Path("id") String id);
-
-
-    @GET("app/user_details/{id}")
-    Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
-
-    @FormUrlEncoded
-    @POST("app/update_profile/{id}")
-    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id,@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password);
-    @FormUrlEncoded
-    @POST("app/organization/add/{id}")
-    Call<SendOtpResponse> checkOrgCode(@Path("id")String id,@Field(Parameters.NAME)String name);
 
     @FormUrlEncoded
     @POST("app/project/comments/{id}/{code}")
     Call<ResponseBody> checkProjectCommentList(@Path("id") String id, @Path("code") String project_code, @Field("orgn_code")String orgn_code);
 
     @FormUrlEncoded
+    @POST("app/task/add/{id}")
+    Call<TaskAddResponse> checkTaskAddResponse(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.DUE_DATE) String due_date,@Field("priority") String priority, @Field("project_code") String project_code, @Field("orgn_code")String orgn_code,@Field( "repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field( "months")String months);
+    @FormUrlEncoded
+    @POST("app/task/edit/{id}/{task_code}")
+    Call<TaskEditResponse> checkTheTaskEditReponse(@Path("id")String id,@Path( "task_code")String task_code,@Field("name")String name,@Field("due_date")String due_date,@Field( "priority")String priority,@Field("project_code")String project_code,@Field("orgn_code")String orgn_code,@Field("repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field("months")String months);
+    @GET("app/task/list/{id}")
+    Call<TaskListResponse> checkTheTaskListResponse(@Path("id") String id);
+
+
+
+
+
+
+
+
+    /*
+    @GET("app/project/get/{id}/{projectCode}")
+    Call<ProjectDetailsById> checkProjectdetailsbyid(@Path("id") String id, @Path("projectCode") String project_code);*/
+
+    /*
+    @FormUrlEncoded
     @POST("app/project/comments/{id}/{code}")
-    Call<ProjectCommentListResponse> checkProject(@Path("id") String id, @Path("code") String project_code, @Field("orgn_code")String orgn_code);
+    Call<ProjectCommentListResponse> checkProject(@Path("id") String id, @Path("code") String project_code, @Field("orgn_code")String orgn_code);*/
 
   /*  @FormUrlEncoded
     @POST("app/comment/add/{id}")

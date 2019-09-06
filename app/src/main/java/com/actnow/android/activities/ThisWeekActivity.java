@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -47,7 +45,6 @@ import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.adapter.ThisWeekAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -58,11 +55,9 @@ import com.actnow.android.utils.UserPrefUtils;
 
 import org.json.JSONArray;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -291,6 +286,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
+                taskListRecords1.setProject_code(taskListRecords.getProject_code());
                 taskListRecordsArrayList.add(taskListRecords1);
             }
             mThisweekrecyclerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));

@@ -14,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,8 @@ import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
+import com.actnow.android.sdk.responses.TaskAddResponse;
+import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -64,7 +67,7 @@ import static android.view.View.GONE;
 public class EditTaskActivity extends AppCompatActivity {
 
     EditText mTaskEditName, mEditTaskOwner, mDateTaskEdit, mTaskCommentEdit;
-    View mEditProjectNewTask, mEditReminderNewTask, mEditIndvalNewTask, mEditPriorityNewTask;
+    View mEditProjectNewTask,mRepeatType,mEditPriorityNewTask;
     View mProgressView, mContentLayout;
     final Context context = this;
     UserPrefUtils session;
@@ -72,33 +75,54 @@ public class EditTaskActivity extends AppCompatActivity {
     String taskOwnerName;
     String taskName;
     String taskDate;
+    String task_code;
+
+    String[] listItems;
+    boolean[] checkedItems;
+    ArrayList<Integer> mUserPriorty = new ArrayList<>();
+    // dates
+    String[] listItemsDates;
+    boolean[] checkedItemsDates;
+    ArrayList<Integer> mUserDates = new ArrayList<>();
+
+    // yearly muliple select
+    String[] listItemsMonths;
+    boolean[] checkedItemsMonths;
+    ArrayList<Integer> uMonths = new ArrayList<>();
+    // weekly multiple select
+    String[] listItemsWeek;
+    boolean[] checkedItemsWeek;
+    ArrayList<Integer> mWeek = new ArrayList<>();
+    // repeatTupe
+    String[] listItemsRepeat;
+    boolean[] checkedItemsRepeat;
+    ArrayList<Integer> mRepeatTypeDaily = new ArrayList<>();
+
+    Spinner mSpinnerReptOption;
+    ArrayAdapter<String> arrayAdapterReaptEdit;
+
+    View reWeeklyView, reYearly, reMonthly;
+
+    TextView mYearly, mWeekName, mDates;
+    TextView mRepeatTypeTextView;
+
+
+    String repeat_type;
+    String week_days;
+    String months;
+    String days;
+    String projectcode;
+    String[] reapt = {"RepeatType", "Daily", "Weekly", "Monthly", "Yearly"};
+
 
     TextView mEditProjectCheckBox, mEditIndividuvalCheckBox;
     ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
     ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<>();
-    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
+    MultiSelectDialog  mProjectDialog;
+    ArrayList<Integer> projectListCheckBox;
     JSONArray individuvalArray, projectArray;
 
-    String[] listItems;
-    boolean[] checkedItems;
-    ArrayList<Integer> mUserPriorty=new ArrayList<>();
     TextView mPriortyEditTask;
-
-    Spinner mSpinnerEditReptOption, mSpinnerEditWeekely, mSpinnerEditMonthly, mSpinnerEditYearly;
-
-    ArrayAdapter<String> arrayAdapterReapt;
-    ArrayAdapter<String> arrayAdapterWeekley;
-    ArrayAdapter<String> arrayAdapterMonthly;
-    ArrayAdapter<String> arrayAdapterYearly;
-
-    String[] reapt = {"Daily", "Weekly", "Monthly", "Yearly"};
-    String[] weekly = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-    String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-            "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
-            "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-
-    String[] monthly = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
 
     @Override
@@ -118,6 +142,7 @@ public class EditTaskActivity extends AppCompatActivity {
             mTaskEditName.setText("" + taskName);
             taskDate = (String) b.get("TaskDate");
             mDateTaskEdit.setText("" + taskDate);
+            task_code =(String)b.get( "TaskCode");
             System.out.println("passsed" + taskOwnerName + id + taskName + taskDate);
         }
     }
@@ -210,86 +235,31 @@ public class EditTaskActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        spinnerEdit();
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mTaskEditName = findViewById(R.id.et_newEditTaskName);
         mEditTaskOwner = findViewById(R.id.et_newEdittaskOwner);
         mDateTaskEdit = findViewById(R.id.et_duedateNewEditTaskName);
-        mTaskCommentEdit = findViewById(R.id.et_commentNewEditTask);
-
-        mEditReminderNewTask = findViewById(R.id.re_editreminderNewTask);
-        mEditReminderNewTask.setOnClickListener(new View.OnClickListener() {
+        final Calendar myCalendar = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                myCalendar.set( Calendar.YEAR, year );
+                myCalendar.set( Calendar.MONTH, monthOfYear );
+                myCalendar.set( Calendar.DAY_OF_MONTH, dayOfMonth );
+                String myFormat = "yyyy-MM-dd";
+                SimpleDateFormat sdf = new SimpleDateFormat( myFormat, Locale.UK );
+                mDateTaskEdit.setText( sdf.format( myCalendar.getTime() ) );
+            }
+        };
+        mDateTaskEdit.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(true);
-                dialog.setContentView(R.layout.remainder_list_add);
-                final Calendar remianderCalender = Calendar.getInstance();
-                final EditText ed_dateRaminder = (EditText) dialog.findViewById(R.id.ed_dateReminder);
-                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        remianderCalender.set(Calendar.YEAR, year);
-                        remianderCalender.set(Calendar.MONTH, monthOfYear);
-                        remianderCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        String myFormat = "yyyy-MM-dd"; //In which you need put here
-                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
-                        ed_dateRaminder.setText(sdf.format(remianderCalender.getTime()));
-                    }
-                };
-                ed_dateRaminder.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new DatePickerDialog(getApplicationContext(), date, remianderCalender
-                                .get(Calendar.YEAR), remianderCalender.get(Calendar.MONTH),
-                                remianderCalender.get(Calendar.DAY_OF_MONTH)).show();
-                    }
-                });
-                final EditText ed_timeRemiander = (EditText) dialog.findViewById(R.id.ed_timeReminder);
-                ed_timeRemiander.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Calendar mcurrentTime = Calendar.getInstance();
-                        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                        int minute = mcurrentTime.get(Calendar.MINUTE);
-                        TimePickerDialog mTimePicker;
-                        mTimePicker = new TimePickerDialog(getApplicationContext(), new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                ed_timeRemiander.setText(selectedHour + ":" + selectedMinute);
-                            }
-                        }, hour, minute, true);//Yes 24 hour time
-                        mTimePicker.setTitle("Select Time");
-                        mTimePicker.show();
-                    }
-                });
-                final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
-                mAddTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                TextView mCancelTextView =(TextView)dialog.findViewById(R.id.tv_remainderCancel);
-                mCancelTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                ImageView mImgDropRemainder =(ImageView)dialog.findViewById(R.id.imge_reminderDropDown);
-                mImgDropRemainder.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
-
-                    }
-                });
-                dialog.show();
+                new DatePickerDialog( EditTaskActivity.this, datePickerListener, myCalendar
+                        .get( Calendar.YEAR ), myCalendar.get( Calendar.MONTH ),
+                        myCalendar.get( Calendar.DAY_OF_MONTH ) ).show();
             }
-        });
+        } );
         mEditPriorityNewTask = findViewById(R.id.re_EditpriorityNewTask);
         mPriortyEditTask  =(TextView)findViewById(R.id.tv_editTaskPriorty);
         listItems = getResources().getStringArray(R.array.priorty);
@@ -350,139 +320,216 @@ public class EditTaskActivity extends AppCompatActivity {
                 mProjectDialog.show(getSupportFragmentManager(), "mProjectDialog");
             }
         });
-        mEditIndvalNewTask = (View) findViewById(R.id.re_EditTaskNewIndividual);
-        mEditIndividuvalCheckBox = (TextView) findViewById(R.id.tv_editTaskIndividuval);
-        mIndividuvalDialog = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
-        mEditIndividuvalCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
-            }
-        });
-        HashMap<String, String> userId = session.getUserDetails();
-        id = userId.get(UserPrefUtils.ID);
-        requestDynamicContent(id);
-        requestDynamicProjectList(id);
 
+       spinnerData();
+        requestDynamicProjectList();
     }
+    private void spinnerData() {
+        mSpinnerReptOption = (Spinner) findViewById( R.id.spinnerReaptEdit );
+        mRepeatType = (View) findViewById( R.id.re_repeatTypeEditTask );
+        reWeeklyView = findViewById( R.id.re_weeklyEdit );
+        mWeekName = (TextView) findViewById( R.id.tv_weeklyEdit );
+        listItemsWeek = getResources().getStringArray( R.array.weekdays );
+        checkedItemsWeek = new boolean[listItemsWeek.length];
 
-    private void spinnerEdit() {
+        reYearly = findViewById( R.id.re_yearlyEdit );
+        mYearly = (TextView) findViewById( R.id.tv_yearlyEdit );
+        listItemsMonths = getResources().getStringArray( R.array.month );
+        checkedItemsMonths = new boolean[listItemsMonths.length];
+        reMonthly = findViewById( R.id.re_monthlyEdit );
+        mDates = (TextView) findViewById( R.id.tv_datesMonthly );
+        listItemsDates = getResources().getStringArray( R.array.dates );
+        checkedItemsDates = new boolean[listItemsDates.length];
 
-        mSpinnerEditReptOption = (Spinner) findViewById(R.id.spinner_ReaptEdit);
-        mSpinnerEditWeekely = (Spinner) findViewById(R.id.spinner_weekleyEdit);
-        mSpinnerEditMonthly = (Spinner) findViewById(R.id.spinner_monthlyEdit);
-        mSpinnerEditYearly = (Spinner) findViewById(R.id.spinner_yearlyEdit);
-
-        arrayAdapterMonthly = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, days);
-        mSpinnerEditMonthly.setAdapter(arrayAdapterMonthly);
-
-        arrayAdapterYearly = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, monthly);
-        mSpinnerEditYearly.setAdapter(arrayAdapterYearly);
-
-        arrayAdapterWeekley = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, weekly);
-        mSpinnerEditWeekely.setAdapter(arrayAdapterWeekley);
-
-        arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, reapt);
-        mSpinnerEditReptOption.setAdapter(arrayAdapterReapt);
-
-        mSpinnerEditReptOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        arrayAdapterReaptEdit = new ArrayAdapter<String>( getApplicationContext(), android.R.layout.simple_dropdown_item_1line, reapt );
+        mSpinnerReptOption.setAdapter( arrayAdapterReaptEdit );
+        mSpinnerReptOption.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = parent.getSelectedItem().toString();
+                repeat_type = parent.getSelectedItem().toString();
 
-                if (selectedItem.equals("Weekly")) {
-                    mSpinnerEditWeekely.setVisibility(View.VISIBLE);
-                    mSpinnerEditMonthly.setVisibility(GONE);
-                    mSpinnerEditYearly.setVisibility(GONE);
-                }if (selectedItem.equals("Monthly")){
-                    mSpinnerEditMonthly.setVisibility(View.VISIBLE);
-                    mSpinnerEditWeekely.setVisibility(GONE);
-                    mSpinnerEditYearly.setVisibility(GONE);
+                if (repeat_type.contentEquals( "Weekly" )) {
+                    reWeeklyView.setVisibility( View.VISIBLE );
+                    reYearly.setVisibility( GONE );
+                    reMonthly.setVisibility( GONE );
+                }
+                if (repeat_type.equals( "Monthly" )) {
+                    reMonthly.setVisibility( View.VISIBLE );
+                    reWeeklyView.setVisibility( GONE );
+                    reYearly.setVisibility( GONE );
 
-                }if (selectedItem.equals("Yearly")){
-                    mSpinnerEditYearly.setVisibility(View.VISIBLE);
-                    mSpinnerEditMonthly.setVisibility(View.VISIBLE);
-                    mSpinnerEditWeekely.setVisibility(GONE);
-                }if (selectedItem.equals("Daily")){
-                    mSpinnerEditYearly.setVisibility(GONE);
-                    mSpinnerEditMonthly.setVisibility(GONE);
-                    mSpinnerEditWeekely.setVisibility(GONE);
+                }
+                if (repeat_type.equals( "Yearly" )) {
+                    reYearly.setVisibility( View.VISIBLE );
+                    reMonthly.setVisibility( View.VISIBLE );
+                    reWeeklyView.setVisibility( GONE );
+                }
+                if (repeat_type.equals( "Daily" )) {
+                    reYearly.setVisibility( GONE );
+                    reMonthly.setVisibility( GONE );
+                    reWeeklyView.setVisibility( GONE );
                 }
 
+                if (repeat_type.equals( "RepeatType" )) {
+                    reYearly.setVisibility( GONE );
+                    reMonthly.setVisibility( GONE );
+                    reWeeklyView.setVisibility( GONE );
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
-        });
-
-
-    }
-
-    private void requestDynamicContent(String id) {
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
+        } );
+        reWeeklyView.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                System.out.println("xxx"+ response.raw());
-                if (response.isSuccessful()) {
-                    System.out.println("raw"+ response.raw());
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
-            }
-        });
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        System.out.println("check"+ orgn_users_records);
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
-                System.out.println("dta"+ listOfIndividuval);
-            }
-            mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                mEditIndividuvalCheckBox.setText(dataString);
+            public void onClick(View v) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder( EditTaskActivity.this );
+                mBuilder.setTitle( "ADD TO DATES" );
+                mBuilder.setMultiChoiceItems( listItemsWeek, checkedItemsWeek, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+                        if (isChecked) {
+                            if (!mWeek.contains( position )) {
+                                mWeek.add( position );
+                            } else {
+                                mWeek.remove( position );
                             }
-                            individuvalArray = new JSONArray(selectedIds);
                         }
 
-                        @Override
-                        public void onCancel() {
-                            Log.d("TAG", "Dialog cancelled");
+                    }
+                } );
+                mBuilder.setCancelable( false );
+                mBuilder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String item = " ";
+                        for (int i = 0; i < mWeek.size(); i++) {
+                            item = item + listItemsWeek[mWeek.get( i )];
+                            if (i != mWeek.size() - 1) {
+                                item = item + " ";
+                            }
                         }
-                    });
-        }
 
+                        mWeekName.setText( item );
+                        week_days = mWeekName.getText().toString();
+
+                        //mRepeatTypeTextView.setText(item);
+
+                    }
+                } );
+                mBuilder.setNegativeButton( "Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                    }
+                } );
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
+            }
+        } );
+
+        reMonthly.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder( EditTaskActivity.this );
+                mBuilder.setTitle( "ADD TO DATES" );
+                mBuilder.setMultiChoiceItems( listItemsDates, checkedItemsDates, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+                        if (isChecked) {
+                            if (!mUserDates.contains( position )) {
+                                mUserDates.add( position );
+                            } else {
+                                mUserDates.remove( position );
+                            }
+                        }
+
+                    }
+                } );
+                mBuilder.setCancelable( false );
+                mBuilder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String item = " ";
+                        for (int i = 0; i < mUserDates.size(); i++) {
+                            item = item + listItemsDates[mUserDates.get( i )];
+                            if (i != mUserDates.size() - 1) {
+                                item = item + " ";
+                            }
+                        }
+                        mDates.setText( item );
+                        days = mDates.getText().toString();
+
+                        //mRepeatTypeTextView.setText(item);
+
+                    }
+                } );
+                mBuilder.setNegativeButton( "Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                    }
+                } );
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        } );
+        reYearly.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder( EditTaskActivity.this );
+                mBuilder.setTitle( "ADD TO MONTHS" );
+                mBuilder.setMultiChoiceItems( listItemsMonths, checkedItemsMonths, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+                        if (isChecked) {
+                            if (!uMonths.contains( position )) {
+                                uMonths.add( position );
+                            } else {
+                                uMonths.remove( position );
+                            }
+                        }
+
+                    }
+                } );
+                mBuilder.setCancelable( false );
+                mBuilder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String item = " ";
+                        for (int i = 0; i < uMonths.size(); i++) {
+                            item = item + listItemsMonths[uMonths.get( i )];
+                            if (i != uMonths.size() - 1) {
+                                item = item + " ";
+                            }
+                        }
+                        mYearly.setText( item );
+                        months = mYearly.getText().toString();
+
+
+                    }
+                } );
+                mBuilder.setNegativeButton( "Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                    }
+                } );
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        } );
     }
-    private void requestDynamicProjectList(String id) {
+
+
+    private void requestDynamicProjectList() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse(id);
         call.enqueue(new Callback<ProjectListResponse>() {
             @Override
@@ -541,6 +588,67 @@ public class EditTaskActivity extends AppCompatActivity {
 
 
     }
+    private void  attemptUpdateTask() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        String taskName = mTaskEditName.getText().toString();
+        String due_date = mDateTaskEdit.getText().toString();
+        String priorty = mPriortyEditTask.getText().toString();
+        String project_code = mEditProjectCheckBox.getText().toString();
+        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+
+        //String  taskCode=
+      /*  String days = mDates.getText().toString();
+        String months = mYearly.getText().toString();*/
+        String individuvalName = String.valueOf( individuvalArray );
+        //individuvalArray.remove(0);
+
+        String oldprojectsName = String.valueOf( projectArray );
+        mDateTaskEdit.setError( null );
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty(due_date)) {
+            mDateTaskEdit.setError(getString( R.string.error_required));
+            focusView = mDateTaskEdit;
+            cancel = true;
+        }
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            requestUpdateTasks(id,task_code ,taskName , due_date,priorty , project_code ,orgn_code,repeat_type,week_days, days,months);
+            System.out.println( "some" + id+task_code +taskName + due_date+priorty + project_code +orgn_code+repeat_type+week_days+ days+months);
+        }
+    }
+    private void requestUpdateTasks(String id,String task_code, String taskName,String duedate, String priorty, String project_code,String orgn_code,String repeat_type,String week_days,String days,String months) {
+        System.out.println("values"+ id+taskName+duedate+days+priorty+project_code+orgn_code+repeat_type+week_days+days+months);
+
+        Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id,task_code, taskName, duedate, priorty,project_code,orgn_code,repeat_type,week_days,days,months);
+        call.enqueue( new Callback<TaskEditResponse>() {
+
+            @Override
+            public void onResponse(Call<TaskEditResponse> call, Response<TaskEditResponse> response) {
+                System.out.println("arjun"+response.raw());
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals( "true" )) {
+                        Intent i = new Intent(EditTaskActivity.this, TaskAddListActivity.class);
+                        startActivity(i);
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TaskEditResponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+            }
+        } );
+    }
+
+
+
 
     private void footer() {
         ImageView imageGallery = (ImageView) findViewById(R.id.image_gallery);
@@ -558,9 +666,8 @@ public class EditTaskActivity extends AppCompatActivity {
         tv_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(EditTaskActivity.this, TaskAddListActivity.class);
-                startActivity(i);
-                //attemptUpdateTask();
+
+                attemptUpdateTask();
             }
         });
     }

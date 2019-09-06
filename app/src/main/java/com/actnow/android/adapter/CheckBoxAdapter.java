@@ -18,8 +18,8 @@ import java.util.List;
 public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHolder> {
     private List<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList;
 
-    public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList, int individual_check, Context applicationContext) {
-        this.orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxList;
+    public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxArrayList, int individual_check, Context applicationContext) {
+        this.orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxArrayList;
     }
 
 
@@ -40,6 +40,11 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     @Override
     public int getItemCount() {
         return orgnUserRecordsCheckBoxList.size();
+    }
+
+    public void filterList(ArrayList<OrgnUserRecordsCheckBox> filteredList) {
+        orgnUserRecordsCheckBoxList = filteredList;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -47,21 +47,7 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content" />
             </LinearLayout>
-
         </LinearLayout>
-
-        <!-- <android.support.design.widget.FloatingActionButton
-             android:id="@+id/fab"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_alignParentRight="true"
-             android:layout_alignParentBottom="true"
-             android:layout_gravity="bottom|right"
-             android:layout_marginRight="10dp"
-             android:layout_marginBottom="65dp"
-             app:srcCompat="@drawable/ic_add_circular"
-             tools:ignore="VectorDrawableCompat" />-->
-
         <include layout="@layout/app_header_two" />
 
         <include layout="@layout/app_footer" />

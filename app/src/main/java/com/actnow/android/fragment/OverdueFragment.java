@@ -198,6 +198,8 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 //taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
                 taskListRecordsArrayList.add(taskListRecords1);
             }
@@ -209,6 +211,7 @@ public class OverdueFragment extends Fragment {
                     RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
                     final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
+                    final TextView tv_taskcode =(TextView)view.findViewById( R.id.tv_taskCode);
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
@@ -244,19 +247,22 @@ public class OverdueFragment extends Fragment {
                             }
                         }
                     });
-                    TextView mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                    final TextView mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
                     mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
                             String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                            String s = radioButtonTaskName.getText().toString();
-                            String s1 = tv_dueDate.getText().toString();
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i = new Intent(getActivity(), EditTaskActivity.class);
-                            i.putExtra("TaskName", s);
-                            i.putExtra("TaskDate", s1);
+                            i.putExtra("TaskName", name);
+                            i.putExtra("TaskDate", date);
+                            i.putExtra( "TaskCode",task_code);
                             i.putExtra("taskOwnerName", taskOwnerName);
                             startActivity(i);
+                            System.out.println( "user"+task_code);
                         }
                     });
                     ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
@@ -312,7 +318,7 @@ public class OverdueFragment extends Fragment {
                                     int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                                     int minute = mcurrentTime.get(Calendar.MINUTE);
                                     TimePickerDialog mTimePicker;
-                                    mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                                    mTimePicker = new TimePickerDialog(getActivity(),new TimePickerDialog.OnTimeSetListener() {
                                         @Override
                                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                                             ed_timeRemiander.setText(selectedHour + ":" + selectedMinute);
