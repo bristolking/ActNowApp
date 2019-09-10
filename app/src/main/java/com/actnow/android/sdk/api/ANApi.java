@@ -13,6 +13,7 @@ import com.actnow.android.sdk.responses.SignInResponse;
 import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.TaskAddResponse;
+import com.actnow.android.sdk.responses.TaskCommentListResponse;
 import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
@@ -89,6 +90,10 @@ public interface ANApi {
     Call<TaskEditResponse> checkTheTaskEditReponse(@Path("id")String id,@Path( "task_code")String task_code,@Field("name")String name,@Field("due_date")String due_date,@Field( "priority")String priority,@Field("project_code")String project_code,@Field("orgn_code")String orgn_code,@Field("repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field("months")String months);
     @GET("app/task/list/{id}")
     Call<TaskListResponse> checkTheTaskListResponse(@Path("id") String id);
+
+    @FormUrlEncoded
+    @POST("app/task/comments/{id}/{code}")
+    Call<ResponseBody> checkTheTaskCommentList(@Path("id")String id,@Path("code")String task_code,@Field("orgn_code") String orgn_code);
 
 
 

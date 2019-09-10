@@ -278,6 +278,13 @@ public class OverdueFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getActivity(), CommentsActivity.class);
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
+                            i.putExtra("TaskName", name);
+                            i.putExtra("TaskDate", date);
+                            i.putExtra( "TaskCode",task_code);
+                            System.out.println( "maximum"+task_code);
                             startActivity(i);
                         }
                     });

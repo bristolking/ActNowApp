@@ -39,7 +39,9 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.adapter.FileAdapter;
 import com.actnow.android.adapter.ProjectCommentListAdapter;
+import com.actnow.android.adapter.TaskCommentListAdapter;
 import com.actnow.android.sdk.responses.ProjectCommentRecordsList;
+import com.actnow.android.sdk.responses.TaskCommentListResponse;
 import com.actnow.android.utils.UserPrefUtils;
 
 import org.json.JSONArray;
@@ -66,6 +68,7 @@ public class CommentsActivity extends AppCompatActivity {
     RecyclerView mCommentRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
     ProjectCommentListAdapter mProjectCommentListAdapter;
+    TaskCommentListAdapter   mTaskCommentListAdapter;
     private FileAdapter fileAdapter;
     ArrayList<String> fileArray;
     int location[]=new int[2];
@@ -73,6 +76,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     ArrayList<ProjectCommentRecordsList> projectCommentRecordsListArrayList = new ArrayList<>();
 
+    ArrayList<TaskCommentListResponse> taskCommentListResponseArrayList = new ArrayList<>( );
 
     private final int requestCode = 20;
 
@@ -88,6 +92,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     String project_code;
     String projectId;
+    String task_code;
 
     MultipartBody.Part[] surveyImagesParts;
 
@@ -101,7 +106,8 @@ public class CommentsActivity extends AppCompatActivity {
         if (b != null) {
             project_code = (String) b.get( "projectcode" );
             projectId = (String) b.get( "projectid" );
-            System.out.println( "values" + projectId + project_code );
+            task_code=(String)b.get("TaskCode");
+            System.out.println( "values" + projectId +task_code+ project_code );
 
         }
         appHeaderTwo();
@@ -230,21 +236,86 @@ public class CommentsActivity extends AppCompatActivity {
         mCommentRecylcerView.setItemAnimator( new DefaultItemAnimator() );
         mProjectCommentListAdapter = new ProjectCommentListAdapter( projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext() );
         mCommentRecylcerView.setAdapter( mProjectCommentListAdapter );
+        mTaskCommentListAdapter = new TaskCommentListAdapter(taskCommentListResponseArrayList,R.layout.comment_custom_list,getApplicationContext());
+        projectCommentListReponse();
+        taskCommentListReponse();
+
+    }
+
+    private void taskCommentListReponse() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-        System.out.println( "data" + id + project_code + orgn_code );
+        System.out.println( "data" + id + task_code + orgn_code );
+        Call<ResponseBody> callTask = ANApplications.getANApi().checkTheTaskCommentList( id,task_code,orgn_code);
+        callTask.enqueue( new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                    System.out.println( "sucess" + response.raw());
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject( response.body().string());
+                            if (jsonObject.getString( "success").equals("true")){
+                                System.out.println( "nul" + response.body().toString() );
+                                JSONArray commentTask = jsonObject.getJSONArray( "comment_records");
+                                setTaskComment(commentTask);
+
+                            }
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+
+            }
+        } );
+
+    }
+
+    private void setTaskComment(JSONArray commentTask) {
+        for (int i = 0; commentTask.length() > i; i++) {
+            TaskCommentListResponse taskCommentListResponse = new TaskCommentListResponse();
+
+            try {
+                JSONObject values = commentTask.getJSONObject( i );
+                String comment = values.getString( "comment" );
+                String name= values.getString( "user_name");
+                String date = values.getString( "created_date");
+                taskCommentListResponse.setComment( comment );
+                taskCommentListResponse.setUser_name( name );
+                taskCommentListResponse.setCreated_date(date);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //projectCommentRecordsListArrayList.add(taskCommentListResponse);
+        }
+        mCommentRecylcerView.setAdapter( new TaskCommentListAdapter( taskCommentListResponseArrayList, R.layout.comment_custom_list, getApplicationContext()));
+
+    }
+
+
+    private void projectCommentListReponse() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
         Call<ResponseBody> call2 = ANApplications.getANApi().checkProjectCommentList( id, project_code, orgn_code );
         call2.enqueue( new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    System.out.println( "sucess" + response.raw() );
                     try {
                         try {
                             JSONObject jsonObject = new JSONObject( response.body().string() );
                             if (jsonObject.getString( "success" ).equals( "true" )) {
-                                System.out.println( "nul" + response.body().toString() );
                                 JSONArray comment = jsonObject.getJSONArray( "comment_records" );
 /*
                                 String files = details.getString("images");
@@ -289,8 +360,6 @@ public class CommentsActivity extends AppCompatActivity {
                 projectCommentRecordsList.setComment( comment );
                 projectCommentRecordsList.setUser_name( name );
                 projectCommentRecordsList.setCreated_date(date);
-                System.out.println( "www" + comment );
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -473,10 +542,6 @@ class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         }
     }
-
-
-
-
     public void onBackPressed() {
         super.onBackPressed();
     }
