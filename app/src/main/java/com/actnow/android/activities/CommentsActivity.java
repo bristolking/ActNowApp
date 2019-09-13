@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.settings.EditAccountActivity;
@@ -68,15 +69,15 @@ public class CommentsActivity extends AppCompatActivity {
     RecyclerView mCommentRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
     ProjectCommentListAdapter mProjectCommentListAdapter;
-    TaskCommentListAdapter   mTaskCommentListAdapter;
+    TaskCommentListAdapter mTaskCommentListAdapter;
     private FileAdapter fileAdapter;
     ArrayList<String> fileArray;
-    int location[]=new int[2];
+    int location[] = new int[2];
 
 
     ArrayList<ProjectCommentRecordsList> projectCommentRecordsListArrayList = new ArrayList<>();
 
-    ArrayList<TaskCommentListResponse> taskCommentListResponseArrayList = new ArrayList<>( );
+    ArrayList<TaskCommentListResponse> taskCommentListResponseArrayList = new ArrayList<>();
 
     private final int requestCode = 20;
 
@@ -106,8 +107,8 @@ public class CommentsActivity extends AppCompatActivity {
         if (b != null) {
             project_code = (String) b.get( "projectcode" );
             projectId = (String) b.get( "projectid" );
-            task_code=(String)b.get("TaskCode");
-            System.out.println( "values" + projectId +task_code+ project_code );
+            task_code = (String) b.get( "TaskCode" );
+            System.out.println( "values" + projectId + task_code + project_code );
 
         }
         appHeaderTwo();
@@ -115,6 +116,7 @@ public class CommentsActivity extends AppCompatActivity {
         footer();
 
     }
+
     private void appHeaderTwo() {
         ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
         imgeBack.setOnClickListener( new View.OnClickListener() {
@@ -236,7 +238,7 @@ public class CommentsActivity extends AppCompatActivity {
         mCommentRecylcerView.setItemAnimator( new DefaultItemAnimator() );
         mProjectCommentListAdapter = new ProjectCommentListAdapter( projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext() );
         mCommentRecylcerView.setAdapter( mProjectCommentListAdapter );
-        mTaskCommentListAdapter = new TaskCommentListAdapter(taskCommentListResponseArrayList,R.layout.comment_custom_list,getApplicationContext());
+        mTaskCommentListAdapter = new TaskCommentListAdapter( taskCommentListResponseArrayList, R.layout.comment_custom_list, getApplicationContext() );
         projectCommentListReponse();
         taskCommentListReponse();
 
@@ -247,30 +249,30 @@ public class CommentsActivity extends AppCompatActivity {
         String id = userId.get( UserPrefUtils.ID );
         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
         System.out.println( "data" + id + task_code + orgn_code );
-        Call<ResponseBody> callTask = ANApplications.getANApi().checkTheTaskCommentList( id,task_code,orgn_code);
+        Call<ResponseBody> callTask = ANApplications.getANApi().checkTheTaskCommentList( id, task_code, orgn_code );
         callTask.enqueue( new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()){
-                    System.out.println( "sucess" + response.raw());
+                if (response.isSuccessful()) {
                     try {
                         try {
-                            JSONObject jsonObject = new JSONObject( response.body().string());
-                            if (jsonObject.getString( "success").equals("true")){
+                            JSONObject jsonObject = new JSONObject( response.body().string() );
+                            if (jsonObject.getString( "success" ).equals( "true" )) {
                                 System.out.println( "nul" + response.body().toString() );
-                                JSONArray commentTask = jsonObject.getJSONArray( "comment_records");
-                                setTaskComment(commentTask);
+                                JSONArray commentTask = jsonObject.getJSONArray( "comment_records" );
+                                setTaskComment( commentTask );
 
                             }
 
-                        }catch (JSONException e){
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d( "CallBack", " Throwable is " + t );
@@ -287,21 +289,19 @@ public class CommentsActivity extends AppCompatActivity {
             try {
                 JSONObject values = commentTask.getJSONObject( i );
                 String comment = values.getString( "comment" );
-                String name= values.getString( "user_name");
-                String date = values.getString( "created_date");
+                String name = values.getString( "user_name" );
+                String date = values.getString( "created_date" );
                 taskCommentListResponse.setComment( comment );
                 taskCommentListResponse.setUser_name( name );
-                taskCommentListResponse.setCreated_date(date);
+                taskCommentListResponse.setCreated_date( date );
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //projectCommentRecordsListArrayList.add(taskCommentListResponse);
+            taskCommentListResponseArrayList.add( taskCommentListResponse );
         }
-        mCommentRecylcerView.setAdapter( new TaskCommentListAdapter( taskCommentListResponseArrayList, R.layout.comment_custom_list, getApplicationContext()));
-
+        mCommentRecylcerView.setAdapter( new TaskCommentListAdapter(taskCommentListResponseArrayList, R.layout.comment_custom_list, getApplicationContext() ) );
     }
-
 
     private void projectCommentListReponse() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -355,11 +355,11 @@ public class CommentsActivity extends AppCompatActivity {
             try {
                 JSONObject values = details.getJSONObject( i );
                 String comment = values.getString( "comment" );
-                String name= values.getString( "user_name");
-                String date = values.getString( "created_date");
+                String name = values.getString( "user_name" );
+                String date = values.getString( "created_date" );
                 projectCommentRecordsList.setComment( comment );
                 projectCommentRecordsList.setUser_name( name );
-                projectCommentRecordsList.setCreated_date(date);
+                projectCommentRecordsList.setCreated_date( date );
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -367,26 +367,26 @@ public class CommentsActivity extends AppCompatActivity {
             projectCommentRecordsListArrayList.add( projectCommentRecordsList );
         }
         mCommentRecylcerView.setAdapter( new ProjectCommentListAdapter( projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext() ) );
-        mCommentRecylcerView.addOnItemTouchListener(new CommentsActivity.RecyclerTouchListener(this, mCommentRecylcerView, new ClickListener() {
+        mCommentRecylcerView.addOnItemTouchListener( new CommentsActivity.RecyclerTouchListener( this, mCommentRecylcerView, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                View view1 = (View) view.findViewById(R.id.liner_projectList);
-                TextView mCommentUserName = (TextView)view.findViewById( R.id.tv_userNameComment);
-                TextView mCommentDate = (TextView)view.findViewById( R.id.tv_commentDate);
-                TextView mCommentMeassge = (TextView)view.findViewById( R.id.tv_commentText);
-                ImageView mUserProfileComment = (ImageView)view.findViewById( R.id.img_userprofileComment);
-                final ImageView mMenuComment =(ImageView)view.findViewById(R.id.img_menuComment);
-                mMenuComment.getLocationOnScreen(location);
+                View view1 = (View) view.findViewById( R.id.liner_projectList );
+                TextView mCommentUserName = (TextView) view.findViewById( R.id.tv_userNameComment );
+                TextView mCommentDate = (TextView) view.findViewById( R.id.tv_commentDate );
+                TextView mCommentMeassge = (TextView) view.findViewById( R.id.tv_commentText );
+                ImageView mUserProfileComment = (ImageView) view.findViewById( R.id.img_userprofileComment );
+                final ImageView mMenuComment = (ImageView) view.findViewById( R.id.img_menuComment );
+                mMenuComment.getLocationOnScreen( location );
                 mMenuComment.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         final Dialog dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
                         dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
                         dialog.setCancelable( true );
-                        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
+                        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
                         dialog.setContentView( R.layout.comment_edit_delete );
-                        TextView mCommentEdit =(TextView)dialog.findViewById(R.id.tv_editComment);
-                        TextView mDeleteComment =(TextView)dialog.findViewById(R.id.tv_deleteComment);
+                        TextView mCommentEdit = (TextView) dialog.findViewById( R.id.tv_editComment );
+                        TextView mDeleteComment = (TextView) dialog.findViewById( R.id.tv_deleteComment );
                         mCommentEdit.setOnClickListener( new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -412,103 +412,105 @@ public class CommentsActivity extends AppCompatActivity {
                     }
                 } );
             }
+
             @Override
             public void onLongClick(View view, int position) {
 
             }
-        }));
+        } ) );
     }
 
 
-public interface ClickListener {
-    void onClick(View view, int position);
+    public interface ClickListener {
+        void onClick(View view, int position);
 
-    void onLongClick(View view, int position);
-}
+        void onLongClick(View view, int position);
+    }
 
-class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-    private ClickListener clicklistener;
-    private GestureDetector gestureDetector;
+        private ClickListener clicklistener;
+        private GestureDetector gestureDetector;
 
-    public RecyclerTouchListener(CommentsActivity context, final RecyclerView mRecylerViewSingleSub, ClickListener clickListener) {
-        this.clicklistener = clickListener;
+        public RecyclerTouchListener(CommentsActivity context, final RecyclerView mRecylerViewSingleSub, ClickListener clickListener) {
+            this.clicklistener = clickListener;
 
-        gestureDetector = new GestureDetector( context, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent e) {
-                View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
-                if (child != null && clicklistener != null) {
-                    clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
+            gestureDetector = new GestureDetector( context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
                 }
-            }
-        } );
-    }
 
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        View child = rv.findChildViewUnder( e.getX(), e.getY() );
-        if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
-            clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
+                    if (child != null && clicklistener != null) {
+                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
+                    }
+                }
+            } );
         }
 
-        return false;
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder( e.getX(), e.getY() );
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
+                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+
     }
 
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-    }
-
-}
     private void initializeRecyclerView(ArrayList<String> imageUrls) {
-        fileAdapter = new FileAdapter(this, imageUrls);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 4);
-        mCommentRecylcerView = findViewById(R.id.rv_recyclerViewComment);
-        mCommentRecylcerView.setLayoutManager(layoutManager);
-        mCommentRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mCommentRecylcerView.setAdapter(fileAdapter);
+        fileAdapter = new FileAdapter( this, imageUrls );
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager( getApplicationContext(), 4 );
+        mCommentRecylcerView = findViewById( R.id.rv_recyclerViewComment );
+        mCommentRecylcerView.setLayoutManager( layoutManager );
+        mCommentRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mCommentRecylcerView.setAdapter( fileAdapter );
     }
 
 
     private void footer() {
-        imageGallery = (ImageView) findViewById(R.id.image_gallery);
-        imageGallery.setOnClickListener(new View.OnClickListener() {
+        imageGallery = (ImageView) findViewById( R.id.image_gallery );
+        imageGallery.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //showFileChooser();
             }
-        });
-        ImageView imageAttachament = (ImageView) findViewById(R.id.image_attachament);
-        imageAttachament.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView imageAttachament = (ImageView) findViewById( R.id.image_attachament );
+        imageAttachament.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //showFileChooser();
 
             }
-        });
-        ImageView imageCamera = (ImageView) findViewById(R.id.image_camera);
-        imageCamera.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView imageCamera = (ImageView) findViewById( R.id.image_camera );
+        imageCamera.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent photoCaptureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(photoCaptureIntent, requestCode);
+                Intent photoCaptureIntent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
+                startActivityForResult( photoCaptureIntent, requestCode );
 
             }
-        });
-        ImageView imageProfile = (ImageView) findViewById(R.id.image_profile);
-        imageProfile.setVisibility(GONE);
-        TextView tv_create = (TextView) findViewById(R.id.tv_create);
-        tv_create.setText("Add Comment");
-        tv_create.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView imageProfile = (ImageView) findViewById( R.id.image_profile );
+        imageProfile.setVisibility( GONE );
+        TextView tv_create = (TextView) findViewById( R.id.tv_create );
+        tv_create.setText( "Add Comment" );
+        tv_create.setOnClickListener( new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onClick(View v) {
@@ -516,19 +518,19 @@ class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
                 // Toast.makeText(getApplicationContext(), "selte", Toast.LENGTH_LONG).show();
 
             }
-        });
+        } );
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void addTheComment() {
-        mEditAddComment.setError(null);
+        mEditAddComment.setError( null );
         String comment = mEditAddComment.getText().toString();
         //String file = mImgAttachament.getDisplay().toString();
         boolean cancel = false;
         View focusView = null;
-        if (TextUtils.isEmpty(comment)) {
-            mEditAddComment.setError(getString(R.string.error_required));
+        if (TextUtils.isEmpty( comment )) {
+            mEditAddComment.setError( getString( R.string.error_required ) );
             focusView = mEditAddComment;
             cancel = true;
         }
@@ -537,11 +539,12 @@ class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
         } else {
 
             HashMap<String, String> userId = session.getUserDetails();
-            String id = userId.get(UserPrefUtils.ID);
-            String orng_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+            String id = userId.get( UserPrefUtils.ID );
+            String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
 
         }
     }
+
     public void onBackPressed() {
         super.onBackPressed();
     }

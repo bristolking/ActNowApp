@@ -1,8 +1,6 @@
 package com.actnow.android.activities;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,15 +18,10 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
@@ -42,13 +35,11 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
-import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ApprovalAdapter;
-import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.sdk.responses.ApprovalResponse;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -56,12 +47,9 @@ import com.actnow.android.utils.UserPrefUtils;
 
 import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -93,6 +81,13 @@ public class ApprovalsActivity extends AppCompatActivity {
 
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
+    String task_code;
+    String taskOwnerName;
+    String taskName;
+    String taskDate;
+    TextView mTaskApprovalPriority;
+    TextView mTaskApprovalDate;
+    TextView mTaskApprovalName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +97,17 @@ public class ApprovalsActivity extends AppCompatActivity {
         appHeaderTwo();
         initializeViews();
         appFooter();
+        Intent iin = getIntent();
+        Bundle b = iin.getExtras();
+        if (b != null) {
+            taskOwnerName = (String) b.get( "taskOwnerName" );
+            taskName = (String) b.get( "TaskName" );
+            //mTaskApprovalName.setText("" + taskName);
+            taskDate = (String) b.get( "TaskDate" );
+           // mTaskApprovalDate.setText("" + taskDate);
+            task_code = (String) b.get( "TaskCode" );
+            System.out.println( "valuesApproved" + taskOwnerName + taskName + taskDate+task_code );
+        }
     }
 
     private void appHeaderTwo() {
@@ -276,7 +282,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                Log.d( "CallBack", " Throwable is " + t );
 
             }
         } );
@@ -287,21 +293,41 @@ public class ApprovalsActivity extends AppCompatActivity {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get( i );
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName( taskListRecords.getName() );
-                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
-                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setName( taskListRecords.getName());
+                taskListRecords1.setDue_date( taskListRecords.getDue_date());
+                taskListRecords1.setPriority( taskListRecords.getPriority());
                 taskListRecordsArrayList.add( taskListRecords1 );
             }
             mRecyclerViewApproval.setAdapter( new ApprovalAdapter( taskListRecordsArrayList, R.layout.custom_approval_tasklist, getApplicationContext() ) );
             mRecyclerViewApproval.addOnItemTouchListener( new ApprovalsActivity.RecyclerTouchListener( this, mRecyclerViewApproval, new ApprovalsActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
+                    mTaskApprovalName = (TextView) view.findViewById( R.id.approvalTaskName );
+                    mTaskApprovalDate = (TextView) view.findViewById( R.id.approvalTaskDate );
+                    mTaskApprovalPriority = (TextView) view.findViewById( R.id.tv_approvalTaskPriority );
 
                     ImageView mImageTick = (ImageView) view.findViewById( R.id.img_checkedTaskApproval );
                     mImageTick.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText( getApplicationContext(), "Wrok in progress!", Toast.LENGTH_LONG ).show();
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                @Override
+                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                    System.out.println( "callComplete" + response.raw() );
+                                    if (response.isSuccessful()) {
+                                        System.out.println( "inside" + response.raw() );
+
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+
+                                }
+                            } );
 
                         }
                     } );

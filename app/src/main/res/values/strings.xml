@@ -99,4 +99,8 @@
         <item>Monthly</item>
         <item>Yearly</item>
     </string-array>
+
+    <string name="facebook_app_id">297800690726297</string>
+    <string name="fb_login_protocol_scheme">fb297800690726297</string>
+    <string name="loading">Loading...</string>
 </resources>

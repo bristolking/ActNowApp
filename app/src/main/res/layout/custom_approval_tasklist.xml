@@ -32,17 +32,14 @@
                 android:layout_weight="0.1"
                 app:srcCompat="@drawable/ic_wrong_sign_red" />
         </LinearLayout>
-
         <TextView
             android:id="@+id/approvalTaskName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/textColor"
             android:text="Task1"
             android:layout_gravity="center"
             android:textColor="@color/black" />
-
         <TextView
             android:id="@+id/approvalTaskDate"
             android:layout_width="match_parent"

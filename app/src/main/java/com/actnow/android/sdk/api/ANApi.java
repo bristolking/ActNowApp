@@ -1,8 +1,6 @@
 package com.actnow.android.sdk.api;
 
 import com.actnow.android.sdk.responses.CheckOtpResponse;
-import com.actnow.android.sdk.responses.CommentAdd;
-import com.actnow.android.sdk.responses.ProjectCommentListResponse;
 import com.actnow.android.sdk.responses.OverDueTaskListResponse;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
@@ -13,20 +11,18 @@ import com.actnow.android.sdk.responses.SignInResponse;
 import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.TaskAddResponse;
-import com.actnow.android.sdk.responses.TaskCommentListResponse;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 
-import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ANApi {
@@ -94,10 +90,9 @@ public interface ANApi {
     @FormUrlEncoded
     @POST("app/task/comments/{id}/{code}")
     Call<ResponseBody> checkTheTaskCommentList(@Path("id")String id,@Path("code")String task_code,@Field("orgn_code") String orgn_code);
-
-
-
-
+    @FormUrlEncoded
+    @POST("app/task/complete/{id}/{task_code}")
+    Call<TaskComplete> checkTheTaskComplete(@Path("id")String id, @Path( "task_code")String task_code, @Field("orgn_code")String orgn_code);
 
 
 

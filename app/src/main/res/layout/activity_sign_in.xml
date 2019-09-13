@@ -141,9 +141,9 @@
                     android:layout_marginTop="@dimen/standard_12">
                     <Button
                         android:id="@+id/bt_facebook"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="0.5"
-                        android:layout_height="@dimen/btn_h_32"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/btn_primary"
                         android:text="Facebook"
                         android:backgroundTint="#3b579d"
@@ -151,16 +151,22 @@
                         android:textAllCaps="true"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/text_size_default" />
-                    <Button
-                        android:id="@+id/bt_google"
-                        android:layout_width="0dp"
+                    <com.google.android.gms.common.SignInButton
+                        android:id="@+id/btn_sign_in"
+                        android:layout_width="wrap_content"
                         android:layout_weight="0.5"
-                        android:layout_height="@dimen/btn_h_32"
-                        android:background="@drawable/btn_primary"
-                        android:layout_marginLeft="@dimen/standard_8"
-                        android:text="Google"
-                        android:textAllCaps="true"
-                        android:textSize="@dimen/text_size_default" />
+                        android:layout_height="wrap_content"/>
+
+                    <!--  <Button
+                          android:id="@+id/bt_google"
+                          android:layout_width="0dp"
+                          android:layout_weight="0.5"
+                          android:layout_height="@dimen/btn_h_32"
+                          android:background="@drawable/btn_primary"
+                          android:layout_marginLeft="@dimen/standard_8"
+                          android:text="Google"
+                          android:textAllCaps="true"
+                          android:textSize="@dimen/text_size_default" />-->
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
