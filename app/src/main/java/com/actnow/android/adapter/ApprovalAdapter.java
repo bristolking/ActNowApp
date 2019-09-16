@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.ApprovalResponse;
 import com.actnow.android.sdk.responses.TaskListRecords;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHo
         viewHolder.mApprovalTaskName.setText( taskListRecords.getName());
         viewHolder.mApprovalDate.setText( taskListRecords.getDue_date());
         viewHolder.mApprovalTaskPriority.setText(taskListRecords.getPriority());
-        viewHolder.mStatus.setText( taskListRecords.getStatus());
+        viewHolder.mTaskCode.setText( taskListRecords.getTask_code());
 
     }
 
@@ -46,13 +45,13 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mApprovalDate,mApprovalTaskName,mApprovalTaskPriority,mStatus;
+        TextView mApprovalDate,mApprovalTaskName,mApprovalTaskPriority,mTaskCode;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mApprovalTaskName =(TextView)itemView.findViewById(R.id.approvalTaskName);
             mApprovalDate =(TextView)itemView.findViewById(R.id.approvalTaskDate);
             mApprovalTaskPriority =(TextView)itemView.findViewById(R.id.tv_approvalTaskPriority);
-            mStatus =(TextView)itemView.findViewById( R.id.tv_status);
+            mTaskCode =(TextView)itemView.findViewById(R.id.tv_taskCodeApproval);
 
         }
     }

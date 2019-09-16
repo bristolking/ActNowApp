@@ -81,13 +81,12 @@ public class ApprovalsActivity extends AppCompatActivity {
 
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-    String task_code;
-    String taskOwnerName;
-    String taskName;
-    String taskDate;
     TextView mTaskApprovalPriority;
     TextView mTaskApprovalDate;
     TextView mTaskApprovalName;
+    TextView mTaskCode;
+
+    private String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,17 +96,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         appHeaderTwo();
         initializeViews();
         appFooter();
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
-        if (b != null) {
-            taskOwnerName = (String) b.get( "taskOwnerName" );
-            taskName = (String) b.get( "TaskName" );
-            //mTaskApprovalName.setText("" + taskName);
-            taskDate = (String) b.get( "TaskDate" );
-           // mTaskApprovalDate.setText("" + taskDate);
-            task_code = (String) b.get( "TaskCode" );
-            System.out.println( "valuesApproved" + taskOwnerName + taskName + taskDate+task_code );
-        }
+
     }
 
     private void appHeaderTwo() {
@@ -296,7 +285,13 @@ public class ApprovalsActivity extends AppCompatActivity {
                 taskListRecords1.setName( taskListRecords.getName());
                 taskListRecords1.setDue_date( taskListRecords.getDue_date());
                 taskListRecords1.setPriority( taskListRecords.getPriority());
-                taskListRecordsArrayList.add( taskListRecords1 );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                if (taskListRecords.getStatus().equals("2")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
+                    System.out.println( "OutputValues" + taskListRecords1);
+
+                }
+
             }
             mRecyclerViewApproval.setAdapter( new ApprovalAdapter( taskListRecordsArrayList, R.layout.custom_approval_tasklist, getApplicationContext() ) );
             mRecyclerViewApproval.addOnItemTouchListener( new ApprovalsActivity.RecyclerTouchListener( this, mRecyclerViewApproval, new ApprovalsActivity.ClickListener() {
@@ -305,6 +300,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                     mTaskApprovalName = (TextView) view.findViewById( R.id.approvalTaskName );
                     mTaskApprovalDate = (TextView) view.findViewById( R.id.approvalTaskDate );
                     mTaskApprovalPriority = (TextView) view.findViewById( R.id.tv_approvalTaskPriority );
+                    mTaskCode=(TextView)view.findViewById( R.id.tv_taskCodeApproval);
 
                     ImageView mImageTick = (ImageView) view.findViewById( R.id.img_checkedTaskApproval );
                     mImageTick.setOnClickListener( new View.OnClickListener() {
@@ -313,18 +309,25 @@ public class ApprovalsActivity extends AppCompatActivity {
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                            String task_code = mTaskCode.getText().toString();
+                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskApprove( id, task_code, orgn_code );
                             callComplete.enqueue( new Callback<TaskComplete>() {
                                 @Override
                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                    System.out.println( "callComplete" + response.raw() );
                                     if (response.isSuccessful()) {
-                                        System.out.println( "inside" + response.raw() );
-
+                                        if (response.body().getSuccess().equals( "true" )){
+                                            Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
+                                            startActivity(i);
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                                     }
                                 }
                                 @Override
                                 public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
 
                                 }
                             } );
@@ -335,7 +338,31 @@ public class ApprovalsActivity extends AppCompatActivity {
                     mImageWrong.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText( getApplicationContext(), "Wrok in progress!", Toast.LENGTH_LONG ).show();
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = mTaskCode.getText().toString();
+                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheDisApprove( id, task_code, orgn_code );
+                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                @Override
+                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body().getSuccess().equals( "true")){
+                                            Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
+                                            startActivity(i);
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
 
                         }
                     } );

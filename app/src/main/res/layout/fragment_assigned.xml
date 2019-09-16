@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color"
+    android:id="@+id/fragment_assigned"
     tools:context=".fragment.AssignedFragment">
     <RelativeLayout
         android:id="@+id/progress_bar"

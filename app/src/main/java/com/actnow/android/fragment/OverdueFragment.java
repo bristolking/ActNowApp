@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -87,7 +89,7 @@ public class OverdueFragment extends Fragment {
     MultiSelectDialog mIndividuvalDialogtime, mProjectDialogtime;
     final OverdueFragment context = this;
 
-     TextView mTaskName;
+    TextView mTaskName;
 
 
     public OverdueFragment() {
@@ -163,9 +165,7 @@ public class OverdueFragment extends Fragment {
         } catch (JSONException e) {
 
         }
-
     }
-
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -204,8 +204,11 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
                 taskListRecords1.setProject_code( taskListRecords.getProject_code() );
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
-                //taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
-                taskListRecordsArrayList.add( taskListRecords1 );
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                if (taskListRecords.getStatus().equals("1")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
+                }
             }
             mTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
             mTaskRecylcerView.addOnItemTouchListener( new OverdueFragment.RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
@@ -216,7 +219,8 @@ public class OverdueFragment extends Fragment {
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
                     final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
-                    final  TextView  tv_priority =(TextView)view.findViewById( R.id.tv_taskListPriority);
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                     groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
@@ -224,49 +228,12 @@ public class OverdueFragment extends Fragment {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    HashMap<String, String> userId = session.getUserDetails();
-                                    String id = userId.get( UserPrefUtils.ID );
-                                    final String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                                    final String name = mTaskName.getText().toString();
-                                    final String date = tv_dueDate.getText().toString();
-                                    String task_code = tv_taskcode.getText().toString();
-                                    String task_prioroty = tv_priority.getText().toString();
-                                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                                    Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
-                                    callComplete.enqueue( new Callback<TaskComplete>() {
-                                        @Override
-                                        public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                            System.out.println( "callComplete" + response.raw() );
-                                            if (response.isSuccessful()) {
-                                                System.out.println( "inside" + response.raw() );
-                                                if (response.body().getSuccess().equals( "true" )) {
-                                                    String task_code = tv_taskcode.getText().toString();
-                                                    Intent i = new Intent( getActivity(), ApprovalsActivity.class);
-                                                    i.putExtra( "TaskName", name );
-                                                    i.putExtra( "TaskDate", date );
-                                                    i.putExtra( "TaskCode", task_code );
-                                                    i.putExtra( "taskOwnerName", taskOwnerName );
-                                                    System.out.println( "approveddata"+name+date+task_code+taskOwnerName);
-                                                    startActivity(i);
-                                                }else {
-                                                    Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                                                }
-                                            }else {
-                                                AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
-                                            }
-                                        }
-                                        @Override
-                                        public void onFailure(Call<TaskComplete> call, Throwable t) {
-
-                                        }
-                                    } );
                                     Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
-
                                         }
                                     } );
                                     View sbView = snackbar.getView();
@@ -274,11 +241,41 @@ public class OverdueFragment extends Fragment {
                                     textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getActivity(),"Compledt the TASK", Toast.LENGTH_SHORT).show();
                                             view1.setVisibility( View.GONE );
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_code = tv_taskcode.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    if (response.isSuccessful()) {
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                            OverdueFragment fragment2 = new OverdueFragment();
+                                                            FragmentManager fragmentManager = getFragmentManager();
+                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                            fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
+                                                            fragmentTransaction.commit();
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                }
+                                            } );
                                             Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
-
                                         }
                                     } );
                                     snackbar.show();
@@ -289,7 +286,7 @@ public class OverdueFragment extends Fragment {
                             }
                         }
                     } );
-                     mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
+                    mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
                     mTaskName.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

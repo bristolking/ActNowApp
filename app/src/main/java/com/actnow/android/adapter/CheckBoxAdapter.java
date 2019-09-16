@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filter;
 
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
@@ -17,6 +18,9 @@ import java.util.List;
 
 public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHolder> {
     private List<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList;
+
+    private ContactsAdapterListener listener;
+
 
     public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxArrayList, int individual_check, Context applicationContext) {
         this.orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxArrayList;
@@ -54,9 +58,53 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mCheckBox= (CheckBox)itemView.findViewById(R.id.ownerOne);
+            mCheckBox.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onContactSelected(orgnUserRecordsCheckBoxList.get(getAdapterPosition()));
+
+                }
+            } );
            // mEditText=(EditText)itemView.findViewById(R.id.ed_individualName);
 
         }
 
+    }
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxList;
+                } else {
+                    List<OrgnUserRecordsCheckBox> filteredList = new ArrayList<>();
+                    for (OrgnUserRecordsCheckBox row : orgnUserRecordsCheckBoxList) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    orgnUserRecordsCheckBoxList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = orgnUserRecordsCheckBoxList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                orgnUserRecordsCheckBoxList = (ArrayList<OrgnUserRecordsCheckBox>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public interface ContactsAdapterListener {
+        void onContactSelected(OrgnUserRecordsCheckBox orgnUserRecordsCheckBox);
     }
 }

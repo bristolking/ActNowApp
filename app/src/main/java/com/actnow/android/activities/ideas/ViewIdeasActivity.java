@@ -54,6 +54,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -97,6 +98,8 @@ public class ViewIdeasActivity extends AppCompatActivity {
     ArrayList<Integer> individualCheckBox, projectListCheckBox;
     JSONArray individuvalArray;
     JSONArray projectArray;
+
+    TextView mTaskName;
 
 
     @Override
@@ -318,7 +321,10 @@ public class ViewIdeasActivity extends AppCompatActivity {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
-                taskListRecordsArrayList.add(taskListRecords1);
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
+                if (taskListRecords.getStatus().equals("1")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
+                }
             }
             mTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
 
@@ -328,7 +334,10 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     final View view1 = view.findViewById(R.id.taskList_liner);
                     RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
-                    final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
+                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -348,8 +357,36 @@ public class ViewIdeasActivity extends AppCompatActivity {
                                     textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getActivity(),"Compledt the TASK", Toast.LENGTH_SHORT).show();
                                             view1.setVisibility(View.GONE);
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_code = tv_taskcode.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    //System.out.println( "callComplete" + response.raw() );
+                                                    if (response.isSuccessful()) {
+                                                        // System.out.println( "inside" + response.raw() );
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                }
+                                            } );
                                             Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
 

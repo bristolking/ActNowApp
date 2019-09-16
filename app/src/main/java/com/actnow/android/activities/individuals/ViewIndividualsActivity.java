@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -294,17 +295,10 @@ public class ViewIndividualsActivity extends AppCompatActivity {
             mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
-                    //View view1 = (View) findViewById(R.id.liner_projectList);
+                    View view1 = (View) findViewById(R.id.liner_projectList);
+                    ImageView imgMenu =(ImageView)view.findViewById( R.id.img_menuSharingIndividual);
+                    CheckBox checkBox =(CheckBox)view.findViewById(R.id.ownerOne);
 
-                    /*CheckBox checkBox =(CheckBox)view.findViewById(R.id.ownerOne);
-                    final ImageView imgMenu =(ImageView)view.findViewById( R.id.);
-                    imgMenu.setOnClickListener( new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            imgMenu.setVisibility(GONE);
-
-                        }
-                    } );*/
 
                 }
 

@@ -54,6 +54,7 @@ import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -100,196 +101,200 @@ public class DailyTaskListActivity extends AppCompatActivity {
     Button mDailyTaskListButtonAdavancedSearch;
     ImageView mDailyTaskListImageBulbTask;
 
+    TextView mTaskName;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        session = new UserPrefUtils(getApplicationContext());
-        setContentView(R.layout.activity_daily_task_list);
+        super.onCreate( savedInstanceState );
+        session = new UserPrefUtils( getApplicationContext() );
+        setContentView( R.layout.activity_daily_task_list );
         appHeaderTwo();
         initializeViews();
         appFooter();
     }
 
     private void appHeaderTwo() {
-        ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
-        imgeBack.setOnClickListener(new View.OnClickListener() {
+        ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
+        imgeBack.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
-        TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
-        TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
-        btnLink2.setVisibility(View.GONE);
-        btnLink1.setText("TASKS");
-        btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
-        btnCalendar.setOnClickListener(new View.OnClickListener() {
+        } );
+        TextView btnLink1 = (TextView) findViewById( R.id.btn_link_1_two );
+        TextView btnLink2 = (TextView) findViewById( R.id.btn_link_2_two );
+        btnLink2.setVisibility( View.GONE );
+        btnLink1.setText( "TASKS" );
+        btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
+        btnCalendar.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), MonthlyTaskListActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), MonthlyTaskListActivity.class );
+                startActivity( i );
             }
-        });
-        ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
-        btnNotifications.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
+        btnNotifications.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT).show();
+                Toast.makeText( getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT ).show();
             }
-        });
-        ImageView btnSettings = (ImageView) findViewById(R.id.btn_settingsAppHeaderTwo);
-        btnSettings.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView btnSettings = (ImageView) findViewById( R.id.btn_settingsAppHeaderTwo );
+        btnSettings.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-                i.putExtra("email", accountEmail);
-                startActivity(i);
+                String accountEmail = userId.get( UserPrefUtils.EMAIL );
+                Intent i = new Intent( getApplicationContext(), SettingsActivity.class );
+                i.putExtra( "email", accountEmail );
+                startActivity( i );
                 finish();
             }
-        });
-        ImageView btnMenu = (ImageView) findViewById(R.id.img_menuTopTwo);
-        btnMenu.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView btnMenu = (ImageView) findViewById( R.id.img_menuTopTwo );
+        btnMenu.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                final NavigationView navigationView = (NavigationView) findViewById( R.id.nav_view );
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get(UserPrefUtils.ID);
-                String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
-                mImageProfile.setOnClickListener(new View.OnClickListener() {
+                String id = userId.get( UserPrefUtils.ID );
+                String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
+                mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
-                        startActivity(i);
+                        Intent i = new Intent( getApplicationContext(), EditAccountActivity.class );
+                        startActivity( i );
                     }
-                });
-                TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
-                mTextName.setText(taskOwnerName);
-                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                } );
+                TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
+                mTextName.setText( taskOwnerName );
+                navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToady = new Intent(getApplicationContext(), TodayTaskActivity.class);
-                                startActivity(iToady);
+                                Intent iToady = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                startActivity( iToady );
                                 finish();
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
-                                startActivity(iTimeLine);
+                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
+                                startActivity( iTimeLine );
                                 break;
                             case R.id.nav_filter:
-                                Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
+                                Toast.makeText( getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT ).show();
                                 break;
                             case R.id.nav_profile:
                                 HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get(UserPrefUtils.ID);
-                                String name = userId.get(UserPrefUtils.NAME);
-                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
-                                iprofile.putExtra("id", id);
-                                iprofile.putExtra("name", name);
-                                iprofile.putExtra("email", accountEmail);
-                                startActivity(iprofile);
+                                String id = userId.get( UserPrefUtils.ID );
+                                String name = userId.get( UserPrefUtils.NAME );
+                                String accountEmail = userId.get( UserPrefUtils.EMAIL );
+                                Intent iprofile = new Intent( getApplicationContext(), EditAccountActivity.class );
+                                iprofile.putExtra( "id", id );
+                                iprofile.putExtra( "name", name );
+                                iprofile.putExtra( "email", accountEmail );
+                                startActivity( iprofile );
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
-                                startActivity(ipremium);
+                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
+                                startActivity( ipremium );
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
+                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
+                                startActivity( ithisweek );
                                 break;
                         }
                         return false;
                     }
-                });
-                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_dailytaskList);
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                } );
+                final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_dailytaskList );
+                if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
-                    drawer.openDrawer(GravityCompat.START);
-                }ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
-                imgeClose.setOnClickListener(new View.OnClickListener() {
+                    drawer.openDrawer( GravityCompat.START );
+                }
+                ImageView imgeClose = (ImageView) findViewById( R.id.nav_close );
+                imgeClose.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (drawer.isDrawerOpen(GravityCompat.START)) {
-                            drawer.closeDrawer(GravityCompat.START);
+                        if (drawer.isDrawerOpen( GravityCompat.START )) {
+                            drawer.closeDrawer( GravityCompat.START );
                         } else {
-                            drawer.openDrawer(GravityCompat.START);
+                            drawer.openDrawer( GravityCompat.START );
                         }
                     }
-                });
+                } );
 
             }
-        });
+        } );
 
     }
 
     private void initializeViews() {
-        mProgressView = findViewById(R.id.progress_bar);
-        mContentLayout = findViewById(R.id.content_layout);
-        View view = (View) findViewById(R.id.liner_taskDailyList);
-        view.setOnClickListener(new View.OnClickListener() {
+        requestDynamicContent();
+        mProgressView = findViewById( R.id.progress_bar );
+        mContentLayout = findViewById( R.id.content_layout );
+        View view = (View) findViewById( R.id.liner_taskDailyList );
+        view.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
+                startActivity( i );
                 finish();
             }
-        });
+        } );
         mIndividuvalDialog = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
+        individualCheckBox.add( 0 );
 
-        mDailyTaskListImageBulbTask = findViewById(R.id.image_bulbDailyTaskList);
-        mDailyTaskListImageBulbTask.setOnClickListener(new View.OnClickListener() {
+        mDailyTaskListImageBulbTask = findViewById( R.id.image_bulbDailyTaskList );
+        mDailyTaskListImageBulbTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                startActivity( i );
             }
-        });
-        mDailyTasklistQucikSearch = findViewById(R.id.edit_searchDailyTaskList);
-        mDailyTasklistQucikSearch.setOnClickListener(new View.OnClickListener() {
+        } );
+        mDailyTasklistQucikSearch = findViewById( R.id.edit_searchDailyTaskList );
+        mDailyTasklistQucikSearch.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+                Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG ).show();
 
             }
-        });
-        mDailyTaskListButtonAdavancedSearch = findViewById(R.id.button_searchDailyTaskList);
-        mDailyTaskListButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
+        } );
+        mDailyTaskListButtonAdavancedSearch = findViewById( R.id.button_searchDailyTaskList );
+        mDailyTaskListButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+                Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG ).show();
             }
-        });
+        } );
 
-        mSpinnerDailyTaskList = (Spinner) findViewById(R.id.spinnerDailyTaskList);
-        arrayAdapterDaily = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, repetitive);
-        mSpinnerDailyTaskList.setAdapter(arrayAdapterDaily);
-        mSpinnerDailyTaskList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinnerDailyTaskList = (Spinner) findViewById( R.id.spinnerDailyTaskList );
+        arrayAdapterDaily = new ArrayAdapter<String>( getApplicationContext(), android.R.layout.simple_dropdown_item_1line, repetitive );
+        mSpinnerDailyTaskList.setAdapter( arrayAdapterDaily );
+        mSpinnerDailyTaskList.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) mSpinnerDailyTaskList.getSelectedView()).setTextColor(getResources().getColor(R.color.colorAccent));
+                ((TextView) mSpinnerDailyTaskList.getSelectedView()).setTextColor( getResources().getColor( R.color.colorAccent ) );
                 switch (position) {
                     case 0:
                         break;
                     case 1:
-                        Intent iWeekly = new Intent(getApplicationContext(), WeeklyTaskListActivity.class);
-                        startActivity(iWeekly);
+                        Intent iWeekly = new Intent( getApplicationContext(), WeeklyTaskListActivity.class );
+                        startActivity( iWeekly );
                         break;
                     case 2:
-                        Intent iMonthly = new Intent(getApplicationContext(), MonthlyTaskListSpinnerActivity.class);
-                        startActivity(iMonthly);
-                        break;case 3:
-                        Intent iYearly = new Intent(getApplicationContext(), YearlyTaskListActivity.class);
-                        startActivity(iYearly);
+                        Intent iMonthly = new Intent( getApplicationContext(), MonthlyTaskListSpinnerActivity.class );
+                        startActivity( iMonthly );
+                        break;
+                    case 3:
+                        Intent iYearly = new Intent( getApplicationContext(), YearlyTaskListActivity.class );
+                        startActivity( iYearly );
                         break;
                   /*  case 4:
                         Intent iRepetitive = new Intent(getApplicationContext(), TaskAddListActivity.class);
@@ -304,103 +309,140 @@ public class DailyTaskListActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
-        fabDailyTaskList = findViewById(R.id.fab_dailyTask);
-        fabDailyTaskList.setOnClickListener(new View.OnClickListener() {
+        } );
+        fabDailyTaskList = findViewById( R.id.fab_dailyTask );
+        fabDailyTaskList.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get(UserPrefUtils.ID);
-                String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                Intent i = new Intent(getApplicationContext(), ViewTasksActivity.class);
-                i.putExtra("id", id);
-                i.putExtra("taskOwnerName", taskOwnerName);
-                startActivity(i);
+                String id = userId.get( UserPrefUtils.ID );
+                String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                Intent i = new Intent( getApplicationContext(), ViewTasksActivity.class );
+                i.putExtra( "id", id );
+                i.putExtra( "taskOwnerName", taskOwnerName );
+                startActivity( i );
             }
-        });
+        } );
 
 
-        mDailyTaskListRecylcerView = findViewById(R.id.dailytask_recyclerView);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mDailyTaskListRecylcerView.setLayoutManager(mLayoutManager);
-        mDailyTaskListRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
-        mDailyTaskListRecylcerView.setAdapter(mTaskListAdapter);
+        mDailyTaskListRecylcerView = findViewById( R.id.dailytask_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getApplicationContext() );
+        mDailyTaskListRecylcerView.setLayoutManager( mLayoutManager );
+        mDailyTaskListRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() );
+        mDailyTaskListRecylcerView.setAdapter( mTaskListAdapter );
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
-        call.enqueue(new Callback<TaskListResponse>() {
+        String id = userId.get( UserPrefUtils.ID );
+        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
+        call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                System.out.println("res"+response.raw());
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                System.out.println( "res" + response.raw() );
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
-                    System.out.println("url" + response.raw());
-                    if (response.body().getSuccess().equals("true")) {
-                        setProjectFooterList(response.body().getTask_records());
+                    System.out.println( "url" + response.raw() );
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setProjectFooterList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                Log.d( "CallBack", " Throwable is " + t );
 
             }
-        });
+        } );
     }
 
     private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
-                TaskListRecords taskListRecords = taskListRecordsList.get(i);
+                TaskListRecords taskListRecords = taskListRecordsList.get( i );
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName(taskListRecords.getName());
-                taskListRecords1.setDue_date(taskListRecords.getDue_date());
-                taskListRecords1.setPriority(taskListRecords.getPriority());
-                taskListRecordsArrayList.add(taskListRecords1);
-
+                taskListRecords1.setName( taskListRecords.getName() );
+                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
+                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                if (taskListRecords.getStatus().equals( "1" )) {
+                    taskListRecordsArrayList.add( taskListRecords1 );
+                }
 
             }
-            mDailyTaskListRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
-            mDailyTaskListRecylcerView.addOnItemTouchListener(new DailyTaskListActivity.RecyclerTouchListener(this, mDailyTaskListRecylcerView, new DailyTaskListActivity.ClickListener() {
+            mDailyTaskListRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() ) );
+            mDailyTaskListRecylcerView.addOnItemTouchListener( new DailyTaskListActivity.RecyclerTouchListener( this, mDailyTaskListRecylcerView, new DailyTaskListActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
-                    final View view1 = view.findViewById(R.id.taskList_liner);
-                    RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
-                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
-                    final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
-                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    final View view1 = view.findViewById( R.id.taskList_liner );
+                    RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
+                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            view1.setVisibility(View.VISIBLE);
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
+                                            view1.setVisibility( View.VISIBLE );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
-                                    });
+                                    } );
                                     View sbView = snackbar.getView();
-                                    TextView textView =(TextView)sbView.findViewById(R.id.snackbar_text);
-                                    textView.setOnClickListener(new View.OnClickListener() {
+                                    TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
+                                    textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getActivity(),"Compledt the TASK", Toast.LENGTH_SHORT).show();
-                                            view1.setVisibility(View.GONE);
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
+                                            view1.setVisibility( View.GONE );
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_code = tv_taskcode.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> taskCompleteCall = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            taskCompleteCall.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    if (response.isSuccessful()) {
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                            Intent i = new Intent( getApplicationContext(), DailyTaskListActivity.class );
+                                                            startActivity( i );
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                                }
+                                            } );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
 
                                         }
-                                    });
+                                    } );
                                     snackbar.show();
                                 } else if (checkedId == 0) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -408,110 +450,110 @@ public class DailyTaskListActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                    });
-                    TextView mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
-                    mTaskName.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
+                    mTaskName.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
-                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                            String taskOwnerName = userId.get( UserPrefUtils.NAME );
                             String s = radioButtonTaskName.getText().toString();
                             String s1 = tv_dueDate.getText().toString();
-                            Intent i = new Intent(getApplicationContext(), EditTaskActivity.class);
-                            i.putExtra("TaskName", s);
-                            i.putExtra("TaskDate", s1);
-                            i.putExtra("taskOwnerName", taskOwnerName);
-                            startActivity(i);
+                            Intent i = new Intent( getApplicationContext(), EditTaskActivity.class );
+                            i.putExtra( "TaskName", s );
+                            i.putExtra( "TaskDate", s1 );
+                            i.putExtra( "taskOwnerName", taskOwnerName );
+                            startActivity( i );
                         }
-                    });
-                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
-                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
+                    mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
                         }
-                    });
-                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
-                    mImageComment.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
+                    mImageComment.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
-                            startActivity(i);
+                            Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                            startActivity( i );
                         }
-                    });
-                    ImageView mImageRaminder = (ImageView) view.findViewById(R.id.img_raminderTaskList);
-                    mImageRaminder.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
+                    mImageRaminder.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                            dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
-                            dialog.setCancelable(true);
-                            dialog.setContentView(R.layout.remainder_list_add);
+                            final Dialog dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
+                            dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
+                            dialog.setCancelable( true );
+                            dialog.setContentView( R.layout.remainder_list_add );
                             final Calendar remianderCalender = Calendar.getInstance();
-                            final EditText ed_dateRaminder = (EditText) dialog.findViewById(R.id.ed_dateReminder);
+                            final EditText ed_dateRaminder = (EditText) dialog.findViewById( R.id.ed_dateReminder );
                             final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                    remianderCalender.set(Calendar.YEAR, year);
-                                    remianderCalender.set(Calendar.MONTH, monthOfYear);
-                                    remianderCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                    remianderCalender.set( Calendar.YEAR, year );
+                                    remianderCalender.set( Calendar.MONTH, monthOfYear );
+                                    remianderCalender.set( Calendar.DAY_OF_MONTH, dayOfMonth );
                                     String myFormat = "yyyy-MM-dd"; //In which you need put here
-                                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
-                                    ed_dateRaminder.setText(sdf.format(remianderCalender.getTime()));
+                                    SimpleDateFormat sdf = new SimpleDateFormat( myFormat, Locale.UK );
+                                    ed_dateRaminder.setText( sdf.format( remianderCalender.getTime() ) );
                                 }
                             };
-                            ed_dateRaminder.setOnClickListener(new View.OnClickListener() {
+                            ed_dateRaminder.setOnClickListener( new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    new DatePickerDialog(DailyTaskListActivity.this, date, remianderCalender
-                                            .get(Calendar.YEAR), remianderCalender.get(Calendar.MONTH),
-                                            remianderCalender.get(Calendar.DAY_OF_MONTH)).show();
+                                    new DatePickerDialog( DailyTaskListActivity.this, date, remianderCalender
+                                            .get( Calendar.YEAR ), remianderCalender.get( Calendar.MONTH ),
+                                            remianderCalender.get( Calendar.DAY_OF_MONTH ) ).show();
                                 }
-                            });
-                            final EditText ed_timeRemiander = (EditText)dialog.findViewById(R.id.ed_timeReminder);
-                            ed_timeRemiander.setOnClickListener(new View.OnClickListener() {
+                            } );
+                            final EditText ed_timeRemiander = (EditText) dialog.findViewById( R.id.ed_timeReminder );
+                            ed_timeRemiander.setOnClickListener( new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Calendar mcurrentTime = Calendar.getInstance();
-                                    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                                    int minute = mcurrentTime.get(Calendar.MINUTE);
+                                    int hour = mcurrentTime.get( Calendar.HOUR_OF_DAY );
+                                    int minute = mcurrentTime.get( Calendar.MINUTE );
                                     TimePickerDialog mTimePicker;
-                                    mTimePicker = new TimePickerDialog(DailyTaskListActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                                    mTimePicker = new TimePickerDialog( DailyTaskListActivity.this, new TimePickerDialog.OnTimeSetListener() {
                                         @Override
                                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                            ed_timeRemiander.setText(selectedHour + ":" + selectedMinute);
+                                            ed_timeRemiander.setText( selectedHour + ":" + selectedMinute );
                                         }
-                                    }, hour, minute, true);//Yes 24 hour time
-                                    mTimePicker.setTitle("Select Time");
+                                    }, hour, minute, true );//Yes 24 hour time
+                                    mTimePicker.setTitle( "Select Time" );
                                     mTimePicker.show();
                                 }
-                            });
-                            final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
-                            mAddTextView.setOnClickListener(new View.OnClickListener() {
+                            } );
+                            final TextView mAddTextView = (TextView) dialog.findViewById( R.id.tv_remainderAdd );
+                            mAddTextView.setOnClickListener( new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT ).show();
                                 }
-                            });
-                            TextView mCancelTextView =(TextView)dialog.findViewById(R.id.tv_remainderCancel);
-                            mCancelTextView.setOnClickListener(new View.OnClickListener() {
+                            } );
+                            TextView mCancelTextView = (TextView) dialog.findViewById( R.id.tv_remainderCancel );
+                            mCancelTextView.setOnClickListener( new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_SHORT ).show();
                                 }
-                            });
-                            ImageView mImgDropRemainder =(ImageView)dialog.findViewById(R.id.imge_reminderDropDown);
-                            mImgDropRemainder.setOnClickListener(new View.OnClickListener() {
+                            } );
+                            ImageView mImgDropRemainder = (ImageView) dialog.findViewById( R.id.imge_reminderDropDown );
+                            mImgDropRemainder.setOnClickListener( new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                                    mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
 
                                 }
-                            });
+                            } );
 
                             dialog.show();
                         }
-                    });
+                    } );
 
                 }
 
@@ -520,7 +562,7 @@ public class DailyTaskListActivity extends AppCompatActivity {
 
                 }
 
-            }));
+            } ) );
         }
     }
 
@@ -537,26 +579,26 @@ public class DailyTaskListActivity extends AppCompatActivity {
 
         public RecyclerTouchListener(DailyTaskListActivity context, final RecyclerView mRecylerViewSingleSub, DailyTaskListActivity.ClickListener clickListener) {
             this.clicklistener = clickListener;
-            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
                     }
                 }
-            });
+            } );
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
-                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            View child = rv.findChildViewUnder( e.getX(), e.getY() );
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
+                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
             }
 
             return false;
@@ -571,134 +613,134 @@ public class DailyTaskListActivity extends AppCompatActivity {
         }
 
     }
+
     private void requestDynamicContent() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
+        String id = userId.get( UserPrefUtils.ID );
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
+        call.enqueue( new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setLoadCheckBox( response.body().getOrgn_users_records() );
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
 
             @Override
             public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                Log.d( "CallBack", " Throwable is " + t );
             }
-        });
+        } );
 
     }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
+                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
             }
             mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                    .title( "Individuval" ) //setting title for dialog
+                    .titleSize( 25 )
+                    .positiveText( "Done" )
+                    .negativeText( "Cancel" )
+                    .preSelectIDsList( individualCheckBox )
+                    .setMinSelectionLimit( 0 )
+                    .setMaxSelectionLimit( listOfIndividuval.size() )
+                    .multiSelectList( listOfIndividuval ) // the multi select model list with ids and name
+                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
                         @Override
                         public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
                             for (int i = 0; i < selectedIds.size(); i++) {
                                 // mIndividualCheckBox.setText(dataString);
                             }
-                            individuvalArray = new JSONArray(selectedIds);
+                            individuvalArray = new JSONArray( selectedIds );
                         }
 
                         @Override
                         public void onCancel() {
-                            Log.d("TAG", "Dialog cancelled");
+                            Log.d( "TAG", "Dialog cancelled" );
                         }
-                    });
+                    } );
         }
     }
 
 
-
     private void appFooter() {
-        View btnMe = findViewById(R.id.btn_me);
-        btnMe.setOnClickListener(new View.OnClickListener() {
+        View btnMe = findViewById( R.id.btn_me );
+        btnMe.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityToady();
             }
-        });
-        View btnProject = findViewById(R.id.btn_projects);
-        btnProject.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnProject = findViewById( R.id.btn_projects );
+        btnProject.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityProject();
             }
-        });
-        View btnTask = findViewById(R.id.btn_task);
-        btnTask.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnTask = findViewById( R.id.btn_task );
+        btnTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityTasks();
             }
-        });
-        View btnIndividuals = findViewById(R.id.btn_individuals);
-        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnIndividuals = findViewById( R.id.btn_individuals );
+        btnIndividuals.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityIndividuals();
             }
-        });
-        View btnInsights = findViewById(R.id.btn_insights);
-        btnInsights.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnInsights = findViewById( R.id.btn_insights );
+        btnInsights.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        });
-        ImageView imgProject = (ImageView) findViewById(R.id.img_task);
-        imgProject.setImageResource(R.drawable.ic_tasklistred);
-        TextView txtProject = (TextView) findViewById(R.id.txt_task);
-        txtProject.setTextColor(getResources().getColor(R.color.colorAccent));
+        } );
+        ImageView imgProject = (ImageView) findViewById( R.id.img_task );
+        imgProject.setImageResource( R.drawable.ic_tasklistred );
+        TextView txtProject = (TextView) findViewById( R.id.txt_task );
+        txtProject.setTextColor( getResources().getColor( R.color.colorAccent ) );
     }
 
     private void activityToady() {
-        Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityProject() {
-        Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityTasks() {
-        Toast.makeText(getApplicationContext(), "Selected the Tasks", Toast.LENGTH_LONG).show();
+        Toast.makeText( getApplicationContext(), "Selected the Tasks", Toast.LENGTH_LONG ).show();
     }
 
     private void activityIndividuals() {
-        Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityInsights() {
-        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
 

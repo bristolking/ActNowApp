@@ -91,11 +91,16 @@ public interface ANApi {
     @POST("app/task/comments/{id}/{code}")
     Call<ResponseBody> checkTheTaskCommentList(@Path("id")String id,@Path("code")String task_code,@Field("orgn_code") String orgn_code);
     @FormUrlEncoded
-    @POST("app/task/complete/{id}/{task_code}")
-    Call<TaskComplete> checkTheTaskComplete(@Path("id")String id, @Path( "task_code")String task_code, @Field("orgn_code")String orgn_code);
+    @POST("app/task/complete/{id}/{code}")
+    Call<TaskComplete> checkTheTaskComplete(@Path("id")String id, @Path( "code")String task_code, @Field("orgn_code")String orgn_code);
+    @FormUrlEncoded
+    @POST("app/task/approve/{id}/{task_code}")
+    Call<TaskComplete> checkTheTaskApprove(@Path("id")String id,@Path("task_code")String task_code,@Field("orgn_code") String orgn_code);
 
 
-
+    @FormUrlEncoded
+    @POST("app/task/disapprove/{id}/{task_code}")
+    Call<TaskComplete> checkTheDisApprove(@Path( "id") String id,@Path("task_code")String task_code,@Field("orgn_code")String orgn_code);
 
     /*
     @GET("app/project/get/{id}/{projectCode}")

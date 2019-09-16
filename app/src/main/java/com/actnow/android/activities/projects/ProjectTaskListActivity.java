@@ -278,6 +278,8 @@ public class ProjectTaskListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+
             }
         });
     }

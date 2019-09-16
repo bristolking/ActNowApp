@@ -73,7 +73,7 @@ public class SharingInvitationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-               // filter(s.toString());
+                filter(s.toString());
             }
         } );
         addEmailSharing = (View) findViewById( R.id.re_addEmailSharing );
@@ -94,7 +94,7 @@ public class SharingInvitationActivity extends AppCompatActivity {
         } );
     }
 
-  /*  private void filter(String toString) {
+    private void filter(String toString) {
         for (OrgnUserRecordsCheckBox item :orgnUserRecordsCheckBoxArrayList ) {
             if (item.getName().toLowerCase().contains(toString.toLowerCase())) {
                 orgnUserRecordsCheckBoxArrayList.add(item);
@@ -102,7 +102,7 @@ public class SharingInvitationActivity extends AppCompatActivity {
         }
 
         checkBoxAdapter.filterList(orgnUserRecordsCheckBoxArrayList);
-    }*/
+    }
 
     private void createExampleList() {
         HashMap<String, String> userId = session.getUserDetails();

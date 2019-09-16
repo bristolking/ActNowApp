@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.RepetitiveFragment">
-
+    android:background="@color/color"
+    android:id="@+id/fragment_repetitive"
+    tools:context=".fragment.OverdueFragment">
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true" />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/content_layout"
@@ -26,21 +27,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="5dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:paddingRight="10dp"
+            android:layout_marginTop="5dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="RepetitiveTasks Names"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/repetitive_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </RelativeLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_repetitivetask"
         android:layout_width="wrap_content"
@@ -51,5 +55,4 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="70dp"
         app:srcCompat="@drawable/ic_add_circular" />
-
 </FrameLayout>

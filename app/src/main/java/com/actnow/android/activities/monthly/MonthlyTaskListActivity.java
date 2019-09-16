@@ -332,11 +332,9 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                                     textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getActivity(),"Compledt the TASK", Toast.LENGTH_SHORT).show();
                                             view1.setVisibility(View.GONE);
                                             Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
-
                                         }
                                     });
                                     snackbar.show();

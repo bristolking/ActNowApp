@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +41,7 @@ import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -78,6 +81,7 @@ public class AssignedFragment extends Fragment {
     ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
     String id;
     MultiSelectDialog mIndividuvalDialogtime, mProjectDialogtime;
+    TextView mTaskName;
 
     public  AssignedFragment(){
 
@@ -153,8 +157,12 @@ public class AssignedFragment extends Fragment {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
-                //taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
-                taskListRecordsArrayList.add(taskListRecords1);
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
+                if (taskListRecords.getStatus().equals("1")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
+                }
             }
             mAssignedTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext()));
             mAssignedTaskRecylcerView.addOnItemTouchListener(new AssignedFragment.RecyclerTouchListener(this, mAssignedTaskRecylcerView, new AssignedFragment.ClickListener() {
@@ -163,7 +171,10 @@ public class AssignedFragment extends Fragment {
                     final View view1 = view.findViewById(R.id.taskList_liner);
                     RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
-                    final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
+                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
@@ -184,8 +195,39 @@ public class AssignedFragment extends Fragment {
                                     textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getActivity(),"Compledt the TASK", Toast.LENGTH_SHORT).show();
                                             view1.setVisibility(View.GONE);
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_code = tv_taskcode.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    if (response.isSuccessful()) {
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                            AssignedFragment assignedFragment = new AssignedFragment();
+                                                            FragmentManager fragmentManager = getFragmentManager();
+                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                            fragmentTransaction.replace(R.id.fragment_assigned, assignedFragment);
+                                                            fragmentTransaction.commit();
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                }
+                                            } );
                                             Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
 
@@ -199,7 +241,7 @@ public class AssignedFragment extends Fragment {
                             }
                         }
                     });
-                    TextView mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                     mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
                     mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

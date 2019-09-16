@@ -47,6 +47,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -87,6 +88,8 @@ public class TodayTaskActivity extends AppCompatActivity {
     ArrayList<Integer> individualCheckBox, projectListCheckBox;
     JSONArray individuvalArray;
     JSONArray projectArray;
+    TextView mTaskName;
+    String task_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +115,9 @@ public class TodayTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent iApproval = new Intent(getApplicationContext(), ApprovalsActivity.class);
+                //iApproval.putExtra( "TaskCode", task_code );
                 startActivity(iApproval);
-                finish();
+                //System.out.println( "TaskCode"+ task_code);
             }
         });
         btnLink1.setText("Today");
@@ -275,7 +279,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
-                        setProjectFooterList(response.body().getTask_records());
+                        setTaskList(response.body().getTask_records());
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -292,7 +296,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         });
     }
 
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get(i);
@@ -301,8 +305,10 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                taskListRecordsArrayList.add(taskListRecords1);
-
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                if (taskListRecords.getStatus().equals("1")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
+                }
 
             }
             mTodayRecyclerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
@@ -312,7 +318,11 @@ public class TodayTaskActivity extends AppCompatActivity {
                     final View view1 = view.findViewById(R.id.taskList_liner);
                     RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
-                    final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
+                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    task_code = tv_taskcode.getText().toString();
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -332,8 +342,34 @@ public class TodayTaskActivity extends AppCompatActivity {
                                     textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getActivity(),"Compledt the TASK", Toast.LENGTH_SHORT).show();
                                             view1.setVisibility(View.GONE);
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    if (response.isSuccessful()) {
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                            Intent i =new Intent(getApplicationContext(),TodayTaskActivity.class);
+                                                            startActivity(i);
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                }
+                                            } );
                                             Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
 
@@ -347,8 +383,8 @@ public class TodayTaskActivity extends AppCompatActivity {
                             }
                         }
                     });
-                    TextView mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
-                    mTaskName.setOnClickListener(new View.OnClickListener() {
+                     mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                     mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();

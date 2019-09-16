@@ -82,8 +82,6 @@ public class TaskAddListActivity extends AppCompatActivity {
     private FrameLayout mainlayout;
     int someIndex;
 
-
-    //String[] repetitive = {"","Daily", "Weekly", "Monthly", "Yearly"};
     String[] repetitive = {"","DAILY", "WEEKLY", "MONTHLY", "YEARLY"};
 
 
