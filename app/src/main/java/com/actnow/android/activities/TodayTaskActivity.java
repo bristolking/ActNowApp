@@ -56,6 +56,7 @@ import org.json.JSONArray;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -259,6 +260,7 @@ public class TodayTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -274,10 +276,8 @@ public class TodayTaskActivity extends AppCompatActivity {
         call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                System.out.println("res"+response.raw());
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setTaskList(response.body().getTask_records());
                     } else {
@@ -307,9 +307,15 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 if (taskListRecords.getStatus().equals("1")) {
-                    taskListRecordsArrayList.add(taskListRecords1);
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    String date2[] = taskListRecords.getDue_date().split( " " );
+                    String date3 = date2[0];
+                    if (date3.equals(formattedDate)){
+                        taskListRecordsArrayList.add(taskListRecords1);
+                    }
                 }
-
             }
             mTodayRecyclerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
             mTodayRecyclerView.addOnItemTouchListener(new TodayTaskActivity.RecyclerTouchListener(this, mTodayRecyclerView, new ClickListener() {
@@ -333,6 +339,8 @@ public class TodayTaskActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
+                                            Intent i =new Intent(getApplicationContext(),TodayTaskActivity.class);
+                                            startActivity(i);
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }

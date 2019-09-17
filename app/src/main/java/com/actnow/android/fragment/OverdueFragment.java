@@ -36,7 +36,6 @@ import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.activities.ApprovalsActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
@@ -55,6 +54,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,6 +65,7 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import java.util.Date;
 
 import static com.actnow.android.R.layout.task_list_cutsom;
 
@@ -90,7 +91,6 @@ public class OverdueFragment extends Fragment {
     final OverdueFragment context = this;
 
     TextView mTaskName;
-
 
     public OverdueFragment() {
 
@@ -132,6 +132,7 @@ public class OverdueFragment extends Fragment {
         mTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
         mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
         mTaskRecylcerView.setAdapter( mTaskListAdapter );
+
         return view;
     }
 
@@ -182,7 +183,6 @@ public class OverdueFragment extends Fragment {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
 
@@ -207,11 +207,25 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
                 if (taskListRecords.getStatus().equals("1")) {
-                    taskListRecordsArrayList.add(taskListRecords1);
+                    //taskListRecordsArrayList.add(taskListRecords1);
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    String date2[] = taskListRecords.getDue_date().split( " " );
+                    String date3 = date2[0];
+                    try {
+                       Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
+                        if(date1.before(date4)){
+                            taskListRecordsArrayList.add(taskListRecords1);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             }
             mTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
-            mTaskRecylcerView.addOnItemTouchListener( new OverdueFragment.RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
+            mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
@@ -232,6 +246,11 @@ public class OverdueFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
+                                            OverdueFragment fragment2 = new OverdueFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
+                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -369,7 +388,7 @@ public class OverdueFragment extends Fragment {
                                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                                             ed_timeRemiander.setText( selectedHour + ":" + selectedMinute );
                                         }
-                                    }, hour, minute, true );//Yes 24 hour time
+                                    }, hour, minute, true );
                                     mTimePicker.setTitle( "Select Time" );
                                     mTimePicker.show();
                                 }

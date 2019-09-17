@@ -370,10 +370,10 @@ public class ViewIdeasActivity extends AppCompatActivity {
                                             callComplete.enqueue( new Callback<TaskComplete>() {
                                                 @Override
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                                    //System.out.println( "callComplete" + response.raw() );
                                                     if (response.isSuccessful()) {
-                                                        // System.out.println( "inside" + response.raw() );
                                                         if (response.body().getSuccess().equals( "true" )) {
+                                                            Intent i= new Intent( getApplicationContext(),ViewIdeasActivity.class);
+                                                            startActivity(i);
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }

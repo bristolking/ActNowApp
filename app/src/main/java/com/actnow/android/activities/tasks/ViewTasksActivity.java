@@ -635,6 +635,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals( "true" )) {
                         Intent i = new Intent( ViewTasksActivity.this, TaskAddListActivity.class );
                         startActivity( i );
+                        Snackbar.make( mContentLayout, "Task will be Created", Snackbar.LENGTH_SHORT ).show();
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -664,8 +665,6 @@ public class ViewTasksActivity extends AppCompatActivity {
         tv_create.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {
                 attemptCreateTask();
-                Toast.makeText( getApplicationContext(),"selecte data",Toast.LENGTH_LONG ).show();
-
             }
         } );
 

@@ -162,6 +162,7 @@ public class PriorityFragment extends Fragment {
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 if (taskListRecords.getStatus().equals("1")) {
                     taskListRecordsArrayList.add(taskListRecords1);
+
                 }
             }
             mPriorityTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext()));
@@ -186,6 +187,11 @@ public class PriorityFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
+                                            PriorityFragment priorityFragment = new PriorityFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace(R.id.fragment_priority, priorityFragment);
+                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }

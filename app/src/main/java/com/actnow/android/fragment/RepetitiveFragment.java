@@ -188,6 +188,11 @@ public class RepetitiveFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
+                                            RepetitiveFragment repetitiveFragment = new RepetitiveFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace(R.id.fragment_repetitive, repetitiveFragment);
+                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }

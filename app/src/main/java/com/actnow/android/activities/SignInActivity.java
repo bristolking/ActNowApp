@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.SignInResponse;
+import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.google.android.gms.auth.api.Auth;
@@ -212,11 +213,34 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
     private void handleSignInResult(GoogleSignInResult result) {
         //Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-
             GoogleSignInAccount acct = result.getSignInAccount();
             String personName = acct.getDisplayName();
             String personPhotoUrl = acct.getPhotoUrl().toString();
             String email = acct.getEmail();
+            Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(personName,email,null,null);
+            call.enqueue(new Callback<SignUpResponse>() {
+                @Override
+                public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+                    AndroidUtils.showProgress(false,mProgressView,mContentLayout);
+                    if (response.isSuccessful()){
+                        if (response.body().getSuccess().equals("true")){
+                            SignUpResponse response2= response.body();
+                            session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name());
+                            AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
+
+                        } else {
+                            Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    }
+                }
+                @Override
+                public void onFailure(Call<SignUpResponse> call, Throwable t) {
+                    Log.d("CallBack", " Throwable is " + t);
+                }
+            });
+
 
             Log.e("googlelogin", "Name: " + personName + ", email: " + email + ", Image: " + personPhotoUrl);
 

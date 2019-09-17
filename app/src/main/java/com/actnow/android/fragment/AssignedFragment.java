@@ -186,6 +186,11 @@ public class AssignedFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
+                                            AssignedFragment assignedFragment = new AssignedFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace(R.id.fragment_assigned, assignedFragment);
+                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }

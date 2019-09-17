@@ -383,6 +383,8 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
+                                            Intent i = new Intent( getApplicationContext(), MonthlyTaskListSpinnerActivity.class );
+                                            startActivity( i );
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
