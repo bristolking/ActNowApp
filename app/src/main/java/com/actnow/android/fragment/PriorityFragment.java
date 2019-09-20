@@ -116,7 +116,6 @@ public class PriorityFragment extends Fragment {
         mPriorityTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
         mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext());
         mPriorityTaskRecylcerView.setAdapter(mTaskListAdapter);
-
     return  view;
     }
 

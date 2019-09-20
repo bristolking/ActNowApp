@@ -17,12 +17,15 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface ANApi {
@@ -46,9 +49,10 @@ public interface ANApi {
     @GET("app/user_details/{id}")
     Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
 
+    @Multipart
     @FormUrlEncoded
     @POST("app/update_profile/{id}")
-    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id,@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password);
+    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password); /*@Part MultipartBody.Part file*/
 
     @FormUrlEncoded
     @POST("app/organization/add/{id}")

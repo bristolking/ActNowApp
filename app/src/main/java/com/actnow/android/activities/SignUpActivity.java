@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.actnow.android.ANApplications;
@@ -25,6 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button msignUpButton;
     UserPrefUtils session;
     View mProgressView,mContentLayout;
+    CheckBox mDisclaimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +42,8 @@ public class SignUpActivity extends AppCompatActivity {
         msignUpPassword=findViewById(R.id.et_sinUpPassword);
         msignUpMobile =findViewById(R.id.et_signUpmobile);
         msignUpButton= findViewById(R.id.bt_signUp);
+        mDisclaimer = (CheckBox)findViewById(R.id.chk_disclaimer);
+
         msignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,10 +82,16 @@ public class SignUpActivity extends AppCompatActivity {
         }if(cancel){
             focusView.requestFocus();
         }else{
-            requestSignUp(name,email,mobile,password);
+              if (mDisclaimer.isChecked()) {
+                  AndroidUtils.showProgress(true,mProgressView,mContentLayout);
+                  requestSignUp(name,email,mobile,password);
+              } else {
+                Snackbar.make(mContentLayout, "Accept Terms of Service & Privacy Policy", Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
     private void requestSignUp(String userName,String userEmail,String mobileNumber,String userPassword ){
+        System.out.println( "logindata"+ userEmail+userName+ mobileNumber+userPassword);
         Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,mobileNumber,userPassword);
         call.enqueue(new Callback<SignUpResponse>() {
             @Override

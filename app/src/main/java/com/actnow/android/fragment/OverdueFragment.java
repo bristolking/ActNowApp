@@ -183,6 +183,7 @@ public class OverdueFragment extends Fragment {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
+                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
 
@@ -207,21 +208,21 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
                 if (taskListRecords.getStatus().equals("1")) {
-                    //taskListRecordsArrayList.add(taskListRecords1);
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     String formattedDate = df.format(date1);
                     String date2[] = taskListRecords.getDue_date().split( " " );
                     String date3 = date2[0];
+                    System.out.println( "yestarday"+ date1 );
                     try {
                        Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
-                        if(date1.before(date4)){
+                       System.out.println( "date3"+ date4 );
+                        if(date4.before(date1)){
                             taskListRecordsArrayList.add(taskListRecords1);
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
             mTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );

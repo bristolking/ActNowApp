@@ -37,6 +37,8 @@
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
+                    <include layout="@layout/toady_over_due"/>
+
                 <TextView
                     android:id="@+id/tv_titleThisWeek"
                     android:layout_width="match_parent"
@@ -47,7 +49,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/thisweek_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent" />
             </LinearLayout>
         </LinearLayout>
         <include layout="@layout/app_header_two" />

@@ -292,6 +292,8 @@ public class ThisWeekActivity extends AppCompatActivity {
                 taskListRecords1.setProject_code(taskListRecords.getProject_code());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 if (taskListRecords.getStatus().equals("1")) {
+                /*    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.DATE, -7);*/
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
             }

@@ -312,16 +312,18 @@ public class TaskAddListActivity extends AppCompatActivity {
             } else if (position == 1) {
                 fragment = new PriorityFragment();
             } else if (position == 2) {
-                fragment = new AssignedFragment();
-            } else if (position == 3) {
                 fragment = new RepetitiveFragment();
             }
+                //fragment = new AssignedFragment();
+           /* } else if (position == 3) {
+                fragment = new RepetitiveFragment();
+            }*/
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
 
         public CharSequence getPageTitle(int position) {
@@ -331,10 +333,10 @@ public class TaskAddListActivity extends AppCompatActivity {
             } else if (position == 1) {
                 title = "Priority";
             } else if (position == 2) {
-                title = "Assigned";
-            }else if (position == 3)
-            {
                 title = "Repetitive";
+               // title = "Assigned";
+            /*}else if (position == 3) {
+                title = "Repetitive";*/
             }
 
             return title;

@@ -2,7 +2,6 @@ package com.actnow.android.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,29 +12,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.SignInResponse;
-import com.actnow.android.sdk.responses.SignUpResponse;
+import com.actnow.android.sdk.responses.SignInResponse;;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignInActivity extends AppCompatActivity  implements  View.OnClickListener,GoogleApiClient.OnConnectionFailedListener{
+public class SignInActivity extends AppCompatActivity {
     UserPrefUtils session;
     View mProgressView,mContentLayout;
     EditText mEmail,mPass;
@@ -62,10 +53,24 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
         mContentLayout = findViewById(R.id.content_layout);
         mEmail = findViewById(R.id.et_loginEmail);
         mPass = findViewById(R.id.et_loginPassword);
-        mDisclaimer = (CheckBox)findViewById(R.id.chk_disclaimer);
+      //  mDisclaimer = (CheckBox)findViewById(R.id.chk_disclaimer);
 
-        btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
-        //mGoogleButton =(Button)findViewById( R.id.bt_google);
+        //btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
+        mGoogleButton =(Button)findViewById( R.id.bt_google);
+        mGoogleButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
+            }
+        } );
+        mFacebookButton =(Button)findViewById( R.id.bt_facebook);
+        mFacebookButton.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
+
+            }
+        } );
         mForgotPassWord= findViewById(R.id.forgot_password);
         mForgotPassWord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,16 +92,16 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
                 activitySignUp();
             }
         });
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+       /* GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi( Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+                .build();*/
 
-        btnSignIn.setOnClickListener(this);
+       // btnSignIn.setOnClickListener(this);
     }
 
     private void attemptLogin(){
@@ -123,19 +128,25 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
         if(cancel){
             focusView.requestFocus();
         } else {
-            if (mDisclaimer.isChecked()) {
+            requestLogin(email, pass);
+            System.out.println( "logindata"+email+pass);
+
+           /* if (mDisclaimer.isChecked()) {
                 AndroidUtils.showProgress(true,mProgressView,mContentLayout);
                 requestLogin(email, pass);
             } else {
                 Snackbar.make(mContentLayout, "Accept Terms of Service & Privacy Policy", Snackbar.LENGTH_SHORT).show();
-            }
+            }*/
         }
     }
     private void requestLogin(String username, String password){
+        System.out.println( "userDeatails"+username+password);
+
         Call<SignInResponse> call = ANApplications.getANApi().userSignIn(username,password);
         call.enqueue(new Callback<SignInResponse>() {
             @Override
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                System.out.println( "reponse"+ response.raw());
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
@@ -157,18 +168,17 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
             }
         });
     }
-    @Override
-    public void onClick(View v) {
+ /*   public void onClick(View v) {
         int id = v.getId();
-
-        switch (id) {
+*//*
+        *//**//*switch (id) {
             case R.id.btn_sign_in:
                 signIn();
-                break;
-        }
+                break;*//**//*
+        }*//*
     }
-
-    private void signIn() {
+*/
+    /*private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -217,38 +227,13 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
             String personName = acct.getDisplayName();
             String personPhotoUrl = acct.getPhotoUrl().toString();
             String email = acct.getEmail();
-            Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(personName,email,null,null);
-            call.enqueue(new Callback<SignUpResponse>() {
-                @Override
-                public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
-                    AndroidUtils.showProgress(false,mProgressView,mContentLayout);
-                    if (response.isSuccessful()){
-                        if (response.body().getSuccess().equals("true")){
-                            SignUpResponse response2= response.body();
-                            session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name());
-                            AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
-
-                        } else {
-                            Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
-                        }
-                    }else {
-                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                    }
-                }
-                @Override
-                public void onFailure(Call<SignUpResponse> call, Throwable t) {
-                    Log.d("CallBack", " Throwable is " + t);
-                }
-            });
-
-
             Log.e("googlelogin", "Name: " + personName + ", email: " + email + ", Image: " + personPhotoUrl);
 
-       /*     Glide.with(getApplicationContext()).load(personPhotoUrl)
+       *//*     Glide.with(getApplicationContext()).load(personPhotoUrl)
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy( DiskCacheStrategy.ALL)
-                    .into(imgProfilePic);*/
+                    .into(imgProfilePic);*//*
             updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
@@ -280,7 +265,7 @@ public class SignInActivity extends AppCompatActivity  implements  View.OnClickL
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
         }
-    }
+    }*/
     private void activityMe(){
         Intent i =new Intent(SignInActivity.this, TodayTaskActivity.class);
         startActivity(i);

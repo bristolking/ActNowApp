@@ -76,29 +76,25 @@
                         android:singleLine="true"
                         android:textSize="@dimen/text_size_default" />
                 </android.support.design.widget.TextInputLayout>
-
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
-                    <CheckBox
+                    android:orientation="vertical">
+                   <!-- <CheckBox
                         android:id="@+id/chk_disclaimer"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.7"
                         android:text="Terms of Service &amp; Privacy Policy"
-                        android:textSize="@dimen/text_size_small" />
+                        android:textSize="@dimen/text_size_small" />-->
                     <TextView
                         android:id="@+id/forgot_password"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.3"
-                        android:gravity="center|end"
                         android:text="Forgot Password"
-                        android:textAlignment="viewEnd"
-                        android:textSize="@dimen/text_size_small"/>
-                </LinearLayout>
+                        android:layout_alignParentRight="true"
+                        android:textSize="@dimen/text_size_small" />
+                </RelativeLayout>
                 <Button
                     android:id="@+id/bt_login"
                     android:layout_width="match_parent"
@@ -141,23 +137,22 @@
                     android:layout_marginTop="@dimen/standard_12">
                     <Button
                         android:id="@+id/bt_facebook"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_weight="0.5"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:background="@drawable/btn_primary"
                         android:text="Facebook"
                         android:backgroundTint="#3b579d"
-                        android:layout_marginRight="@dimen/standard_8"
                         android:textAllCaps="true"
                         android:textColor="@color/colorWhite"
                         android:textSize="@dimen/text_size_default" />
-                    <com.google.android.gms.common.SignInButton
+                    <!--<com.google.android.gms.common.SignInButton
                         android:id="@+id/btn_sign_in"
                         android:layout_width="wrap_content"
                         android:layout_weight="0.5"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"/>-->
 
-                    <!--  <Button
+                      <Button
                           android:id="@+id/bt_google"
                           android:layout_width="0dp"
                           android:layout_weight="0.5"
@@ -166,7 +161,7 @@
                           android:layout_marginLeft="@dimen/standard_8"
                           android:text="Google"
                           android:textAllCaps="true"
-                          android:textSize="@dimen/text_size_default" />-->
+                          android:textSize="@dimen/text_size_default" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

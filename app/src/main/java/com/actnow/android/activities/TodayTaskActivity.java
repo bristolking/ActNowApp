@@ -53,6 +53,8 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import org.json.JSONArray;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,6 +75,11 @@ public class TodayTaskActivity extends AppCompatActivity {
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
+
+    RecyclerView mToadyOverDueTask;
+    RecyclerView.LayoutManager mLayoutManagerOverDue;
+    TaskListAdapter mTaskListOverDueAdapter;
+
     RecyclerView mTodayRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     TaskListAdapter mTaskListAdapter;
@@ -92,6 +99,7 @@ public class TodayTaskActivity extends AppCompatActivity {
     TextView mTaskName;
     String task_code;
 
+    String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -263,15 +271,44 @@ public class TodayTaskActivity extends AppCompatActivity {
 
             }
         });
+        //overDueRecyclerView
+        mToadyOverDueTask = findViewById(R.id.toadyTaskOverDue_recyclerView);
+        mLayoutManagerOverDue = new LinearLayoutManager(getApplicationContext());
+        mToadyOverDueTask.setLayoutManager(mLayoutManagerOverDue);
+        mToadyOverDueTask.setItemAnimator(new DefaultItemAnimator());
+        mTaskListOverDueAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mToadyOverDueTask.setAdapter(mTaskListOverDueAdapter);
+        id = userId.get(UserPrefUtils.ID);
+        Call<TaskListResponse> callOverDue= ANApplications.getANApi().checkTheTaskListResponse(id);
+        callOverDue.enqueue(new Callback<TaskListResponse>() {
+            @Override
+            public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals("true")) {
+                        setOverDueTaskList( response.body().getTask_records());
+                    } else {
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                }
+            }
 
+            @Override
+            public void onFailure(Call<TaskListResponse> call, Throwable t) {
+                Log.d("CallBack", " Throwable is " + t);
+
+            }
+        });
+        //TodayRecyclerView
         mTodayRecyclerView = findViewById(R.id.thisweek_recyclerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTodayRecyclerView.setLayoutManager(mLayoutManager);
         mTodayRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
         mTodayRecyclerView.setAdapter(mTaskListAdapter);
-
-        String id = userId.get(UserPrefUtils.ID);
+         id = userId.get(UserPrefUtils.ID);
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
         call.enqueue(new Callback<TaskListResponse>() {
             @Override
@@ -296,6 +333,38 @@ public class TodayTaskActivity extends AppCompatActivity {
         });
     }
 
+    //OverDue TaskList
+    private void setOverDueTaskList(List<TaskListRecords> taskListRecords2) {
+        if (taskListRecords2.size() > 0) {
+            for (int i = 0; taskListRecords2.size() > i; i++) {
+                TaskListRecords taskListRecords = taskListRecords2.get( i );
+                TaskListRecords taskListRecords1 = new TaskListRecords();
+                taskListRecords1.setName( taskListRecords.getName() );
+                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
+                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                if (taskListRecords.getStatus().equals("1")) {
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    String date2[] = taskListRecords.getDue_date().split( " " );
+                    String date3 = date2[0];
+                    try {
+                        Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
+                        System.out.println( "date3"+ date4 );
+                        if(date4.before(date1)){
+                            taskListRecordsArrayList.add(taskListRecords1);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }
+    }
+    // Today Task list
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
