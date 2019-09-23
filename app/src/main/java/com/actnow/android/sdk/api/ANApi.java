@@ -17,6 +17,8 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 
+import java.io.File;
+
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -52,7 +54,7 @@ public interface ANApi {
     @Multipart
     @FormUrlEncoded
     @POST("app/update_profile/{id}")
-    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password); /*@Part MultipartBody.Part file*/
+    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password,@Part MultipartBody.Part file); /*@Part MultipartBody.Part file*/
 
     @FormUrlEncoded
     @POST("app/organization/add/{id}")

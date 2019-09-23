@@ -131,14 +131,14 @@ public class ShareInvitationActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // filter recycler view when query submitted
 
-                checkBoxAdapter.getFilter().filter(query);
+               // checkBoxAdapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String query) {
                 // filter recycler view when text is changed
-                checkBoxAdapter.getFilter().filter(query);
+                //checkBoxAdapter.getFilter().filter(query);
                 return false;
             }
         });

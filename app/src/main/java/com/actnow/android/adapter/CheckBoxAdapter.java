@@ -18,14 +18,12 @@ import java.util.List;
 public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHolder> {
     private List<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList;
 
-    private ContactsAdapterListener listener;
+    //private ContactsAdapterListener listener;
 
 
     public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxArrayList, int individual_check, Context applicationContext) {
         this.orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxArrayList;
     }
-
-
     @NonNull
     @Override
     public CheckBoxAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -45,10 +43,10 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
         return orgnUserRecordsCheckBoxList.size();
     }
 
-    public void filterList(ArrayList<OrgnUserRecordsCheckBox> filteredList) {
+  /*  public void filterList(ArrayList<OrgnUserRecordsCheckBox> filteredList) {
         orgnUserRecordsCheckBoxList = filteredList;
         notifyDataSetChanged();
-    }
+    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox mCheckBox;
@@ -57,19 +55,12 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mCheckBox= (CheckBox)itemView.findViewById(R.id.ownerOne);
-            mCheckBox.setOnClickListener( new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onContactSelected(orgnUserRecordsCheckBoxList.get(getAdapterPosition()));
-
-                }
-            } );
            // mEditText=(EditText)itemView.findViewById(R.id.ed_individualName);
 
         }
 
     }
-    public Filter getFilter() {
+    /*public Filter getFilter() {
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
@@ -105,5 +96,5 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
 
     public interface ContactsAdapterListener {
         void onContactSelected(OrgnUserRecordsCheckBox orgnUserRecordsCheckBox);
-    }
+    }*/
 }

@@ -1,8 +1,10 @@
 package com.actnow.android.activities;
 
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -26,10 +28,9 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,6 +97,8 @@ public class CommentsActivity extends AppCompatActivity {
     String task_code;
 
     MultipartBody.Part[] surveyImagesParts;
+    private CharSequence[] items = {"EDIT", "DELETE"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +246,28 @@ public class CommentsActivity extends AppCompatActivity {
         taskCommentListReponse();
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void showPopup(View view){
+        final PopupMenu popupMenu = new PopupMenu( this,view );
+        popupMenu.inflate( R.menu.comment_menu);
+        popupMenu.setGravity(Gravity.RIGHT|Gravity.CENTER);
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.editComment :
+                        Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
+                        return  true;
+                    case R.id.deleteComment :
+                        Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
+                        return  true;
+                        default:
+                            return  false;
+                }
+            }
+        } );
+    }
 
     private void taskCommentListReponse() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -360,7 +385,6 @@ public class CommentsActivity extends AppCompatActivity {
                 projectCommentRecordsList.setComment( comment );
                 projectCommentRecordsList.setUser_name( name );
                 projectCommentRecordsList.setCreated_date( date );
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -369,48 +393,21 @@ public class CommentsActivity extends AppCompatActivity {
         mCommentRecylcerView.setAdapter( new ProjectCommentListAdapter( projectCommentRecordsListArrayList, R.layout.comment_custom_list, getApplicationContext() ) );
         mCommentRecylcerView.addOnItemTouchListener( new CommentsActivity.RecyclerTouchListener( this, mCommentRecylcerView, new ClickListener() {
             @Override
-            public void onClick(View view, int position) {
+            public void onClick(final View view, int position) {
                 View view1 = (View) view.findViewById( R.id.liner_projectList );
+                ImageView mMenuComment = (ImageView) view.findViewById(R.id.img_menuComment);
+                mMenuComment.setOnClickListener( new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onClick(View v) {
+                     showPopup( view);
+                    }
+                } );
+
                 TextView mCommentUserName = (TextView) view.findViewById( R.id.tv_userNameComment );
                 TextView mCommentDate = (TextView) view.findViewById( R.id.tv_commentDate );
                 TextView mCommentMeassge = (TextView) view.findViewById( R.id.tv_commentText );
-                ImageView mUserProfileComment = (ImageView) view.findViewById( R.id.img_userprofileComment );
-                final ImageView mMenuComment = (ImageView) view.findViewById( R.id.img_menuComment );
-                mMenuComment.getLocationOnScreen( location );
-                mMenuComment.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Dialog dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
-                        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
-                        dialog.setCancelable( true );
-                        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
-                        dialog.setContentView( R.layout.comment_edit_delete );
-                        TextView mCommentEdit = (TextView) dialog.findViewById( R.id.tv_editComment );
-                        TextView mDeleteComment = (TextView) dialog.findViewById( R.id.tv_deleteComment );
-                        mCommentEdit.setOnClickListener( new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
 
-                            }
-                        } );
-                        mDeleteComment.setOnClickListener( new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                            }
-                        } );
-                        Window window = dialog.getWindow();
-                        WindowManager.LayoutParams wlp = window.getAttributes();
-                        wlp.gravity = Gravity.TOP | Gravity.RIGHT;
-                        wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-                        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-                        wlp.x = 1; // The new position of the X coordinates
-                        wlp.y = 1; // The new position of the Y coordinates
-                        wlp.width = 500; // Width
-                        window.setAttributes( wlp );
-                        dialog.show();
-                    }
-                } );
             }
 
             @Override

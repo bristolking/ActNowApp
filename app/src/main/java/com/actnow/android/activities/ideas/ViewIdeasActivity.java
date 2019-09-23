@@ -267,17 +267,16 @@ public class ViewIdeasActivity extends AppCompatActivity {
                 dialog.setCancelable(true);
                 dialog.setContentView(R.layout.remainder);
                 CalendarView calendarView = (CalendarView) dialog.findViewById(R.id.calendarView);
-                final TextView tv_raminderDate = (TextView)dialog.findViewById(R.id.tv_popreminderDate);
+           /*     final TextView tv_raminderDate = (TextView)dialog.findViewById(R.id.tv_popreminderDate);
                 TextView tv_timedate = (TextView)dialog.findViewById(R.id.tv_popreminderTime);
-                tv_timedate.setVisibility(View.GONE);
+                tv_timedate.setVisibility(View.GONE);*/
                 if (calendarView != null) {
                     calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                         @Override
                         public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                            //String msg = "Selected date is " + dayOfMonth + "/" + (month + 1) + "/" + year;
                             String msg="Selected date is" + (month +1)+ "/"+ dayOfMonth+ "/"+year;
                             Toast.makeText(ViewIdeasActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            tv_raminderDate.setText(dayOfMonth + "/" + month+ "/" + year );
+                            //tv_raminderDate.setText(dayOfMonth + "/" + month+ "/" + year );
                         }
                     });
                 }

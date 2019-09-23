@@ -272,7 +272,7 @@ public class TodayTaskActivity extends AppCompatActivity {
             }
         });
         //overDueRecyclerView
-        mToadyOverDueTask = findViewById(R.id.toadyTaskOverDue_recyclerView);
+      /*  mToadyOverDueTask = findViewById(R.id.toadyTaskOverDue_recyclerView);
         mLayoutManagerOverDue = new LinearLayoutManager(getApplicationContext());
         mToadyOverDueTask.setLayoutManager(mLayoutManagerOverDue);
         mToadyOverDueTask.setItemAnimator(new DefaultItemAnimator());
@@ -300,7 +300,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 Log.d("CallBack", " Throwable is " + t);
 
             }
-        });
+        });*/
         //TodayRecyclerView
         mTodayRecyclerView = findViewById(R.id.thisweek_recyclerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -334,7 +334,7 @@ public class TodayTaskActivity extends AppCompatActivity {
     }
 
     //OverDue TaskList
-    private void setOverDueTaskList(List<TaskListRecords> taskListRecords2) {
+    /*private void setOverDueTaskList(List<TaskListRecords> taskListRecords2) {
         if (taskListRecords2.size() > 0) {
             for (int i = 0; taskListRecords2.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecords2.get( i );
@@ -363,7 +363,8 @@ public class TodayTaskActivity extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
+
     // Today Task list
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {

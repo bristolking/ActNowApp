@@ -11,9 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
@@ -101,7 +99,7 @@ public class SharingInvitationActivity extends AppCompatActivity {
             }
         }
 
-        checkBoxAdapter.filterList(orgnUserRecordsCheckBoxArrayList);
+       /// checkBoxAdapter.filterList(orgnUserRecordsCheckBoxArrayList);
     }
 
     private void createExampleList() {
