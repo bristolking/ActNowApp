@@ -36,6 +36,7 @@ import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
+import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
@@ -281,73 +282,8 @@ public class AssignedFragment extends Fragment {
                     mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                            dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
-                            dialog.setCancelable(true);
-                            dialog.setContentView(R.layout.remainder_list_add);
-                            final Calendar remianderCalender = Calendar.getInstance();
-                            final EditText ed_dateRaminder = (EditText) dialog.findViewById(R.id.ed_dateReminder);
-                            final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                    remianderCalender.set(Calendar.YEAR, year);
-                                    remianderCalender.set(Calendar.MONTH, monthOfYear);
-                                    remianderCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                    String myFormat = "yyyy-MM-dd"; //In which you need put here
-                                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.UK);
-                                    ed_dateRaminder.setText(sdf.format(remianderCalender.getTime()));
-                                }
-                            };
-                            ed_dateRaminder.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    new DatePickerDialog(getActivity(), date, remianderCalender
-                                            .get(Calendar.YEAR), remianderCalender.get(Calendar.MONTH),
-                                            remianderCalender.get(Calendar.DAY_OF_MONTH)).show();
-                                }
-                            });
-                            final EditText ed_timeRemiander = (EditText) dialog.findViewById(R.id.ed_timeReminder);
-                            ed_timeRemiander.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Calendar mcurrentTime = Calendar.getInstance();
-                                    int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                                    int minute = mcurrentTime.get(Calendar.MINUTE);
-                                    TimePickerDialog mTimePicker;
-                                    mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-                                        @Override
-                                        public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                            ed_timeRemiander.setText(selectedHour + ":" + selectedMinute);
-                                        }
-                                    }, hour, minute, true);//Yes 24 hour time
-                                    mTimePicker.setTitle("Select Time");
-                                    mTimePicker.show();
-                                }
-                            });
-                            final TextView mAddTextView =(TextView)dialog.findViewById(R.id.tv_remainderAdd);
-                            mAddTextView.setOnClickListener( new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Toast.makeText(getActivity(), "Work in Progress!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            TextView mCancelTextView =(TextView)dialog.findViewById(R.id.tv_remainderCancel);
-                            mCancelTextView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Toast.makeText(getActivity(), "Work in Progress!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            ImageView mImgDropRemainder =(ImageView)dialog.findViewById(R.id.imge_reminderDropDown);
-                            mImgDropRemainder.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
-
-                                }
-                            });
-
-                            dialog.show();
+                            Intent i =new Intent( getActivity(), ReaminderScreenActivity.class);
+                            startActivity(i);
                         }
                     });
 

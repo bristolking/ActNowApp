@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/drawer_yearlyChart"
     android:fitsSystemWindows="true"
-    android:background="@color/color"
+    android:background="@color/colorWhite"
     tools:openDrawer="right"
     tools:context=".activities.insights.YearlyTaskChartActivity">
     <RelativeLayout

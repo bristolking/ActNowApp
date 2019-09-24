@@ -8,7 +8,7 @@
     android:id="@+id/drawer_projectMonth"
     android:fitsSystemWindows="true"
     tools:openDrawer="right"
-    android:background="@color/color"
+    android:background="@color/colorWhite"
     tools:context=".activities.monthly.ProjectMonthlyActivity">
     <RelativeLayout
         android:id="@+id/progress_bar"
@@ -51,7 +51,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/linebackground" />
+                    android:background="@colorWhite/linebackground" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/linebackground" />
+                    android:background="@colorWhite/linebackground" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/linebackground" />
+                    android:background="@colorWhite/linebackground" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

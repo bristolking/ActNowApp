@@ -41,7 +41,7 @@
                             android:id="@+id/re_actNowPremium"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/color"
+                            android:background="@color/colorWhite"
                             android:orientation="horizontal"
                             android:padding="10dp">
 
@@ -93,7 +93,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:background="@color/color"
+                                android:background="@color/colorWhite"
                                 android:padding="10dp">
                                 <ImageView
                                     android:id="@+id/image_userAccount"
@@ -135,7 +135,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:background="@color/color"
+                            android:background="@color/colorWhite"
                             android:orientation="horizontal"
                             android:padding="10dp">
                             <ImageView
@@ -181,7 +181,7 @@
                                 android:id="@+id/re_help"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/color"                                android:orientation="horizontal"
+                                android:background="@color/colorWhite"                                android:orientation="horizontal"
                                 android:padding="10dp">
 
                                 <ImageView
@@ -223,7 +223,7 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/color"
+                                android:background="@color/colorWhite"
                                 android:orientation="horizontal"
                                 android:padding="10dp">
 
@@ -266,7 +266,7 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/color"
+                            android:background="@color/colorWhite"
                             android:orientation="horizontal"
                             android:padding="10dp">
                             <ImageView
@@ -316,7 +316,7 @@
                                 android:id="@+id/setting_logout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/color"
+                                android:background="@color/colorWhite"
                                 android:text="LOGOUT"
                                 android:textAllCaps="true"
                                 android:textColor="@color/colorAccent" />

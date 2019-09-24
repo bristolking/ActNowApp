@@ -23,7 +23,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color"
+            android:background="@color/colorWhite"
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -57,7 +57,7 @@
             android:id="@+id/re_dailyReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color"
+            android:background="@color/colorWhite"
             android:orientation="horizontal"
             android:paddingLeft="25dp">
 
@@ -89,7 +89,7 @@
             android:id="@+id/re_sharing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color"
+            android:background="@color/colorWhite"
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -120,7 +120,7 @@
             android:id="@+id/re_subScribedEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color"
+            android:background="@color/colorWhite"
             android:orientation="horizontal"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -152,7 +152,7 @@
             android:id="@+id/le_gotoPrimarySetting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color"
+            android:background="@color/colorWhite"
             android:orientation="vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">

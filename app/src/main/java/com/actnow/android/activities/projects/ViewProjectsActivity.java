@@ -189,7 +189,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ColorPickerDialogBuilder
                         .with( context )
-                        .setTitle( "Choose color" )
+                        .setTitle( "Choose colorWhite" )
                         .initialColor( currentBackgroundColor )
                         .wheelType( ColorPickerView.WHEEL_TYPE.FLOWER )
                         .density( 12 )

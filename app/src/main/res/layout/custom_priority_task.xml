@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/color">
+    android:background="@color/colorWhite">
 
 
     <RelativeLayout
@@ -82,7 +82,7 @@
         android:layout_below="@+id/overDueTaskButton"
         android:paddingLeft="30dp"
         android:text="18/01/2019,"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@colorWhite/colorAccent" />
 
     <TextView
         android:id="@+id/tv_overTaskProjectName"
@@ -91,7 +91,7 @@
         android:layout_below="@id/overDueTaskButton"
         android:layout_toRightOf="@+id/tv_overDueTaskDate"
         android:text="Project:"
-        android:textColor="@color/colorAccent" />-->
+        android:textColor="@colorWhite/colorAccent" />-->
 
 
 </LinearLayout>

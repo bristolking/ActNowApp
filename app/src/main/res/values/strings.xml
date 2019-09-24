@@ -29,6 +29,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="search_hint">Type name…</string>
 
+    <string name="title_activity_share">ShareActivity</string>
     <string-array name="eventtype">
         <item>All events</item>
         <item>Added tasks</item>
@@ -44,6 +45,8 @@
         <item>3</item>
         <item>4</item>
     </string-array>
+
+
     <string-array name="dates">
         <item>1</item>
         <item>2</item>
@@ -77,8 +80,6 @@
         <item>30</item>
         <item>31</item>
     </string-array>
-
-
     <string-array name="weekdays">
         <item>Sunday</item>
         <item>Monday</item>

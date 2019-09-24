@@ -187,7 +187,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.color.colorAccent));
+                //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.colorWhite.colorAccent));
                 switch (position) {
                     case 0:
                         Toast.makeText(getApplicationContext(), "Seleted the Monthly Chart", Toast.LENGTH_SHORT).show();
@@ -372,7 +372,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
      /*   ImageView imgProject = (ImageView) findViewById(R.id.img_individuals);
         imgProject.setImageResource(R.drawable.ic_individuals_red);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_individuals);
-        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));*/
+        txtIndividual.setTextColor(getResources().getColor(R.colorWhite.colorAccent));*/
     }
 
     private void activityToady() {

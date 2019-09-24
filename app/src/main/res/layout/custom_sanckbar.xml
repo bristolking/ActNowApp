@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Completed"
-            android:textColor="@color/color"
+            android:textColor="@color/colorWhite"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
         <TextView
             android:id="@+id/tv_sanckbarUndo"

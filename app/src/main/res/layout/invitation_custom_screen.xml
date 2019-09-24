@@ -33,8 +33,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="50dp"
-        app:srcCompat="@drawable/ic_add_user_red"
-        android:visibility="gone"/>
+        app:srcCompat="@drawable/ic_add_user_red" />
     <ImageView
         android:id="@+id/img_appHeaderMenuSharing"
         android:layout_width="wrap_content"

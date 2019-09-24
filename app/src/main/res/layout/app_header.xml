@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_default"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@colorWhite/colorPrimaryDark"
             android:textAlignment="center"
             android:text="Link 3"
             android:visibility="gone"/>-->

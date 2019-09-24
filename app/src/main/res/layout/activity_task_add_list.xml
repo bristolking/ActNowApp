@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_taskList"
-    android:background="@color/color"
+    android:background="@color/colorWhite"
     android:fitsSystemWindows="true"
     tools:openDrawer="right"
     tools:context=".activities.tasks.TaskAddListActivity">
@@ -38,7 +38,7 @@
                 <!-- <View
                      android:layout_width="match_parent"
                      android:layout_height="2dp"
-                     android:background="@color/colorAccent" />
+                     android:background="@colorWhite/colorAccent" />
                  <LinearLayout
                      android:layout_width="match_parent"
                      android:layout_height="match_parent"
@@ -50,7 +50,7 @@
                          android:layout_height="wrap_content"
                          android:text="Tasks Names"
                          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                         android:textColor="@color/colorPrimary" />
+                         android:textColor="@colorWhite/colorPrimary" />
                      <android.support.v7.widget.RecyclerView
                          android:id="@+id/task_recyclerView"
                          android:layout_width="match_parent"

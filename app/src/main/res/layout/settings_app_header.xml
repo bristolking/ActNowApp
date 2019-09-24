@@ -45,6 +45,6 @@
         android:layout_alignParentRight="true"
         android:text="EDIT"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-        android:textColor="@color/colorAccent"/>-->
+        android:textColor="@colorWhite/colorAccent"/>-->
 
 </RelativeLayout>

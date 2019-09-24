@@ -69,12 +69,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="50dp"
-                android:background="@color/linebackground" />
+                android:background="@colorWhite/linebackground" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorWhite"
+                android:background="@colorWhite/colorWhite"
                 android:orientation="horizontal"
                 android:padding="5dp">
                 <ImageView
@@ -90,7 +90,7 @@
                     android:layout_toRightOf="@+id/image_blackStar"
                     android:text="Subscribed Emails"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/black" />
+                    android:textColor="@colorWhite/black" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/linebackground" />-->
+                android:background="@colorWhite/linebackground" />-->
 
 
             <RelativeLayout
@@ -124,23 +124,23 @@
                     <!-- <View
                          android:layout_width="match_parent"
                          android:layout_height="1dp"
-                         android:background="@color/linebackground" />
+                         android:background="@colorWhite/linebackground" />
                      <Button
                          android:id="@+id/bt_deleteAccount"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
-                         android:background="@color/colorWhite"
+                         android:background="@colorWhite/colorWhite"
                          android:gravity="center"
                          android:text="Delete Account"
                          android:textAllCaps="true"
                          android:padding="10dp"
                          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                         android:textColor="@color/colorAccent"
+                         android:textColor="@colorWhite/colorAccent"
                          android:textStyle="bold" />
                      <View
                          android:layout_width="match_parent"
                          android:layout_height="1dp"
-                         android:background="@color/linebackground" />-->
+                         android:background="@colorWhite/linebackground" />-->
 
                     <TextView
                         android:id="@+id/tv_accountEmailunder"

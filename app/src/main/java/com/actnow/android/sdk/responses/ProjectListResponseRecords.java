@@ -116,7 +116,7 @@ public class ProjectListResponseRecords {
                 "project_id='" + project_id + '\'' +
                 ", name='" + name + '\'' +
                 ", project_code='" + project_code + '\'' +
-                ", color='" + color + '\'' +
+                ", colorWhite='" + color + '\'' +
                 ", priority='" + priority + '\'' +
                 ", due_date='" + due_date + '\'' +
                 ", project_members='" + project_members + '\'' +

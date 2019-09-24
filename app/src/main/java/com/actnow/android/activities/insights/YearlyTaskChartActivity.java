@@ -188,7 +188,7 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.color.colorAccent));
+                //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.colorWhite.colorAccent));
                 switch (position) {
                     case 0:
                         Toast.makeText(getApplicationContext(), "Seleted the Yearly Chart", Toast.LENGTH_SHORT).show();

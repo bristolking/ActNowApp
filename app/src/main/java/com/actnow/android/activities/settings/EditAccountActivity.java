@@ -3,6 +3,9 @@ package com.actnow.android.activities.settings;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -26,10 +29,17 @@ import com.android.volley.toolbox.StringRequest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,12 +56,22 @@ public class EditAccountActivity extends AppCompatActivity {
     String accountEmail;
     String getId;
     Bitmap bitmap;
+    String screen= "NFG";
+
+    String email;
+    String  password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         session = new UserPrefUtils(getApplicationContext());
         setContentView(R.layout.activity_edit_account);
         header();
+        if(getIntent()!=null && getIntent().getExtras()!=null){
+            Bundle bundle = getIntent().getExtras();
+            if(bundle.containsKey("screen")){
+                screen = bundle.getString("screen");
+            }
+        }
         initializeViews();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
@@ -80,6 +100,7 @@ public class EditAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 accountUpadte();
+                Toast.makeText( getApplicationContext(),"account Update",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -108,8 +129,8 @@ public class EditAccountActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+   /* protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData()!= null){
             Uri filePath = data.getData();
@@ -123,8 +144,8 @@ public class EditAccountActivity extends AppCompatActivity {
 
         }
     }
-
-    private void UploadPicture(String id, String photo) {
+*/
+   /* private void UploadPicture(String id, String photo) {
 
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading......");
@@ -134,8 +155,8 @@ public class EditAccountActivity extends AppCompatActivity {
 
 
 
-    }
-    public String  getStringImage(Bitmap bitmap){
+    }*/
+  /*  public String  getStringImage(Bitmap bitmap){
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
@@ -145,14 +166,14 @@ public class EditAccountActivity extends AppCompatActivity {
 
         return  encodeImages;
 
-    }
+    }*/
     private void accountUpadte() {
         mEditName.setError(null);
         String name = mEditName.getText().toString();
         mEditEmail.setError(null);
-        String email = mEditEmail.getText().toString();
+        email = mEditEmail.getText().toString();
         mEditPassWord.setError(null);
-        String password = mEditPassWord.getText().toString();
+        password = mEditPassWord.getText().toString();
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty(name)) {
@@ -173,38 +194,90 @@ public class EditAccountActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-             requstToUpadteProfile(id,name,email,password);
+            //requstToUpadteProfile(id,name,email,password);
+            if (addJpgSignatureToGallery( mProfilePhoto )) {
+            } else {
+            }
         }
     }
 
-    private void requstToUpadteProfile(String id,String name, String email, String password) {
+    private boolean addJpgSignatureToGallery(ImageView mProfilePhoto) {
+        boolean result = false;
+        try {
+            final File photo = new File(  String.format( mProfilePhoto + "_signature_%d.jpg", System.currentTimeMillis() ) );
+            saveBitmapToJPG( mProfilePhoto, photo );
+            scanMediaFile( photo );
+            result = true;
+            MultipartBody.Part[] surveyImagesParts;
+            /* Multiple Images */
+            if (screen.equals( "gallery" )) {
 
-        Call<UpdateProfileResponses> call = ANApplications.getANApi().checkUpdateProfile(id,name,email,password);
-        call.enqueue(new Callback<UpdateProfileResponses>() {
-            @Override
-            public void onResponse(Call<UpdateProfileResponses> call, Response<UpdateProfileResponses> response) {
-                System.out.println("call"+response.raw());
-                if (response.isSuccessful()){
-                    System.out.println("profile"+ response.raw());
-                    if (response.body().getSuccess().equals("true")){
-                        System.out.println("data"+ response.body().getSuccess());
-                        UpdateProfileResponses responses = response.body();
-                        Intent i =new Intent(EditAccountActivity.this,SettingsActivity.class);
-                        startActivity(i);
+                File file = new File( getApplicationContext().getCacheDir(), String.format( mProfilePhoto + "_image_%d.jpg", System.currentTimeMillis() ) );
+                    file.createNewFile();
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress( Bitmap.CompressFormat.JPEG, 50, bos );
+                    byte[] bitmapdata = bos.toByteArray();
+                    FileOutputStream fos = new FileOutputStream( file );
+                    fos.write( bitmapdata );
+                    fos.flush();
+                    fos.close();
+                    RequestBody surveyBody = RequestBody.create( MediaType.parse( "image/*" ), file );
+                }
+            RequestBody requestBody1 = RequestBody.create(MediaType.parse("*/*"), photo);
+            MultipartBody.Part fileToUpload1 = MultipartBody.Part.createFormData("image", photo.getName(), requestBody1);
+            Call<UpdateProfileResponses> call = ANApplications.getANApi().checkUpdateProfile(id,name,email,password,fileToUpload1);
+            call.enqueue(new Callback<UpdateProfileResponses>() {
+                @Override
+                public void onResponse(Call<UpdateProfileResponses> call, Response<UpdateProfileResponses> response) {
+                    System.out.println("call"+response.raw());
+                    if (response.isSuccessful()){
+                        System.out.println("profile"+ response.raw());
+                        if (response.body().getSuccess().equals("true")){
+                            System.out.println("data"+ response.body().getSuccess());
+                            UpdateProfileResponses responses = response.body();
+                            Intent i =new Intent(EditAccountActivity.this,SettingsActivity.class);
+                            startActivity(i);
+                        }else {
+
+                        }
                     }else {
 
                     }
-                }else {
 
                 }
-            }
-            @Override
-            public void onFailure(Call<UpdateProfileResponses> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                @Override
+                public void onFailure(Call<UpdateProfileResponses> call, Throwable t) {
+                    Log.d("CallBack", " Throwable is " + t);
 
-            }
-        });
+                }
+            });
+
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return result;
     }
+    private void scanMediaFile(File photo) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(photo);
+        mediaScanIntent.setData(contentUri);
+        EditAccountActivity.this.sendBroadcast(mediaScanIntent);
+    }
+
+    public void saveBitmapToJPG(ImageView bitmap, File photo) throws IOException {
+        Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(newBitmap);
+        canvas.drawColor( Color.WHITE);
+        OutputStream stream = new FileOutputStream(photo);
+        newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        stream.close();
+    }
+
+
+
+
     public void onBackPressed() {
         super.onBackPressed();
     }

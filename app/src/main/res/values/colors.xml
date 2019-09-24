@@ -4,7 +4,9 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#CA1A28</color>
     <color name="colorYellow">#F4C31B</color>
-    <color name="colorWhite">#FFFFFF</color>
+<!--
+    <colorWhite name="colorWhite">#FFFFFF</colorWhite>
+-->
     <color name="colorTransparent">#00000000</color>
     <color name="colorAppFooter">#F1F1F1</color>
     <color name="black">#000000</color>
@@ -14,7 +16,7 @@
     <color name="textColor">#666666</color>
     <color name="background">#f0f0f0</color>
     <color name="linebackground">#d0d0d0</color>
-    <color name="color">#fafafa</color>
+    <color name="colorWhite">#fafafa</color>
 
 
     <color name="contact_name">#333333</color>

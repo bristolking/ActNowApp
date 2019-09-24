@@ -195,7 +195,7 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.color.colorAccent));
+                //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.colorWhite.colorAccent));
                 switch (position) {
                     case 0:
                         Toast.makeText(getApplicationContext(), "Seleted the Toady Task Chart", Toast.LENGTH_SHORT).show();

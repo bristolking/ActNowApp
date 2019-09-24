@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/color"
+    android:background="@color/colorWhite"
     android:padding="10dp">
 <!--<TextView
         android:id="@+id/tv_titleThisweek"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Tody"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@color/black"
+        android:textColor="@colorWhite/black"
         android:layout_marginTop="10dp"/>-->
     <RelativeLayout
         android:layout_width="match_parent"

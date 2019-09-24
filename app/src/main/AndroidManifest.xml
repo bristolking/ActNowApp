@@ -11,9 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.ReaminderScreenActivity"></activity>
-        <activity android:name=".activities.invitation.ShareInvitationActivity" />
-        <activity android:name=".activities.invitation.SharingInvitationActivity" />
+        <activity android:name=".activities.invitation.ShareActivity"></activity>
+        <activity android:name=".activities.ReaminderScreenActivity" />
         <activity android:name=".activities.invitation.InvitationActivity" />
         <activity android:name=".activities.OrngActivity" />
         <activity android:name=".activities.CommentsActivity" />
@@ -77,10 +76,13 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value="com.apkgetter.SearchResultsActivity" />
     </application>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>
