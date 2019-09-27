@@ -47,6 +47,7 @@ import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.monthly.MonthlyTaskListActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
@@ -473,7 +474,9 @@ public class DailyTaskListActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+                            Intent i= new Intent(getApplicationContext(), InvitationActivity.class);
+                            startActivity(i);
+                            //mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
                         }
                     } );
                     ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
@@ -488,7 +491,9 @@ public class DailyTaskListActivity extends AppCompatActivity {
                     mImageRaminder.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i =new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            String task_code = tv_taskcode.getText().toString();
+                            Intent i=new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     } );

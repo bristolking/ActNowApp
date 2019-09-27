@@ -14,21 +14,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
-
-            <!--<ImageView
-                android:id="@+id/imge_timeReminder"
+            <TextView
+                android:id="@+id/tv_reminderUsers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_calendar" />
+                android:text="User"
+                android:layout_alignParentRight="true"
+                android:paddingRight="100dp"
+                android:layout_centerVertical="true"/>
             <ImageView
-                android:id="@+id/imge_calnder"
-                android:layout_width="wrap_content"
+                android:id="@+id/img_individualReminder"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_006_clock"
-                android:paddingLeft="35dp"/>
--->
+                android:layout_alignParentRight="true"
+                android:paddingLeft="250dp"
+                app:srcCompat="@drawable/ic_userone" />
+
             <ImageView
                 android:id="@+id/sendImg_reminder"
                 android:layout_width="wrap_content"
@@ -41,21 +42,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/tv_dateandTimeReminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:backgroundTint="@color/colorWhite"
-                    android:hint="DATE"/>
-
+                    android:hint="DATE" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:backgroundTint="@color/colorWhite"
                     android:hint=" : " />
-
                 <TextView
                     android:id="@+id/tv_timeReminderScreen"
                     android:layout_width="wrap_content"
@@ -63,7 +63,9 @@
                     android:layout_centerVertical="true"
                     android:backgroundTint="@color/colorWhite"
                     android:hint=" TIME" />
+
             </LinearLayout>
+
         </RelativeLayout>
 
         <View
@@ -72,5 +74,6 @@
             android:layout_marginBottom="50dp"
             android:background="@color/linebackground" />
     </RelativeLayout>
+
 
 </RelativeLayout>

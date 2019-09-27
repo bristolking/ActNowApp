@@ -9,7 +9,6 @@
     android:background="@color/colorWhite"
     tools:openDrawer="right"
     tools:context=".activities.TodayTaskActivity">
-
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
@@ -37,7 +36,7 @@
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-                    <include layout="@layout/toady_over_due"/>
+               <!--     <include layout="@layout/toady_over_due"/>-->
 
                 <TextView
                     android:id="@+id/tv_titleThisWeek"

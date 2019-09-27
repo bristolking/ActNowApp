@@ -37,6 +37,7 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
@@ -266,7 +267,9 @@ public class AssignedFragment extends Fragment {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
+                            Intent i= new Intent(getActivity(), InvitationActivity.class);
+                            startActivity(i);
+                            //mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
 
                         }
                     });
@@ -282,7 +285,9 @@ public class AssignedFragment extends Fragment {
                     mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i =new Intent( getActivity(), ReaminderScreenActivity.class);
+                            String task_code = tv_taskcode.getText().toString();
+                            Intent i=new Intent( getActivity(), ReaminderScreenActivity.class);
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });

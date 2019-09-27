@@ -297,7 +297,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 public void onClick(View view, int position) {
                     View view1 = (View) findViewById(R.id.liner_projectList);
                     ImageView imgMenu =(ImageView)view.findViewById( R.id.img_menuSharingIndividual);
-                    CheckBox checkBox =(CheckBox)view.findViewById(R.id.ownerOne);
+                    TextView mTextUserName =(TextView) view.findViewById(R.id.ownerOne);
 
 
                 }

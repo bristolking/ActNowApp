@@ -6,6 +6,8 @@ import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
 import com.actnow.android.sdk.responses.ProjectEditResponse;
 import com.actnow.android.sdk.responses.ProjectListResponse;
+import com.actnow.android.sdk.responses.ReminderAdd;
+import com.actnow.android.sdk.responses.ReminderResponse;
 import com.actnow.android.sdk.responses.SendOtpResponse;
 import com.actnow.android.sdk.responses.SignInResponse;
 import com.actnow.android.sdk.responses.SignUpResponse;
@@ -17,15 +19,15 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 
-import java.io.File;
-
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
@@ -52,10 +54,9 @@ public interface ANApi {
     Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
 
     @Multipart
-    @FormUrlEncoded
     @POST("app/update_profile/{id}")
-    Call<UpdateProfileResponses> checkUpdateProfile(@Path("id")String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String email, @Field(Parameters.PASSWORD) String password,@Part MultipartBody.Part file); /*@Part MultipartBody.Part file*/
-
+    //Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") RequestBody id, @Part(Parameters.NAME) RequestBody name, @Part(Parameters.EMAIL) RequestBody email, @Part(Parameters.PASSWORD) RequestBody password, @Part MultipartBody.Part file);
+    Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") String id, @Part(Parameters.NAME) String name, @Part(Parameters.EMAIL) String  email, @Part(Parameters.PASSWORD) String password, @Part MultipartBody.Part image_path);
     @FormUrlEncoded
     @POST("app/organization/add/{id}")
     Call<SendOtpResponse> checkOrgCode(@Path("id")String id,@Field(Parameters.NAME)String name);
@@ -107,6 +108,19 @@ public interface ANApi {
     @FormUrlEncoded
     @POST("app/task/disapprove/{id}/{task_code}")
     Call<TaskComplete> checkTheDisApprove(@Path( "id") String id,@Path("task_code")String task_code,@Field("orgn_code")String orgn_code);
+
+
+    @GET("app/task_reminders/{id}/{task_code}/{orgn_code}")
+    Call<ReminderResponse> checkTheReminderList(@Path("id")String id,@Path("task_code")String task_code,@Path("orgn_code") String orgn_code);
+
+    @FormUrlEncoded
+    @POST("app/task/save_reminder/{id}/{task_code}")
+    Call<ReminderAdd> checTheReminderAdd(@Path("id")String id,@Path("task_code")String task_code,@Field("reminder_date")String reminder_date,@Field("remind_to")String remind_to,@Field("orgn_code")String orgn_code);
+
+    @GET("app/task/delete_reminder/{id}/{reminder_task_id}/{orgn_code}")
+    Call<ReminderAdd> checkTheReminderDelete(@Path("id")String id, @Path("reminder_task_id")String reminder_task_id,@Path("orgn_code")String orgn_code);
+
+
 
     /*
     @GET("app/project/get/{id}/{projectCode}")

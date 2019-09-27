@@ -1,8 +1,5 @@
 package com.actnow.android.activities;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,15 +17,12 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
@@ -37,6 +31,7 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
@@ -54,14 +49,11 @@ import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import org.json.JSONArray;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -480,7 +472,9 @@ public class TodayTaskActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            //mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            Intent i= new Intent(getApplicationContext(),InvitationActivity.class);
+                            startActivity(i);
                         }
                     });
                     ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
@@ -495,7 +489,9 @@ public class TodayTaskActivity extends AppCompatActivity {
                     mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i =new Intent( getApplicationContext(),ReaminderScreenActivity.class);
+                            String task_code = tv_taskcode.getText().toString();
+                            Intent i=new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });
@@ -615,7 +611,6 @@ public class TodayTaskActivity extends AppCompatActivity {
                     });
         }
     }
-
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {

@@ -32,14 +32,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.abdeveloper.library.MultiSelectDialog;
+import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
+import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
@@ -48,16 +52,22 @@ import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectCommentListAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
+import com.actnow.android.sdk.responses.CheckBoxResponse;
+import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectCommentListResponse;
 import com.actnow.android.sdk.responses.ProjectCommentRecordsList;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
+import org.json.JSONArray;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -89,6 +99,16 @@ public class ProjectTaskListActivity extends AppCompatActivity {
     ImageView mImageBulbTask;
 
     private String selectedType = "";
+    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
+
+    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
+    ArrayList<Integer> individualCheckBox, projectListCheckBox;
+    JSONArray individuvalArray;
+    JSONArray projectArray;
+
+    TextView mTaskName;
+    String task_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,6 +271,12 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             }
         });
 
+        mIndividuvalDialog = new MultiSelectDialog();
+        individualCheckBox = new ArrayList<>();
+        individualCheckBox.add(0);
+
+        requestDynamicContent();
+
 
         mProjectTaskRecylcerView = findViewById(R.id.projectTaskList_recyclerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -292,14 +318,243 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
-                taskListRecordsArrayList.add(taskListRecords1);
-
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                if (taskListRecords.getStatus().equals("1")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
+                    }
             }
             mProjectTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
+            mProjectTaskRecylcerView.addOnItemTouchListener(new ProjectTaskListActivity.RecyclerTouchListener(this, mProjectTaskRecylcerView, new ProjectTaskListActivity.ClickListener() {
+                @Override
+                public void onClick(final View view, int position) {
+                    final View view1 = view.findViewById(R.id.taskList_liner);
+                    RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
+                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    task_code = tv_taskcode.getText().toString();
+                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                            if (checkedId == R.id.radio_buttonAction) {
+                                if (checkedId == R.id.radio_buttonAction) {
+                                    selectedType = radioButtonTaskName.getText().toString();
+                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            view1.setVisibility(View.VISIBLE);
+                                            Intent i =new Intent(getApplicationContext(),ProjectTaskListActivity.class);
+                                            startActivity(i);
+                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
+                                            snackbar1.show();
+                                        }
+                                    });
+                                    View sbView = snackbar.getView();
+                                    TextView textView =(TextView)sbView.findViewById(R.id.snackbar_text);
+                                    textView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            view1.setVisibility(View.GONE);
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    if (response.isSuccessful()) {
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                            Intent i =new Intent(getApplicationContext(),ProjectTaskListActivity.class);
+                                                            startActivity(i);
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                }
+                                            } );
+                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
+                                            snackbar2.show();
 
+                                        }
+                                    });
+                                    snackbar.show();
+                                } else if (checkedId == 0) {
+                                    selectedType = radioButtonTaskName.getText().toString();
+
+                                }
+                            }
+                        }
+                    });
+                    mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                    mTaskName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                            String s = radioButtonTaskName.getText().toString();
+                            String s1 = tv_dueDate.getText().toString();
+                            Intent i = new Intent(getApplicationContext(), EditTaskActivity.class);
+                            i.putExtra("TaskName", s);
+                            i.putExtra("TaskDate", s1);
+                            i.putExtra("taskOwnerName", taskOwnerName);
+                            startActivity(i);
+                        }
+                    });
+                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
+                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            Intent i= new Intent(getApplicationContext(), InvitationActivity.class);
+                            startActivity(i);
+                        }
+                    });
+                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
+                    mImageComment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
+                            startActivity(i);
+                        }
+                    });
+                    ImageView mImageRaminder = (ImageView) view.findViewById(R.id.img_raminderTaskList);
+                    mImageRaminder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i =new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            startActivity(i);
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+
+            }));
+        }
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+    }
+
+    public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private ProjectTaskListActivity.ClickListener clicklistener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(ProjectTaskListActivity context, final RecyclerView mRecylerViewSingleSub, ProjectTaskListActivity.ClickListener clickListener) {
+            this.clicklistener = clickListener;
+            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                public void onLongPress(MotionEvent e) {
+                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clicklistener != null) {
+                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
 
     }
+    private void requestDynamicContent() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
+        call.enqueue(new Callback<CheckBoxResponse>() {
+            @Override
+            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals("true")) {
+                        setLoadCheckBox(response.body().getOrgn_users_records());
+                    } else {
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
+                Log.d("CallBack", " Throwable is " + t);
+            }
+        });
+
+    }
+
+    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
+        if (orgn_users_records.size() > 0) {
+            for (int i = 0; orgn_users_records.size() > i; i++) {
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
+                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
+            }
+            mIndividuvalDialog = new MultiSelectDialog()
+                    .title("Individuval") //setting title for dialog
+                    .titleSize(25)
+                    .positiveText("Done")
+                    .negativeText("Cancel")
+                    .preSelectIDsList(individualCheckBox)
+                    .setMinSelectionLimit(0)
+                    .setMaxSelectionLimit(listOfIndividuval.size())
+                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
+                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                        @Override
+                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                            for (int i = 0; i < selectedIds.size(); i++) {
+                                // mIndividualCheckBox.setText(dataString);
+                            }
+                            individuvalArray = new JSONArray(selectedIds);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            Log.d("TAG", "Dialog cancelled");
+                        }
+                    });
+        }
+    }
+
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {

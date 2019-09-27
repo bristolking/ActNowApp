@@ -2,9 +2,7 @@ package com.actnow.android.fragment;
 
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
+
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -22,15 +20,12 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.DatePicker;
-import android.widget.EditText;
+
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
+
 
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
@@ -38,6 +33,7 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
@@ -327,7 +323,9 @@ public class OverdueFragment extends Fragment {
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialogtime.show( getFragmentManager(), "mIndividuvalDialog" );
+                            Intent i= new Intent(getActivity(), InvitationActivity.class);
+                            startActivity(i);
+                           // mIndividuvalDialogtime.show( getFragmentManager(), "mIndividuvalDialog" );
 
                         }
                     } );
@@ -342,7 +340,6 @@ public class OverdueFragment extends Fragment {
                             i.putExtra( "TaskName", name );
                             i.putExtra( "TaskDate", date );
                             i.putExtra( "TaskCode", task_code );
-                            System.out.println( "maximum" + task_code );
                             startActivity( i );
                         }
                     } );
@@ -350,7 +347,10 @@ public class OverdueFragment extends Fragment {
                     mImageRaminder.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i=new Intent( getActivity(), ReaminderScreenActivity.class);
+                            i.putExtra( "TaskCode", task_code );
+                            System.out.println( "maximum" + task_code );
                             startActivity(i);
 
                         }

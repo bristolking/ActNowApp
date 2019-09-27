@@ -200,7 +200,7 @@ public class InvitationActivity extends AppCompatActivity {
                 @Override
                 public void onClick(final View view, int position) {
                     View view1 = (View) findViewById(R.id.re_viewIntivitation);
-                    CheckBox checkBox =(CheckBox)view.findViewById(R.id.ownerOne);
+                    TextView mUserTextViewIndividual =(TextView) view.findViewById(R.id.ownerOne);
                     ImageView imgMenu =(ImageView)view.findViewById( R.id.img_menuSharingIndividual);
                     imgMenu.setOnClickListener( new View.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)

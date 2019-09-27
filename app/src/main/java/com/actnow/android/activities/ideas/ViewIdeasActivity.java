@@ -39,6 +39,7 @@ import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
@@ -217,6 +218,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
 
     }
     private void initializeViews() {
+
         requestDynamicContent();
 
         mIndividuvalDialog = new MultiSelectDialog();
@@ -311,6 +313,8 @@ public class ViewIdeasActivity extends AppCompatActivity {
                 taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
+                taskListRecords1.setDue_date( taskListRecords.getDue_date());
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 if (taskListRecords.getStatus().equals("1")) {
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
@@ -410,7 +414,9 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            Intent i= new Intent(getApplicationContext(), InvitationActivity.class);
+                            startActivity(i);
+                           // mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
                         }
                     });
                     ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
@@ -425,7 +431,9 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i =new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            String task_code = tv_taskcode.getText().toString();
+                            Intent i=new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });
