@@ -259,7 +259,9 @@ public class TodayTaskActivity extends AppCompatActivity {
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+              /*  Intent i= new Intent( getApplicationContext(),AdavncedSearchActivity.class);
+                startActivity(i);*/
+               // Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -482,6 +484,12 @@ public class TodayTaskActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });

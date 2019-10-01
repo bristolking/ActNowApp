@@ -280,6 +280,12 @@ public class RepetitiveFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getActivity(), CommentsActivity.class);
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });

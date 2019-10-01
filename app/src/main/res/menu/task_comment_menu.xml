@@ -4,10 +4,10 @@
     tools:context="example.javatpoint.com.optionmenu.MainActivity">
 
     <item
-        android:id="@+id/editComment"
+        android:id="@+id/editCommentTask"
         android:title="Edit"/>
     <item
-        android:id="@+id/deleteComment"
+        android:id="@+id/deleteCommentTask"
         android:title="Delete"/>
 
 </menu>

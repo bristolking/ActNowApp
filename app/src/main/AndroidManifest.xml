@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.invitation.ShareActivity"></activity>
+        <activity android:name=".activities.invitation.ShareActivity" />
         <activity android:name=".activities.ReaminderScreenActivity" />
         <activity android:name=".activities.invitation.InvitationActivity" />
         <activity android:name=".activities.OrngActivity" />
@@ -72,20 +72,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <provider
-            android:authorities="${applicationId}.provider"
             android:name="android.support.v4.content.FileProvider"
-            android:exported ="false"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
-                android:name ="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

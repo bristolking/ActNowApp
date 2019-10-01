@@ -48,10 +48,8 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
-
-        <include layout="@layout/layout" />
         <include layout="@layout/app_header_two" />
-
+        <include layout="@layout/layout" />
     </RelativeLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

@@ -202,6 +202,8 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
                 taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
+                //taskListRecordsArrayList.add(taskListRecords1);
+
                 if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");

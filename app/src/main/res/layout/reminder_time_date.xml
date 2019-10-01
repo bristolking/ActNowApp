@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <RelativeLayout
+            android:id="@id/liner_projectList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_userprofileComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                app:srcCompat="@drawable/ic_usertwo" />
+
+            <ImageView
+                android:id="@+id/img_menuComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_menu_black" />
+
+            <TextView
+                android:id="@+id/tv_userDateReminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:text="25/01/2019"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorAccent" />
+            <TextView
+                android:id="@+id/tv_riminderTaslkId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="200dp"
+                android:text="25/01/2019"
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorAccent" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Task_Code : "
+                android:textColor="@color/colorAccent" />
+
+            <TextView
+                android:id="@+id/tv_userTaskCodeReminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_weight="1"
+                android:paddingLeft="100dp"
+                android:text="CancriTech"
+                android:textColor="@color/black" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/linebackground" />
+</LinearLayout>
+

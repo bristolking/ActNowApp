@@ -285,7 +285,6 @@ public class ReaminderScreenActivity extends AppCompatActivity {
             String id = userId.get( UserPrefUtils.ID);
             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME);
 
-
             addtheremdinerList(id,datetime,individuvalName,orgn_code);
         }
     }

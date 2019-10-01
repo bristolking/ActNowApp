@@ -6,8 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.Filter;
+import android.widget.TextView;
 
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
@@ -34,7 +33,7 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CheckBoxAdapter.ViewHolder viewHolder, int i) {
         final OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgnUserRecordsCheckBoxList.get(i);
-        viewHolder.mCheckBox.setText(orgnUserRecordsCheckBox.getName());
+        viewHolder.mTvCheckBox.setText(orgnUserRecordsCheckBox.getName());
 
     }
 
@@ -49,12 +48,12 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox mCheckBox;
+        TextView mTvCheckBox;
        // EditText mEditText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mCheckBox= (CheckBox)itemView.findViewById(R.id.ownerOne);
+            mTvCheckBox= (TextView)itemView.findViewById(R.id.ownerOne);
            // mEditText=(EditText)itemView.findViewById(R.id.ed_individualName);
 
         }
