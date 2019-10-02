@@ -238,7 +238,8 @@ public class ApprovalsActivity extends AppCompatActivity {
         mButtonAdavancedSearchApproval.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG ).show();
+                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);
             }
         } );
 

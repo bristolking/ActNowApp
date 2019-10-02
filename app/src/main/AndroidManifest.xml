@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.AdvancedSearchActivity"></activity>
         <activity android:name=".activities.invitation.ShareActivity" />
         <activity android:name=".activities.ReaminderScreenActivity" />
         <activity android:name=".activities.invitation.InvitationActivity" />

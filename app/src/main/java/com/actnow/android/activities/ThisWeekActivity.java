@@ -241,7 +241,8 @@ public class ThisWeekActivity extends AppCompatActivity {
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);
             }
         });
 

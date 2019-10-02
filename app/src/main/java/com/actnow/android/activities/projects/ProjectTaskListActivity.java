@@ -36,6 +36,7 @@ import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.ThisWeekActivity;
@@ -267,8 +268,8 @@ public class ProjectTaskListActivity extends AppCompatActivity {
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
-            }
+                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);            }
         });
 
         mIndividuvalDialog = new MultiSelectDialog();
@@ -347,6 +348,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
                                             Intent i =new Intent(getApplicationContext(),ProjectTaskListActivity.class);
+                                            i.putExtra("projectcode",project_code);
                                             startActivity(i);
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
@@ -427,6 +429,12 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });
@@ -435,6 +443,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             Intent i =new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            i.putExtra( "TaskCode", task_code );
                             startActivity(i);
                         }
                     });

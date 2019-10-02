@@ -33,6 +33,7 @@ import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.ThisWeekActivity;
@@ -247,8 +248,8 @@ public class ViewIdeasActivity extends AppCompatActivity {
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
-            }
+                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);            }
         });
         fabIdea = findViewById(R.id.fab_idea);
         fabIdea.setOnClickListener(new View.OnClickListener() {

@@ -104,9 +104,11 @@ public interface ANApi {
     Call<TaskComplete> checkTheDisApprove(@Path( "id") String id,@Path("task_code")String task_code,@Field("orgn_code")String orgn_code);
 
     /*Comment Api TASk and Project */
-    @FormUrlEncoded
+
+    @Multipart
     @POST("app/comment/add/{id}")
-    Call<TaskComplete> checkTheCommentAdd(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("comment")String comment,@Field("project_code")String project_code,@Field("task_code")String task_code,@Part MultipartBody.Part  files);
+    Call<TaskComplete> checkTheCommentAdd(@Part("id")String id,@Part("orgn_code")String orgn_code,@Part("comment")String comment,@Part("project_code")String project_code,@Part("task_code")String task_code,@Part MultipartBody.Part  files);
+
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")
     Call<TaskComplete>  checkTheTaskEdit(@Path("id")String id,@Field("comment_id")String comment_id,@Field("orgn_code")String orgn_code,@Field("comment")String comment,@Field("task_code") String task_code,@Field("project_code") String project_code);

@@ -1,10 +1,14 @@
 package com.actnow.android.activities;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -12,6 +16,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -44,20 +50,26 @@ import com.actnow.android.adapter.FileAdapter;
 import com.actnow.android.adapter.ProjectCommentListAdapter;
 import com.actnow.android.adapter.TaskCommentListAdapter;
 import com.actnow.android.sdk.responses.ProjectCommentRecordsList;
+import com.actnow.android.sdk.responses.TaskAddResponse;
 import com.actnow.android.sdk.responses.TaskCommentListResponse;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -94,6 +106,7 @@ public class CommentsActivity extends AppCompatActivity {
     ImageView mImgAttachament;
     ImageView imageGallery;
     int clickCounter = 0;
+    ImageView mImgCommentAdd;
 
     String project_code;
     String projectId;
@@ -105,6 +118,21 @@ public class CommentsActivity extends AppCompatActivity {
     TextView mCommentId;
 
     TextView mCommentMeassgeProject;
+
+
+    private static final int REQUEST_TAKE_PHOTO = 0;
+    private static final int REQUEST_PICK_PHOTO = 2;
+    private static final int CAMERA_PIC_REQUEST = 1111;
+    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
+
+    public static final int MEDIA_TYPE_IMAGE = 1;
+
+    private Uri fileUri;
+    private String mediaPath;
+    private String mImageFileLocation = " ";
+    public static final String IMAGE_DIRECTORY_NAME = "Android File Upload";
+
+    private String postPath;
 
 
     @Override
@@ -242,6 +270,7 @@ public class CommentsActivity extends AppCompatActivity {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
         mEditAddComment = (EditText) findViewById( R.id.et_commentEdit );
+        mImgCommentAdd = (ImageView)findViewById( R.id.img_commnetAdd );
         mCommentRecylcerView = (RecyclerView) findViewById( R.id.rv_recyclerViewComment );
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mCommentRecylcerView.setLayoutManager( mLayoutManager );
@@ -372,17 +401,20 @@ public class CommentsActivity extends AppCompatActivity {
     private void setTaskComment(JSONArray commentTask) {
         for (int i = 0; commentTask.length() > i; i++) {
             TaskCommentListResponse taskCommentListResponse = new TaskCommentListResponse();
-
             try {
                 JSONObject values = commentTask.getJSONObject( i );
                 String comment = values.getString( "comment" );
                 String name = values.getString( "user_name" );
                 String date = values.getString( "created_date" );
                 String commentId = values.getString( "comment_id");
+                //String imge =values.getString( "files");
                 taskCommentListResponse.setComment_id(commentId);
                 taskCommentListResponse.setComment( comment );
                 taskCommentListResponse.setUser_name( name );
                 taskCommentListResponse.setCreated_date( date );
+                Uri myUri = Uri.parse("http://actnow.cancri.biz/public/uploads/files/632281569934948.jpg");
+                taskCommentListResponse.setFiles( String.valueOf( myUri ) );
+                System.out.println("myUri"+ myUri);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -661,33 +693,22 @@ public class CommentsActivity extends AppCompatActivity {
 
     }
 
-    private void initializeRecyclerView(ArrayList<String> imageUrls) {
-        fileAdapter = new FileAdapter( this, imageUrls );
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager( getApplicationContext(), 4 );
-        mCommentRecylcerView = findViewById( R.id.rv_recyclerViewComment );
-        mCommentRecylcerView.setLayoutManager( layoutManager );
-        mCommentRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mCommentRecylcerView.setAdapter( fileAdapter );
-    }
-
-
-
-
 
     private void footer() {
         imageGallery = (ImageView) findViewById( R.id.image_gallery );
         imageGallery.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //showFileChooser();
+                // showFileChooser();
+                chooseFile();
             }
         } );
         ImageView imageAttachament = (ImageView) findViewById( R.id.image_attachament );
         imageAttachament.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //showFileChooser();
-
+               // showFileChooser();
+                chooseFile();
             }
         } );
         ImageView imageCamera = (ImageView) findViewById( R.id.image_camera );
@@ -707,35 +728,98 @@ public class CommentsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onClick(View v) {
-                addTheComment();
+                Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
+                /*String comment = mEditAddComment.getText().toString();
+                HashMap<String, String> userId = session.getUserDetails();
+                String id = userId.get( UserPrefUtils.ID );
+                String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );*/
+               // if (postPath == null || postPath.equals( "" )) {
+                   // Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
+                  //  return;
+               // } else {
+                    //File file = new File( postPath );
+                    //RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
+                  //  System.out.println( "requsetBody"+ file );
+                  //  MultipartBody.Part body = MultipartBody.Part.createFormData( "image", "image.jpg", requestBody );
+                  //  System.out.println( "body"+body );
+                    //Call<TaskComplete> taskAddResponseCall = ANApplications.getANApi().checkTheCommentAdd( id, orng_code, comment, task_code, project_code, body );
+                    //System.out.println( "taskAdd" + id + orng_code + comment + task_code + project_code + body );
+                   // taskAddResponseCall.enqueue( new Callback<TaskComplete>() {
+
+                      //  public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                           // if (response.isSuccessful()) {
+                                //System.out.println( "addReponse" + response.raw() );
+                                //if (response.body().getSuccess().equals( "true" )) {
+
+                                //} else {
+                               //     Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                             //   }
+                           // } else {
+                                //AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                          //  }
+                      //  }
+
+                     //   @Override
+                      //  public void onFailure(Call<TaskComplete> call, Throwable t) {
+
+                     //   }
+
+                   // } );
+               // }
 
             }
         } );
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+   /* @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void addTheComment() {
         mEditAddComment.setError( null );
-        String comment = mEditAddComment.getText().toString();
-        //String file = mImgAttachament.getDisplay().toString();
-        boolean cancel = false;
-        View focusView = null;
-        if (TextUtils.isEmpty( comment )) {
-            mEditAddComment.setError( getString( R.string.error_required ) );
-            focusView = mEditAddComment;
-            cancel = true;
-        }
-        if (cancel) {
-            focusView.requestFocus();
-        } else {
 
-            HashMap<String, String> userId = session.getUserDetails();
-            String id = userId.get( UserPrefUtils.ID );
-            String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
 
+    }*/
+    private void chooseFile() {
+        Intent galleryIntent = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
+        startActivityForResult( galleryIntent, REQUEST_PICK_PHOTO );
+    }
+   /* private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }*/
+    protected void onActivityResult(int requstCode, int resultCode, Intent data) {
+        super.onActivityResult( requstCode, resultCode, data );
+        if (resultCode == RESULT_OK) {
+            if (requstCode == REQUEST_TAKE_PHOTO || requstCode == REQUEST_PICK_PHOTO) {
+                if (data != null) {
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query( selectedImage, filePathColumn, null, null, null );
+                    assert cursor != null;
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex( filePathColumn[0] );
+                    mediaPath = cursor.getString( columnIndex );
+                    mImgCommentAdd.setImageBitmap( BitmapFactory.decodeFile( mediaPath ) );
+                    cursor.close();
+                    postPath = mediaPath;
+                    System.out.println( "imge" + mediaPath );
+                }
+            } else if (requstCode == CAMERA_PIC_REQUEST) {
+                if (Build.VERSION.SDK_INT > 21) {
+                    Glide.with( this ).load( mImageFileLocation ).into( mImgCommentAdd );
+                    postPath = mImageFileLocation;
+                } else {
+                    Glide.with( this ).load( fileUri ).into( mImgCommentAdd );
+                    postPath = fileUri.getPath();
+                }
+            }
+        } else if (requstCode != RESULT_CANCELED) {
+            Toast.makeText( getApplicationContext(), "Sorry, there was on error!", Toast.LENGTH_LONG ).show();
         }
     }
+
 
     public void onBackPressed() {
         super.onBackPressed();

@@ -11,15 +11,19 @@ import android.widget.TextView;
 
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.TaskCommentListResponse;
+import com.bumptech.glide.Glide;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentListAdapter.ViewHolder> {
     private List<TaskCommentListResponse> taskCommentListResponseList;
+    private Context context;
 
     public TaskCommentListAdapter(ArrayList<TaskCommentListResponse> taskCommentListResponseArrayList, int comment_custom_list, Context applicationContext) {
         this.taskCommentListResponseList = taskCommentListResponseArrayList;
+        this.context = applicationContext;
     }
 
     @NonNull
@@ -35,6 +39,14 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
         viewHolder.mTaskComment.setText( taskCommentListResponse.getComment());
         viewHolder.mTaskCommentDate.setText( taskCommentListResponse.getCreated_date());
         viewHolder.mTaskCommentUserName.setText( taskCommentListResponse.getUser_name());
+        String imgUrl = taskCommentListResponse.getFiles();
+        System.out.println("image" + imgUrl);
+        Glide.with(context).load(imgUrl)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_wrong_sign_red)
+                .into(viewHolder.imgComment);
+
     }
 
     @Override

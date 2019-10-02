@@ -259,10 +259,8 @@ public class TodayTaskActivity extends AppCompatActivity {
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  Intent i= new Intent( getApplicationContext(),AdavncedSearchActivity.class);
-                startActivity(i);*/
-               // Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
-
+                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);
             }
         });
         //overDueRecyclerView

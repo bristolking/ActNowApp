@@ -33,6 +33,7 @@
     <string name="title_activity_advanced_search">AdvancedSearchActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="title_activity_adanced_search">AdancedSearchActivity</string>
     <string-array name="eventtype">
         <item>All events</item>
         <item>Added tasks</item>
