@@ -104,12 +104,13 @@ public class TodayTaskActivity extends AppCompatActivity {
 
     private void appHeaderTwo() {
         ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
-        imgeBack.setOnClickListener(new View.OnClickListener() {
+        imgeBack.setVisibility(GONE);
+       /* imgeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
         TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
         TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
         btnLink2.setOnClickListener(new View.OnClickListener() {

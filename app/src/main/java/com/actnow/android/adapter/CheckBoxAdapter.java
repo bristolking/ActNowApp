@@ -33,7 +33,8 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CheckBoxAdapter.ViewHolder viewHolder, int i) {
         final OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgnUserRecordsCheckBoxList.get(i);
-        viewHolder.mTvCheckBox.setText(orgnUserRecordsCheckBox.getName());
+        viewHolder.mIndividualName.setText(orgnUserRecordsCheckBox.getName());
+        viewHolder.mindivdualEmail.setText(orgnUserRecordsCheckBox.getEmail());
 
     }
 
@@ -48,13 +49,13 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTvCheckBox;
+        TextView mIndividualName,mindivdualEmail;
        // EditText mEditText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mTvCheckBox= (TextView)itemView.findViewById(R.id.ownerOne);
-           // mEditText=(EditText)itemView.findViewById(R.id.ed_individualName);
+            mIndividualName= (TextView)itemView.findViewById(R.id.tv_individualName );
+            mindivdualEmail=(TextView)itemView.findViewById(R.id.tv_individualEmail);
 
         }
 

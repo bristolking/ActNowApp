@@ -301,8 +301,6 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                         i.putExtra( "TaskCode", task_code );
                         startActivity(i);
                         Toast.makeText(getApplicationContext(), "Reminder added successfully", Toast.LENGTH_SHORT).show();
-
-
                     }else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }

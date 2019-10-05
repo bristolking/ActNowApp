@@ -412,7 +412,7 @@ public class CommentsActivity extends AppCompatActivity {
                 taskCommentListResponse.setComment( comment );
                 taskCommentListResponse.setUser_name( name );
                 taskCommentListResponse.setCreated_date( date );
-                Uri myUri = Uri.parse("http://actnow.cancri.biz/public/uploads/files/632281569934948.jpg");
+                Uri myUri = Uri.parse("http://actnow.cancri.biz");
                 taskCommentListResponse.setFiles( String.valueOf( myUri ) );
                 System.out.println("myUri"+ myUri);
 
@@ -729,43 +729,43 @@ public class CommentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
-                /*String comment = mEditAddComment.getText().toString();
+                String comment = mEditAddComment.getText().toString();
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
-                String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );*/
-               // if (postPath == null || postPath.equals( "" )) {
-                   // Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
-                  //  return;
-               // } else {
-                    //File file = new File( postPath );
-                    //RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
-                  //  System.out.println( "requsetBody"+ file );
-                  //  MultipartBody.Part body = MultipartBody.Part.createFormData( "image", "image.jpg", requestBody );
-                  //  System.out.println( "body"+body );
-                    //Call<TaskComplete> taskAddResponseCall = ANApplications.getANApi().checkTheCommentAdd( id, orng_code, comment, task_code, project_code, body );
-                    //System.out.println( "taskAdd" + id + orng_code + comment + task_code + project_code + body );
-                   // taskAddResponseCall.enqueue( new Callback<TaskComplete>() {
+                String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+               if (postPath == null || postPath.equals( "" )) {
+                   Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
+                    return;
+                } else {
+                    File file = new File( postPath );
+                    RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
+                    System.out.println( "requsetBody"+ file );
+                    MultipartBody.Part attachment = MultipartBody.Part.createFormData( "image", "image.jpg", requestBody );
+                    System.out.println( "body"+attachment );
+                    Call<TaskComplete> taskAddResponseCall = ANApplications.getANApi().checkTheCommentAdd( id, orng_code, comment, task_code, project_code, attachment );
+                    System.out.println( "taskAdd" + id + orng_code + comment + task_code + project_code + attachment );
+                    taskAddResponseCall.enqueue( new Callback<TaskComplete>() {
 
-                      //  public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                           // if (response.isSuccessful()) {
-                                //System.out.println( "addReponse" + response.raw() );
-                                //if (response.body().getSuccess().equals( "true" )) {
+                       public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                            if (response.isSuccessful()) {
+                                System.out.println( "addReponse" + response.raw() );
+                                if (response.body().getSuccess().equals( "true" )) {
 
-                                //} else {
-                               //     Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                             //   }
-                           // } else {
+                                } else {
+                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                }
+                            } else {
                                 //AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                          //  }
-                      //  }
+                            }
+                        }
 
-                     //   @Override
-                      //  public void onFailure(Call<TaskComplete> call, Throwable t) {
+                       @Override
+                        public void onFailure(Call<TaskComplete> call, Throwable t) {
 
-                     //   }
+                       }
 
-                   // } );
-               // }
+                    } );
+                }
 
             }
         } );

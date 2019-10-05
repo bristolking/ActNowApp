@@ -624,10 +624,8 @@ public class ViewTasksActivity extends AppCompatActivity {
 
     private void requestCreateTask(String id, String taskName,String duedate, String priorty, String project_code,String orgn_code,String repeat_type,String week_days,String days,String months) {
         System.out.println("values"+ id+taskName+duedate+days+priorty+project_code+orgn_code+repeat_type+week_days+days+months);
-
         Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse( id, taskName, duedate, priorty,project_code,orgn_code,repeat_type,week_days,days,months);
         call.enqueue( new Callback<TaskAddResponse>() {
-
             @Override
             public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
                 System.out.println("arjun"+response.raw());

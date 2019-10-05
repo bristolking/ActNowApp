@@ -21,7 +21,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -30,6 +29,7 @@ import android.widget.Toast;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.adapter.CheckBoxAdapter;
+import com.actnow.android.adapter.ShareAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.utils.AndroidUtils;
@@ -43,6 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.view.View.GONE;
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
 
 public class InvitationActivity extends AppCompatActivity {
@@ -134,8 +135,8 @@ public class InvitationActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mRecyclerViewIntivitattion.setLayoutManager( mLayoutManager );
         mRecyclerViewIntivitattion.setItemAnimator( new DefaultItemAnimator() );
-        CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter( orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext() );
-        mRecyclerViewIntivitattion.setAdapter( checkBoxAdapter );
+        ShareAdapter shareAdapter = new ShareAdapter( orgnUserRecordsCheckBoxList, R.layout.share_intivitaion_list,getApplicationContext());
+        mRecyclerViewIntivitattion.setAdapter(shareAdapter);
 
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -166,49 +167,34 @@ public class InvitationActivity extends AppCompatActivity {
         } );
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void showPopup(View view){
-        final PopupMenu popupMenu = new PopupMenu( this,view );
-        popupMenu.inflate( R.menu.delete);
-        popupMenu.setGravity(Gravity.RIGHT|Gravity.CENTER);
-        popupMenu.show();
-        popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.menu_delete :
-                        Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
-                        return  true;
-                    default:
-                        return  false;
-                }
-            }
-        } );
-    }
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         System.out.println( "output" + orgn_users_records );
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
-                orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName() );
                 orgnUserRecordsCheckBox1.setId( orgnUserRecordsCheckBox.getId() );
+                orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName());
+                orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
                 orgnUserRecordsCheckBoxList.add( orgnUserRecordsCheckBox1 );
             }
-            mRecyclerViewIntivitattion.setAdapter( new CheckBoxAdapter( orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext() ) );
+            mRecyclerViewIntivitattion.setAdapter( new ShareAdapter( orgnUserRecordsCheckBoxList, R.layout.share_intivitaion_list, getApplicationContext() ) );
             mRecyclerViewIntivitattion.addOnItemTouchListener(new InvitationActivity.RecyclerTouchListener(this, mRecyclerViewIntivitattion, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
                     View view1 = (View) findViewById(R.id.re_viewIntivitation);
-                    TextView mUserTextViewIndividual =(TextView) view.findViewById(R.id.ownerOne);
-                    ImageView imgMenu =(ImageView)view.findViewById( R.id.img_menuSharingIndividual);
-                    imgMenu.setOnClickListener( new View.OnClickListener() {
+                    TextView mShareNameIntivition =(TextView) view.findViewById(R.id.tv_shareName );
+                    TextView mShareEamilIntivitation =(TextView)view.findViewById(R.id.tv_shareEmail);
+                    ImageView mImgDelete =(ImageView)view.findViewById( R.id.img_delete);
+                    mImgDelete.setOnClickListener( new View.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
-                        public void onClick(View v) {
-                            showPopup(view);
+                        public void onClick(View view) {
+                            Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_LONG).show();
+
                         }
                     } );
+
                 }
                 @Override
                 public void onLongClick(View view, int position) {
@@ -273,3 +259,26 @@ public class InvitationActivity extends AppCompatActivity {
         }
     }
 }
+
+
+
+
+ /* @RequiresApi(api = Build.VERSION_CODES.M)
+    public void showPopup(View view){
+        final PopupMenu popupMenu = new PopupMenu( this,view );
+        popupMenu.inflate( R.menu.delete);
+        popupMenu.setGravity(Gravity.RIGHT|Gravity.CENTER);
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.menu_delete :
+                        Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
+                        return  true;
+                    default:
+                        return  false;
+                }
+            }
+        } );
+    }*/

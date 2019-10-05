@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -271,25 +270,9 @@ public class ViewIndividualsActivity extends AppCompatActivity {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
-                orgnUserRecordsCheckBox1.setName(orgnUserRecordsCheckBox.getName());
                 orgnUserRecordsCheckBox1.setId(orgnUserRecordsCheckBox.getId());
+                orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName());
                 orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
-                orgnUserRecordsCheckBox1.setMobile_number(orgnUserRecordsCheckBox.getMobile_number());
-                orgnUserRecordsCheckBox1.setProvider_id(orgnUserRecordsCheckBox.getProvider_id());
-                orgnUserRecordsCheckBox1.setProvider_name(orgnUserRecordsCheckBox.getProvider_name());
-                orgnUserRecordsCheckBox1.setOrgn_code(orgnUserRecordsCheckBox.getOrgn_code());
-                orgnUserRecordsCheckBox1.setPassword(orgnUserRecordsCheckBox.getPassword());
-                orgnUserRecordsCheckBox1.setImage_path(orgnUserRecordsCheckBox.getImage_path());
-                orgnUserRecordsCheckBox1.setUser_type(orgnUserRecordsCheckBox.getUser_type());
-                orgnUserRecordsCheckBox1.setOtp(orgnUserRecordsCheckBox.getOtp());
-                orgnUserRecordsCheckBox1.setStatus(orgnUserRecordsCheckBox.getStatus());
-                orgnUserRecordsCheckBox1.setEmail_verified_at(orgnUserRecordsCheckBox.getEmail_verified_at());
-                orgnUserRecordsCheckBox1.setVerified(orgnUserRecordsCheckBox.getVerified());
-                orgnUserRecordsCheckBox1.setRemember_token(orgnUserRecordsCheckBox.getRemember_token());
-                orgnUserRecordsCheckBox1.setRefresh_token(orgnUserRecordsCheckBox.getRefresh_token());
-                orgnUserRecordsCheckBox1.setCreated_at(orgnUserRecordsCheckBox.getCreated_at());
-                orgnUserRecordsCheckBox1.setUpdated_at(orgnUserRecordsCheckBox.getUpdated_at());
-                orgnUserRecordsCheckBox1.setOther_orgns(orgnUserRecordsCheckBox.getOther_orgns());
                 orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox1);
             }
             mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
@@ -297,9 +280,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view, int position) {
                     View view1 = (View) findViewById(R.id.liner_projectList);
-                    ImageView imgMenu =(ImageView)view.findViewById( R.id.img_menuSharingIndividual);
-                    TextView mTextUserName =(TextView) view.findViewById(R.id.ownerOne);
-
+                    TextView mTextUserName =(TextView) view.findViewById(R.id.tv_individualName );
 
                 }
 

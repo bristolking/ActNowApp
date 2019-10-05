@@ -1,60 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.invitation.ShareActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    android:background="@color/colorWhite"
+    tools:context=".activities.SignInActivity">
+    <RelativeLayout
+        android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/toolbar">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/linebackground" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <android.support.v7.widget.RecyclerView
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/recyclerView_share"/>
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/rounded_square"
-                android:padding="10dp"
-                app:srcCompat="@drawable/ic_individuals" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="70dp"
-                android:text="Add from contacts"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-</RelativeLayout>
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/img_shreBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_back"
+                    android:padding="10dp"/>
+                <SearchView
+                    android:id="@+id/mySearchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:queryHint="@string/search_hint"
+                    android:searchIcon="@drawable/ic_search_red" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/linebackground"/>
+                  <android.support.v7.widget.RecyclerView
+                      android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/recyclerView_share"/>
+                <!--<ListView
+                    android:id="@+id/myCustomListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp"
+                    android:layout_below="@+id/mySearchView"/>-->
+                <LinearLayout
+                    android:id="@+id/rv_recylerViewShareIndividual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/rounded_square"
+                        app:srcCompat="@drawable/ic_individuals"
+                        android:padding="10dp"/>
+                    <TextView
+                        android:id="@+id/tv_allIndividuals"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="All Individuals"
+                        android:layout_gravity="center"
+                        android:paddingLeft="10dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>

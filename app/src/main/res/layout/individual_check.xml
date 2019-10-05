@@ -5,13 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorWhite"
     android:orientation="vertical">
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/re_viewIntivitation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            android:orientation="vertical"
+            android:padding="10dp">
             <TextView
-                android:id="@+id/ownerOne"
+                android:id="@+id/tv_individualName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/textColor"
@@ -21,23 +22,21 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerInParent="true"/>
             <TextView
-                android:id="@+id/tv_individualDate"
+                android:id="@+id/tv_individualEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2019-06-29"
-                android:visibility="gone"
-                android:textColor="@color/colorAccent"
+                android:text="chintha.nagarjuna@cancrisoft.com"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"/>
-            <ImageView
+           <!-- <ImageView
                 android:id="@+id/img_menuSharingIndividual"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_menu_black" />
-        </RelativeLayout>
+                app:srcCompat="@drawable/ic_menu_black" />-->
+        </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

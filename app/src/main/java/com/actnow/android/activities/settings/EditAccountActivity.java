@@ -1,22 +1,16 @@
 package com.actnow.android.activities.settings;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -25,27 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
-import com.actnow.android.BuildConfig;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.utils.UserPrefUtils;
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
+
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -54,7 +37,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.view.View.GONE;
 
 public class EditAccountActivity extends AppCompatActivity {
     EditText mEditName, mEditEmail, mEditPassWord;
@@ -92,8 +74,8 @@ public class EditAccountActivity extends AppCompatActivity {
         header();
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-            if (bundle.containsKey( "screen" )) {
-                screen = bundle.getString( "screen" );
+            if (bundle.containsKey("screen")) {
+                screen = bundle.getString( "screen");
             }
         }
         initializeViews();
@@ -125,7 +107,6 @@ public class EditAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 accountUpadte();
-                Toast.makeText( getApplicationContext(), "account Update", Toast.LENGTH_SHORT ).show();
             }
         } );
 
@@ -158,17 +139,17 @@ public class EditAccountActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty( name )) {
-            mEditName.setError( getString( R.string.error_required ) );
+            mEditName.setError( getString(R.string.error_required));
             focusView = mEditName;
             cancel = true;
         }
         if (TextUtils.isEmpty( email )) {
-            mEditEmail.setError( getString( R.string.error_required ) );
+            mEditEmail.setError( getString(R.string.error_required));
             focusView = mEditEmail;
             cancel = true;
         }
         if (TextUtils.isEmpty( password )) {
-            mEditPassWord.setError( getString( R.string.error_required ) );
+            mEditPassWord.setError( getString(R.string.error_required));
             focusView = mEditPassWord;
             cancel = true;
         }
@@ -177,47 +158,63 @@ public class EditAccountActivity extends AppCompatActivity {
         } else {
             HashMap<String, String> useId = session.getUserDetails();
             String id = useId.get( UserPrefUtils.ID );
+            if (postPath == null || postPath.equals( "" )) {
+                Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
+                return;
+            } else {
+                //File file = new File( postPath );
+                File mFolder = new File(getFilesDir() + "/sample");
+                File imgFile = new File(mFolder.getAbsolutePath() + "/someimage.png");
+                if (!mFolder.exists()) {
+                    mFolder.mkdir();
+                }
+                if (!imgFile.exists()) {
+                    try {
+                        imgFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(imgFile);
+                   // bitmap.compress(Bitmap.CompressFormat.PNG,70, fos);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
+                RequestBody surveyBody = RequestBody.create(MediaType.parse("image/*"), imgFile);
+                System.out.println( "file2"+ surveyBody);
+                MultipartBody.Part image_path = MultipartBody.Part.createFormData("image", imgFile.getName(), surveyBody);
+                System.out.println( "severUpload" + image_path );
+                Call<UpdateProfileResponses> call = ANApplications.getANApi().checkUpdateProfile( id, name, email, password, image_path );
+                System.out.println( "nagrjuna" + id + name + email + password + image_path );
+                call.enqueue( new Callback<UpdateProfileResponses>() {
+                    @Override
+                    public void onResponse(Call<UpdateProfileResponses> call, Response<UpdateProfileResponses> response) {
+                        System.out.println( "somedata" + response.raw() );
+                        if (response.isSuccessful()) {
+                            System.out.println( "profile" + response.raw() );
+                            if (response.body().getSuccess().equals( "true" )) {
+                                System.out.println( "dataReponse" + response.body().getSuccess() );
 
-            System.out.println( id + "id+ email+password" );
-            uploadFile( id, name, email, password );
+                            }else {
+                                //Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
 
-        }
-
-    }
-
-    private void uploadFile(String id, String name, String email, String password) {
-
-        System.out.println( "values" + id + name + email + password );
-
-        if (postPath == null || postPath.equals( "" )) {
-            Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
-            return;
-        } else {
-            File file = new File( postPath );
-            RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
-            MultipartBody.Part body = MultipartBody.Part.createFormData( "image", "image.jpg", requestBody );
-            System.out.println( "file" + body );
-            Call<UpdateProfileResponses> call = ANApplications.getANApi().checkUpdateProfile( id, name, email, password, body );
-            System.out.println( "nagrjuna" + id + name + email + password + body );
-
-            call.enqueue( new Callback<UpdateProfileResponses>() {
-                @Override
-                public void onResponse(Call<UpdateProfileResponses> call, Response<UpdateProfileResponses> response) {
-                    if (response.isSuccessful()) {
-                        System.out.println( "profile" + response.raw() );
-                        if (response.body().getSuccess().equals( "true" )) {
-                            System.out.println( "dataReponse" + response.body().getSuccess() );
+                            }
+                        }else {
 
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<UpdateProfileResponses> call, Throwable t) {
-
-                }
-            } );
-
+                    @Override
+                    public void onFailure(Call<UpdateProfileResponses> call, Throwable t) {
+                        Log.d("CallBack", " Throwable is " + t);
+                    }
+                } );
+            }
         }
 
     }

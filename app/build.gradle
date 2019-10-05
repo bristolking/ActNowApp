@@ -12,10 +12,16 @@ android {
         versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
     buildTypes {
         release {
             minifyEnabled false
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
@@ -51,6 +57,5 @@ dependencies {
     implementation 'com.prolificinteractive:material-calendarview:1.4.2'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.google.android.gms:play-services-auth:9.2.1'
-
 
 }

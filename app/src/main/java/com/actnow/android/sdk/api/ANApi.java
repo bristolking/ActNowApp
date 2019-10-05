@@ -17,9 +17,11 @@ import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
+import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -52,9 +54,12 @@ public interface ANApi {
     Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
 
     @Multipart
+    //@FormUrlEncoded
     @POST("app/update_profile/{id}")
     //Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") RequestBody id, @Part(Parameters.NAME) RequestBody name, @Part(Parameters.EMAIL) RequestBody email, @Part(Parameters.PASSWORD) RequestBody password, @Part MultipartBody.Part file);
     Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") String id, @Part(Parameters.NAME) String name, @Part(Parameters.EMAIL) String  email, @Part(Parameters.PASSWORD) String password, @Part MultipartBody.Part image_path);
+    //Call<UpdateProfileResponses> checkUpdateProfile(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String  email, @Field(Parameters.PASSWORD) String password);
+
     @FormUrlEncoded
     @POST("app/organization/add/{id}")
     Call<SendOtpResponse> checkOrgCode(@Path("id")String id,@Field(Parameters.NAME)String name);
@@ -127,6 +132,10 @@ public interface ANApi {
     @GET("app/task/delete_reminder/{id}/{reminder_task_id}/{orgn_code}")
     Call<ReminderAdd> checkTheReminderDelete(@Path("id")String id, @Path("reminder_task_id")String reminder_task_id,@Path("orgn_code")String orgn_code);
 
+    /* Invitation delete and send*/
+
+    @POST("app/invitation/delete/{id}")
+    Call<UserDeleted>  checkTheUserDelete(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("project_code")String project_code,@Field("task_code")String  task_code,@Field("invitee_id")String  invitee_id);
 
 
     /*

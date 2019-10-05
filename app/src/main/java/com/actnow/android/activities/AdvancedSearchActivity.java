@@ -84,26 +84,27 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             }
         } );
         EditText  mAdvancedSearchEditText =(EditText)findViewById( R.id.edit_advncedSearch);
-        mAdvancedSearchEditText.setOnClickListener( new View.OnClickListener() {
+       /* mAdvancedSearchEditText.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
             }
-        } );
-        ImageView mSearchAdvancedImg =(ImageView)findViewById(R.id.img_advncedSearch);
+        } );*/
+      /*  ImageView mSearchAdvancedImg =(ImageView)findViewById(R.id.img_advncedSearch);
         mSearchAdvancedImg.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
 
             }
-        } );
+        } );*/
 
     }
 
     private void initializeViews() {
 
-
+        mProgressView = findViewById(R.id.progress_bar);
+        mContentLayout = findViewById(R.id.content_layout);
         mProjectDialog = new MultiSelectDialog();
         projectListCheckBox = new ArrayList<>();
         projectListCheckBox.add( 0 );
@@ -163,10 +164,10 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
                     } else {
-                        //Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    //AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
 
@@ -225,10 +226,10 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals("true")) {
                         setLoadCheckBox(response.body().getOrgn_users_records());
                     } else {
-                        //Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
-                   // AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                 }
             }
 
@@ -244,6 +245,8 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
+                orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
                 listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
             }
             mIndividuvalDialog = new MultiSelectDialog()
