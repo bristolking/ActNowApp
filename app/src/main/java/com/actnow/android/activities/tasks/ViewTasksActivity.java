@@ -2,6 +2,7 @@ package com.actnow.android.activities.tasks;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,10 +13,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -33,6 +40,7 @@ import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
+import com.actnow.android.adapter.NewTaskProjectAdapter;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskAddResponse;
@@ -107,6 +115,17 @@ public class ViewTasksActivity extends AppCompatActivity {
     String months;
     String days;
     String projectcode;
+    String specializationString;
+
+    String projectName;
+
+    RecyclerView mRecyclerViewDateTime;
+    NewTaskProjectAdapter mNewTaskProjectAdapter;
+    RecyclerView.LayoutManager mLayoutManager;
+    private ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList = new ArrayList<ProjectListResponseRecords>();
+
+    TextView mProjectNameDailog;
+    TextView mProjectCodeDailog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +143,10 @@ public class ViewTasksActivity extends AppCompatActivity {
             id = (String) b.get( "id" );
             taskOwnerName = (String) b.get( "taskOwnerName" );
             mTaskTitle.setText( " " + taskOwnerName );
+            projectName =(String)b.get( "projectName");
+           // mProjectCheckBox.setText(projectName);
+            projectcode =(String)b.get( "projectCode");
+            mProjectCheckBox.setText(projectcode);
             System.out.println( "passsed" + taskOwnerName + id );
         }
 
@@ -205,7 +228,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     drawer.openDrawer( GravityCompat.START );
                 }
                 ImageView imgeClose = (ImageView) findViewById( R.id.nav_close );
-                imgeClose.setOnClickListener( new View.OnClickListener() {
+                imgeClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (drawer.isDrawerOpen( GravityCompat.START )) {
@@ -247,27 +270,53 @@ public class ViewTasksActivity extends AppCompatActivity {
                         .get( Calendar.YEAR ), myCalendar.get( Calendar.MONTH ),
                         myCalendar.get( Calendar.DAY_OF_MONTH ) ).show();
             }
-        } );
-    /*    mIndvalNewTask = (View) findViewById( R.id.re_projectNewIndividual );
-        mIndividualCheckBox = (TextView) findViewById( R.id.tv_individualCheckBox );*/
-        mIndividuvalDialog = new MultiSelectDialog();
+        });
+
+      /*  mIndividuvalDialog = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
-        individualCheckBox.add( 0 );
-       /* mIndvalNewTask.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
-            }
-        } );*/
+        individualCheckBox.add( 0 );*/
+
+
         mProjectCheckBox = findViewById( R.id.tv_projectTask );
+        mProjectCheckBox.setText(projectcode);
+        System.out.println( "name"+ projectName );
         mProjectNewTask = findViewById( R.id.re_projrectNewTask );
-        mProjectDialog = new MultiSelectDialog();
-        projectListCheckBox = new ArrayList<>();
-        projectListCheckBox.add( 0 );
         mProjectNewTask.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                mProjectDialog.show( getSupportFragmentManager(), "mProjectDialog" );
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+                dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.dailog_projectname_projectcode);
+                mRecyclerViewDateTime = dialog.findViewById(R.id.recyleView_projectNameCode);
+                mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                mRecyclerViewDateTime.setLayoutManager(mLayoutManager);
+                mRecyclerViewDateTime.setItemAnimator(new DefaultItemAnimator());
+                mNewTaskProjectAdapter = new NewTaskProjectAdapter(projectListResponseRecordsArrayList, R.layout.custom_project_dailog, getApplicationContext());
+                mRecyclerViewDateTime.setAdapter(mNewTaskProjectAdapter);
+                requestDynamicProjectList();
+                TextView tv_ok =(TextView)dialog.findViewById(R.id.tv_dailogOk);
+                tv_ok.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        projectName = mProjectNameDailog.getText().toString();
+                        projectcode = mProjectCodeDailog.getText().toString();
+                        Intent i= new Intent(getApplicationContext(),ViewTasksActivity.class);
+                        i.putExtra( "id", id );
+                        i.putExtra( "taskOwnerName", taskOwnerName );
+                        i.putExtra("projectName", projectName);
+                        i.putExtra( "projectCode",projectcode );
+                        startActivity(i);
+                    }
+                } );
+                TextView tv_cancel =(TextView)dialog.findViewById(R.id.tv_dailogCancel);
+                tv_cancel.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                } );
+                dialog.show();
             }
         } );
         mPriorityNewTask = findViewById( R.id.re_priorityNewTask );
@@ -318,8 +367,6 @@ public class ViewTasksActivity extends AppCompatActivity {
 
             }
         } );
-        //requestDynamicContent();
-        requestDynamicProjectList();
         attemptCreateTask();
         spinnerData();
     }
@@ -461,7 +508,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                             }
                         }
                         mDates.setText( item );
-                         days = mDates.getText().toString();
+                        days = mDates.getText().toString();
 
                         //mRepeatTypeTextView.setText(item);
 
@@ -510,7 +557,6 @@ public class ViewTasksActivity extends AppCompatActivity {
                         mYearly.setText( item );
                         months = mYearly.getText().toString();
 
-
                     }
                 } );
                 mBuilder.setNegativeButton( "Dismiss", new DialogInterface.OnClickListener() {
@@ -526,6 +572,61 @@ public class ViewTasksActivity extends AppCompatActivity {
         } );
     }
 
+    private void attemptCreateTask() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        String taskName = mTaskProjectName.getText().toString();
+        String due_date = mDueDateTask.getText().toString();
+        String priorty = mPriorty.getText().toString();
+        String project_code =mProjectCheckBox.getText().toString();
+        //String project_code = mProjectCodeDailog.getText().toString();
+        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+        String individuvalName = String.valueOf( individuvalArray );
+        //individuvalArray.remove(0);
+        String oldprojectsName = String.valueOf( projectArray );
+        mDueDateTask.setError(null);
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty(due_date)) {
+            mDueDateTask.setError(getString( R.string.error_required));
+            focusView = mDueDateTask;
+            cancel = true;
+        }
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+             //requestCrateTask( id, taskName, duedate, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), priorty );
+            requestCreateTask(id,taskName,due_date,priorty,project_code,orgn_code,repeat_type,week_days,days,months);
+            System.out.println( "data" + id + taskName + due_date+priorty + project_code +orgn_code+repeat_type+week_days+ days+months);
+        }
+    }
+    private void requestCreateTask(String id, String taskName,String duedate, String priorty, String project_code,String orgn_code,String repeat_type,String week_days,String days,String months) {
+        System.out.println("values"+ id+taskName+duedate+days+priorty+project_code+orgn_code+repeat_type+week_days+days+months);
+        Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse( id, taskName, duedate, priorty,project_code,orgn_code,repeat_type,week_days,days,months);
+        call.enqueue( new Callback<TaskAddResponse>() {
+            @Override
+            public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
+                System.out.println("arjun"+response.raw());
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals( "true" )) {
+                        Intent i = new Intent(ViewTasksActivity.this, TaskAddListActivity.class);
+                        i.putExtra( "projectName",projectName);
+                        startActivity( i );
+                        //Snackbar.make( mContentLayout, "Task will be Created", Snackbar.LENGTH_SHORT ).show();
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TaskAddResponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+            }
+        } );
+    }
 
     private void requestDynamicProjectList() {
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse( id );
@@ -549,107 +650,92 @@ public class ViewTasksActivity extends AppCompatActivity {
                 Log.d( "CallBack", " Throwable is " + t );
             }
         } );
-
     }
-
     private void setProjectFooterList(List<ProjectListResponseRecords> project_records) {
         if (project_records.size() > 0) {
             for (int i = 0; project_records.size() > i; i++) {
                 ProjectListResponseRecords projectListResponseRecords = project_records.get( i );
                 ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
-                projectListResponseRecords1.setProject_code((projectListResponseRecords.getProject_code()));
-                System.out.println( "code"+ projectListResponseRecords.getProject_code() );
-                //projectcode = projectListResponseRecords1.getProject_code();
-                listOfProjectNames.add( new MultiSelectModel( Integer.parseInt( projectListResponseRecords.getProject_id() ), projectListResponseRecords.getName() ) );
+                projectListResponseRecords1.setName( projectListResponseRecords.getName());
+                projectListResponseRecords1.setProject_code( (projectListResponseRecords.getProject_code()));
+                projectListResponseRecordsArrayList.add( projectListResponseRecords1 );
             }
-            mProjectDialog = new MultiSelectDialog()
-                    .title( "Project" ) //setting title for dialog
-                    .titleSize( 25 )
-                    .positiveText( "Done" )
-                    .negativeText( "Cancel" )
-                    .preSelectIDsList( projectListCheckBox )
-                    .setMinSelectionLimit( 0 )
-                    .setMaxSelectionLimit( listOfProjectNames.size() )
-                    .multiSelectList( listOfProjectNames ) // the multi select model list with ids and name
-                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                mProjectCheckBox.setText( dataString );
-                                //mProjectCheckBox.setText(projectcode);
+            mRecyclerViewDateTime.setAdapter( new NewTaskProjectAdapter( projectListResponseRecordsArrayList, R.layout.custom_project_dailog, getApplicationContext() ) );
+            mRecyclerViewDateTime.addOnItemTouchListener(new ViewTasksActivity.RecyclerTouchListener(this, mRecyclerViewDateTime, new ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
 
-                            }
-                            projectArray = new JSONArray( selectedIds );
-                        }
+                    mProjectNameDailog =(TextView)view.findViewById( R.id.tv_projectNameDailog);
+                     projectName =mProjectNameDailog.getText().toString();
+                     mProjectCodeDailog =(TextView)view.findViewById(R.id.tv_projectCodeDailog);
+                     System.out.println("projectName"+ projectName+" "+mProjectCodeDailog.getText().toString());
 
-                        @Override
-                        public void onCancel() {
-                            Log.d( "TAG", "Dialog cancelled" );
-                        }
-                    } );
-        }
 
-    }
-
-    private void attemptCreateTask() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get( UserPrefUtils.ID );
-        String taskName = mTaskProjectName.getText().toString();
-        String due_date = mDueDateTask.getText().toString();
-        String priorty = mPriorty.getText().toString();
-        String project_code = mProjectCheckBox.getText().toString();
-        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-      /*  String days = mDates.getText().toString();
-        String months = mYearly.getText().toString();*/
-        String individuvalName = String.valueOf( individuvalArray );
-        //individuvalArray.remove(0);
-
-        String oldprojectsName = String.valueOf( projectArray );
-        mDueDateTask.setError( null );
-        boolean cancel = false;
-        View focusView = null;
-        if (TextUtils.isEmpty(due_date)) {
-            mDueDateTask.setError(getString( R.string.error_required));
-            focusView = mDueDateTask;
-            cancel = true;
-        }
-        if (cancel) {
-            focusView.requestFocus();
-        } else {
-            // requestCrateTask( id, taskName, duedate, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), priorty );
-            requestCreateTask(id,taskName,due_date,priorty,project_code,orgn_code,repeat_type,week_days,days,months);
-            System.out.println( "data" + id + taskName + due_date+priorty + project_code +orgn_code+repeat_type+week_days+ days+months);
-        }
-    }
-
-    private void requestCreateTask(String id, String taskName,String duedate, String priorty, String project_code,String orgn_code,String repeat_type,String week_days,String days,String months) {
-        System.out.println("values"+ id+taskName+duedate+days+priorty+project_code+orgn_code+repeat_type+week_days+days+months);
-        Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse( id, taskName, duedate, priorty,project_code,orgn_code,repeat_type,week_days,days,months);
-        call.enqueue( new Callback<TaskAddResponse>() {
-            @Override
-            public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
-                System.out.println("arjun"+response.raw());
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        Intent i = new Intent( ViewTasksActivity.this, TaskAddListActivity.class );
-                        startActivity( i );
-                        Snackbar.make( mContentLayout, "Task will be Created", Snackbar.LENGTH_SHORT ).show();
-                    } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
-            }
 
-            @Override
-            public void onFailure(Call<TaskAddResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
-            }
-        } );
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
+        }
     }
 
-    private void footer() {
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+    }
+
+    /**
+     * RecyclerView: Implementing single item click and long press (Part-II)
+     * <p>
+     * - creating an innerclass implementing RevyvlerView.OnItemTouchListener
+     * - Pass clickListener interface as parameter
+     */
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private ClickListener clicklistener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(ViewTasksActivity context, final RecyclerView mRecylerViewSingleSub, ClickListener clickListener) {
+            this.clicklistener = clickListener;
+
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clicklistener != null) {
+                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                    }
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
+        private void footer() {
         ImageView imageGallery = (ImageView) findViewById( R.id.image_gallery );
         imageGallery.setVisibility( GONE );
         ImageView imageAttachament = (ImageView) findViewById( R.id.image_attachament );
@@ -659,71 +745,11 @@ public class ViewTasksActivity extends AppCompatActivity {
         ImageView imageProfile = (ImageView) findViewById( R.id.image_profile );
         imageProfile.setVisibility( GONE );
         TextView tv_create = (TextView) findViewById( R.id.tv_create );
-        tv_create.setText( "Create" );
+        tv_create.setText("Create");
         tv_create.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {
                 attemptCreateTask();
             }
         } );
-
     }
-
-
 }
- /*private void requestDynamicContent() {
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
-        call.enqueue( new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setLoadCheckBox( response.body().getOrgn_users_records() );
-                    } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
-            }
-        } );
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
-                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
-            }
-            mIndividuvalDialog = new MultiSelectDialog()
-                    .title( "Individuval" ) //setting title for dialog
-                    .titleSize( 25 )
-                    .positiveText( "Done" )
-                    .negativeText( "Cancel" )
-                    .preSelectIDsList( individualCheckBox )
-                    .setMinSelectionLimit( 0 )
-                    .setMaxSelectionLimit( listOfIndividuval.size() )
-                    .multiSelectList( listOfIndividuval ) // the multi select model list with ids and name
-                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                mIndividualCheckBox.setText( dataString );
-                            }
-                            individuvalArray = new JSONArray( selectedIds );
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d( "TAG", "Dialog cancelled" );
-                        }
-                    } );
-        }
-
-
-    }*/

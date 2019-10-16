@@ -284,7 +284,6 @@ public class ReaminderScreenActivity extends AppCompatActivity {
             HashMap<String,String> userId = session.getUserDetails();
             String id = userId.get( UserPrefUtils.ID);
             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME);
-
             addtheremdinerList(id,datetime,individuvalName,orgn_code);
         }
     }
@@ -308,17 +307,13 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                     AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                 }
             }
-
             @Override
             public void onFailure(Call<ReminderAdd> call, Throwable t) {
                 Log.d("CallBack", " Throwable is " + t);
 
             }
         } );
-
-
     }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void showPopup(View view){
         final PopupMenu popupMenu = new PopupMenu( this,view );
@@ -417,7 +412,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancel() {
+                        public void onCancel()  {
                             Log.d("TAG", "Dialog cancelled");
                         }
                     });

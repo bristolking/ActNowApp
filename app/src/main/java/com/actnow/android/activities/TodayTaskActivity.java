@@ -369,6 +369,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setPriority(taskListRecords.getPriority());
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -391,6 +392,8 @@ public class TodayTaskActivity extends AppCompatActivity {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
                     task_code = tv_taskcode.getText().toString();
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override

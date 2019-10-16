@@ -10,7 +10,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.actnow.android.R;
-import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 
 import java.util.ArrayList;
@@ -23,9 +22,9 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
         this.projectListResponseRecordsList = projectListResponseRecordsArrayList;
     }
 
-    public ProjectFooterAdapter(ProjectFooterActivity projectFooterActivity, ArrayList<ProjectListResponseRecords> projectListResponseRecordsList) {
+  /*  public ProjectFooterAdapter(ProjectFooterActivity projectFooterActivity, ArrayList<ProjectListResponseRecords> projectListResponseRecordsList) {
         this.projectListResponseRecordsList = projectListResponseRecordsList;
-    }
+    }*/
 
     @NonNull
     @Override

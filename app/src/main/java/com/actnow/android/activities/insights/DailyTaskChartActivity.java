@@ -168,7 +168,8 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
-                }ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                }
+                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
                 imgeClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -378,38 +379,32 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
                 activityInsights();
             }
         });
-       ImageView imgProject = (ImageView) findViewById(R.id.img_insights);
+        ImageView imgProject = (ImageView) findViewById(R.id.img_insights);
         imgProject.setImageResource(R.drawable.ic_insight_red);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_insights);
         txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));
     }
-
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
-
     private void activityProject() {
         Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
         startActivity(i);
 
     }
-
     private void activityTasks() {
         Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
         startActivity(i);
 
     }
-
     private void activityIndividuals() {
         Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
         startActivity(i);
-
     }
 
     private void activityInsights() {
-
         Toast.makeText(getApplicationContext(), "selected Insights", Toast.LENGTH_SHORT).show();
 
     }

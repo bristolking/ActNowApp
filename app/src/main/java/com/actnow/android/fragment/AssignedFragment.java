@@ -162,6 +162,7 @@ public class AssignedFragment extends Fragment {
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
+                taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 if (taskListRecords.getStatus().equals("1")) {
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
@@ -177,6 +178,8 @@ public class AssignedFragment extends Fragment {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override

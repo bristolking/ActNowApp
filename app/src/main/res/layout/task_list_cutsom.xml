@@ -97,7 +97,18 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:text="CancriTech"
+            android:text="Canc"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/tv_projectCodeTaskList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="60dp"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:text="ffffff"
+            android:visibility="gone"
             android:textColor="@color/black"/>
         <TextView
             android:layout_width="wrap_content"

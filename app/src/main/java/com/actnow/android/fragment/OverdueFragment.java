@@ -94,7 +94,6 @@ public class OverdueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_overdue, container, false );
-
         mIndividuvalDialogtime = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
         individualCheckBox.add( 0 );
@@ -105,7 +104,6 @@ public class OverdueFragment extends Fragment {
         } else {
             intentNoConnection();
         }
-
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
         fabTask = view.findViewById( R.id.fab_task );
@@ -157,7 +155,7 @@ public class OverdueFragment extends Fragment {
             data.put( "repeat_months", task1.getRepeat_months() );
             data.put( "repeat_week", task1.getRepeat_week() );
             data.put( "repeat_days", task1.getRepeat_days() );
-            data.put( "parenrt_task_code", task1.getParenrt_task_code() );
+            data.put( "parenrt_task_code", task1.getParenrt_task_code());
         } catch (JSONException e) {
 
         }
@@ -198,12 +196,12 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setName( taskListRecords.getName() );
                 taskListRecords1.setDue_date( taskListRecords.getDue_date() );
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
-                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
-                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
-                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
-                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
+                taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count());
+                taskListRecords1.setStatus( taskListRecords.getStatus());
+                taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 //taskListRecordsArrayList.add(taskListRecords1);
-
                 if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -233,6 +231,8 @@ public class OverdueFragment extends Fragment {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
                     groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override

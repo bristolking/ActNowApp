@@ -287,6 +287,8 @@ public class ApprovalsActivity extends AppCompatActivity {
                 taskListRecords1.setDue_date( taskListRecords.getDue_date());
                 taskListRecords1.setPriority( taskListRecords.getPriority());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                taskListRecords1.setProject_name( taskListRecords.getProject_name());
+                taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 if (taskListRecords.getStatus().equals("2")) {
                     taskListRecordsArrayList.add(taskListRecords1);
                     System.out.println( "OutputValues" + taskListRecords1);

@@ -1,8 +1,5 @@
 package com.actnow.android.activities;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,15 +17,12 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
@@ -55,15 +49,9 @@ import com.actnow.android.utils.UserPrefUtils;
 
 
 import org.json.JSONArray;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -291,7 +279,8 @@ public class ThisWeekActivity extends AppCompatActivity {
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
                 taskListRecords1.setProject_code(taskListRecords.getProject_code());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                taskListRecords1.setTask_code(taskListRecords.getTask_code());
+                taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 if (taskListRecords.getStatus().equals("1")) {
                 /*    Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.DATE, -7);*/
@@ -309,6 +298,8 @@ public class ThisWeekActivity extends AppCompatActivity {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {

@@ -30,11 +30,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         TaskListRecords taskListResponse = taskListRecordsList.get(i);
         viewHolder.mTaskListTaskName.setText(taskListResponse.getName());
         viewHolder.mDudate.setText(taskListResponse.getDue_date());
-        viewHolder.mTaskProjectName.setText(taskListResponse.getProject_code());
+        viewHolder.mTaskProjectName.setText(taskListResponse.getProject_name());
         viewHolder.mRemdnier.setText(taskListResponse.getRemindars_count());
         viewHolder.mTaskPriorty.setText(taskListResponse.getPriority());
         viewHolder.mTaskCode.setText(taskListResponse.getTask_code());
         viewHolder.mTaskStatus.setText(taskListResponse.getStatus());
+        viewHolder.mProjectCode.setText(taskListResponse.getProject_code());
         System.out.println("name"+ taskListRecordsList);
     }
     @Override
@@ -50,6 +51,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         TextView mTaskPriorty;
         TextView mTaskCode;
         TextView mTaskStatus;
+        TextView mProjectCode;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTaskListTaskName = itemView.findViewById(R.id.tv_taskListName);
@@ -59,6 +61,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             mTaskPriorty = itemView.findViewById(R.id.tv_taskListPriority);
             mTaskCode = itemView.findViewById(R.id.tv_taskCode);
             mTaskStatus = itemView.findViewById(R.id.tv_taskstatus);
+            mProjectCode = itemView.findViewById(R.id.tv_projectCodeTaskList);
+
         }
     }
 

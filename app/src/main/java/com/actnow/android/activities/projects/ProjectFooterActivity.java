@@ -244,7 +244,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);            }
+                startActivity(i);
+            }
         });
 
         mIndividuvalDialog = new MultiSelectDialog();

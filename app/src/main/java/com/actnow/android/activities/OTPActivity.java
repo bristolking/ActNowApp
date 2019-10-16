@@ -58,7 +58,7 @@ public class OTPActivity extends AppCompatActivity {
 
         }else {
             Intent i = getIntent();
-           final String mobile= i.getStringExtra("mobileNumber");
+            final String mobile= i.getStringExtra("mobileNumber");
             requestCheckOTP(mobile,otp);
         }
 

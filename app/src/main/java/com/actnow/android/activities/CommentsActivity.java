@@ -118,6 +118,7 @@ public class CommentsActivity extends AppCompatActivity {
     TextView mCommentId;
 
     TextView mCommentMeassgeProject;
+    TextView mCommentProjectId;
 
 
     private static final int REQUEST_TAKE_PHOTO = 0;
@@ -529,13 +530,44 @@ public class CommentsActivity extends AppCompatActivity {
                         inputProject.setLayoutParams(lp);
                         builder.setView(inputProject);
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        HashMap<String, String> userId = session.getUserDetails();
+                                        String id = userId.get( UserPrefUtils.ID );
+                                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                        String comment_id = mCommentProjectId.getText().toString();
+                                        Call<TaskComplete> taskEditCall = ANApplications.getANApi().checkTheTaskEdit( id, comment_id, orgn_code, userComment, task_code, project_code );
+                                        System.out.println( "editTaskFelis" + id + orgn_code + userComment + task_code + project_code );
+                                        taskEditCall.enqueue( new Callback<TaskComplete>() {
+                                            @Override
+                                            public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                if (response.isSuccessful()) {
+                                                    System.out.println( "editReponse" + response.raw() );
+                                                    if (response.body().getSuccess().equals( "true" )) {
+                                                        Snackbar.make( mContentLayout, "Comment edited successfully", Snackbar.LENGTH_SHORT ).show();
+                                                        Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                                        i.putExtra( "ProjectCode", project_code );
+                                                        startActivity( i );
 
-                                //Toast.makeText(getApplicationContext(), "Text entered is " + input.getText().toString(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        builder.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
+                                                    } else {
+                                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+
+                                                    }
+                                                } else {
+                                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                Log.d( "CallBack", " Throwable is " + t );
+
+                                            }
+                                        } );
+                                    }
+                                });
+
+                                builder.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -632,6 +664,7 @@ public class CommentsActivity extends AppCompatActivity {
                 TextView mCommentUserName = (TextView) view.findViewById( R.id.tv_userNameComment );
                 TextView mCommentDate = (TextView) view.findViewById( R.id.tv_commentDate );
                 mCommentMeassgeProject = (TextView) view.findViewById( R.id.tv_commentText );
+                mCommentProjectId= (TextView)view.findViewById( R.id.tv_commentId);
 
             }
 

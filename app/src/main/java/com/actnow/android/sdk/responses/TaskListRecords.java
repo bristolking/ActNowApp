@@ -15,6 +15,7 @@ package com.actnow.android.sdk.responses;
      private String updated_by;
      private String updated_date;
      private String remindars_count;
+     private String project_name;
 
      public String getTask_id() {
          return task_id;
@@ -128,6 +129,14 @@ package com.actnow.android.sdk.responses;
          this.remindars_count = remindars_count;
      }
 
+     public String getProject_name() {
+         return project_name;
+     }
+
+     public void setProject_name(String project_name) {
+         this.project_name = project_name;
+     }
+
      @Override
      public String toString() {
          return "TaskListRecords{" +
@@ -145,6 +154,7 @@ package com.actnow.android.sdk.responses;
                  ", updated_by='" + updated_by + '\'' +
                  ", updated_date='" + updated_date + '\'' +
                  ", remindars_count='" + remindars_count + '\'' +
+                 ", project_name='" + project_name + '\'' +
                  '}';
      }
  }
