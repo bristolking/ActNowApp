@@ -370,6 +370,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
                 if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -462,13 +463,15 @@ public class TodayTaskActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
-                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                            String s = radioButtonTaskName.getText().toString();
-                            String s1 = tv_dueDate.getText().toString();
+                            String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i = new Intent(getApplicationContext(), EditTaskActivity.class);
-                            i.putExtra("TaskName", s);
-                            i.putExtra("TaskDate", s1);
-                            i.putExtra("taskOwnerName", taskOwnerName);
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "taskOwnerName", taskOwnerName );
                             startActivity(i);
                         }
                     });

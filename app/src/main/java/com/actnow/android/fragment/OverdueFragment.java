@@ -171,7 +171,7 @@ public class OverdueFragment extends Fragment {
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
-                        setProjectFooterList( response.body().getTask_records() );
+                        setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -188,7 +188,7 @@ public class OverdueFragment extends Fragment {
         } );
     }
 
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get( i );
@@ -201,6 +201,7 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count());
                 taskListRecords1.setStatus( taskListRecords.getStatus());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
                 //taskListRecordsArrayList.add(taskListRecords1);
                 if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();

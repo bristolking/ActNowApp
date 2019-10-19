@@ -2,8 +2,8 @@ package com.actnow.android.sdk.responses;
 
  public class TaskListRecords {
      private String task_id;
-     private String task_code;
      private String name;
+     private String task_code;
      private String project_code;
      private String priority;
      private String due_date;
@@ -16,6 +16,12 @@ package com.actnow.android.sdk.responses;
      private String updated_date;
      private String remindars_count;
      private String project_name;
+     private String repeat_type;
+     private String repeat_months;
+     private String repeat_weeks;
+     private String repeat_days;
+     private String parent_task_code;
+
 
      public String getTask_id() {
          return task_id;
@@ -25,20 +31,20 @@ package com.actnow.android.sdk.responses;
          this.task_id = task_id;
      }
 
-     public String getTask_code() {
-         return task_code;
-     }
-
-     public void setTask_code(String task_code) {
-         this.task_code = task_code;
-     }
-
      public String getName() {
          return name;
      }
 
      public void setName(String name) {
          this.name = name;
+     }
+
+     public String getTask_code() {
+         return task_code;
+     }
+
+     public void setTask_code(String task_code) {
+         this.task_code = task_code;
      }
 
      public String getProject_code() {
@@ -137,12 +143,52 @@ package com.actnow.android.sdk.responses;
          this.project_name = project_name;
      }
 
+     public String getRepeat_type() {
+         return repeat_type;
+     }
+
+     public void setRepeat_type(String repeat_type) {
+         this.repeat_type = repeat_type;
+     }
+
+     public String getRepeat_months() {
+         return repeat_months;
+     }
+
+     public void setRepeat_months(String repeat_months) {
+         this.repeat_months = repeat_months;
+     }
+
+     public String getRepeat_weeks() {
+         return repeat_weeks;
+     }
+
+     public void setRepeat_weeks(String repeat_weeks) {
+         this.repeat_weeks = repeat_weeks;
+     }
+
+     public String getRepeat_days() {
+         return repeat_days;
+     }
+
+     public void setRepeat_days(String repeat_days) {
+         this.repeat_days = repeat_days;
+     }
+
+     public String getParent_task_code() {
+         return parent_task_code;
+     }
+
+     public void setParent_task_code(String parent_task_code) {
+         this.parent_task_code = parent_task_code;
+     }
+
      @Override
      public String toString() {
          return "TaskListRecords{" +
                  "task_id='" + task_id + '\'' +
-                 ", task_code='" + task_code + '\'' +
                  ", name='" + name + '\'' +
+                 ", task_code='" + task_code + '\'' +
                  ", project_code='" + project_code + '\'' +
                  ", priority='" + priority + '\'' +
                  ", due_date='" + due_date + '\'' +
@@ -155,6 +201,11 @@ package com.actnow.android.sdk.responses;
                  ", updated_date='" + updated_date + '\'' +
                  ", remindars_count='" + remindars_count + '\'' +
                  ", project_name='" + project_name + '\'' +
+                 ", repeat_type='" + repeat_type + '\'' +
+                 ", repeat_months='" + repeat_months + '\'' +
+                 ", repeat_weeks='" + repeat_weeks + '\'' +
+                 ", repeat_days='" + repeat_days + '\'' +
+                 ", parent_task_code='" + parent_task_code + '\'' +
                  '}';
      }
  }

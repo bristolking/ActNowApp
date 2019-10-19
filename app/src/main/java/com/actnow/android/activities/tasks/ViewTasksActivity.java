@@ -19,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,9 +43,11 @@ import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.adapter.NewTaskProjectAdapter;
+import com.actnow.android.adapter.TaskWeeknameAdapter;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskAddResponse;
+import com.actnow.android.sdk.responses.TaskWeeknameResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -51,6 +55,7 @@ import org.json.JSONArray;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +120,6 @@ public class ViewTasksActivity extends AppCompatActivity {
     String months;
     String days;
     String projectcode;
-    String specializationString;
 
     String projectName;
 
@@ -123,9 +127,18 @@ public class ViewTasksActivity extends AppCompatActivity {
     NewTaskProjectAdapter mNewTaskProjectAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList = new ArrayList<ProjectListResponseRecords>();
+    //WeeKnameList
+    RecyclerView mRecylerViewName;
+    private ArrayList<TaskWeeknameResponse> taskWeeknameResponseArrayList = new ArrayList<TaskWeeknameResponse>( );
+    TaskWeeknameAdapter mTaskWeeknameAdapter;
 
     TextView mProjectNameDailog;
     TextView mProjectCodeDailog;
+
+    TextView mTaskWeekName;
+    TextView mTaskWeekId;
+    String  weekName;
+    String  weekId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,12 +157,8 @@ public class ViewTasksActivity extends AppCompatActivity {
             taskOwnerName = (String) b.get( "taskOwnerName" );
             mTaskTitle.setText( " " + taskOwnerName );
             projectName =(String)b.get( "projectName");
-           // mProjectCheckBox.setText(projectName);
             projectcode =(String)b.get( "projectCode");
-            mProjectCheckBox.setText(projectcode);
-            System.out.println( "passsed" + taskOwnerName + id );
         }
-
 
     }
 
@@ -271,42 +280,32 @@ public class ViewTasksActivity extends AppCompatActivity {
                         myCalendar.get( Calendar.DAY_OF_MONTH ) ).show();
             }
         });
-
-      /*  mIndividuvalDialog = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add( 0 );*/
-
-
         mProjectCheckBox = findViewById( R.id.tv_projectTask );
-        mProjectCheckBox.setText(projectcode);
-        System.out.println( "name"+ projectName );
         mProjectNewTask = findViewById( R.id.re_projrectNewTask );
         mProjectNewTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                requestDynamicProjectList();
                 final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
                 dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
                 dialog.setCancelable(true);
-                dialog.setContentView(R.layout.dailog_projectname_projectcode);
+                dialog.setContentView( R.layout.dailog_projectname_projectcode);
                 mRecyclerViewDateTime = dialog.findViewById(R.id.recyleView_projectNameCode);
                 mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 mRecyclerViewDateTime.setLayoutManager(mLayoutManager);
                 mRecyclerViewDateTime.setItemAnimator(new DefaultItemAnimator());
                 mNewTaskProjectAdapter = new NewTaskProjectAdapter(projectListResponseRecordsArrayList, R.layout.custom_project_dailog, getApplicationContext());
                 mRecyclerViewDateTime.setAdapter(mNewTaskProjectAdapter);
-                requestDynamicProjectList();
                 TextView tv_ok =(TextView)dialog.findViewById(R.id.tv_dailogOk);
                 tv_ok.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         projectName = mProjectNameDailog.getText().toString();
                         projectcode = mProjectCodeDailog.getText().toString();
-                        Intent i= new Intent(getApplicationContext(),ViewTasksActivity.class);
-                        i.putExtra( "id", id );
-                        i.putExtra( "taskOwnerName", taskOwnerName );
-                        i.putExtra("projectName", projectName);
-                        i.putExtra( "projectCode",projectcode );
-                        startActivity(i);
+                        mProjectCheckBox.setText(projectcode);
+                        if (!TextUtils.isEmpty(projectName)) {
+                            dialog.dismiss();
+                        }
                     }
                 } );
                 TextView tv_cancel =(TextView)dialog.findViewById(R.id.tv_dailogCancel);
@@ -369,8 +368,16 @@ public class ViewTasksActivity extends AppCompatActivity {
         } );
         attemptCreateTask();
         spinnerData();
-    }
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("1","Monday"));
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("2","Tuesday"));
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("3","Wednesday"));
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("4","Thursday"));
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("5","Friday"));
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("6","Saturday"));
+        taskWeeknameResponseArrayList.add( new TaskWeeknameResponse("7","Sunday"));
 
+
+    }
     private void spinnerData() {
         mSpinnerReptOption = (Spinner) findViewById( R.id.spinnerReapt );
         mRepeatType = (View) findViewById( R.id.re_repeatTypeNewTask );
@@ -431,49 +438,40 @@ public class ViewTasksActivity extends AppCompatActivity {
         reWeeklyView.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder( ViewTasksActivity.this );
-                mBuilder.setTitle( "ADD TO DATES" );
-                mBuilder.setMultiChoiceItems( listItemsWeek, checkedItemsWeek, new DialogInterface.OnMultiChoiceClickListener() {
+                final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
+                dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView( R.layout.task_week_dailog);
+                mRecylerViewName = dialog.findViewById(R.id.recyleView_weekNameTask);
+                LinearLayoutManager  mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                mRecylerViewName.setLayoutManager(mLayoutManager);
+                mRecylerViewName.setItemAnimator(new DefaultItemAnimator());
+                mTaskWeeknameAdapter = new TaskWeeknameAdapter(taskWeeknameResponseArrayList, R.layout.custom_task_weekname_dailog, getApplicationContext());
+                mRecylerViewName.setAdapter(mNewTaskProjectAdapter);
+                mRecylerViewName.setAdapter(new TaskWeeknameAdapter(taskWeeknameResponseArrayList, R.layout.custom_task_weekname_dailog, getApplicationContext()));
+                TextView tv_taskOk =(TextView)dialog.findViewById(R.id.tv_weekdailogOk);
+                tv_taskOk.setOnClickListener( new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int position, boolean isChecked) {
-                        if (isChecked) {
-                            if (!mWeek.contains( position )) {
-                                mWeek.add( position );
-                            } else {
-                                mWeek.remove( position );
-                            }
-                        }
+                    public void onClick(View view) {
+                       /* mTaskWeekName =(TextView)findViewById(R.id.tv_taskWeeekname);
+                        System.out.println( "week"+ mTaskWeekName );
+                        mTaskWeekId =(TextView)findViewById( R.id.tv_taskWeeekId);
+                        weekName = mTaskWeekName.getText().toString();
+                        mWeekName.setText(weekName);*/
+                        dialog.dismiss();
+
 
                     }
                 } );
-                mBuilder.setCancelable( false );
-                mBuilder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
+                TextView tv_taskCancel =(TextView)dialog.findViewById(R.id.tv_weekdailogCancel);
+                tv_taskCancel.setOnClickListener( new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String item = " ";
-                        for (int i = 0; i < mWeek.size(); i++) {
-                            item = item + listItemsWeek[mWeek.get( i )];
-                            if (i != mWeek.size() - 1) {
-                                item = item + " ";
-                            }
-                        }
-
-                        mWeekName.setText( item );
-                        week_days = mWeekName.getText().toString();
-
-                        //mRepeatTypeTextView.setText(item);
-
-                    }
-                } );
-                mBuilder.setNegativeButton( "Dismiss", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View view) {
                         dialog.dismiss();
 
                     }
                 } );
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
+                dialog.show();
 
             }
         } );
@@ -572,6 +570,8 @@ public class ViewTasksActivity extends AppCompatActivity {
         } );
     }
 
+
+
     private void attemptCreateTask() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -579,7 +579,6 @@ public class ViewTasksActivity extends AppCompatActivity {
         String due_date = mDueDateTask.getText().toString();
         String priorty = mPriorty.getText().toString();
         String project_code =mProjectCheckBox.getText().toString();
-        //String project_code = mProjectCodeDailog.getText().toString();
         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
         String individuvalName = String.valueOf( individuvalArray );
         //individuvalArray.remove(0);
@@ -633,10 +632,9 @@ public class ViewTasksActivity extends AppCompatActivity {
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
             public void onResponse(Call<ProjectListResponse> call, Response<ProjectListResponse> response) {
-                //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        setProjectFooterList( response.body().getProject_records() );
+                        setProjectFooterList(response.body().getProject_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -644,7 +642,6 @@ public class ViewTasksActivity extends AppCompatActivity {
                     AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
-
             @Override
             public void onFailure(Call<ProjectListResponse> call, Throwable t) {
                 Log.d( "CallBack", " Throwable is " + t );
@@ -660,15 +657,15 @@ public class ViewTasksActivity extends AppCompatActivity {
                 projectListResponseRecords1.setProject_code( (projectListResponseRecords.getProject_code()));
                 projectListResponseRecordsArrayList.add( projectListResponseRecords1 );
             }
-            mRecyclerViewDateTime.setAdapter( new NewTaskProjectAdapter( projectListResponseRecordsArrayList, R.layout.custom_project_dailog, getApplicationContext() ) );
+            mRecyclerViewDateTime.setAdapter(new NewTaskProjectAdapter(projectListResponseRecordsArrayList, R.layout.custom_project_footer, getApplicationContext()));
             mRecyclerViewDateTime.addOnItemTouchListener(new ViewTasksActivity.RecyclerTouchListener(this, mRecyclerViewDateTime, new ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
 
-                    mProjectNameDailog =(TextView)view.findViewById( R.id.tv_projectNameDailog);
+                     mProjectNameDailog =(TextView)view.findViewById( R.id.tv_projectNameDailog);
                      projectName =mProjectNameDailog.getText().toString();
                      mProjectCodeDailog =(TextView)view.findViewById(R.id.tv_projectCodeDailog);
-                     System.out.println("projectName"+ projectName+" "+mProjectCodeDailog.getText().toString());
+                     //System.out.println("projectName"+ projectName+" "+mProjectCodeDailog.getText().toString());
 
 
                 }
@@ -752,4 +749,6 @@ public class ViewTasksActivity extends AppCompatActivity {
             }
         } );
     }
+
+
 }

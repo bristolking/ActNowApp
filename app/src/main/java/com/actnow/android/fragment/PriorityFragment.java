@@ -111,7 +111,7 @@ public class PriorityFragment extends Fragment {
         mPriorityTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
         mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext());
         mPriorityTaskRecylcerView.setAdapter(mTaskListAdapter);
-    return  view;
+        return  view;
     }
 
 
@@ -126,7 +126,7 @@ public class PriorityFragment extends Fragment {
                 if (response.isSuccessful()) {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
-                        setProjectFooterList(response.body().getTask_records());
+                        setTaskList(response.body().getTask_records());
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -143,7 +143,7 @@ public class PriorityFragment extends Fragment {
         });
     }
 
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get(i);
@@ -155,9 +155,9 @@ public class PriorityFragment extends Fragment {
                 taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
                 if (taskListRecords.getStatus().equals("1")) {
                     taskListRecordsArrayList.add(taskListRecords1);
-
                 }
             }
             mPriorityTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext()));
@@ -250,13 +250,16 @@ public class PriorityFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
-                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                            String s = radioButtonTaskName.getText().toString();
-                            String s1 = tv_dueDate.getText().toString();
+                            String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i = new Intent(getActivity(), EditTaskActivity.class);
-                            i.putExtra("TaskName", s);
-                            i.putExtra("TaskDate", s1);
-                            i.putExtra("taskOwnerName", taskOwnerName);
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "taskOwnerName", taskOwnerName );
+                            System.out.println( "priorty"+ name+date+taskOwnerName);
                             startActivity(i);
                         }
                     });

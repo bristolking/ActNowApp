@@ -363,7 +363,8 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
                 taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
                 taskListRecords1.setStatus( taskListRecords.getStatus());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
-                if (taskListRecords.getStatus().equals( "1" )) {
+                taskListRecords1.setRepeat_type(taskListRecords.getRepeat_type());
+                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals("Monthly")) {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
@@ -451,11 +452,13 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
                             String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                            String s = radioButtonTaskName.getText().toString();
-                            String s1 = tv_dueDate.getText().toString();
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i = new Intent( getApplicationContext(), EditTaskActivity.class );
-                            i.putExtra( "TaskName", s );
-                            i.putExtra( "TaskDate", s1 );
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
                             i.putExtra( "taskOwnerName", taskOwnerName );
                             startActivity( i );
                         }

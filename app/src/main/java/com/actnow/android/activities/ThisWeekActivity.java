@@ -255,7 +255,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
-                        setProjectFooterList(response.body().getTask_records());
+                        setTaskList(response.body().getTask_records());
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -270,7 +270,7 @@ public class ThisWeekActivity extends AppCompatActivity {
         });
     }
 
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get(i);
@@ -281,6 +281,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                 taskListRecords1.setProject_code(taskListRecords.getProject_code());
                 taskListRecords1.setTask_code(taskListRecords.getTask_code());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
                 if (taskListRecords.getStatus().equals("1")) {
                 /*    Calendar cal = Calendar.getInstance();
                     cal.add(Calendar.DATE, -7);*/
@@ -365,17 +366,19 @@ public class ThisWeekActivity extends AppCompatActivity {
                         }
                     });
                      mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
-                    mTaskName.setOnClickListener(new View.OnClickListener() {
+                     mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
-                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                            String s = radioButtonTaskName.getText().toString();
-                            String s1 = tv_dueDate.getText().toString();
+                            String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i = new Intent(getApplicationContext(), EditTaskActivity.class);
-                            i.putExtra("TaskName", s);
-                            i.putExtra("TaskDate", s1);
-                            i.putExtra("taskOwnerName", taskOwnerName);
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "taskOwnerName", taskOwnerName );
                             startActivity(i);
                         }
                     });

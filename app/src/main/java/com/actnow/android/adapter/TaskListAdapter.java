@@ -36,6 +36,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         viewHolder.mTaskCode.setText(taskListResponse.getTask_code());
         viewHolder.mTaskStatus.setText(taskListResponse.getStatus());
         viewHolder.mProjectCode.setText(taskListResponse.getProject_code());
+        viewHolder.mRepeat_type.setText(taskListResponse.getRepeat_type());
         System.out.println("name"+ taskListRecordsList);
     }
     @Override
@@ -52,6 +53,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         TextView mTaskCode;
         TextView mTaskStatus;
         TextView mProjectCode;
+        TextView mRepeat_type;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mTaskListTaskName = itemView.findViewById(R.id.tv_taskListName);
@@ -62,6 +64,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             mTaskCode = itemView.findViewById(R.id.tv_taskCode);
             mTaskStatus = itemView.findViewById(R.id.tv_taskstatus);
             mProjectCode = itemView.findViewById(R.id.tv_projectCodeTaskList);
+            mRepeat_type = itemView.findViewById(R.id.tv_taskRepeatType);
 
         }
     }

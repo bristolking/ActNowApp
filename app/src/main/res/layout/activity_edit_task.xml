@@ -250,7 +250,6 @@
                         android:textColor="@color/black"/>
                 </RelativeLayout>
             </LinearLayout>
-
         </LinearLayout>
     </RelativeLayout>
 

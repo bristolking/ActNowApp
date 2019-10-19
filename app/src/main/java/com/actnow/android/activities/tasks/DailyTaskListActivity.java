@@ -273,8 +273,8 @@ public class DailyTaskListActivity extends AppCompatActivity {
         mDailyTaskListButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), AdvancedSearchActivity.class );
+                startActivity( i );
             }
         } );
 
@@ -347,7 +347,7 @@ public class DailyTaskListActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
-                        setProjectFooterList( response.body().getTask_records() );
+                        setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -364,7 +364,7 @@ public class DailyTaskListActivity extends AppCompatActivity {
         } );
     }
 
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get( i );
@@ -374,13 +374,13 @@ public class DailyTaskListActivity extends AppCompatActivity {
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
                 taskListRecords1.setProject_code( taskListRecords.getProject_code() );
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
-                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count());
-                taskListRecords1.setStatus( taskListRecords.getStatus());
-                taskListRecords1.setProject_name(taskListRecords.getProject_name());
-                if (taskListRecords.getStatus().equals( "1" )) {
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
+                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals( "Daily" )) {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
-
             }
             mDailyTaskListRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() ) );
             mDailyTaskListRecylcerView.addOnItemTouchListener( new DailyTaskListActivity.RecyclerTouchListener( this, mDailyTaskListRecylcerView, new DailyTaskListActivity.ClickListener() {
@@ -393,8 +393,9 @@ public class DailyTaskListActivity extends AppCompatActivity {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
-                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
-                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
+                    final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
+                    final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
+                    final TextView tv_repeatType = (TextView) view.findViewById( R.id.tv_taskRepeatType );
                     groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -466,11 +467,13 @@ public class DailyTaskListActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
                             String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                            String s = radioButtonTaskName.getText().toString();
-                            String s1 = tv_dueDate.getText().toString();
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
                             Intent i = new Intent( getApplicationContext(), EditTaskActivity.class );
-                            i.putExtra( "TaskName", s );
-                            i.putExtra( "TaskDate", s1 );
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
                             i.putExtra( "taskOwnerName", taskOwnerName );
                             startActivity( i );
                         }
@@ -479,8 +482,8 @@ public class DailyTaskListActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i= new Intent(getApplicationContext(), InvitationActivity.class);
-                            startActivity(i);
+                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
+                            startActivity( i );
                             //mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
                         }
                     } );
@@ -503,9 +506,9 @@ public class DailyTaskListActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i=new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
                             i.putExtra( "TaskCode", task_code );
-                            startActivity(i);
+                            startActivity( i );
                         }
                     } );
 
