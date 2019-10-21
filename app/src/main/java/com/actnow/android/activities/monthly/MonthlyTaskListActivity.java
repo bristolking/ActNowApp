@@ -310,6 +310,7 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                 taskListRecords1.setName(taskListRecords.getName());
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
+                taskListRecords1.setProject_name( taskListRecords.getProject_name());
                 String date = taskListRecords.getDue_date();
                 String[] dateArray = date.split(" ");
                 String[] finalDateArray = dateArray[0].split("-");

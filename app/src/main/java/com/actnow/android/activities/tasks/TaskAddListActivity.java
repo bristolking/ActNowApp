@@ -337,7 +337,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             String title = null;
             if (position == 0) {
-                title = "AllTask";
+                title = "AllTasks";
             } else if (position == 1) {
                 title = "Overdue";
             } else if (position == 2) {

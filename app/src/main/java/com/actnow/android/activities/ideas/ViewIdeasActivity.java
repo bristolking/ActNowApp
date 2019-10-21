@@ -271,7 +271,12 @@ public class ViewIdeasActivity extends AppCompatActivity {
         fabIdea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HashMap<String, String> userId = session.getUserDetails();
+                String id = userId.get( UserPrefUtils.ID );
+                String taskOwnerName = userId.get( UserPrefUtils.NAME );
                 Intent i =new Intent( getApplicationContext(), ViewTasksActivity.class );
+                i.putExtra( "id", id );
+                i.putExtra( "taskOwnerName", taskOwnerName );
                 startActivity(i);
             }
         });

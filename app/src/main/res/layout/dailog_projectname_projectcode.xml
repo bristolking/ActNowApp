@@ -28,25 +28,26 @@
         android:orientation="horizontal"
         android:padding="10dp">
         <TextView
+            android:id="@+id/tv_dailogCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dismiss"
+            android:layout_alignParentRight="true"
+            android:paddingRight="80dp"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        <TextView
             android:id="@+id/tv_dailogOk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="OK"
             android:layout_alignParentRight="true"
-            android:paddingRight="100dp"
+            android:paddingRight="20dp"
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-        <TextView
-            android:id="@+id/tv_dailogCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:layout_alignParentRight="true"
-            android:paddingRight="10dp"
-            android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
     </RelativeLayout>
 
 </LinearLayout>
