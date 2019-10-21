@@ -43,7 +43,7 @@
                     android:id="@+id/image_photo"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:src="@drawable/ic_human" />
+                    android:src="@drawable/useractnow" />
 
                 <TextView
                     android:id="@+id/tv_name"

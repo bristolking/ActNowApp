@@ -5,37 +5,49 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="horizontal"
-    android:background="@color/colorWhite"
+    android:background="@color/colorYellow"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginTop="40dp">
         <ImageView
             android:id="@+id/img_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/useractnow"
             android:layout_centerVertical="true"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_human" />
-        <TextView
-            android:id="@+id/tv_nameProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nagarjuna"
-            android:layout_below="@+id/img_profile"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginTop="30dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-    </RelativeLayout>
+            android:background="@drawable/square"/>
         <ImageView
             android:id="@+id/nav_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_multiply"
-            android:layout_alignRight="@+id/img_view"
-            android:paddingLeft="50dp"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="10dp"/>
+    </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_nameProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nagarjuna"
+            android:paddingLeft="5dp"
+            android:textColor="@color/textColor"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/tv_emailProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nagarjuna@gmail.com"
+            android:textColor="@color/textColor"
+            android:paddingLeft="5dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    </LinearLayout>
+
 </LinearLayout>

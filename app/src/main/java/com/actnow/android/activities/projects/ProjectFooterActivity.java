@@ -140,6 +140,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -150,21 +151,41 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 });
                 TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
+                TextView mTextEmail =(TextView)findViewById(R.id.tv_emailProfile);
+                mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToady = new Intent(getApplicationContext(), TodayTaskActivity.class);
-                                startActivity(iToady);
-                                finish();
+                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
+                                startActivity(iToday);
+                                break;
+                            case R.id.nav_idea:
+                                Intent iIdea = new Intent(getApplicationContext(),ViewIdeasActivity.class);
+                                startActivity(iIdea);
+                                break;
+                            case R.id.nav_thisweek:
+                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
+                                startActivity(ithisweek);
+                                break;
+                            case R.id.nav_taskfilter:
+                                Intent iTaskfilter = new Intent(getApplicationContext(),TaskAddListActivity.class);
+                                startActivity(iTaskfilter);
+                                break;
+                            case R.id.nav_project:
+                                Toast.makeText(getApplicationContext(), "Selected The Projects", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.nav_individuals:
+                                Intent iIndividuals = new Intent(getApplicationContext(),ViewIndividualsActivity.class);
+                                startActivity(iIndividuals);
+                                break;
+                            case R.id.nav_insights:
+                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                Intent iTimeLine = new Intent(getApplicationContext(),TimeLineActivity.class);
                                 startActivity(iTimeLine);
-                                break;
-                            case R.id.nav_filter:
-                                Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_profile:
                                 HashMap<String, String> userId = session.getUserDetails();
@@ -181,10 +202,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
-                            case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
-                                break;
+
                         }
                         return false;
                     }
@@ -324,7 +342,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     i.putExtra("projectOwnerName", projectOwnerName);
                                     i.putExtra("projectcode",projectcode);
                                     startActivity(i);
-
                                 } else if (checkedId == 0) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
                                 }

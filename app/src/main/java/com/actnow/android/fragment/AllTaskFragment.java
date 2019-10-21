@@ -1,8 +1,9 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
-
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
@@ -32,8 +34,6 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
@@ -53,66 +53,76 @@ import retrofit2.Response;
 import static com.actnow.android.R.layout.task_list_cutsom;
 
 
-public class RepetitiveFragment extends Fragment {
-    FloatingActionButton fabRepetitiveTask;
-    RecyclerView mRepetitiveTaskRecylcerView;
+public class AllTaskFragment extends Fragment {
+    RecyclerView mAllTaskRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
-    FloatingActionButton fabPriorityTask;
+    FloatingActionButton fabAllTask;
     TaskListAdapter mTaskListAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     private String selectedType = "";
+    private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
+
+    ArrayList<Integer> individualCheckBox, projectListCheckBox;
+    JSONArray individuvalArray;
+    JSONArray projectArray;
+
+    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
     String id;
+    MultiSelectDialog mIndividuvalDialogtime, mProjectDialogtime;
+    final AllTaskFragment context = this;
+
     TextView mTaskName;
 
-    public RepetitiveFragment() {
+    public AllTaskFragment() {
+
     }
 
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        session = new UserPrefUtils(getContext());
-        View  view= inflater.inflate(R.layout.fragment_repetitive, container, false);
-        mProgressView = view.findViewById(R.id.progress_bar);
-        mContentLayout = view.findViewById(R.id.content_layout);
-        mRepetitiveTaskRecylcerView = (RecyclerView) view.findViewById(R.id.repetitive_recyclerView);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mRepetitiveTaskRecylcerView.setLayoutManager(mLayoutManager);
-        mRepetitiveTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext());
-        mRepetitiveTaskRecylcerView.setAdapter(mTaskListAdapter);
-        attemptTaskList();
-        fabRepetitiveTask = view.findViewById(R.id.fab_repetitivetask);
-        fabRepetitiveTask.setOnClickListener(new View.OnClickListener() {
+        session = new UserPrefUtils( getContext() );
+        View view = inflater.inflate( R.layout.fragment_all_task, container, false );
+        mProgressView = view.findViewById( R.id.progress_bar );
+        mContentLayout = view.findViewById( R.id.content_layout );
+        fabAllTask = view.findViewById( R.id.fab_alltask );
+        fabAllTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID);
-                String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                Intent i = new Intent(getActivity(), ViewTasksActivity.class);
-                i.putExtra("id", id);
-                i.putExtra("taskOwnerName", taskOwnerName);
-                startActivity(i);
+                String id = userId.get( UserPrefUtils.ID );
+                String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                Intent i = new Intent( getActivity(), ViewTasksActivity.class );
+                i.putExtra( "id", id );
+                i.putExtra( "taskOwnerName", taskOwnerName );
+                startActivity( i );
             }
-        });
+        } );
+        mAllTaskRecylcerView = (RecyclerView) view.findViewById( R.id.alltask_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getContext() );
+        mAllTaskRecylcerView.setLayoutManager( mLayoutManager );
+        mAllTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
+        mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
+        attemptTaskList();
         return view;
     }
 
-
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
-        call.enqueue(new Callback<TaskListResponse>() {
+        String id = userId.get( UserPrefUtils.ID );
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
+        call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
-                    System.out.println("url" + response.raw());
-                    if (response.body().getSuccess().equals("true")) {
-                        setProjectFooterList(response.body().getTask_records());
+                    System.out.println( "url" + response.raw() );
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
                     //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
@@ -121,70 +131,69 @@ public class RepetitiveFragment extends Fragment {
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                Log.d( "CallBack", " Throwable is " + t );
 
             }
-        });
+        } );
     }
 
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
-                TaskListRecords taskListRecords = taskListRecordsList.get(i);
+                TaskListRecords taskListRecords = taskListRecordsList.get( i );
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName(taskListRecords.getName());
-                taskListRecords1.setDue_date(taskListRecords.getDue_date());
-                taskListRecords1.setPriority(taskListRecords.getPriority());
-                taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
-                taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
-                taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setName( taskListRecords.getName() );
+                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
+                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                    if(taskListRecords.getRepeat_type().equals("null")) {
-                        if (taskListRecords.getStatus().equals( "1" )) {
-                            taskListRecordsArrayList.add( taskListRecords1 );
-                        }
+                if (taskListRecords.getStatus().equals( "1" )) {
+                    taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
-            mRepetitiveTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext()));
-            mRepetitiveTaskRecylcerView.addOnItemTouchListener(new RepetitiveFragment.RecyclerTouchListener(this, mRepetitiveTaskRecylcerView, new RepetitiveFragment.ClickListener() {
+            mAllTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
+            mAllTaskRecylcerView.addOnItemTouchListener( new AllTaskFragment.RecyclerTouchListener( this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
-                    final View view1 = view.findViewById(R.id.taskList_liner);
-                    RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
-                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
+                    final View view1 = view.findViewById( R.id.taskList_liner );
+                    RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
                     final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
-                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
-                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
-                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
+                    final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
+                    groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            view1.setVisibility(View.VISIBLE);
-                                            RepetitiveFragment repetitiveFragment = new RepetitiveFragment();
+                                            view1.setVisibility( View.VISIBLE );
+                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace(R.id.fragment_repetitive, repetitiveFragment);
+                                            fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
                                             fragmentTransaction.commit();
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
-                                    });
+                                    } );
                                     View sbView = snackbar.getView();
-                                    TextView textView =(TextView)sbView.findViewById(R.id.snackbar_text);
-                                    textView.setOnClickListener(new View.OnClickListener() {
+                                    TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
+                                    textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            view1.setVisibility(View.GONE);
+                                            view1.setVisibility( View.GONE );
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
                                             final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -199,16 +208,16 @@ public class RepetitiveFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            RepetitiveFragment repetitiveFragment = new RepetitiveFragment();
+                                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace(R.id.fragment_repetitive, repetitiveFragment);
+                                                            fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
                                                             fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
                                                     } else {
-                                                        AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!" );
+                                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                                                     }
                                                 }
 
@@ -217,11 +226,10 @@ public class RepetitiveFragment extends Fragment {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
-
                                         }
-                                    });
+                                    } );
                                     snackbar.show();
                                 } else if (checkedId == 0) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -229,9 +237,9 @@ public class RepetitiveFragment extends Fragment {
                                 }
                             }
                         }
-                    });
-                     mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
-                     mTaskName.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
+                    mTaskName.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
@@ -239,55 +247,60 @@ public class RepetitiveFragment extends Fragment {
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent(getActivity(), EditTaskActivity.class);
-                            i.putExtra("TaskName", name);
-                            i.putExtra("TaskDate", date);
-                            i.putExtra("taskOwnerName", taskOwnerName);
-                            startActivity(i);
+                            Intent i = new Intent( getActivity(), EditTaskActivity.class );
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "taskOwnerName", taskOwnerName );
+                            startActivity( i );
+                            System.out.println( "user" + task_code );
                         }
-                    });
-                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
-                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
+                    mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i= new Intent(getActivity(), InvitationActivity.class);
-                            startActivity(i);
-                            //mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
+                            Intent i = new Intent( getActivity(), InvitationActivity.class );
+                            startActivity( i );
+                            // mIndividuvalDialogtime.show( getFragmentManager(), "mIndividuvalDialog" );
 
                         }
-                    });
-                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
-                    mImageComment.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
+                    mImageComment.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(getActivity(), CommentsActivity.class);
+                            Intent i = new Intent( getActivity(), CommentsActivity.class );
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
                             i.putExtra( "TaskName", name );
                             i.putExtra( "TaskDate", date );
                             i.putExtra( "TaskCode", task_code );
-                            startActivity(i);
+                            startActivity( i );
                         }
-                    });
-                    ImageView mImageRaminder = (ImageView) view.findViewById(R.id.img_raminderTaskList);
-                    mImageRaminder.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
+                    mImageRaminder.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i=new Intent( getActivity(), ReaminderScreenActivity.class);
+                            Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
                             i.putExtra( "TaskCode", task_code );
-                            startActivity(i);
+                            System.out.println( "maximum" + task_code );
+                            startActivity( i );
+
                         }
-                    });
+                    } );
 
                 }
+
                 @Override
                 public void onLongClick(View view, int position) {
 
                 }
 
-            }));
+            } ) );
         }
     }
 
@@ -299,31 +312,31 @@ public class RepetitiveFragment extends Fragment {
 
     public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-        private RepetitiveFragment.ClickListener clicklistener;
+        private AllTaskFragment.ClickListener clicklistener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListener(RepetitiveFragment context, final RecyclerView mRecylerViewSingleSub, RepetitiveFragment.ClickListener clickListener) {
+        public RecyclerTouchListener(AllTaskFragment context, final RecyclerView mRecylerViewSingleSub, AllTaskFragment.ClickListener clickListener) {
             this.clicklistener = clickListener;
-            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
                     }
                 }
-            });
+            } );
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
-                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            View child = rv.findChildViewUnder( e.getX(), e.getY() );
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
+                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
             }
 
             return false;
@@ -337,6 +350,7 @@ public class RepetitiveFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
 }
+
+
 

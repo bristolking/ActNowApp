@@ -1,7 +1,4 @@
 package com.actnow.android.activities.monthly;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -19,15 +16,11 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.CalendarView;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
@@ -36,6 +29,7 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
@@ -65,7 +59,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -146,6 +139,7 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -156,41 +150,59 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                 });
                 TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
+                TextView mTextEmail =(TextView)findViewById(R.id.tv_emailProfile);
+                mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToady = new Intent(getApplicationContext(), TodayTaskActivity.class);
-                                startActivity(iToady);
-                                finish();
+                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
+                                startActivity(iToday);
+                                break;
+                            case R.id.nav_idea:
+                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
+                                startActivity(iIdea);
+                                break;
+                            case R.id.nav_thisweek:
+                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
+                                startActivity(ithisweek);
+                                break;
+                            case R.id.nav_taskfilter:
+                                Intent iTaskfilter = new Intent(getApplicationContext(),TaskAddListActivity.class);
+                                startActivity(iTaskfilter);
+                                break;
+                            case R.id.nav_project:
+                                Intent iProject = new Intent(getApplicationContext(),ProjectFooterActivity.class);
+                                startActivity(iProject);
+                                break;
+                            case R.id.nav_individuals:
+                                Intent iIndividuals = new Intent(getApplicationContext(),ViewIndividualsActivity.class);
+                                startActivity(iIndividuals);
+                                break;
+                            case R.id.nav_insights:
+                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                Intent iTimeLine = new Intent(getApplicationContext(),TimeLineActivity.class);
                                 startActivity(iTimeLine);
-                                break;
-                            case R.id.nav_filter:
-                                Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_profile:
                                 HashMap<String, String> userId = session.getUserDetails();
                                 String id = userId.get(UserPrefUtils.ID);
                                 String name = userId.get(UserPrefUtils.NAME);
                                 String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile=new Intent(getApplicationContext(), EditAccountActivity.class);
+                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
                                 iprofile.putExtra("id", id);
                                 iprofile.putExtra("name", name);
                                 iprofile.putExtra("email", accountEmail);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium=new Intent(getApplicationContext(), PremiumActivity.class);
+                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
-                            case R.id.nav_thisweek:
-                                Intent iThisWeek =new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(iThisWeek);
-                                break;
+
                         }
                         return false;
                     }

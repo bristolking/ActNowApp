@@ -97,9 +97,9 @@ public class OverDueTaskActivity extends AppCompatActivity {
                             case R.id.nav_timeLine:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
-                            case R.id.nav_filter:
+                          /*  case R.id.nav_filter:
                                 Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
-                                break;
+                                break;*/
                             case R.id.nav_profile:
                                 HashMap<String, String> userId = session.getUserDetails();
                                 String id = userId.get(UserPrefUtils.ID);

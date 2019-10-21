@@ -75,16 +75,9 @@ public class OverdueFragment extends Fragment {
     private String selectedType = "";
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
-    JSONArray individuvalArray;
-    JSONArray projectArray;
 
-    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
-    ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-    String id;
-    MultiSelectDialog mIndividuvalDialogtime, mProjectDialogtime;
     final OverdueFragment context = this;
-
+    String id;
     TextView mTaskName;
 
     public OverdueFragment() {
@@ -94,10 +87,8 @@ public class OverdueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_overdue, container, false );
-        mIndividuvalDialogtime = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add( 0 );
-        requestDynamicContent();
+
+        //requestDynamicContent();
 
         if (AndroidUtils.isNetworkAvailable( getActivity() )) {
             attemptTaskList();
@@ -202,7 +193,6 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setStatus( taskListRecords.getStatus());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                //taskListRecordsArrayList.add(taskListRecords1);
                 if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -418,61 +408,4 @@ public class OverdueFragment extends Fragment {
     }
 
 
-    private void requestDynamicContent() {
-        HashMap<String, String> userId = session.getUserDetails();
-        id = userId.get( UserPrefUtils.ID );
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
-        call.enqueue( new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setLoadCheckBox( response.body().getOrgn_users_records() );
-                    } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
-            }
-        } );
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
-                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
-            }
-            mIndividuvalDialogtime = new MultiSelectDialog()
-                    .title( "Individuval" ) //setting title for dialog
-                    .titleSize( 25 )
-                    .positiveText( "Done" )
-                    .negativeText( "Cancel" )
-                    .preSelectIDsList( individualCheckBox )
-                    .setMinSelectionLimit( 0 )
-                    .setMaxSelectionLimit( listOfIndividuval.size() )
-                    .multiSelectList( listOfIndividuval ) // the multi select model list with ids and name
-                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                // mIndividualCheckBox.setText(dataString);
-                            }
-                            individuvalArray = new JSONArray( selectedIds );
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d( "TAG", "Dialog cancelled" );
-                        }
-                    } );
-        }
-    }
 }

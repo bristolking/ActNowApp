@@ -30,7 +30,7 @@
                 android:padding="10dp"
                 app:tabIndicator="@color/black"
                 app:tabIndicatorColor="@color/black"
-                app:tabMode="fixed"
+                app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/colorAccent"
                 app:tabTextColor="@color/black" />
               <Spinner

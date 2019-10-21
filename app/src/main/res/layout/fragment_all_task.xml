@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    android:id="@+id/fragment_overDue"
-    tools:context=".fragment.OverdueFragment">
+    android:id="@+id/fragment_allTask"
+    tools:context=".fragment.AllTaskFragment">
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
@@ -23,30 +23,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_marginTop="5dp">
-
-       <!-- <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OverdueTasks Names"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/black" />-->
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="5dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/task_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <!-- <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:text="OverdueTasks Names"
+                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                 android:textColor="@color/black" />-->
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/alltask_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_task"
+        android:id="@+id/fab_alltask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

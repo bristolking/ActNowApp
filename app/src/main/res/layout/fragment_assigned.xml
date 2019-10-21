@@ -31,12 +31,12 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <TextView
+          <!--  <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="AssignedTasks Names"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black" />
+                android:textColor="@color/black" />-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/assinedtask_recyclerView"
                 android:layout_width="match_parent"

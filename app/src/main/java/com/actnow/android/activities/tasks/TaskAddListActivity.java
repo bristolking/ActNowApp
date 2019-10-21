@@ -46,7 +46,7 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.fragment.AssignedFragment;
+import com.actnow.android.fragment.AllTaskFragment;
 import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.fragment.PriorityFragment;
 import com.actnow.android.fragment.RepetitiveFragment;
@@ -57,12 +57,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskAddListActivity extends AppCompatActivity {
-    RecyclerView mTaskRecylcerView;
-    RecyclerView.LayoutManager mLayoutManager;
-    FloatingActionButton fabTask;
-    TaskListAdapter mTaskListAdapter;
-    private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
-    View mProgressView, mContentLayout;
     UserPrefUtils session;
     EditText mTaskQucikSearch;
     Button mButtonAdavancedSearch;
@@ -70,9 +64,6 @@ public class TaskAddListActivity extends AppCompatActivity {
     private String selectedType = "";
     String id;
     String taskOwnerName;
-
-    // Fragment
-
     Spinner mSpinnerReptOption;
     ArrayAdapter<String> arrayAdapterReapt;
 
@@ -153,6 +144,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -163,21 +155,41 @@ public class TaskAddListActivity extends AppCompatActivity {
                 });
                 TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
+                TextView mTextEmail =(TextView)findViewById(R.id.tv_emailProfile);
+                mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToady = new Intent(getApplicationContext(), TodayTaskActivity.class);
-                                startActivity(iToady);
-                                finish();
+                            Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
+                            startActivity(iToday);
+                            break;
+                            case R.id.nav_idea:
+                                Intent iIdea = new Intent(getApplicationContext(),ViewIdeasActivity.class);
+                                startActivity(iIdea);
+                                break;
+                            case R.id.nav_thisweek:
+                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
+                                startActivity(ithisweek);
+                                break;
+                            case R.id.nav_taskfilter:
+                                Toast.makeText(getApplicationContext(), "Selected The TasKFilter", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.nav_project:
+                                Intent iProject = new Intent(getApplicationContext(),ProjectFooterActivity.class);
+                                startActivity(iProject);
+                                break;
+                            case R.id.nav_individuals:
+                                Intent iIndividuals = new Intent(getApplicationContext(),ViewIndividualsActivity.class);
+                                startActivity(iIndividuals);
+                                break;
+                            case R.id.nav_insights:
+                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                Intent iTimeLine = new Intent(getApplicationContext(),TimeLineActivity.class);
                                 startActivity(iTimeLine);
-                                break;
-                            case R.id.nav_filter:
-                                Toast.makeText(getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_profile:
                                 HashMap<String, String> userId = session.getUserDetails();
@@ -194,10 +206,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
-                            case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
-                                break;
+
                         }
                         return false;
                     }
@@ -309,35 +318,32 @@ public class TaskAddListActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             Fragment fragment = null;
             if (position == 0) {
-                fragment = new OverdueFragment();
+                fragment = new AllTaskFragment();
             } else if (position == 1) {
-                fragment = new PriorityFragment();
+                fragment = new OverdueFragment();
             } else if (position == 2) {
+                fragment = new PriorityFragment();
+            } else if (position == 3) {
                 fragment = new RepetitiveFragment();
             }
-                //fragment = new AssignedFragment();
-           /* } else if (position == 3) {
-                fragment = new RepetitiveFragment();
-            }*/
             return fragment;
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         public CharSequence getPageTitle(int position) {
             String title = null;
             if (position == 0) {
-                title = "Overdue";
+                title = "AllTask";
             } else if (position == 1) {
-                title = "Priority";
+                title = "Overdue";
             } else if (position == 2) {
+                title = "Priority";
+            }else if (position == 3) {
                 title = "Repetitive";
-               // title = "Assigned";
-            /*}else if (position == 3) {
-                title = "Repetitive";*/
             }
 
             return title;

@@ -82,46 +82,45 @@
                     android:orientation="horizontal">
                     <LinearLayout
                         android:id="@+id/liner_taskWeeklyList"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="center"
-                        android:layout_weight="0.2"
-                        android:paddingLeft="15dp">
+                        android:layout_weight="0">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="alltask"
+                            android:textAllCaps="true"
+                            android:layout_margin="10dp"
+                            android:padding="6dp"
+                            android:textColor="@color/black"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Overdue"
                             android:textAllCaps="true"
                             android:layout_margin="10dp"
-                            android:padding="8dp"
+                            android:padding="6dp"
                             android:textColor="@color/black"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"/>
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Priority"
                             android:textAllCaps="true"
                             android:layout_margin="10dp"
-                            android:padding="8dp"
+                            android:padding="6dp"
                             android:textColor="@color/black"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
-                        <!-- <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="Assigned"
-                             android:layout_margin="4dp"
-                             android:padding="4dp"
-                             android:textAllCaps="true"
-                             android:textColor="@colorWhite/black"
-                             android:textAppearance="@style/TextAppearance.AppCompat.Small" />-->
                     </LinearLayout>
                     <Spinner
                         android:id="@+id/spinnerWeeklyTaskList"
                         style="@style/mySpinnerItemStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3"
+                        android:layout_weight="0.5"
                         android:padding="10dp"
                         android:backgroundTint="@color/black"
                         android:layout_gravity="center"/>

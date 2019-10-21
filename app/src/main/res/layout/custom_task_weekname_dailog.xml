@@ -25,6 +25,7 @@
             android:layout_weight="1"
             android:buttonTint="@color/textColor"
             android:text="Week Id"
+            android:visibility="gone"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/black" />
     </LinearLayout>

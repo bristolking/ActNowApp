@@ -39,7 +39,12 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 
 import com.actnow.android.activities.ThisWeekActivity;
+import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
+import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.adapter.NewTaskProjectAdapter;
@@ -96,10 +101,6 @@ public class EditTaskActivity extends AppCompatActivity {
     String[] listItemsWeek;
     boolean[] checkedItemsWeek;
     ArrayList<Integer> mWeek = new ArrayList<>();
-    // repeatTupe
-    String[] listItemsRepeat;
-    boolean[] checkedItemsRepeat;
-    ArrayList<Integer> mRepeatTypeDaily = new ArrayList<>();
 
     Spinner mSpinnerReptOption;
     ArrayAdapter<String> arrayAdapterReaptEdit;
@@ -107,8 +108,6 @@ public class EditTaskActivity extends AppCompatActivity {
     View reWeeklyView, reYearly, reMonthly;
 
     TextView mYearly, mWeekName, mDates;
-    TextView mRepeatTypeTextView;
-
 
     String repeat_type;
     String week_days;
@@ -182,6 +181,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
@@ -190,46 +190,67 @@ public class EditTaskActivity extends AppCompatActivity {
                         startActivity( i );
                     }
                 } );
+
                 TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
                 mTextName.setText( taskOwnerName );
+                TextView mTextEmail =(TextView)findViewById( R.id.tv_emailProfile);
+                mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToady = new Intent( getApplicationContext(), TodayTaskActivity.class );
-                                startActivity( iToady );
-                                finish();
+                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
+                                startActivity(iToday);
+                                break;
+                            case R.id.nav_idea:
+                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
+                                startActivity(iIdea);
+                                break;
+                            case R.id.nav_thisweek:
+                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
+                                startActivity(ithisweek);
+                                break;
+                            case R.id.nav_taskfilter:
+                                Intent iTaskfilter = new Intent(getApplicationContext(),TaskAddListActivity.class);
+                                startActivity(iTaskfilter);
+                                break;
+                            case R.id.nav_project:
+                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class);
+                                startActivity( iProjects);
+                                break;
+                            case R.id.nav_individuals:
+                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
+                                startActivity(iIndividuals);
+                                break;
+                            case R.id.nav_insights:
+                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                                startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
-                                Toast.makeText( getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT ).show();
-                                break;
-                            case R.id.nav_filter:
-                                Toast.makeText( getApplicationContext(), "Wrok in progress", Toast.LENGTH_SHORT ).show();
+                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
                                 HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get( UserPrefUtils.ID );
-                                String name = userId.get( UserPrefUtils.NAME );
-                                String accountEmail = userId.get( UserPrefUtils.EMAIL );
-                                Intent iprofile = new Intent( EditTaskActivity.this, EditAccountActivity.class );
-                                iprofile.putExtra( "id", id );
-                                iprofile.putExtra( "name", name );
-                                iprofile.putExtra( "email", accountEmail );
-                                startActivity( iprofile );
+                                String id = userId.get(UserPrefUtils.ID);
+                                String name = userId.get(UserPrefUtils.NAME);
+                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
+                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
+                                iprofile.putExtra("id", id);
+                                iprofile.putExtra("name", name);
+                                iprofile.putExtra("email", accountEmail);
+                                startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent( EditTaskActivity.this, PremiumActivity.class );
-                                startActivity( ipremium );
+                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
+                                startActivity(ipremium);
                                 break;
-                            case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent( EditTaskActivity.this, ThisWeekActivity.class );
-                                startActivity( ithisweek );
-                                break;
+
                         }
                         return false;
                     }
-                } );
+                });
                 final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layoutTaskEditView );
                 if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
@@ -347,10 +368,12 @@ public class EditTaskActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         projectName = mProjectNameDailog.getText().toString();
                         projectcode = mProjectCodeDailog.getText().toString();
-                        mEditProjectCheckBox.setText(projectcode);
-                        if (!TextUtils.isEmpty(projectName)) {
+                        mEditProjectCheckBox.setText(projectName);
+                        dialog.dismiss();
+
+                       /* if (!TextUtils.isEmpty(projectName)) {
                             dialog.dismiss();
-                        }
+                        }*/
                     }
                 } );
                 TextView tv_cancel = (TextView) dialog.findViewById( R.id.tv_dailogCancel );
@@ -456,7 +479,6 @@ public class EditTaskActivity extends AppCompatActivity {
                         mWeekName.setText( item );
                         week_days = mWeekName.getText().toString();
 
-                        //mRepeatTypeTextView.setText(item);
 
                     }
                 } );
@@ -703,15 +725,41 @@ public class EditTaskActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, week_days, days, months );
-            System.out.println( "some" + id + task_code + taskName + due_date + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
+            if (week_days != null) {
+                String[] weekNumber = null;
+                ArrayList<String> list = new ArrayList<>();
+                if (week_days.contains( "Monday" )) {
+                    list.add( "1" );
+                }
+                if (week_days.contains( "Tuesday" )) {
+                    list.add( "2" );
+                }
+                if (week_days.contains( "Wednesday" )) {
+                    list.add( "3" );
+                }
+                if (week_days.contains( "Thursday" )) {
+                    list.add( "4" );
+                }
+                if (week_days.contains( "Friday" )) {
+                    list.add( "5" );
+                }
+                if (week_days.contains( "Saturday" )) {
+                    list.add( "6" );
+                }
+                if (week_days.contains( "Sunday" )) {
+                    list.add( "7" );
+                }
+            requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( list ), days, months );
+        }else {
+                requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( week_days ), days, months );
+            }
         }
     }
 
-    private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String week_days, String days, String months) {
+    private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
         System.out.println( "values" + id + taskName + duedate + days + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
 
-        Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, repeat_type, week_days, days, months );
+        Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
         call.enqueue( new Callback<TaskEditResponse>() {
 
             @Override
@@ -753,7 +801,6 @@ public class EditTaskActivity extends AppCompatActivity {
         tv_create.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 attemptUpdateTask();
             }
         } );

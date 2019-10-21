@@ -6,16 +6,37 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_today"
-            android:icon="@drawable/ic_calendar"
+            android:icon="@drawable/ic_today"
             android:title="Today" />
+        <item
+            android:id="@+id/nav_idea"
+            android:icon="@drawable/ic_lightbulb"
+            android:title="Idea" />
+        <item
+            android:id="@+id/nav_thisweek"
+            android:icon="@drawable/ic_calendar"
+            android:title="Thisweek" />
+        <item
+            android:id="@+id/nav_taskfilter"
+            android:icon="@drawable/ic_filter"
+            android:title="Task Filters" />
+        <item
+            android:id="@+id/nav_project"
+            android:icon="@drawable/ic_right_arrow"
+            android:title="Projects" />
+        <item
+            android:id="@+id/nav_individuals"
+            android:icon="@drawable/ic_individuals"
+            android:title="Individuals" />
+        <item
+            android:id="@+id/nav_insights"
+            android:icon="@drawable/ic_insight"
+            android:title="Insights" />
         <item
             android:id="@+id/nav_timeLine"
             android:icon="@drawable/ic_006_clock"
             android:title="TimeLine" />
-        <item
-            android:id="@+id/nav_filter"
-            android:icon="@drawable/ic_filter"
-            android:title="Filters" />
+
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_005_user"
@@ -24,10 +45,7 @@
             android:id="@+id/nav_premium"
             android:icon="@drawable/ic_007_money"
             android:title="Premium" />
-        <item
-            android:id="@+id/nav_thisweek"
-            android:icon="@drawable/ic_calendar"
-            android:title="Thisweek" />
+
     </group>
 
 </menu>
