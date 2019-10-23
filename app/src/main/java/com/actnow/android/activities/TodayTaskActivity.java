@@ -49,8 +49,11 @@ import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import org.json.JSONArray;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -105,12 +108,6 @@ public class TodayTaskActivity extends AppCompatActivity {
     private void appHeaderTwo() {
         ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
         imgeBack.setVisibility(GONE);
-       /* imgeBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });*/
         TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
         TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
         btnLink2.setOnClickListener(new View.OnClickListener() {
@@ -246,8 +243,6 @@ public class TodayTaskActivity extends AppCompatActivity {
     private void initializeViews() {
         HashMap<String, String> userId = session.getUserDetails();
         String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
-        System.out.println("orgn_code"+orgn_code);
-
         if (orgn_code == null){
             Intent i = new Intent(TodayTaskActivity.this,OrngActivity.class);
             startActivity(i);
@@ -257,11 +252,6 @@ public class TodayTaskActivity extends AppCompatActivity {
 
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
-        requestDynamicContent();
-
-        mIndividuvalDialog = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
 
         mImageBulbTask = findViewById(R.id.image_bulbTask);
         mImageBulbTask.setOnClickListener(new View.OnClickListener() {
@@ -288,7 +278,7 @@ public class TodayTaskActivity extends AppCompatActivity {
             }
         });
         //overDueRecyclerView
-      /*  mToadyOverDueTask = findViewById(R.id.toadyTaskOverDue_recyclerView);
+        mToadyOverDueTask = findViewById(R.id.toadyTaskOverDue_recyclerView);
         mLayoutManagerOverDue = new LinearLayoutManager(getApplicationContext());
         mToadyOverDueTask.setLayoutManager(mLayoutManagerOverDue);
         mToadyOverDueTask.setItemAnimator(new DefaultItemAnimator());
@@ -299,6 +289,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         callOverDue.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
+                System.out.println("over"+ response.raw() );
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
@@ -316,9 +307,9 @@ public class TodayTaskActivity extends AppCompatActivity {
                 Log.d("CallBack", " Throwable is " + t);
 
             }
-        });*/
+        });
         //TodayRecyclerView
-        mTodayRecyclerView = findViewById(R.id.thisweek_recyclerView);
+        mTodayRecyclerView = findViewById(R.id.toady_recylerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTodayRecyclerView.setLayoutManager(mLayoutManager);
         mTodayRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -329,6 +320,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
+                System.out.println("ress"+ response.raw() );
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
@@ -348,9 +340,13 @@ public class TodayTaskActivity extends AppCompatActivity {
             }
         });
     }
-
+    private Date yesterday() {
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal.getTime();
+    }
     //OverDue TaskList
-    /*private void setOverDueTaskList(List<TaskListRecords> taskListRecords2) {
+    private void setOverDueTaskList(List<TaskListRecords> taskListRecords2) {
         if (taskListRecords2.size() > 0) {
             for (int i = 0; taskListRecords2.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecords2.get( i );
@@ -360,26 +356,30 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
                 taskListRecords1.setProject_code( taskListRecords.getProject_code() );
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name());
                 if (taskListRecords.getStatus().equals("1")) {
-                    Date date1 = new Date();
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    String formattedDate = df.format(date1);
+                    DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
+                    String dateYes = dateFormat.format( yesterday() );
+                    Date dat6 = new Date( dateYes );
                     String date2[] = taskListRecords.getDue_date().split( " " );
                     String date3 = date2[0];
+                    System.out.println( "dateys" + dat6 );
+
                     try {
                         Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
                         System.out.println( "date3"+ date4 );
-                        if(date4.before(date1)){
+                        if(date4.before(dat6)){
                             taskListRecordsArrayList.add(taskListRecords1);
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
+            mToadyOverDueTask.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
+
         }
-    }*/
+    }
 
     // Today Task list
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
@@ -502,7 +502,6 @@ public class TodayTaskActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
                             Intent i= new Intent(getApplicationContext(),InvitationActivity.class);
                             startActivity(i);
                         }
@@ -590,63 +589,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         }
 
     }
-    private void requestDynamicContent() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
-            }
-        });
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
-            }
-            mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                               // mIndividualCheckBox.setText(dataString);
-                            }
-                            individuvalArray = new JSONArray(selectedIds);
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d("TAG", "Dialog cancelled");
-                        }
-                    });
-        }
-    }
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {

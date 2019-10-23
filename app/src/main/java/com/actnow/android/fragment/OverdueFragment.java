@@ -27,8 +27,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
@@ -38,8 +36,6 @@ import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.databse.TaskDatabaseHelper;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.Task;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -47,13 +43,14 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,14 +84,14 @@ public class OverdueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_overdue, container, false );
+        attemptTaskList();
 
         //requestDynamicContent();
-
+/*
         if (AndroidUtils.isNetworkAvailable( getActivity() )) {
-            attemptTaskList();
         } else {
             intentNoConnection();
-        }
+        }*/
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
         fabTask = view.findViewById( R.id.fab_task );
@@ -179,6 +176,11 @@ public class OverdueFragment extends Fragment {
         } );
     }
 
+    private Date yesterday() {
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal.getTime();
+    }
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -193,23 +195,27 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setStatus( taskListRecords.getStatus());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                if (taskListRecords.getStatus().equals("1")) {
-                    Date date1 = new Date();
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    String formattedDate = df.format(date1);
-                    String date2[] = taskListRecords.getDue_date().split( " " );
-                    String date3 = date2[0];
-                    System.out.println( "yestarday"+ date1 );
-                    try {
-                       Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
-                       System.out.println( "date3"+ date4 );
-                        if(date4.before(date1)){
-                            taskListRecordsArrayList.add(taskListRecords1);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                Date date1 = new Date();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String formattedDate = df.format(date1);
+                String date2[] = taskListRecords.getDue_date().split( " " );
+                String date3 = date2[0];
+
+                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
+                String dateYes = dateFormat.format( yesterday() );
+                Date dat6 = new Date( dateYes );
+                System.out.println( "dateys" + dat6 );
+
+                try {
+                    Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
+                    System.out.println( "date3"+ date4 );
+                    if(date4.before(dat6)){
+                        taskListRecordsArrayList.add(taskListRecords1);
                     }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
             }
             mTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
             mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
