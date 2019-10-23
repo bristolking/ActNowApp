@@ -53,12 +53,23 @@ public interface ANApi {
     @GET("app/user_details/{id}")
     Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
 
-    @Multipart
+    /*@Multipart
     //@FormUrlEncoded
     @POST("app/update_profile/{id}")
     //Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") RequestBody id, @Part(Parameters.NAME) RequestBody name, @Part(Parameters.EMAIL) RequestBody email, @Part(Parameters.PASSWORD) RequestBody password, @Part MultipartBody.Part file);
     Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") String id, @Part(Parameters.NAME) String name, @Part(Parameters.EMAIL) String  email, @Part(Parameters.PASSWORD) String password, @Part MultipartBody.Part image_path);
-    //Call<UpdateProfileResponses> checkUpdateProfile(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String  email, @Field(Parameters.PASSWORD) String password);
+    //Call<UpdateProfileResponses> checkUpdateProfile(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String  email, @Field(Parameters.PASSWORD) String password);*/
+
+    @Multipart
+    @POST("/app/update_profile/{id}")
+    Call<ResponseBody> profileUpdate(
+            @Part("id") RequestBody id,
+            @Part("name") RequestBody username,
+            @Part("email") RequestBody usermail,
+            @Part("password") RequestBody pass,
+            @Part("image_path") RequestBody imageName,
+            @Part MultipartBody.Part image
+    );
 
     @FormUrlEncoded
     @POST("app/organization/add/{id}")

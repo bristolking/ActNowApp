@@ -209,7 +209,7 @@ public class OverdueFragment extends Fragment {
                 try {
                     Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
                     System.out.println( "date3"+ date4 );
-                    if(date4.before(dat6)){
+                    if(date4.before(dat6) && taskListRecords.getStatus().equals( "1" )){
                         taskListRecordsArrayList.add(taskListRecords1);
                     }
                 } catch (ParseException e) {

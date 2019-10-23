@@ -32,6 +32,7 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.utils.UserPrefUtils;
+import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -107,6 +108,14 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
                 String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                String img = userId.get( UserPrefUtils.IMAGEPATH);
+                System.out.println( "img"+ img );
+                Glide.with(getApplicationContext())
+                        .load(img)
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(mImageProfile);
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

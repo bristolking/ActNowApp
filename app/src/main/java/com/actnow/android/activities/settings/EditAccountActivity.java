@@ -33,6 +33,7 @@ import java.util.HashMap;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,30 +42,12 @@ import retrofit2.Response;
 public class EditAccountActivity extends AppCompatActivity {
     EditText mEditName, mEditEmail, mEditPassWord;
     TextView mName, mEmail;
-    ImageView mProfilePhoto;
     UserPrefUtils session;
-    String id;
-    String name;
-    String accountEmail;
-    String getId;
-    Bitmap bitmap;
-    String screen = "NFG";
+    ImageView mProfilePhoto;
+    String picturePath;
 
-    String email;
-    String password;
-    private static final int REQUEST_TAKE_PHOTO = 0;
-    private static final int REQUEST_PICK_PHOTO = 2;
-    private static final int CAMERA_PIC_REQUEST = 1111;
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
+    int RESULT_LOAD_IMAGE = 1;
 
-    public static final int MEDIA_TYPE_IMAGE = 1;
-
-    private Uri fileUri;
-    private String mediaPath;
-    private String mImageFileLocation = " ";
-    public static final String IMAGE_DIRECTORY_NAME = "Android File Upload";
-
-    private String postPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,23 +55,7 @@ public class EditAccountActivity extends AppCompatActivity {
         session = new UserPrefUtils( getApplicationContext() );
         setContentView( R.layout.activity_edit_account );
         header();
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            if (bundle.containsKey("screen")) {
-                screen = bundle.getString( "screen");
-            }
-        }
         initializeViews();
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
-        if (b != null) {
-            id = (String) b.get( "id" );
-            name = (String) b.get( "name" );
-            mName.setText( "" + name );
-            accountEmail = (String) b.get( "email" );
-            mEmail.setText( "" + accountEmail );
-            System.out.println( "passsed" + name + id + accountEmail + accountEmail );
-        }
 
     }
 
@@ -113,12 +80,26 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        HashMap<String,String> userId = session.getUserDetails();
+        String id= userId.get( UserPrefUtils.ID );
+        String name = userId.get( UserPrefUtils.NAME);
+        String email= userId.get( UserPrefUtils.EMAIL);
         mName = findViewById( R.id.tv_name );
+        mName.setText( name );
         mEmail = findViewById( R.id.tv_email );
+        mEmail.setText( email);
         mProfilePhoto = findViewById( R.id.image_photo );
         mEditName = findViewById( R.id.et_editName );
         mEditEmail = findViewById( R.id.et_editEmail );
         mEditPassWord = findViewById( R.id.et_editPassword );
+        String img = userId.get( UserPrefUtils.IMAGEPATH);
+        System.out.println( "img"+ img );
+        Glide.with(getApplicationContext())
+                .load(img)
+                .centerCrop()
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(mProfilePhoto);
 
         mProfilePhoto.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -128,28 +109,27 @@ public class EditAccountActivity extends AppCompatActivity {
             }
         } );
     }
-
     private void accountUpadte() {
         mEditName.setError( null );
-        String name = mEditName.getText().toString();
+        String userName = mEditName.getText().toString();
         mEditEmail.setError( null );
-        String email = mEditEmail.getText().toString();
+        String accountEmail = mEditEmail.getText().toString();
         mEditPassWord.setError( null );
         String password = mEditPassWord.getText().toString();
         boolean cancel = false;
         View focusView = null;
-        if (TextUtils.isEmpty( name )) {
-            mEditName.setError( getString(R.string.error_required));
+        if (TextUtils.isEmpty( userName )) {
+            mEditName.setError( getString( R.string.error_required ) );
             focusView = mEditName;
             cancel = true;
         }
-        if (TextUtils.isEmpty( email )) {
-            mEditEmail.setError( getString(R.string.error_required));
+        if (TextUtils.isEmpty( accountEmail )) {
+            mEditEmail.setError( getString( R.string.error_required ) );
             focusView = mEditEmail;
             cancel = true;
         }
         if (TextUtils.isEmpty( password )) {
-            mEditPassWord.setError( getString(R.string.error_required));
+            mEditPassWord.setError( getString( R.string.error_required ) );
             focusView = mEditPassWord;
             cancel = true;
         }
@@ -157,103 +137,74 @@ public class EditAccountActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             HashMap<String, String> useId = session.getUserDetails();
-            String id = useId.get( UserPrefUtils.ID );
-            if (postPath == null || postPath.equals( "" )) {
-                Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
-                return;
-            } else {
-                //File file = new File( postPath );
-                File mFolder = new File(getFilesDir() + "/sample");
-                File imgFile = new File(mFolder.getAbsolutePath() + "/someimage.png");
-                if (!mFolder.exists()) {
-                    mFolder.mkdir();
-                }
-                if (!imgFile.exists()) {
-                    try {
-                        imgFile.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(imgFile);
-                   // bitmap.compress(Bitmap.CompressFormat.PNG,70, fos);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
-                RequestBody surveyBody = RequestBody.create(MediaType.parse("image/*"), imgFile);
-                System.out.println( "file2"+ surveyBody);
-                MultipartBody.Part image_path = MultipartBody.Part.createFormData("image", imgFile.getName(), surveyBody);
-                System.out.println( "severUpload" + image_path );
-                Call<UpdateProfileResponses> call = ANApplications.getANApi().checkUpdateProfile( id, name, email, password, image_path );
-                System.out.println( "nagrjuna" + id + name + email + password + image_path );
-                call.enqueue( new Callback<UpdateProfileResponses>() {
-                    @Override
-                    public void onResponse(Call<UpdateProfileResponses> call, Response<UpdateProfileResponses> response) {
-                        System.out.println( "somedata" + response.raw() );
-                        if (response.isSuccessful()) {
-                            System.out.println( "profile" + response.raw() );
-                            if (response.body().getSuccess().equals( "true" )) {
-                                System.out.println( "dataReponse" + response.body().getSuccess() );
+            String uid = useId.get( UserPrefUtils.ID );
+            File file = new File( picturePath );
+            RequestBody requestFile = RequestBody.create( MediaType.parse( "multipart/form-data" ), file );
+            MultipartBody.Part body = MultipartBody.Part.createFormData( "image", file.getName(), requestFile );
 
-                            }else {
-                                //Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+            RequestBody id = RequestBody.create( MediaType.parse( "multipart/form-data" ), uid );
+            RequestBody name = RequestBody.create( MediaType.parse( "multipart/form-data" ), userName );
+            RequestBody mail = RequestBody.create( MediaType.parse( "multipart/form-data" ), accountEmail );
+            RequestBody pass = RequestBody.create( MediaType.parse( "multipart/form-data" ), password );
+            RequestBody path = RequestBody.create( MediaType.parse( "multipart/form-data" ), picturePath );
 
-                            }
-                        }else {
-
+            Call<ResponseBody> call = ANApplications.getANApi().profileUpdate( id, name, mail, pass, path, body );
+            call.enqueue( new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        try {
+                            System.out.println( "Server Response:1 " + response.body().string() );
+                            Intent i = new Intent( getApplicationContext(),AccountSettingActivity.class);
+                            startActivity( i );
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
+                    } else {
+                        System.out.println( "Server Response:2 " + response.errorBody() );
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<UpdateProfileResponses> call, Throwable t) {
-                        Log.d("CallBack", " Throwable is " + t);
-                    }
-                } );
-            }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    System.out.println( "Server Response:3 " + t.getMessage() );
+                }
+            } );
         }
 
-    }
 
+    }
 
     private void chooseFile() {
-        Intent galleryIntent = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
-        startActivityForResult( galleryIntent, REQUEST_PICK_PHOTO );
+        Intent i = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
+        startActivityForResult( i, RESULT_LOAD_IMAGE );
     }
 
-    protected void onActivityResult(int requstCode, int resultCode, Intent data) {
-        super.onActivityResult( requstCode, resultCode, data );
-        if (resultCode == RESULT_OK) {
-            if (requstCode == REQUEST_TAKE_PHOTO || requstCode == REQUEST_PICK_PHOTO) {
-                if (data != null) {
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getContentResolver().query( selectedImage, filePathColumn, null, null, null );
-                    assert cursor != null;
-                    cursor.moveToFirst();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult( requestCode, resultCode, data );
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            System.out.println( "Image Data: " + filePathColumn );
+            Cursor cursor = getContentResolver().query( selectedImage, filePathColumn, null, null, null );
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex( filePathColumn[0] );
+            picturePath = cursor.getString( columnIndex );
+            cursor.close();
 
-                    int columnIndex = cursor.getColumnIndex( filePathColumn[0] );
-                    mediaPath = cursor.getString( columnIndex );
-                    mProfilePhoto.setImageBitmap( BitmapFactory.decodeFile( mediaPath ) );
-                    cursor.close();
-                    postPath = mediaPath;
-                    System.out.println( "imge" + mediaPath );
-                }
-            } else if (requstCode == CAMERA_PIC_REQUEST) {
-                if (Build.VERSION.SDK_INT > 21) {
-                    Glide.with( this ).load( mImageFileLocation ).into( mProfilePhoto );
-                    postPath = mImageFileLocation;
-                } else {
-                    Glide.with( this ).load( fileUri ).into( mProfilePhoto );
-                    postPath = fileUri.getPath();
-                }
-            }
-        } else if (requstCode != RESULT_CANCELED) {
-            Toast.makeText( getApplicationContext(), "Sorry, there was on error!", Toast.LENGTH_LONG ).show();
+            File file = new File( picturePath );
+            Uri imageUri = Uri.fromFile( file );
+            System.out.println( "Image Data:pic " + imageUri );
+
+            Glide.with( getApplicationContext() )
+                    .load( imageUri )
+                    .error( R.drawable.ic_close )
+                    .override( 150, 150 ) // Can be 2000, 2000
+                    .into( mProfilePhoto );
+
+            //ImageView imageView = (ImageView) findViewById(R.id.user_image);
+            //imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }
+
 }

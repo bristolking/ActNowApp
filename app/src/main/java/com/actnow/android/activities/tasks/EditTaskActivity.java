@@ -53,6 +53,7 @@ import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
+import com.bumptech.glide.Glide;
 
 
 import org.json.JSONArray;
@@ -183,6 +184,14 @@ public class EditTaskActivity extends AppCompatActivity {
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
                 String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
+                String img = userId.get( UserPrefUtils.IMAGEPATH);
+                System.out.println( "img"+ img );
+                Glide.with(getApplicationContext())
+                        .load(img)
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(mImageProfile);
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

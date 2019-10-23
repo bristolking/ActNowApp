@@ -20,7 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -36,7 +37,18 @@
 
             <include layout="@layout/bulb_qucik_advanced" />
 
-            <include layout="@layout/toady_over_due" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include layout="@layout/toady_over_due" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/linebackground" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,9 +60,16 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="Today Tasks"
+                    android:text="Today"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/linebackground" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/toady_recylerView"

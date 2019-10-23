@@ -88,7 +88,8 @@ public class OrngActivity extends AppCompatActivity {
                         String type = userId.get(UserPrefUtils.TYPE);
                         String provider_id= userId.get(UserPrefUtils.PROVIDERNAME);
                         String provider_name = userId.get(UserPrefUtils.PROVIDERID);
-                        session.createLoginSession(id,name2,email,mobile,name,type,provider_id,provider_name);
+                        String img_path = userId.get( UserPrefUtils.IMAGEPATH);
+                        session.createLoginSession(id,name2,email,mobile,name,type,provider_id,provider_name,img_path);
                         System.out.println("ok"+ name2+email+mobile+type+provider_id+ornCode+provider_name);
 
                         Intent i = new Intent(OrngActivity.this,TodayTaskActivity.class);

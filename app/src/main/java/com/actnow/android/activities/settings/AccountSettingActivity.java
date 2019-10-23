@@ -1,9 +1,9 @@
 package com.actnow.android.activities.settings;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,27 +11,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
+import com.bumptech.glide.Glide;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.view.View.GONE;
 
 public class AccountSettingActivity extends AppCompatActivity {
 
@@ -39,8 +34,8 @@ public class AccountSettingActivity extends AppCompatActivity {
     ImageView mImageProfile;
     Button mDeletAccount;
     String name;
-    //String id;
     UserPrefUtils session;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +61,7 @@ public class AccountSettingActivity extends AppCompatActivity {
         tv_settingDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get(UserPrefUtils.ID);
-                String name = userId.get(UserPrefUtils.NAME);
-                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                Intent i = new Intent(AccountSettingActivity.this, EditAccountActivity.class);
-                i.putExtra("id", id);
-                i.putExtra("name", name);
-                i.putExtra("email", accountEmail);
+                Intent i = new Intent(getApplicationContext(), EditAccountActivity.class);
                 startActivity(i);
             }
         });
@@ -84,15 +72,17 @@ public class AccountSettingActivity extends AppCompatActivity {
         mAccountEmail = findViewById(R.id.tv_emailAccount);
         mEmailUnderAccount = findViewById(R.id.tv_accountEmailunder);
         mImageProfile = (ImageView) findViewById(R.id.imge_profileAccount);
-    /*    mDeletAccount = (Button) findViewById(R.id.bt_deleteAccount);
-        mDeletAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(AccountSettingActivity.this, "Account Will be Deleted", Toast.LENGTH_SHORT).show();
-            }
-        });*/
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
+        String img = userId.get( UserPrefUtils.IMAGEPATH);
+        System.out.println( "img"+ img );
+        Glide.with(getApplicationContext())
+                .load(img)
+                .centerCrop()
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
+                .into(mImageProfile);
+
         System.out.println("id" + id);
         Call<UserDetailsResponse> call = ANApplications.getANApi().checkTheUserDetailsResponse(id);
         call.enqueue(new Callback<UserDetailsResponse>() {

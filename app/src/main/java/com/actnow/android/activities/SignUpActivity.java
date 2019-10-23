@@ -100,7 +100,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
                         SignUpResponse response2= response.body();
-                        session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name());
+                        session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name(),response2.getImage_path());
                         activityLogin();
                         AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
 

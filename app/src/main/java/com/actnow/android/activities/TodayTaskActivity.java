@@ -1,10 +1,14 @@
 package com.actnow.android.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,8 +29,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
@@ -40,14 +42,13 @@ import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-import org.json.JSONArray;
+import com.bumptech.glide.Glide;
+
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -84,17 +85,12 @@ public class TodayTaskActivity extends AppCompatActivity {
     ImageView mImageBulbTask;
 
     private String selectedType = "";
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-
-    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
-    JSONArray individuvalArray;
-    JSONArray projectArray;
     TextView mTaskName;
     String task_code;
 
-    String id;
+    private static final int CAMERA_PERMISSION_CODE = 100;
+    private static final int STORAGE_PERMISSION_CODE = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +99,8 @@ public class TodayTaskActivity extends AppCompatActivity {
         appFooter();
         appHeaderTwo();
         initializeViews();
+        checkPermission( Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE);
+        checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
     }
 
     private void appHeaderTwo() {
@@ -114,9 +112,7 @@ public class TodayTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent iApproval = new Intent(getApplicationContext(), ApprovalsActivity.class);
-                //iApproval.putExtra( "TaskCode", task_code );
                 startActivity(iApproval);
-                //System.out.println( "TaskCode"+ task_code);
             }
         });
         btnLink1.setText("Today");
@@ -153,6 +149,14 @@ public class TodayTaskActivity extends AppCompatActivity {
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
                 String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
+                String img = userId.get( UserPrefUtils.IMAGEPATH);
+                System.out.println( "img"+ img );
+                Glide.with(getApplicationContext())
+                        .load(img)
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(mImageProfile);
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -284,7 +288,8 @@ public class TodayTaskActivity extends AppCompatActivity {
         mToadyOverDueTask.setItemAnimator(new DefaultItemAnimator());
         mTaskListOverDueAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
         mToadyOverDueTask.setAdapter(mTaskListOverDueAdapter);
-        id = userId.get(UserPrefUtils.ID);
+        HashMap<String,String> userOverId = session.getUserDetails();
+        String id = userOverId.get(UserPrefUtils.ID);
         Call<TaskListResponse> callOverDue= ANApplications.getANApi().checkTheTaskListResponse(id);
         callOverDue.enqueue(new Callback<TaskListResponse>() {
             @Override
@@ -315,7 +320,6 @@ public class TodayTaskActivity extends AppCompatActivity {
         mTodayRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
         mTodayRecyclerView.setAdapter(mTaskListAdapter);
-         id = userId.get(UserPrefUtils.ID);
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
         call.enqueue(new Callback<TaskListResponse>() {
             @Override
@@ -357,26 +361,27 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setProject_code( taskListRecords.getProject_code() );
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name());
-                if (taskListRecords.getStatus().equals("1")) {
-                    DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
-                    String dateYes = dateFormat.format( yesterday() );
-                    Date dat6 = new Date( dateYes );
-                    String date2[] = taskListRecords.getDue_date().split( " " );
-                    String date3 = date2[0];
-                    System.out.println( "dateys" + dat6 );
-
-                    try {
-                        Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
-                        System.out.println( "date3"+ date4 );
-                        if(date4.before(dat6)){
-                            taskListRecordsArrayList.add(taskListRecords1);
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                Date date1 = new Date();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String formattedDate = df.format(date1);
+                String date2[] = taskListRecords.getDue_date().split( " " );
+                String date3 = date2[0];
+                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
+                String dateYes = dateFormat.format( yesterday() );
+                Date dat6 = new Date( dateYes );
+                System.out.println( "dateys" + dat6 );
+                try {
+                    Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
+                    System.out.println( "date3"+ date4 );
+                    if(date4.before(dat6) && taskListRecords.getStatus().equals( "1" )){
+                        taskListRecordsArrayList.add(taskListRecords1);
                     }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
             }
-            mToadyOverDueTask.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
+           mToadyOverDueTask.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
 
         }
     }
@@ -394,16 +399,15 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                if (taskListRecords.getStatus().equals("1")) {
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     String formattedDate = df.format(date1);
                     String date2[] = taskListRecords.getDue_date().split( " " );
                     String date3 = date2[0];
-                    if (date3.equals(formattedDate)){
+                    if (date3.equals(formattedDate) && taskListRecords.getStatus().equals( "1" )){
                         taskListRecordsArrayList.add(taskListRecords1);
                     }
-                }
+
             }
             mTodayRecyclerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
             mTodayRecyclerView.addOnItemTouchListener(new TodayTaskActivity.RecyclerTouchListener(this, mTodayRecyclerView, new ClickListener() {
@@ -659,4 +663,59 @@ public class TodayTaskActivity extends AppCompatActivity {
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
+
+
+    public void checkPermission(String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(TodayTaskActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            // Requesting the permission
+            ActivityCompat.requestPermissions(TodayTaskActivity.this,
+                    new String[] { permission },
+                    requestCode);
+        }
+        else {
+            Toast.makeText(TodayTaskActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            // Checking whether user granted the permission or not.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                // Showing the toast message
+                Toast.makeText(TodayTaskActivity.this,
+                        "Camera Permission Granted",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                Toast.makeText(TodayTaskActivity.this,
+                        "Camera Permission Denied",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+        else if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(TodayTaskActivity.this,
+                        "Storage Permission Granted",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+            else {
+                Toast.makeText(TodayTaskActivity.this,
+                        "Storage Permission Denied",
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
+
 }

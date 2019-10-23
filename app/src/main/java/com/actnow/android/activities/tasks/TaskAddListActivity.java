@@ -52,6 +52,7 @@ import com.actnow.android.fragment.PriorityFragment;
 import com.actnow.android.fragment.RepetitiveFragment;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.utils.UserPrefUtils;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,6 +147,14 @@ public class TaskAddListActivity extends AppCompatActivity {
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
                 String email = userId.get( UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                String img = userId.get( UserPrefUtils.IMAGEPATH);
+                System.out.println( "img"+ img );
+                Glide.with(getApplicationContext())
+                        .load(img)
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(mImageProfile);
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

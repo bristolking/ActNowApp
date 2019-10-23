@@ -12,6 +12,7 @@ public class SignInResponse {
     private String orgn_code;
     private String db_name;
     private String user_type;
+    private String image_path;
 
     public String getSuccess() {
         return success;
@@ -101,6 +102,14 @@ public class SignInResponse {
         this.user_type = user_type;
     }
 
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
     @Override
     public String toString() {
         return "SignInResponse{" +
@@ -115,6 +124,7 @@ public class SignInResponse {
                 ", orgn_code='" + orgn_code + '\'' +
                 ", db_name='" + db_name + '\'' +
                 ", user_type='" + user_type + '\'' +
+                ", image_path='" + image_path + '\'' +
                 '}';
     }
 }

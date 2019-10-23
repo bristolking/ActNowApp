@@ -31,6 +31,7 @@ public class UserPrefUtils {
     public static final String DUE_DATE="due_date";
     public static final String CREATED_DATE="created_date";
     public static final String UPDATED_DATE="updated_date";
+    public static  final String IMAGEPATH ="image_path";
 
     public UserPrefUtils(Context context) {
         this._context = context;
@@ -38,7 +39,7 @@ public class UserPrefUtils {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String id, String name, String email, String mobile, String orgn_code,String type, String provider_id, String provider_name) {
+    public void createLoginSession(String id, String name, String email, String mobile, String orgn_code,String type, String provider_id, String provider_name,String image_path) {
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(ID, id);
         editor.putString(NAME, name);
@@ -48,6 +49,7 @@ public class UserPrefUtils {
         editor.putString(TYPE, type);
         editor.putString(PROVIDERID, provider_id);
         editor.putString(PROVIDERNAME, provider_name);
+        editor.putString(IMAGEPATH,image_path );
         editor.commit();
     }
     public void checkLogin() {
@@ -68,6 +70,7 @@ public class UserPrefUtils {
         user.put(PROVIDERID,pref.getString(PROVIDERID,null));
         user.put(PROVIDERNAME,pref.getString(PROVIDERNAME,null));
         user.put(ORGANIZATIONNAME,pref.getString(ORGANIZATIONNAME,null));
+        user.put(IMAGEPATH,pref.getString( IMAGEPATH,null ));
         return user;
     }
     public void logoutUser() {
