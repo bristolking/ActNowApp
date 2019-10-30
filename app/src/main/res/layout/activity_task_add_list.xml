@@ -9,21 +9,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="right"
     tools:context=".activities.tasks.TaskAddListActivity">
-        <!--<RelativeLayout
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ProgressBar
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true" />
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/content_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">-->
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -34,46 +20,22 @@
                 android:layout_marginTop="40dp"
                 android:orientation="vertical">
                 <include layout="@layout/bulb_qucik_advanced"/>
-                <include layout="@layout/tabedtaskcustomview" />
-                <!-- <View
-                     android:layout_width="match_parent"
-                     android:layout_height="2dp"
-                     android:background="@colorWhite/colorAccent" />
-                 <LinearLayout
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"
-                     android:orientation="vertical"
-                     android:paddingLeft="10dp"
-                     android:paddingRight="10dp">
-                     <TextView
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:text="Tasks Names"
-                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                         android:textColor="@colorWhite/colorPrimary" />
-                     <android.support.v7.widget.RecyclerView
-                         android:id="@+id/task_recyclerView"
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content" />
-                 </LinearLayout>-->
-            </LinearLayout>
-            <!--<android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_task"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="65dp"
-                android:layout_marginRight="10dp"
-                app:srcCompat="@drawable/ic_add_circular" />-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="4dp">
 
+                    <include layout="@layout/tabedtaskcustomview" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <include layout="@layout/app_header_two" />
 
             <include layout="@layout/app_footer" />
 
-            <!--    </RelativeLayout>-->
         </RelativeLayout>
 
         <android.support.design.widget.NavigationView

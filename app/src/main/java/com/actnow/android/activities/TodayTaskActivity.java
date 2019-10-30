@@ -282,7 +282,7 @@ public class TodayTaskActivity extends AppCompatActivity {
             }
         });
         //overDueRecyclerView
-        mToadyOverDueTask = findViewById(R.id.toadyTaskOverDue_recyclerView);
+        mToadyOverDueTask = findViewById(R.id.overDue_recyclerView);
         mLayoutManagerOverDue = new LinearLayoutManager(getApplicationContext());
         mToadyOverDueTask.setLayoutManager(mLayoutManagerOverDue);
         mToadyOverDueTask.setItemAnimator(new DefaultItemAnimator());

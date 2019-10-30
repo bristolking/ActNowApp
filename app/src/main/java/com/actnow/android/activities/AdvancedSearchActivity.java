@@ -277,7 +277,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.adnced_menu_search, menu);
+        getMenuInflater().inflate(R.menu.search_menu, menu);
         return true;
     }
 

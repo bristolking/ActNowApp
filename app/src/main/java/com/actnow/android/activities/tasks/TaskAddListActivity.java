@@ -2,7 +2,6 @@ package com.actnow.android.activities.tasks;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.view.MenuItem;
@@ -45,16 +43,13 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
-import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.fragment.AllTaskFragment;
 import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.fragment.PriorityFragment;
-import com.actnow.android.fragment.RepetitiveFragment;
-import com.actnow.android.sdk.responses.TaskListRecords;
+import com.actnow.android.fragment.RepetitiveTabedFragment;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskAddListActivity extends AppCompatActivity {
@@ -266,7 +261,8 @@ public class TaskAddListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);            }
+                startActivity(i);
+            }
         });
 
     }
@@ -280,7 +276,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        mSpinnerReptOption = (Spinner) findViewById(R.id.spinnerReaptTask);
+       /* mSpinnerReptOption = (Spinner) findViewById(R.id.spinnerReaptTask);
         arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, repetitive);
         mSpinnerReptOption.setAdapter(arrayAdapterReapt);
         mSpinnerReptOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -314,11 +310,11 @@ public class TaskAddListActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });
+        });*/
 
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
         public ViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -333,7 +329,7 @@ public class TaskAddListActivity extends AppCompatActivity {
             } else if (position == 2) {
                 fragment = new PriorityFragment();
             } else if (position == 3) {
-                fragment = new RepetitiveFragment();
+                fragment = new RepetitiveTabedFragment();
             }
             return fragment;
         }

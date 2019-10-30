@@ -75,13 +75,11 @@ public class PriorityFragment extends Fragment {
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     private String selectedType = "";
-
+    TextView mTaskName;
 
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-    String id;
-    MultiSelectDialog mIndividuvalDialogtime, mProjectDialogtime;
-    TextView mTaskName;
+
     public  PriorityFragment(){
 
     }

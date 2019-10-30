@@ -1,9 +1,7 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,9 +21,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
@@ -39,8 +34,6 @@ import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,14 +56,6 @@ public class AllTaskFragment extends Fragment {
     private String selectedType = "";
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
-    JSONArray individuvalArray;
-    JSONArray projectArray;
-
-    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
-    ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-    String id;
-    MultiSelectDialog mIndividuvalDialogtime, mProjectDialogtime;
     final AllTaskFragment context = this;
 
     TextView mTaskName;
@@ -78,8 +63,6 @@ public class AllTaskFragment extends Fragment {
     public AllTaskFragment() {
 
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
@@ -118,17 +101,14 @@ public class AllTaskFragment extends Fragment {
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
                 AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
-                    System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
-
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
                 Log.d( "CallBack", " Throwable is " + t );
@@ -136,7 +116,6 @@ public class AllTaskFragment extends Fragment {
             }
         } );
     }
-
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {

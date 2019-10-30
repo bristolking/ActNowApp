@@ -1,6 +1,7 @@
 package com.actnow.android.sdk.api;
 
 import com.actnow.android.sdk.responses.CheckOtpResponse;
+import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.OverDueTaskListResponse;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
@@ -19,6 +20,8 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -78,6 +81,9 @@ public interface ANApi {
     @GET("app/organization/users/{id}")
     Call<CheckBoxResponse> checktheSpinnerResponse(@Path("id") String id);
 
+    @GET("app/organization/users/{id}")
+    Call<List<OrgnUserRecordsCheckBox>> checkTheSearchandSendInvitations (@Path("id")String id);
+
     @GET("app/tasks/priority/{id}")
     Call<PriortyTaskListResponse> checkPriorityTaskList(@Path("id") String id);
     @GET("app/tasks/overdue/{id}")
@@ -123,7 +129,13 @@ public interface ANApi {
 
     @Multipart
     @POST("app/comment/add/{id}")
-    Call<TaskComplete> checkTheCommentAdd(@Part("id")String id,@Part("orgn_code")String orgn_code,@Part("comment")String comment,@Part("project_code")String project_code,@Part("task_code")String task_code,@Part MultipartBody.Part  files);
+    Call<TaskComplete> checkTheCommentAdd(
+            @Part("id")RequestBody id,
+            @Part("orgn_code")RequestBody orgn_code,
+            @Part("comment")RequestBody comment,
+            @Part("project_code")RequestBody project_code,
+            @Part("task_code")RequestBody task_code,
+            @Part MultipartBody.Part[]  files);
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")

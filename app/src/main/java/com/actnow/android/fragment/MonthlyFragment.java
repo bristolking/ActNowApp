@@ -2,9 +2,7 @@ package com.actnow.android.fragment;
 
 
 import android.annotation.SuppressLint;
-
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,12 +18,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
@@ -35,67 +31,46 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.databse.TaskDatabaseHelper;
-import com.actnow.android.sdk.responses.Task;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import java.util.Date;
 
 import static com.actnow.android.R.layout.task_list_cutsom;
 
 
-public class OverdueFragment extends Fragment {
-    RecyclerView mTaskRecylcerView;
+public class MonthlyFragment extends Fragment {
+    RecyclerView mMonthlyRepetTask;
     RecyclerView.LayoutManager mLayoutManager;
-    FloatingActionButton fabTask;
+    FloatingActionButton fabMonthlyrepetTask;
     TaskListAdapter mTaskListAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
-    private String selectedType = "";
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
-
-
-    final OverdueFragment context = this;
-    String id;
+    private String selectedType = "";
     TextView mTaskName;
 
-    public OverdueFragment() {
-
+    public MonthlyFragment() {
     }
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
-        View view = inflater.inflate( R.layout.fragment_overdue, container, false );
+         View view=inflater.inflate( R.layout.fragment_monthly, container, false );
         attemptTaskList();
-
-        //requestDynamicContent();
-/*
-        if (AndroidUtils.isNetworkAvailable( getActivity() )) {
-        } else {
-            intentNoConnection();
-        }*/
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
-        fabTask = view.findViewById( R.id.fab_task );
-        fabTask.setOnClickListener( new View.OnClickListener() {
+        fabMonthlyrepetTask = view.findViewById( R.id.fab_monthlytask );
+        fabMonthlyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
@@ -107,61 +82,31 @@ public class OverdueFragment extends Fragment {
                 startActivity( i );
             }
         } );
-        mTaskRecylcerView = (RecyclerView) view.findViewById( R.id.task_recyclerView );
+        mMonthlyRepetTask = (RecyclerView) view.findViewById( R.id.monthly_recyclerView );
         mLayoutManager = new LinearLayoutManager( getContext() );
-        mTaskRecylcerView.setLayoutManager( mLayoutManager );
-        mTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mMonthlyRepetTask.setLayoutManager( mLayoutManager );
+        mMonthlyRepetTask.setItemAnimator( new DefaultItemAnimator() );
         mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
-        mTaskRecylcerView.setAdapter( mTaskListAdapter );
+        mMonthlyRepetTask.setAdapter( mTaskListAdapter );
 
-        return view;
+        return  view;
     }
 
-    private void intentNoConnection() {
-        TaskDatabaseHelper taskDatabaseHelper = new TaskDatabaseHelper( getActivity() );
-        Task task = new Task();
-        task.setId( id );
-
-        Task task1 = taskDatabaseHelper.getSpecificTask( task );
-        JSONObject data = new JSONObject();
-        try {
-            data.put( "id", task1.getId() );
-            data.put( "name", task1.getName() );
-            data.put( "task_code", task1.getTask_code() );
-            data.put( "project_code", task1.getProject_code() );
-            data.put( "priority", task1.getPriority() );
-            data.put( "due_date", task1.getDue_date() );
-            data.put( "task_members", task1.getTask_members() );
-            data.put( "status", task1.getStatus() );
-            data.put( "approval_status", task1.getApproval_status() );
-            data.put( "created_by", task1.getCreated_by() );
-            data.put( "created_date", task1.getCreated_date() );
-            data.put( "updated_by", task1.getUpdated_by() );
-            data.put( "updated_date", task1.getUpdated_date() );
-            data.put( "orgn_code", task1.getOrgn_code() );
-            data.put( "repeat_type", task1.getRepeat_type() );
-            data.put( "repeat_months", task1.getRepeat_months() );
-            data.put( "repeat_week", task1.getRepeat_week() );
-            data.put( "repeat_days", task1.getRepeat_days() );
-            data.put( "parenrt_task_code", task1.getParenrt_task_code());
-        } catch (JSONException e) {
-
-        }
-    }
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get( UserPrefUtils.ID );
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
-        call.enqueue( new Callback<TaskListResponse>() {
+        String id = userId.get(UserPrefUtils.ID);
+        Call<TaskListResponse> call;
+        call = ANApplications.getANApi().checkTheTaskListResponse(id);
+        call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    System.out.println( "url" + response.raw() );
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setTaskList( response.body().getTask_records() );
+                    System.out.println("url" + response.raw());
+                    if (response.body().getSuccess().equals("true")) {
+                        setTaskList(response.body().getTask_records());
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
                     //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
@@ -170,16 +115,10 @@ public class OverdueFragment extends Fragment {
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
+                Log.d("CallBack", " Throwable is " + t);
 
             }
-        } );
-    }
-
-    private Date yesterday() {
-        final Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
-        return cal.getTime();
+        });
     }
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
@@ -189,73 +128,55 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setName( taskListRecords.getName() );
                 taskListRecords1.setDue_date( taskListRecords.getDue_date() );
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
-                taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
-                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count());
-                taskListRecords1.setStatus( taskListRecords.getStatus());
-                taskListRecords1.setProject_name(taskListRecords.getProject_name());
-                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                String formattedDate = df.format(date1);
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
-
-                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
-                String dateYes = dateFormat.format( yesterday() );
-                Date dat6 = new Date( dateYes );
-                System.out.println( "dateys" + dat6 );
-
-                try {
-                    Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
-                    System.out.println( "date3"+ date4 );
-                    if(date4.before(dat6) && taskListRecords.getStatus().equals( "1" )){
-                        taskListRecordsArrayList.add(taskListRecords1);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
+                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals("Monthly")) {
+                    taskListRecordsArrayList.add( taskListRecords1 );
                 }
-
             }
-            mTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
-            mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
+            mMonthlyRepetTask.setAdapter(new TaskListAdapter(taskListRecordsArrayList,task_list_cutsom, getContext()));
+            mMonthlyRepetTask.addOnItemTouchListener(new MonthlyFragment.RecyclerTouchListener(this, mMonthlyRepetTask, new MonthlyFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
-                    final View view1 = view.findViewById( R.id.taskList_liner );
-                    RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
-                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
+                    final View view1 = view.findViewById(R.id.taskList_liner);
+                    RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
                     final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                     final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
                     final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
-                    groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
+                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            view1.setVisibility( View.VISIBLE );
-                                            OverdueFragment fragment2 = new OverdueFragment();
+                                            view1.setVisibility(View.VISIBLE);
+                                            MonthlyFragment monthlyFragment = new MonthlyFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
+                                            fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
                                             fragmentTransaction.commit();
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }
-                                    } );
+                                    });
                                     View sbView = snackbar.getView();
-                                    TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
-                                    textView.setOnClickListener( new View.OnClickListener() {
+                                    TextView textView =(TextView)sbView.findViewById(R.id.snackbar_text);
+                                    textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            view1.setVisibility( View.GONE );
+                                            view1.setVisibility(View.GONE);
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
                                             final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -270,16 +191,16 @@ public class OverdueFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            OverdueFragment fragment2 = new OverdueFragment();
+                                                            MonthlyFragment monthlyFragment = new MonthlyFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
+                                                            fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
                                                             fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
                                                     } else {
-                                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                                        AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!" );
                                                     }
                                                 }
 
@@ -288,10 +209,11 @@ public class OverdueFragment extends Fragment {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
+
                                         }
-                                    } );
+                                    });
                                     snackbar.show();
                                 } else if (checkedId == 0) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -299,9 +221,9 @@ public class OverdueFragment extends Fragment {
                                 }
                             }
                         }
-                    } );
-                    mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
-                    mTaskName.setOnClickListener( new View.OnClickListener() {
+                    });
+                    mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                    mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
@@ -309,59 +231,55 @@ public class OverdueFragment extends Fragment {
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent( getActivity(), EditTaskActivity.class );
-                            i.putExtra( "TaskName", name );
-                            i.putExtra( "TaskDate", date );
-                            i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "taskOwnerName", taskOwnerName );
-                            startActivity( i );
-                            System.out.println( "user" + task_code );
+                            Intent i = new Intent(getActivity(), EditTaskActivity.class);
+                            i.putExtra("TaskName", name);
+                            i.putExtra("TaskDate", date);
+                            i.putExtra("taskOwnerName", taskOwnerName);
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
-                    mImageUserAdd.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
+                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent i= new Intent(getActivity(), InvitationActivity.class);
                             startActivity(i);
+                            //mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
 
                         }
-                    } );
-                    ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
-                    mImageComment.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
+                    mImageComment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent( getActivity(), CommentsActivity.class );
+                            Intent i = new Intent(getActivity(), CommentsActivity.class);
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
                             i.putExtra( "TaskName", name );
                             i.putExtra( "TaskDate", date );
                             i.putExtra( "TaskCode", task_code );
-                            startActivity( i );
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
-                    mImageRaminder.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageRaminder = (ImageView) view.findViewById(R.id.img_raminderTaskList);
+                    mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
                             Intent i=new Intent( getActivity(), ReaminderScreenActivity.class);
                             i.putExtra( "TaskCode", task_code );
-                            System.out.println( "maximum" + task_code );
                             startActivity(i);
-
                         }
-                    } );
+                    });
 
                 }
-
                 @Override
                 public void onLongClick(View view, int position) {
 
                 }
 
-            } ) );
+            }));
         }
     }
 
@@ -373,31 +291,31 @@ public class OverdueFragment extends Fragment {
 
     public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-        private ClickListener clicklistener;
+        private MonthlyFragment.ClickListener clicklistener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListener(OverdueFragment context, final RecyclerView mRecylerViewSingleSub, ClickListener clickListener) {
+        public RecyclerTouchListener(MonthlyFragment context, final RecyclerView mRecylerViewSingleSub, MonthlyFragment.ClickListener clickListener) {
             this.clicklistener = clickListener;
-            gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
+                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
+                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
                     }
                 }
-            } );
+            });
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder( e.getX(), e.getY() );
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
-                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
             }
 
             return false;
@@ -411,6 +329,5 @@ public class OverdueFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.actnow.android.activities.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
@@ -47,6 +49,7 @@ public class EditAccountActivity extends AppCompatActivity {
     String picturePath;
 
     int RESULT_LOAD_IMAGE = 1;
+    private Context context;
 
 
     @Override
@@ -155,7 +158,8 @@ public class EditAccountActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         try {
                             System.out.println( "Server Response:1 " + response.body().string() );
-                            Intent i = new Intent( getApplicationContext(),AccountSettingActivity.class);
+                            Intent i = new Intent( getApplicationContext(),SettingsActivity.class);
+                            Toast.makeText(getApplicationContext(),"Account has been successfully Updated", Toast.LENGTH_SHORT).show();
                             startActivity( i );
                         } catch (IOException e) {
                             e.printStackTrace();

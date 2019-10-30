@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -37,46 +37,42 @@
 
             <include layout="@layout/bulb_qucik_advanced" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <include layout="@layout/toady_over_due" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/linebackground" />
+            <include layout="@layout/toady_over_due" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_titleThisWeek"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="Today"
-                    android:textAllCaps="true"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:elevation="@dimen/cardview_default_elevation"
+                    app:cardUseCompatPadding="true">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/linebackground" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/dash_board_background"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/todat_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="TODAY"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorPrimary" />
+                    </RelativeLayout>
+                </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/toady_recylerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp" />
+                    android:padding="8dp" />
 
             </LinearLayout>
 

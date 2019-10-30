@@ -43,7 +43,6 @@ import retrofit2.Response;
 
 public class OverDueTaskActivity extends AppCompatActivity {
     RecyclerView mRecyclerViewPriority;
-    OverDueTaskAdapter mOverDueTaskAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     String[] arrayItems = {"Over Due Task", "Priorty Task"};
     private ArrayList<OverDueTaskRecords> overDueTaskRecordsArrayList = new ArrayList<OverDueTaskRecords>();
@@ -176,8 +175,6 @@ public class OverDueTaskActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerViewPriority.setLayoutManager(mLayoutManager);
         mRecyclerViewPriority.setItemAnimator(new DefaultItemAnimator());
-        mOverDueTaskAdapter = new OverDueTaskAdapter(overDueTaskRecordsArrayList, R.layout.custom_over_due, getApplicationContext());
-        mRecyclerViewPriority.setAdapter(mOverDueTaskAdapter);
 
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -219,7 +216,6 @@ public class OverDueTaskActivity extends AppCompatActivity {
                 overDueTaskRecords1.setCreated_date(overDueTaskRecords.getCreated_date());
                 overDueTaskRecordsArrayList.add(overDueTaskRecords1);
             }
-            mRecyclerViewPriority.setAdapter(new OverDueTaskAdapter(overDueTaskRecordsArrayList, R.layout.custom_over_due, getApplicationContext()));
         }
     }
 }

@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.actnow.android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".ANApplications"
         android:allowBackup="true"
@@ -11,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.AdvancedSearchActivity"></activity>
+        <activity android:name=".activities.invitation.SendInvitationActivity"></activity>
+        <activity android:name=".activities.GalleryActivity" />
+        <activity android:name=".activities.AdvancedSearchActivity" />
         <activity android:name=".activities.invitation.ShareActivity" />
         <activity android:name=".activities.ReaminderScreenActivity" />
         <activity android:name=".activities.invitation.InvitationActivity" />
@@ -88,9 +95,5 @@
                 android:resource="@xml/provider_paths" />
         </provider>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

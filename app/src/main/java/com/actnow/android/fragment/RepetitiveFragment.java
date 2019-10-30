@@ -1,8 +1,9 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
-
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,8 +23,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
+
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
@@ -32,15 +32,11 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +51,7 @@ import static com.actnow.android.R.layout.task_list_cutsom;
 
 public class RepetitiveFragment extends Fragment {
     FloatingActionButton fabRepetitiveTask;
-    RecyclerView mRepetitiveTaskRecylcerView;
+    RecyclerView mRepetTaskRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
     FloatingActionButton fabPriorityTask;
@@ -66,43 +62,47 @@ public class RepetitiveFragment extends Fragment {
     String id;
     TextView mTaskName;
 
+
     public RepetitiveFragment() {
+
     }
 
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        session = new UserPrefUtils(getContext());
-        View  view= inflater.inflate(R.layout.fragment_repetitive, container, false);
-        mProgressView = view.findViewById(R.id.progress_bar);
-        mContentLayout = view.findViewById(R.id.content_layout);
-        mRepetitiveTaskRecylcerView = (RecyclerView) view.findViewById(R.id.repetitive_recyclerView);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mRepetitiveTaskRecylcerView.setLayoutManager(mLayoutManager);
-        mRepetitiveTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext());
-        mRepetitiveTaskRecylcerView.setAdapter(mTaskListAdapter);
+        session = new UserPrefUtils( getContext() );
+        View view =  inflater.inflate( R.layout.fragment_repetitive, container, false );
         attemptTaskList();
-        fabRepetitiveTask = view.findViewById(R.id.fab_repetitivetask);
-        fabRepetitiveTask.setOnClickListener(new View.OnClickListener() {
+        mProgressView = view.findViewById( R.id.progress_bar );
+        mContentLayout = view.findViewById( R.id.content_layout );
+        fabRepetitiveTask = view.findViewById( R.id.fab_repetitivetask );
+        fabRepetitiveTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID);
-                String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                Intent i = new Intent(getActivity(), ViewTasksActivity.class);
-                i.putExtra("id", id);
-                i.putExtra("taskOwnerName", taskOwnerName);
-                startActivity(i);
+                String id = userId.get( UserPrefUtils.ID );
+                String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                Intent i = new Intent( getActivity(), ViewTasksActivity.class );
+                i.putExtra( "id", id );
+                i.putExtra( "taskOwnerName", taskOwnerName );
+                startActivity( i );
             }
-        });
+        } );
+        mRepetTaskRecylcerView = (RecyclerView) view.findViewById( R.id.repetitive_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getContext() );
+        mRepetTaskRecylcerView.setLayoutManager( mLayoutManager );
+        mRepetTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
+        mRepetTaskRecylcerView.setAdapter( mTaskListAdapter );
+
         return view;
     }
-
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
+        Call<TaskListResponse> call;
+        call = ANApplications.getANApi().checkTheTaskListResponse(id);
         call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
@@ -110,7 +110,7 @@ public class RepetitiveFragment extends Fragment {
                 if (response.isSuccessful()) {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
-                        setProjectFooterList(response.body().getTask_records());
+                        setTaskList(response.body().getTask_records());
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -126,28 +126,26 @@ public class RepetitiveFragment extends Fragment {
             }
         });
     }
-
-    private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
+    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
-                TaskListRecords taskListRecords = taskListRecordsList.get(i);
+                TaskListRecords taskListRecords = taskListRecordsList.get( i );
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName(taskListRecords.getName());
-                taskListRecords1.setDue_date(taskListRecords.getDue_date());
-                taskListRecords1.setPriority(taskListRecords.getPriority());
-                taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
-                taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
-                taskListRecords1.setProject_name(taskListRecords.getProject_name());
-                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                    if(taskListRecords.getRepeat_type().equals("null")) {
-                        if (taskListRecords.getStatus().equals( "1" )) {
-                            taskListRecordsArrayList.add( taskListRecords1 );
-                        }
+                taskListRecords1.setName( taskListRecords.getName() );
+                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
+                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name());
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
+                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals( "RepeatType")) {
+                        taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
-            mRepetitiveTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext()));
-            mRepetitiveTaskRecylcerView.addOnItemTouchListener(new RepetitiveFragment.RecyclerTouchListener(this, mRepetitiveTaskRecylcerView, new RepetitiveFragment.ClickListener() {
+            mRepetTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList,task_list_cutsom, getContext()));
+            mRepetTaskRecylcerView.addOnItemTouchListener(new RepetitiveFragment.RecyclerTouchListener(this, mRepetTaskRecylcerView, new RepetitiveFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
                     final View view1 = view.findViewById(R.id.taskList_liner);
@@ -170,10 +168,10 @@ public class RepetitiveFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
-                                            RepetitiveFragment repetitiveFragment = new RepetitiveFragment();
+                                            RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace(R.id.fragment_repetitive, repetitiveFragment);
+                                            fragmentTransaction.replace(R.id.repetitive_fragment, repetitiveFragment);
                                             fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
@@ -199,10 +197,10 @@ public class RepetitiveFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            RepetitiveFragment repetitiveFragment = new RepetitiveFragment();
+                                                            RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace(R.id.fragment_repetitive, repetitiveFragment);
+                                                            fragmentTransaction.replace(R.id.repetitive_fragment, repetitiveFragment);
                                                             fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -230,8 +228,8 @@ public class RepetitiveFragment extends Fragment {
                             }
                         }
                     });
-                     mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
-                     mTaskName.setOnClickListener(new View.OnClickListener() {
+                    mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                    mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
@@ -252,7 +250,6 @@ public class RepetitiveFragment extends Fragment {
                         public void onClick(View v) {
                             Intent i= new Intent(getActivity(), InvitationActivity.class);
                             startActivity(i);
-                            //mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
 
                         }
                     });
@@ -339,4 +336,3 @@ public class RepetitiveFragment extends Fragment {
     }
 
 }
-
