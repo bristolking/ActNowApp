@@ -45,8 +45,8 @@ public class ShareActivity extends AppCompatActivity {
 
 
 
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<com.abdeveloper.library.MultiSelectModel>();
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
+    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
 
     MultiSelectDialog mIndividuvalDialog, mProjectDialog;
     ArrayList<Integer> individualCheckBox, projectListCheckBox;
@@ -88,8 +88,8 @@ public class ShareActivity extends AppCompatActivity {
         mShareLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mRecyclerViewShare.setLayoutManager( mShareLayoutManager );
         mRecyclerViewShare.setItemAnimator( new DefaultItemAnimator() );
-        CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter( orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext() );
-        mRecyclerViewShare.setAdapter(checkBoxAdapter);
+        //CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter( orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext() );
+        //mRecyclerViewShare.setAdapter(checkBoxAdapter);
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         System.out.println( "id" + id );
@@ -128,7 +128,7 @@ public class ShareActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBoxList.add( orgnUserRecordsCheckBox1 );
             }
         }
-        mRecyclerViewShare.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
+        //mRecyclerViewShare.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
 
     }
 

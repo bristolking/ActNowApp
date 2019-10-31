@@ -17,7 +17,6 @@ import java.util.List;
 public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHolder> {
     private List<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList;
 
-    //private ContactsAdapterListener listener;
 
 
     public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxArrayList, int individual_check, Context applicationContext) {
@@ -43,10 +42,6 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
         return orgnUserRecordsCheckBoxList.size();
     }
 
-  /*  public void filterList(ArrayList<OrgnUserRecordsCheckBox> filteredList) {
-        orgnUserRecordsCheckBoxList = filteredList;
-        notifyDataSetChanged();
-    }*/
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mIndividualName,mindivdualEmail;

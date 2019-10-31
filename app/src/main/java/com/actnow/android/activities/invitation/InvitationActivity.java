@@ -16,19 +16,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.adapter.CheckBoxAdapter;
 import com.actnow.android.adapter.ShareAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
@@ -42,8 +39,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.view.View.GONE;
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
 
 public class InvitationActivity extends AppCompatActivity {
@@ -76,7 +71,7 @@ public class InvitationActivity extends AppCompatActivity {
         imgeUserAddIntivitation.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent( getApplicationContext(),ShareActivity.class);
+                Intent i= new Intent( getApplicationContext(),SendInvitationActivity.class);
                 startActivity(i);
             }
         } );

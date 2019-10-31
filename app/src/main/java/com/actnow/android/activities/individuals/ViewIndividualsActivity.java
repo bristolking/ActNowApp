@@ -258,8 +258,8 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         mIndivivalLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mIndivivalLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
-        mRecyclerView.setAdapter(checkBoxAdapter);
+       // CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
+       // mRecyclerView.setAdapter(checkBoxAdapter);
 
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -301,7 +301,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
                 orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox1);
             }
-            mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
+           // mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
             mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
