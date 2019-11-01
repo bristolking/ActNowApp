@@ -20,6 +20,7 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
+import com.actnow.android.sdk.responses.UserSendInvitations;
 
 import java.util.List;
 
@@ -156,7 +157,11 @@ public interface ANApi {
     Call<ReminderAdd> checkTheReminderDelete(@Path("id")String id, @Path("reminder_task_id")String reminder_task_id,@Path("orgn_code")String orgn_code);
 
     /* Invitation delete and send*/
+    @FormUrlEncoded
+    @POST("app/invitation/create/{id}")
+    Call<UserSendInvitations>  cheTheUserSend(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("project_code")String project_code,@Field("task_code")String task_code,@Field("invite_emails")String invite_emails);
 
+    @FormUrlEncoded
     @POST("app/invitation/delete/{id}")
     Call<UserDeleted>  checkTheUserDelete(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("project_code")String project_code,@Field("task_code")String  task_code,@Field("invitee_id")String  invitee_id);
 

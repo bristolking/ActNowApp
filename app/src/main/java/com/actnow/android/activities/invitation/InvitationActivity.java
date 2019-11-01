@@ -15,20 +15,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.adapter.ShareAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -39,7 +36,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import static android.view.View.TEXT_ALIGNMENT_CENTER;
+
 
 public class InvitationActivity extends AppCompatActivity {
 
@@ -49,6 +46,14 @@ public class InvitationActivity extends AppCompatActivity {
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     final Context context = this;
+    String task_code;
+    String projectcode;
+    String orncode;
+    String id;
+    String invitee_id;
+    String sendInvitaionprojectCode;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -56,7 +61,17 @@ public class InvitationActivity extends AppCompatActivity {
         setContentView( R.layout.activity_invitation );
         appSharing();
         initializeViews();
+        Intent iin = getIntent();
+        Bundle b = iin.getExtras();
+        if (b != null) {
+            task_code = (String) b.get( "TaskCode" );
+            projectcode = (String) b.get( "projectCode" );
+            sendInvitaionprojectCode = (String)b.get("SenIvitaionprojectCode");
+            System.out.println( "severValues" + task_code + projectcode  + sendInvitaionprojectCode );
+
+        }
     }
+
     private void appSharing() {
         ImageView imgeBackSharing = (ImageView) findViewById( R.id.image_backsharing );
         imgeBackSharing.setOnClickListener( new View.OnClickListener() {
@@ -71,58 +86,21 @@ public class InvitationActivity extends AppCompatActivity {
         imgeUserAddIntivitation.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent( getApplicationContext(),SendInvitationActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), SendInvitationActivity.class );
+                i.putExtra( "TaskCode", task_code );
+                i.putExtra( "SenIvitaionprojectCode",sendInvitaionprojectCode);
+                startActivity( i );
             }
         } );
-        ImageView imgInvititationMenu = (ImageView) findViewById( R.id.img_appHeaderMenuSharing);
+        /*ImageView imgInvititationMenu = (ImageView) findViewById( R.id.img_appHeaderMenuSharing );
         imgInvititationMenu.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                dialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(true);
-                dialog.setContentView(R.layout.restore_all_defalut);
-                View leaveProjectDailog = (View)dialog.findViewById( R.id.re_deleteProjectDailog);
-                TextView tv_menuSharing =(TextView)dialog.findViewById( R.id.tv_restoreDefault);
-                tv_menuSharing.setText("Leave project");
-                tv_menuSharing.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AlertDialog.Builder mBuilder = new AlertDialog.Builder( InvitationActivity.this );
-                        mBuilder.setTitle( "Leave project?" );
-                        mBuilder.setCancelable( false );
-                        mBuilder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String item = " ";
-                                dialog.dismiss();
-                            }
-                        } );
-                        mBuilder.setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        } );
-                        AlertDialog mDialog = mBuilder.create();
-                        mDialog.show();
-                        dialog.dismiss();
-                    }
-                } );
-                Window window = dialog.getWindow();
-                WindowManager.LayoutParams wlp = window.getAttributes();
-                wlp.gravity = Gravity.TOP|TEXT_ALIGNMENT_CENTER | Gravity.RIGHT;
-                wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-                wlp.x = 1; // The new position of the X coordinates
-                wlp.y = 1; // The new position of the Y coordinates
-                wlp.width = 500;// Width
-                window.setAttributes(wlp);
-                dialog.show();
+            public void onClick(View view) {
+                showPopup(view);
             }
-        } );
+        } );*/
     }
+
     private void initializeViews() {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
@@ -130,9 +108,8 @@ public class InvitationActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mRecyclerViewIntivitattion.setLayoutManager( mLayoutManager );
         mRecyclerViewIntivitattion.setItemAnimator( new DefaultItemAnimator() );
-        ShareAdapter shareAdapter = new ShareAdapter( orgnUserRecordsCheckBoxList, R.layout.share_intivitaion_list,getApplicationContext());
-        mRecyclerViewIntivitattion.setAdapter(shareAdapter);
-
+        ShareAdapter shareAdapter = new ShareAdapter( orgnUserRecordsCheckBoxList, R.layout.share_intivitaion_list, getApplicationContext() );
+        mRecyclerViewIntivitattion.setAdapter( shareAdapter );
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         System.out.println( "id" + id );
@@ -141,6 +118,7 @@ public class InvitationActivity extends AppCompatActivity {
         call.enqueue( new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 System.out.println( "response" + response.raw() );
                 if (response.isSuccessful()) {
                     System.out.println( "r" + response.raw() );
@@ -169,33 +147,64 @@ public class InvitationActivity extends AppCompatActivity {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
                 orgnUserRecordsCheckBox1.setId( orgnUserRecordsCheckBox.getId() );
-                orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName());
-                orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
+                orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName() );
+                orgnUserRecordsCheckBox1.setEmail( orgnUserRecordsCheckBox.getEmail() );
+                orgnUserRecordsCheckBox1.setId( orgnUserRecordsCheckBox.getId() );
                 orgnUserRecordsCheckBoxList.add( orgnUserRecordsCheckBox1 );
+
             }
             mRecyclerViewIntivitattion.setAdapter( new ShareAdapter( orgnUserRecordsCheckBoxList, R.layout.share_intivitaion_list, getApplicationContext() ) );
-            mRecyclerViewIntivitattion.addOnItemTouchListener(new InvitationActivity.RecyclerTouchListener(this, mRecyclerViewIntivitattion, new ClickListener() {
+            mRecyclerViewIntivitattion.addOnItemTouchListener( new InvitationActivity.RecyclerTouchListener( this, mRecyclerViewIntivitattion, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
-                    View view1 = (View) findViewById(R.id.re_viewIntivitation);
-                    TextView mShareNameIntivition =(TextView) view.findViewById(R.id.tv_shareName );
-                    TextView mShareEamilIntivitation =(TextView)view.findViewById(R.id.tv_shareEmail);
-                    ImageView mImgDelete =(ImageView)view.findViewById( R.id.img_delete);
+                    View view1 = (View) findViewById( R.id.re_viewIntivitation );
+                    TextView mShareNameIntivition = (TextView) view.findViewById( R.id.tv_shareName );
+                    TextView mShareEamilIntivitation = (TextView) view.findViewById( R.id.tv_shareEmail );
+                    final TextView mShereId = (TextView) view.findViewById( R.id.tv_shareId );
+                    HashMap<String, String> userId = session.getUserDetails();
+                    id = userId.get( UserPrefUtils.ID );
+                    orncode = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                    String email = userId.get( UserPrefUtils.EMAIL );
+                    invitee_id = mShereId.getText().toString();
+                    ImageView mImgDelete = (ImageView) view.findViewById( R.id.img_delete );
                     mImgDelete.setOnClickListener( new View.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_LONG).show();
+                            Call<UserDeleted> userDeletedCall = ANApplications.getANApi().checkTheUserDelete( id, orncode, projectcode, task_code, invitee_id );
+                            System.out.println( "severReponse1" + id + orncode + projectcode + task_code + invitee_id);
+
+                            userDeletedCall.enqueue( new Callback<UserDeleted>() {
+                                @Override
+                                public void onResponse(Call<UserDeleted> call, Response<UserDeleted> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            Toast.makeText( getApplicationContext(), "Sussfully deleted ", Toast.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<UserDeleted> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
+
 
                         }
                     } );
 
                 }
+
                 @Override
                 public void onLongClick(View view, int position) {
 
                 }
-            }));
+            } ) );
         }
     }
 
@@ -219,7 +228,7 @@ public class InvitationActivity extends AppCompatActivity {
         public RecyclerTouchListener(InvitationActivity context, final RecyclerView mRecylerViewSingleSub, ClickListener clickListener) {
             this.clicklistener = clickListener;
 
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector( context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
@@ -227,19 +236,19 @@ public class InvitationActivity extends AppCompatActivity {
 
                 @Override
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
                     }
                 }
-            });
+            } );
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
-                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            View child = rv.findChildViewUnder( e.getX(), e.getY() );
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
+                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
             }
 
             return false;

@@ -215,6 +215,9 @@ public class ViewIdeasActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
+                                break;
 
                         }
                         return false;
@@ -343,10 +346,11 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
                     final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
-                    tv_dueDate.setVisibility(GONE);
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -430,9 +434,12 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i= new Intent(getApplicationContext(), InvitationActivity.class);
-                            startActivity(i);
-                           // mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            String task_code = tv_taskcode.getText().toString();
+                            String projectCode = tv_projectCode.getText().toString();
+                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "SenIvitaionprojectCode",projectCode);
+                            startActivity( i );
                         }
                     });
                     ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);

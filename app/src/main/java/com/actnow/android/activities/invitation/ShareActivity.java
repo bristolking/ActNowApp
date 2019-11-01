@@ -88,8 +88,8 @@ public class ShareActivity extends AppCompatActivity {
         mShareLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mRecyclerViewShare.setLayoutManager( mShareLayoutManager );
         mRecyclerViewShare.setItemAnimator( new DefaultItemAnimator() );
-        //CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter( orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext() );
-        //mRecyclerViewShare.setAdapter(checkBoxAdapter);
+        CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter( orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext() );
+        mRecyclerViewShare.setAdapter(checkBoxAdapter);
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         System.out.println( "id" + id );
@@ -97,6 +97,7 @@ public class ShareActivity extends AppCompatActivity {
         call.enqueue( new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 System.out.println( "response" + response.raw() );
                 if (response.isSuccessful()) {
                     System.out.println( "r" + response.raw() );
@@ -128,7 +129,7 @@ public class ShareActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBoxList.add( orgnUserRecordsCheckBox1 );
             }
         }
-        //mRecyclerViewShare.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
+        mRecyclerViewShare.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
 
     }
 

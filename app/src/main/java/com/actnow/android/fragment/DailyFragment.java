@@ -247,9 +247,12 @@ public class DailyFragment extends Fragment {
                 mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String task_code = tv_taskcode.getText().toString();
+                        String projectCode = tv_projectCode.getText().toString();
                         Intent i = new Intent( getActivity(), InvitationActivity.class );
+                        i.putExtra( "TaskCode", task_code );
+                        i.putExtra( "SenIvitaionprojectCode",projectCode);
                         startActivity( i );
-                        //mIndividuvalDialogtime.show(getFragmentManager(), "mIndividuvalDialog");
 
                     }
                 } );

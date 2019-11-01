@@ -91,6 +91,7 @@ public class TodayTaskActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,6 +219,9 @@ public class TodayTaskActivity extends AppCompatActivity {
                             case R.id.nav_premium:
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
+                                break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
                                 break;
 
                         }
@@ -506,8 +510,12 @@ public class TodayTaskActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i= new Intent(getApplicationContext(),InvitationActivity.class);
-                            startActivity(i);
+                            String task_code = tv_taskcode.getText().toString();
+                            String projectCode = tv_projectCode.getText().toString();
+                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "SenIvitaionprojectCode",projectCode);
+                            startActivity( i );
                         }
                     });
                     ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);

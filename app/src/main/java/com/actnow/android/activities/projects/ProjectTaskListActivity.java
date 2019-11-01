@@ -236,6 +236,9 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
+                                break;
 
                         }
                         return false;
@@ -441,9 +444,10 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
-                            Intent i= new Intent(getApplicationContext(), InvitationActivity.class);
-                            startActivity(i);
+                            String task_code = tv_taskcode.getText().toString();
+                            Intent i = new Intent(getApplicationContext(), InvitationActivity.class );
+                            i.putExtra( "TaskCode", task_code );
+                            startActivity( i );
                         }
                     });
                     ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);

@@ -225,6 +225,9 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
+                                break;
 
                         }
                         return false;
@@ -271,7 +274,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
         call.enqueue( new Callback<ReminderResponse>() {
             @Override
             public void onResponse(Call<ReminderResponse> call, Response<ReminderResponse> response) {
-                System.out.println( "reminder" + response.raw() );
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setRemiderTaskList( response.body().getTask_reminders() );
@@ -279,7 +282,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
+                      AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
 
                 }
             }

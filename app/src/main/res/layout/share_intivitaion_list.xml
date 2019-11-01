@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorWhite"
-    android:orientation="vertical">
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:layout_margin="4dp"
+        android:padding="4dp">
         <LinearLayout
             android:id="@+id/re_viewIntivitation"
             android:layout_width="match_parent"
@@ -25,7 +26,6 @@
                 android:buttonTint="@color/textColor"
                 android:text="Nagrjuna"
                 android:textColor="@color/textColor" />
-
             <TextView
                 android:id="@+id/tv_shareEmail"
                 android:layout_width="match_parent"
@@ -33,13 +33,16 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="chintha.nagarjuna@cancrisoft.com" />
+
         </LinearLayout>
-      <!--  <ImageView
-            android:id="@+id/img_menuSharing"
+        <TextView
+            android:id="@+id/tv_shareId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            app:srcCompat="@drawable/ic_menu_black" />-->
+            android:paddingRight="30dp"
+            android:text="1"
+            android:visibility="gone"/>
         <ImageView
             android:id="@+id/img_delete"
             android:layout_width="wrap_content"
@@ -47,10 +50,9 @@
             android:layout_alignParentRight="true"
             app:srcCompat="@drawable/ic_recycle_bin"/>
     </RelativeLayout>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/linebackground" />
-</RelativeLayout>
+</android.support.v7.widget.CardView>
 

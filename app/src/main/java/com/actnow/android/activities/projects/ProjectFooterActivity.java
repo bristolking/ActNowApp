@@ -211,6 +211,9 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
+                                break;
 
                         }
                         return false;
@@ -377,8 +380,9 @@ public class ProjectFooterActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             Intent i =new Intent( getApplicationContext(), InvitationActivity.class);
+                            String project_code = mProjectCode.getText().toString();
+                            i.putExtra("projectCode",project_code);
                             startActivity(i);
-                            //mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
                         }
                     });
                     ImageView mImgeEdit = (ImageView) view.findViewById(R.id.img_editPencilProjectList);

@@ -17,8 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="gone" />
+            android:layout_centerVertical="true" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -59,13 +58,13 @@
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorAccent" />
 
-                    <ImageView
+                  <!--  <ImageView
                         android:id="@+id/image_menu_send"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_menu" />
+                        app:srcCompat="@drawable/ic_menu" />-->
                 </RelativeLayout>
 
                 <View

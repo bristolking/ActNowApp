@@ -188,6 +188,9 @@ public class ProjectMonthlyActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
+                                break;
 
                         }
                         return false;

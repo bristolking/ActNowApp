@@ -200,6 +200,9 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                                 Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
                                 startActivity(ipremium);
                                 break;
+                            case R.id.nav_logout:
+                                session.logoutUser();
+                                break;
 
                         }
                         return false;
@@ -258,8 +261,8 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         mIndivivalLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mIndivivalLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-       // CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
-       // mRecyclerView.setAdapter(checkBoxAdapter);
+       CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
+        mRecyclerView.setAdapter(checkBoxAdapter);
 
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -269,7 +272,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         call.enqueue(new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                System.out.println("response" + response.raw());
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     System.out.println("r" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
@@ -301,7 +304,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
                 orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox1);
             }
-           // mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
+            mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
             mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
