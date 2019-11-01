@@ -1,8 +1,12 @@
 package com.actnow.android.activities.invitation;
 
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -67,6 +71,7 @@ public class SendInvitationActivity extends AppCompatActivity {
     EditText editText;
     TextView mTvName;
     TextView mTvEmail;
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,11 +118,12 @@ public class SendInvitationActivity extends AppCompatActivity {
     private void initializeViews() {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
-        View view = (View) findViewById( R.id.rv_recylerViewShareIndividual );
+        final View view = (View) findViewById( R.id.rv_recylerViewShareIndividual );
         view.setOnClickListener( new View.OnClickListener() {
+            @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+                //mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
             }
         } );
         mTextShareIndividual = (TextView) findViewById( R.id.tv_allIndividuals );
@@ -133,12 +139,13 @@ public class SendInvitationActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(mRecyclerView.getVisibility() != View.VISIBLE)
+                    mRecyclerView.setVisibility( View.VISIBLE );
 
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-                filter( s.toString() );
+                filter(s.toString());
             }
         } );
         ImageView imgSendInvitations = (ImageView) findViewById( R.id.img_search_send );
@@ -148,13 +155,14 @@ public class SendInvitationActivity extends AppCompatActivity {
                 sendInvitationCall();
             }
         } );
+
     }
 
-    private void sendInvitationCall() {
 
+    private void sendInvitationCall() {
         String invite_emails = editText.getText().toString();
-        Call<UserSendInvitations> userSendInvitationsCall = ANApplications.getANApi().
-                cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code, invite_emails );
+        //String invite_emails = String.valueOf( individuvalArray );
+        Call<UserSendInvitations> userSendInvitationsCall = ANApplications.getANApi().cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code, invite_emails );
         System.out.println( "severReponse" + id + orncode + sendInvitaionprojectCode + task_code + invite_emails );
         userSendInvitationsCall.enqueue( new Callback<UserSendInvitations>() {
             @Override
@@ -241,6 +249,7 @@ public class SendInvitationActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName() );
                 orgnUserRecordsCheckBox1.setEmail( orgnUserRecordsCheckBox.getEmail() );
                 orgnUserRecordsCheckBoxList.add( orgnUserRecordsCheckBox1 );
+
             }
         }
         mRecyclerView.setAdapter( mAdapter );
@@ -254,7 +263,6 @@ public class SendInvitationActivity extends AppCompatActivity {
                 view1.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
                         Call<UserSendInvitations> userSendInvitationsCall = ANApplications.getANApi().
                                 cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code, textEmail );
                         System.out.println( "severReponse" + id + orncode + sendInvitaionprojectCode + task_code + textEmail );
@@ -380,7 +388,7 @@ public class SendInvitationActivity extends AppCompatActivity {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
                 orgnUserRecordsCheckBox1.setEmail( orgnUserRecordsCheckBox.getEmail() );
-                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
+                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getEmail()), orgnUserRecordsCheckBox.getEmail()));
             }
             mIndividuvalDialog = new MultiSelectDialog()
                     .title( "Individuval" ) //setting title for dialog
@@ -395,7 +403,8 @@ public class SendInvitationActivity extends AppCompatActivity {
                         @Override
                         public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
                             for (int i = 0; i < selectedIds.size(); i++) {
-                                mTextShareIndividual.setText( dataString );
+                                //mTextShareIndividual.setText( dataString );
+                                editText.setText(dataString);
                             }
                             individuvalArray = new JSONArray( selectedIds );
                         }
