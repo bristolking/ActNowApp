@@ -7,7 +7,7 @@
     android:background="@drawable/borderbottom">
 
     <ImageView
-        android:id="@+id/image_backsetting"
+        android:id="@+id/image_backTimeLine"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerVertical="true"
@@ -16,7 +16,7 @@
         tools:ignore="VectorDrawableCompat" />
 
     <TextView
-        android:id="@+id/txt_titlesetting"
+        android:id="@+id/txt_titlesTimeLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TITLE"
@@ -28,6 +28,16 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@color/colorAccent" />
     <ImageView
+        android:id="@+id/img_calenderTimeLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="90dp"
+        app:srcCompat="@drawable/ic_calendar_red" />
+
+    <ImageView
         android:id="@+id/img_filterProject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +45,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="50dp"
-        app:srcCompat="@drawable/ic_tabs" />
+        app:srcCompat="@drawable/ic_list_project" />
 
     <ImageView
         android:id="@+id/img_byEvent"
@@ -43,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:paddingRight="15dp"
-        app:srcCompat="@drawable/ic_menu_events" />
+        android:paddingRight="10dp"
+        app:srcCompat="@drawable/ic_menu_round" />
 
 </RelativeLayout>

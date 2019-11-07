@@ -140,30 +140,67 @@ public interface ANApi {
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")
-    Call<TaskComplete>  checkTheTaskEdit(@Path("id")String id,@Field("comment_id")String comment_id,@Field("orgn_code")String orgn_code,@Field("comment")String comment,@Field("task_code") String task_code,@Field("project_code") String project_code);
+    Call<TaskComplete>  checkTheTaskEdit(
+            @Path("id")String id,
+            @Field("comment_id")String comment_id,
+            @Field("orgn_code")String orgn_code,
+            @Field("comment")String comment,
+            @Field("task_code") String task_code,
+            @Field("project_code") String project_code);
+    @FormUrlEncoded
     @POST("app/comment/delete/{id}")
-    Call<TaskComplete> checkTheTaskDelete(@Path("id")String id,@Field("orgn_code")String  orgn_code,@Field("comment_id")String comment_id);
+    Call<TaskComplete> checkTheTaskDelete(
+            @Path("id")String id,
+            @Field("orgn_code")String  orgn_code,
+            @Field("comment_id")String comment_id);
 
 
     /*Reminder API delete and Savee*/
     @GET("app/task_reminders/{id}/{task_code}/{orgn_code}")
-    Call<ReminderResponse> checkTheReminderList(@Path("id")String id,@Path("task_code")String task_code,@Path("orgn_code") String orgn_code);
+    Call<ReminderResponse> checkTheReminderList(
+            @Path("id")String id,
+            @Path("task_code")String task_code,
+            @Path("orgn_code") String orgn_code);
 
     @FormUrlEncoded
     @POST("app/task/save_reminder/{id}/{task_code}")
-    Call<ReminderAdd> checTheReminderAdd(@Path("id")String id,@Path("task_code")String task_code,@Field("reminder_date")String reminder_date,@Field("remind_to")String remind_to,@Field("orgn_code")String orgn_code);
+    Call<ReminderAdd> checTheReminderAdd(
+            @Path("id")String id,
+            @Path("task_code")String task_code,
+            @Field("reminder_date")String reminder_date,
+            @Field("remind_to")String remind_to,
+            @Field("orgn_code")String orgn_code);
 
     @GET("app/task/delete_reminder/{id}/{reminder_task_id}/{orgn_code}")
-    Call<ReminderAdd> checkTheReminderDelete(@Path("id")String id, @Path("reminder_task_id")String reminder_task_id,@Path("orgn_code")String orgn_code);
+    Call<ReminderAdd> checkTheReminderDelete(
+            @Path("id")String id,
+            @Path("reminder_task_id")String reminder_task_id,
+            @Path("orgn_code")String orgn_code);
 
     /* Invitation delete and send*/
+   /* @Multipart
+    @POST("app/invitation/create/{id}")
+    Call<UserSendInvitations>  cheTheUserSend(
+            @Path("id") RequestBody  id,
+            @Part("orgn_code")RequestBody  orgn_code,
+            @Part("project_code")RequestBody  project_code,
+            @Part("task_code")RequestBody  task_code,
+            @Part ("invite_emails") RequestBody invite_emails);
+*/
+
     @FormUrlEncoded
     @POST("app/invitation/create/{id}")
-    Call<UserSendInvitations>  cheTheUserSend(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("project_code")String project_code,@Field("task_code")String task_code,@Field("invite_emails")String invite_emails);
+    Call<ResponseBody>  cheTheUserSend(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("project_code")String project_code,@Field("task_code")String task_code,@Field("invite_emails")String invite_emails);
+
 
     @FormUrlEncoded
     @POST("app/invitation/delete/{id}")
-    Call<UserDeleted>  checkTheUserDelete(@Path("id")String id,@Field("orgn_code")String orgn_code,@Field("project_code")String project_code,@Field("task_code")String  task_code,@Field("invitee_id")String  invitee_id);
+    Call<UserDeleted>  checkTheUserDelete(
+            @Path("id")String id,
+            @Field("orgn_code")String orgn_code,
+            @Field("project_code")String project_code,
+            @Field("task_code")String  task_code,
+            @Field("invitee_id")String  invitee_id);
 
 
     /*

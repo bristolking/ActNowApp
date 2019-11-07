@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="8dp">
 
         <RelativeLayout
             android:id="@id/liner_projectList"
@@ -57,23 +57,22 @@
             android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text="Task_Code : "
+                android:text="Taskcode :"
                 android:textColor="@color/colorAccent" />
 
             <TextView
                 android:id="@+id/tv_userTaskCodeReminder"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_weight="1"
-                android:paddingLeft="100dp"
+                android:paddingLeft="70dp"
                 android:text="CancriTech"
                 android:textColor="@color/black" />
         </RelativeLayout>

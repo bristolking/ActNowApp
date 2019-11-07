@@ -35,6 +35,7 @@ import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
+import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
@@ -206,14 +207,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                                 startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
-                                HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get(UserPrefUtils.ID);
-                                String name = userId.get(UserPrefUtils.NAME);
-                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
-                                iprofile.putExtra("id", id);
-                                iprofile.putExtra("name", name);
-                                iprofile.putExtra("email", accountEmail);
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
@@ -318,11 +312,11 @@ public class TodayTaskActivity extends AppCompatActivity {
             }
         });
         //TodayRecyclerView
-        mTodayRecyclerView = findViewById(R.id.toady_recylerView);
+      /*  mTodayRecyclerView = findViewById(R.id.toady_recylerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTodayRecyclerView.setLayoutManager(mLayoutManager);
         mTodayRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.remider_footer_layout.task_list_cutsom, getApplicationContext());
         mTodayRecyclerView.setAdapter(mTaskListAdapter);
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
         call.enqueue(new Callback<TaskListResponse>() {
@@ -346,7 +340,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 Log.d("CallBack", " Throwable is " + t);
 
             }
-        });
+        });*/
     }
     private Date yesterday() {
         final Calendar cal = Calendar.getInstance();
@@ -387,7 +381,7 @@ public class TodayTaskActivity extends AppCompatActivity {
             }
            mToadyOverDueTask.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
 
-        }
+   /*     }
     }
 
     // Today Task list
@@ -412,9 +406,9 @@ public class TodayTaskActivity extends AppCompatActivity {
                         taskListRecordsArrayList.add(taskListRecords1);
                     }
 
-            }
-            mTodayRecyclerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
-            mTodayRecyclerView.addOnItemTouchListener(new TodayTaskActivity.RecyclerTouchListener(this, mTodayRecyclerView, new ClickListener() {
+            }*/
+           // mTodayRecyclerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.remider_footer_layout.task_list_cutsom, getApplicationContext()));
+            mToadyOverDueTask.addOnItemTouchListener(new TodayTaskActivity.RecyclerTouchListener(this, mTodayRecyclerView, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
                     final View view1 = view.findViewById(R.id.taskList_liner);
@@ -692,7 +686,7 @@ public class TodayTaskActivity extends AppCompatActivity {
 
         if (requestCode == CAMERA_PERMISSION_CODE) {
             // Checking whether user granted the permission or not.
-            if (grantResults.length > 0
+           /* if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 // Showing the toast message
@@ -706,7 +700,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                         "Camera Permission Denied",
                         Toast.LENGTH_SHORT)
                         .show();
-            }
+            }*/
         }
         else if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0

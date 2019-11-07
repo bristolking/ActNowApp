@@ -17,6 +17,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -38,6 +39,7 @@ import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
+import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
@@ -54,6 +56,7 @@ import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -63,10 +66,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.view.Gravity.NO_GRAVITY;
 import static android.view.View.GONE;
 import static com.activeandroid.Cache.getContext;
 
-public class ReaminderScreenActivity extends AppCompatActivity {
+public class ReaminderScreenActivity extends AppCompatActivity implements
+        DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     final Context context = this;
     RecyclerView mReminderTaskList;
     RecyclerView.LayoutManager mLayoutManager;
@@ -76,7 +81,9 @@ public class ReaminderScreenActivity extends AppCompatActivity {
     UserPrefUtils session;
     String task_code;
 
-    private int mYear, mMonth, mDay, mHour, mMinute;
+     int  mDay, mMonth, mYear, mHour, mMinute,mSeconds;
+
+     int dayFinal,monthFinal,yearFinal,hourFinal,minuteFinal,secondsFinal;
 
 
     ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
@@ -87,11 +94,12 @@ public class ReaminderScreenActivity extends AppCompatActivity {
     JSONArray individuvalArray;
     JSONArray projectArray;
 
-     TextView mDateReminderTextView;
-     TextView mTimeReminderScreen;
-     TextView mUserReminder;
 
-     TextView mReminderUserTaskId;
+    TextView mUserReminder;
+    TextView mReminderUserTaskId;
+    TextView mdateandTime;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -152,16 +160,16 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get( UserPrefUtils.EMAIL);
+                String email = userId.get( UserPrefUtils.EMAIL );
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH);
-                System.out.println( "img"+ img );
-                Glide.with(getApplicationContext())
-                        .load(img)
+                String img = userId.get( UserPrefUtils.IMAGEPATH );
+                System.out.println( "img" + img );
+                Glide.with( getApplicationContext() )
+                        .load( img )
                         .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.placeholder)
-                        .into(mImageProfile);
+                        .placeholder( R.drawable.placeholder )
+                        .error( R.drawable.placeholder )
+                        .into( mImageProfile );
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -172,58 +180,51 @@ public class ReaminderScreenActivity extends AppCompatActivity {
 
                 TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
                 mTextName.setText( taskOwnerName );
-                TextView mTextEmail =(TextView)findViewById( R.id.tv_emailProfile);
+                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
                 mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
-                                startActivity(iToday);
+                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                startActivity( iToday );
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                                startActivity(iIdea);
+                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                                startActivity( iIdea );
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
+                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
+                                startActivity( ithisweek );
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent(getApplicationContext(), TaskAddListActivity.class);
-                                startActivity(iTaskfilter);
+                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
+                                startActivity( iTaskfilter );
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class);
-                                startActivity( iProjects);
+                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+                                startActivity( iProjects );
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-                                startActivity(iIndividuals);
+                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+                                startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-                                startActivity(iInsights);
+                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
-                                startActivity(iTimeLine);
+                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
+                                startActivity( iTimeLine );
                                 break;
                             case R.id.nav_profile:
-                                HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get(UserPrefUtils.ID);
-                                String name = userId.get(UserPrefUtils.NAME);
-                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
-                                iprofile.putExtra("id", id);
-                                iprofile.putExtra("name", name);
-                                iprofile.putExtra("email", accountEmail);
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
-                                startActivity(ipremium);
+                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
+                                startActivity( ipremium );
                                 break;
                             case R.id.nav_logout:
                                 session.logoutUser();
@@ -232,7 +233,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                });
+                } );
                 final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_reaminderList );
                 if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
@@ -259,7 +260,9 @@ public class ReaminderScreenActivity extends AppCompatActivity {
         requestDynamicContent();
         mIndividuvalDialog = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
+        individualCheckBox.add( 0 );
+        mUserReminder = (TextView) findViewById( R.id.tv_reminderUsers );
+        mdateandTime = (TextView)findViewById(R.id.tv_dateandTime);
         mReminderTaskList = findViewById( R.id.reminder_Tasklist );
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mReminderTaskList.setLayoutManager( mLayoutManager );
@@ -274,7 +277,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
         call.enqueue( new Callback<ReminderResponse>() {
             @Override
             public void onResponse(Call<ReminderResponse> call, Response<ReminderResponse> response) {
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setRemiderTaskList( response.body().getTask_reminders() );
@@ -282,7 +285,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                      AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
 
                 }
             }
@@ -295,93 +298,39 @@ public class ReaminderScreenActivity extends AppCompatActivity {
         } );
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void addTheReminder() {
-        String datetime = mDateReminderTextView.getText().toString();
-        mDateReminderTextView.setError( null );
-        String time = mTimeReminderScreen.getText().toString();
-        //String individuvalName = String.valueOf( individuvalArray );
-        String individuvalName = String.valueOf( String.valueOf(individuvalArray).replace("[", "").replace("]", "") );
-        individuvalArray.remove(0);
-        mTimeReminderScreen.setError( null );
-        boolean cancel = false;
-        View focusView = null;
-        if (TextUtils.isEmpty(datetime)) {
-            mDateReminderTextView.setError(getString( R.string.error_required));
-            focusView = mDateReminderTextView;
-            cancel = true;
-        }
-        if (TextUtils.isEmpty(time)) {
-            mTimeReminderScreen.setError(getString( R.string.error_required));
-            focusView = mTimeReminderScreen;
-            cancel = true;
-        }
-        if (cancel) {
-            focusView.requestFocus();
-        } else {
-            HashMap<String,String> userId = session.getUserDetails();
-            String id = userId.get( UserPrefUtils.ID);
-            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME);
-            addtheremdinerList(id,datetime,individuvalName,orgn_code);
-        }
-    }
-    private void addtheremdinerList(String a, String b, String c, String d) {
-        Call<ReminderAdd> call = ANApplications.getANApi().checTheReminderAdd( a,task_code,b,c,d);
-        System.out.println( "reminderFelids"+a+task_code+b+c+d);
-        call.enqueue( new Callback<ReminderAdd>() {
-            @Override
-            public void onResponse(Call<ReminderAdd> call, Response<ReminderAdd> response) {
-                if (response.isSuccessful()){
-                    System.out.println( "reminderReponse"+response.raw());
-                    if (response.body().getSuccess().equals( "true" )){
-                        Intent i =new Intent( getApplicationContext(),ReaminderScreenActivity.class);
-                        i.putExtra( "TaskCode", task_code );
-                        startActivity(i);
-                        Toast.makeText(getApplicationContext(), "Reminder added successfully", Toast.LENGTH_SHORT).show();
-                    }else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                    }
-                }else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                }
-            }
-            @Override
-            public void onFailure(Call<ReminderAdd> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
 
-            }
-        } );
-    }
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void showPopup(View view){
-        final PopupMenu popupMenu = new PopupMenu( this,view );
-        popupMenu.inflate( R.menu.delete);
-        popupMenu.setGravity( Gravity.RIGHT|Gravity.CENTER);
+    public void showPopup(View view) {
+        PopupMenu popupMenu = new PopupMenu( this,view, Gravity.RIGHT|NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
+        popupMenu.inflate( R.menu.delete );
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.menu_delete :
-                        HashMap<String,String> userId = session.getUserDetails();
-                        String id= userId.get(UserPrefUtils.ID);
-                        String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+                switch (item.getItemId()) {
+                    case R.id.menu_delete:
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                         String reminderTaskId = mReminderUserTaskId.getText().toString();
-                        Call<ReminderAdd> reminderDeleteCall = ANApplications.getANApi().checkTheReminderDelete(id,reminderTaskId,orgn_code);
-                        System.out.println("deleteValues"+id+orgn_code+reminderTaskId);
+                        Call<ReminderAdd> reminderDeleteCall = ANApplications.getANApi().checkTheReminderDelete( id, reminderTaskId, orgn_code );
+                        System.out.println( "deleteValues" + id + orgn_code + reminderTaskId );
                         reminderDeleteCall.enqueue( new Callback<ReminderAdd>() {
                             @Override
                             public void onResponse(Call<ReminderAdd> call, Response<ReminderAdd> response) {
-                                if (response.isSuccessful()){
-                                    System.out.println( "deletCall"+response.raw());
-                                    if (response.body().getSuccess().equals("true")){
-                                        Intent  i= new Intent(getApplicationContext(),ReaminderScreenActivity.class);
-                                        startActivity(i);
-                                        Toast.makeText(getApplicationContext(), "Reminder deleted successfully", Toast.LENGTH_SHORT).show();
-                                    }else {
-                                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                                if (response.isSuccessful()) {
+                                    System.out.println( "deletCall" + response.raw() );
+                                    if (response.body().getSuccess().equals( "true" )) {
+                                        Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
+                                        i.putExtra( "TaskCode", task_code );
+                                        startActivity( i );
+                                        Toast.makeText( getApplicationContext(), "Reminder deleted successfully", Toast.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                     }
-                                }else { AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                                } else {
+                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
 
                                 }
                             }
@@ -392,68 +341,70 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                             }
                         } );
 
-                        return  true;
+                        return true;
                     default:
-                        return  false;
+                        return false;
                 }
             }
         } );
     }
+
     private void requestDynamicContent() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
+        String id = userId.get( UserPrefUtils.ID );
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
+        call.enqueue( new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setLoadCheckBox( response.body().getOrgn_users_records() );
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
 
             @Override
             public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                Log.d( "CallBack", " Throwable is " + t );
             }
-        });
+        } );
 
     }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
+                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
             }
             mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                    .title( "Individuval" ) //setting title for dialog
+                    .titleSize( 25 )
+                    .positiveText( "Done" )
+                    .negativeText( "Cancel" )
+                    .preSelectIDsList( individualCheckBox )
+                    .setMinSelectionLimit( 0 )
+                    .setMaxSelectionLimit( listOfIndividuval.size() )
+                    .multiSelectList( listOfIndividuval ) // the multi select model list with ids and name
+                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
                         @Override
                         public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
                             for (int i = 0; i < selectedIds.size(); i++) {
-                                mUserReminder.setText(dataString);
+                                mUserReminder.setText( dataString );
                             }
-                            individuvalArray = new JSONArray(selectedIds);
+                            individuvalArray = new JSONArray( selectedIds );
                         }
 
                         @Override
-                        public void onCancel()  {
-                            Log.d("TAG", "Dialog cancelled");
+                        public void onCancel() {
+                            Log.d( "TAG", "Dialog cancelled" );
                         }
-                    });
+                    } );
         }
     }
 
@@ -464,7 +415,7 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                 ReminderTaskReinders reminderTaskReinders1 = new ReminderTaskReinders();
                 reminderTaskReinders1.setReminder_date( reminderTaskReinders.getReminder_date() );
                 reminderTaskReinders1.setReminder_task_id( reminderTaskReinders.getReminder_task_id() );
-                reminderTaskReinders1.setStatus( reminderTaskReinders.getStatus());
+                reminderTaskReinders1.setStatus( reminderTaskReinders.getStatus() );
                 reminderTaskReindersArrayList.add( reminderTaskReinders );
 
             }
@@ -473,13 +424,13 @@ public class ReaminderScreenActivity extends AppCompatActivity {
         mReminderTaskList.addOnItemTouchListener( new ReaminderScreenActivity.RecyclerTouchListener( this, mReminderTaskList, new ReaminderScreenActivity.ClickListener() {
             @Override
             public void onClick(final View view, int position) {
-                mReminderUserTaskId=(TextView)view.findViewById(R.id.tv_riminderTaslkId);
-                ImageView mReminderMenu =(ImageView)view.findViewById(R.id.img_menuComment);
+                mReminderUserTaskId = (TextView) view.findViewById( R.id.tv_riminderTaslkId );
+                ImageView mReminderMenu = (ImageView) view.findViewById( R.id.img_menuComment );
                 mReminderMenu.setOnClickListener( new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View v) {
-                        showPopup(view);
+                        showPopup( view );
 
                     }
                 } );
@@ -494,7 +445,6 @@ public class ReaminderScreenActivity extends AppCompatActivity {
 
         } ) );
     }
-
 
     public interface ClickListener {
         void onClick(View view, int position);
@@ -544,7 +494,6 @@ public class ReaminderScreenActivity extends AppCompatActivity {
     }
 
     private void footer() {
-        mUserReminder =(TextView)findViewById( R.id.tv_reminderUsers);
         ImageView mImageSend = (ImageView) findViewById( R.id.sendImg_reminder );
         mImageSend.setOnClickListener( new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -553,56 +502,109 @@ public class ReaminderScreenActivity extends AppCompatActivity {
                 addTheReminder();
             }
         } );
-        mDateReminderTextView = (TextView) findViewById( R.id.tv_dateandTimeReminder );
-        mDateReminderTextView.setOnClickListener( new View.OnClickListener() {
+        ImageView  mCalenderImageView = (ImageView) findViewById(R.id.calender_img);
+        mCalenderImageView.setOnClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                    final Calendar c = Calendar.getInstance();
-                    mYear = c.get( Calendar.YEAR );
-                    mMonth = c.get( Calendar.MONTH );
-                    mDay = c.get( Calendar.DAY_OF_MONTH );
-                    DatePickerDialog datePickerDialog = new DatePickerDialog( ReaminderScreenActivity.this, new DatePickerDialog.OnDateSetListener() {
+            public void onClick(View view) {
+                Calendar calendar  = Calendar.getInstance();
+                mYear = calendar.get( Calendar.YEAR);
+                mMonth = calendar.get( Calendar.MONTH);
+                mDay = calendar.get( Calendar.DAY_OF_MONTH);
 
-                        @Override
-                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            mDateReminderTextView.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
-
-                        }
-                    }, mYear, mMonth, mDay );
-                    datePickerDialog.show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ReaminderScreenActivity.this,ReaminderScreenActivity.
+                        this,mYear,mMonth,mDay );
+                datePickerDialog.show();
 
             }
         } );
-        mTimeReminderScreen = (TextView) findViewById( R.id.tv_timeReminderScreen );
-        mTimeReminderScreen.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    final Calendar c1 = Calendar.getInstance();
-                    mHour = c1.get(Calendar.HOUR_OF_DAY);
-                    mMinute = c1.get(Calendar.MINUTE);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(ReaminderScreenActivity.this,
-                            new TimePickerDialog.OnTimeSetListener() {
 
-                                @Override
-                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                    mTimeReminderScreen .setText(hourOfDay + ":" + minute);
-                                }
-                            }, mHour, mMinute, false);
-                    timePickerDialog.show();
-                }
-
-        } );
-
-        ImageView mUserIntivationReminder =(ImageView)findViewById( R.id.img_individualReminder);
+        ImageView mUserIntivationReminder = (ImageView) findViewById( R.id.img_individualReminder );
         mUserIntivationReminder.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+
+            }
+        } );
+    }
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        yearFinal = i;
+        monthFinal = i1;
+        dayFinal = i2;
+
+        Calendar calendarTime = Calendar.getInstance();
+        mHour = calendarTime.get( Calendar.HOUR_OF_DAY );
+        mMinute = calendarTime.get( Calendar.MINUTE);
+        mSeconds = calendarTime.get( Calendar.SECOND);
+
+        TimePickerDialog timePickerDialog  = new TimePickerDialog( ReaminderScreenActivity.
+                this,ReaminderScreenActivity.this,mHour,mMinute, DateFormat.is24HourFormat( this));
+        timePickerDialog.show();
+
+    }
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        hourFinal = i;
+        minuteFinal = i1;
+        mdateandTime.setText( yearFinal + "-" + monthFinal + "-" + dayFinal + " " + hourFinal + ":" + minuteFinal );
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void addTheReminder() {
+        String datetime = mdateandTime.getText().toString();
+        mdateandTime.setError( null );
+        String individuvalName = String.valueOf( String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
+        individuvalArray.remove( 0 );
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty( datetime )) {
+            mdateandTime.setError( getString( R.string.error_required ) );
+            focusView = mdateandTime;
+            cancel = true;
+        }
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            HashMap<String, String> userId = session.getUserDetails();
+            String id = userId.get( UserPrefUtils.ID );
+            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+            addtheremdinerList( id, task_code, datetime, individuvalName, orgn_code );
+        }
+    }
+
+    private void addtheremdinerList(String a, String b, String c, String d, String e) {
+        Call<ReminderAdd> call = ANApplications.getANApi().checTheReminderAdd( a, b, c, d, e );
+        System.out.println( "reminderFelids" + a + b + c + d + e );
+        call.enqueue( new Callback<ReminderAdd>() {
+            @Override
+            public void onResponse(Call<ReminderAdd> call, Response<ReminderAdd> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                if (response.isSuccessful()) {
+                    System.out.println( "reminderReponse" + response.raw() );
+                    if (response.body().getSuccess().equals( "true" )) {
+                        Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
+                        i.putExtra( "TaskCode", task_code );
+                        startActivity( i );
+                        Toast.makeText( getApplicationContext(), "Reminder added successfully", Toast.LENGTH_SHORT ).show();
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReminderAdd> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
 
             }
         } );
     }
 
-
-
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

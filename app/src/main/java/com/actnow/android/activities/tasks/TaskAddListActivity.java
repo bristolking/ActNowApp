@@ -39,6 +39,7 @@ import com.actnow.android.activities.monthly.MonthlyTaskListActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
@@ -196,14 +197,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                                 startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
-                                HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get(UserPrefUtils.ID);
-                                String name = userId.get(UserPrefUtils.NAME);
-                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
-                                iprofile.putExtra("id", id);
-                                iprofile.putExtra("name", name);
-                                iprofile.putExtra("email", accountEmail);
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
@@ -280,7 +274,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
        /* mSpinnerReptOption = (Spinner) findViewById(R.id.spinnerReaptTask);
-        arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, repetitive);
+        arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.remider_footer_layout.simple_dropdown_item_1line, repetitive);
         mSpinnerReptOption.setAdapter(arrayAdapterReapt);
         mSpinnerReptOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -460,7 +454,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTaskRecylcerView.setLayoutManager(mLayoutManager);
         mTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.remider_footer_layout.task_list_cutsom, getApplicationContext());
         mTaskRecylcerView.setAdapter(mTaskListAdapter);
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -497,7 +491,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                 //taskListRecords1.setRemindars_count(taskListRecords.getRemindars_count());
                 taskListRecordsArrayList.add(taskListRecords1);
             }
-            mTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
+            mTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.remider_footer_layout.task_list_cutsom, getApplicationContext()));
             mTaskRecylcerView.addOnItemTouchListener(new TaskAddListActivity.RecyclerTouchListener(this, mTaskRecylcerView, new ClickListener() {
                 @Override
                 public void onClick(View view, int position) {

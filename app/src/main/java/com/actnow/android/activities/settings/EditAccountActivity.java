@@ -50,6 +50,8 @@ public class EditAccountActivity extends AppCompatActivity {
 
     int RESULT_LOAD_IMAGE = 1;
     private Context context;
+    RequestBody path;
+    MultipartBody.Part body;
 
 
     @Override
@@ -83,26 +85,26 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        HashMap<String,String> userId = session.getUserDetails();
-        String id= userId.get( UserPrefUtils.ID );
-        String name = userId.get( UserPrefUtils.NAME);
-        String email= userId.get( UserPrefUtils.EMAIL);
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        String name = userId.get( UserPrefUtils.NAME );
+        String email = userId.get( UserPrefUtils.EMAIL );
         mName = findViewById( R.id.tv_name );
         mName.setText( name );
         mEmail = findViewById( R.id.tv_email );
-        mEmail.setText( email);
+        mEmail.setText( email );
         mProfilePhoto = findViewById( R.id.image_photo );
         mEditName = findViewById( R.id.et_editName );
         mEditEmail = findViewById( R.id.et_editEmail );
         mEditPassWord = findViewById( R.id.et_editPassword );
-        String img = userId.get( UserPrefUtils.IMAGEPATH);
-        System.out.println( "img"+ img );
-        Glide.with(getApplicationContext())
-                .load(img)
+        String img = userId.get( UserPrefUtils.IMAGEPATH );
+        System.out.println( "img" + img );
+        Glide.with( getApplicationContext() )
+                .load( img )
                 .centerCrop()
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.placeholder)
-                .into(mProfilePhoto);
+                .placeholder( R.drawable.placeholder )
+                .error( R.drawable.placeholder )
+                .into( mProfilePhoto );
 
         mProfilePhoto.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -112,6 +114,7 @@ public class EditAccountActivity extends AppCompatActivity {
             }
         } );
     }
+
     private void accountUpadte() {
         mEditName.setError( null );
         String userName = mEditName.getText().toString();
@@ -139,43 +142,48 @@ public class EditAccountActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
+
             HashMap<String, String> useId = session.getUserDetails();
             String uid = useId.get( UserPrefUtils.ID );
-            File file = new File( picturePath );
-            RequestBody requestFile = RequestBody.create( MediaType.parse( "multipart/form-data" ), file );
-            MultipartBody.Part body = MultipartBody.Part.createFormData( "image", file.getName(), requestFile );
+            if (picturePath == null || picturePath.equals( "" )) {
+                Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
+                return;
+            } else {
+                File file = new File( picturePath );
+                RequestBody requestFile = RequestBody.create( MediaType.parse( "multipart/form-data" ), file );
+                RequestBody id = RequestBody.create( MediaType.parse( "multipart/form-data" ), uid );
+                RequestBody name = RequestBody.create( MediaType.parse( "multipart/form-data" ), userName );
+                RequestBody mail = RequestBody.create( MediaType.parse( "multipart/form-data" ), accountEmail );
+                RequestBody pass = RequestBody.create( MediaType.parse( "multipart/form-data" ), password );
+                RequestBody path = RequestBody.create( MediaType.parse( "multipart/form-data" ), picturePath );
+                MultipartBody.Part body = MultipartBody.Part.createFormData( "image", file.getName(), requestFile );
 
-            RequestBody id = RequestBody.create( MediaType.parse( "multipart/form-data" ), uid );
-            RequestBody name = RequestBody.create( MediaType.parse( "multipart/form-data" ), userName );
-            RequestBody mail = RequestBody.create( MediaType.parse( "multipart/form-data" ), accountEmail );
-            RequestBody pass = RequestBody.create( MediaType.parse( "multipart/form-data" ), password );
-            RequestBody path = RequestBody.create( MediaType.parse( "multipart/form-data" ), picturePath );
 
-            Call<ResponseBody> call = ANApplications.getANApi().profileUpdate( id, name, mail, pass, path, body );
-            call.enqueue( new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            System.out.println( "Server Response:1 " + response.body().string() );
-                            Intent i = new Intent( getApplicationContext(),SettingsActivity.class);
-                            Toast.makeText(getApplicationContext(),"Account has been successfully Updated", Toast.LENGTH_SHORT).show();
-                            startActivity( i );
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                Call<ResponseBody> call = ANApplications.getANApi().profileUpdate( id, name, mail, pass, path, body );
+                call.enqueue( new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                System.out.println( "Server Response:1 " + response.body().string() );
+                                Intent i = new Intent( getApplicationContext(), SettingsActivity.class );
+                                Toast.makeText( getApplicationContext(), "Account has been successfully Updated", Toast.LENGTH_SHORT ).show();
+                                startActivity( i );
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            System.out.println( "Server Response:2 " + response.errorBody() );
                         }
-                    } else {
-                        System.out.println( "Server Response:2 " + response.errorBody() );
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    System.out.println( "Server Response:3 " + t.getMessage() );
-                }
-            } );
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        System.out.println( "Server Response:3 " + t.getMessage() );
+                    }
+                } );
+            }
         }
-
 
     }
 

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="example.javatpoint.com.optionmenu.MainActivity">
 
     <item
         android:id="@+id/editCommentTask"
-        android:title="Edit"/>
+        android:title="Edit"
+        app:showAsAction="always" />
     <item
         android:id="@+id/deleteCommentTask"
-        android:title="Delete"/>
+        android:title="Delete"
+        app:showAsAction="always" />
 
 </menu>

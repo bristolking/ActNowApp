@@ -41,10 +41,10 @@ import retrofit2.Response;
 
 
 public class AdvancedSearchActivity extends AppCompatActivity {
-     Context context;
+    Context context;
     View mProgressView, mContentLayout;
     UserPrefUtils session;
-    TextView mDateAdvanced,mProjectAdvanced,mAdvancedIndividuals;
+    TextView mDateAdvanced, mProjectAdvanced, mAdvancedIndividuals;
     private int mYear, mMonth, mDay;
 
 
@@ -59,31 +59,22 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        session = new UserPrefUtils(getApplicationContext());
+        session = new UserPrefUtils( getApplicationContext() );
         setContentView( R.layout.activity_adanced_search );
-       /* Toolbar toolbar = (Toolbar) findViewById(R.id.advnced_toolbar);
-        toolbar.setTitle("QUICK FIND");
-        toolbar.setNavigationIcon(R.drawable.ic_back);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        } );*/
-       advancedSearch();
+        advancedSearch();
         initializeViews();
 
     }
+
     private void advancedSearch() {
-        ImageView mImgBackSearchAdvanced =(ImageView)findViewById( R.id.img_backAdvnaced);
+        ImageView mImgBackSearchAdvanced = (ImageView) findViewById( R.id.img_backAdvnaced );
         mImgBackSearchAdvanced.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         } );
-        EditText  mAdvancedSearchEditText =(EditText)findViewById( R.id.edit_advncedSearch);
+        EditText mAdvancedSearchEditText = (EditText) findViewById( R.id.edit_advncedSearch );
        /* mAdvancedSearchEditText.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,8 +94,8 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
     private void initializeViews() {
 
-        mProgressView = findViewById(R.id.progress_bar);
-        mContentLayout = findViewById(R.id.content_layout);
+        mProgressView = findViewById( R.id.progress_bar );
+        mContentLayout = findViewById( R.id.content_layout );
         mProjectDialog = new MultiSelectDialog();
         projectListCheckBox = new ArrayList<>();
         projectListCheckBox.add( 0 );
@@ -112,9 +103,9 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
         mIndividuvalDialog = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
+        individualCheckBox.add( 0 );
         requestIndividualDynamicContent();
-        mDateAdvanced = (TextView)findViewById( R.id.tv_dateAdvanced);
+        mDateAdvanced = (TextView) findViewById( R.id.tv_dateAdvanced );
         mDateAdvanced.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,35 +117,35 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                       // mDateReminderTextView.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
+                        // mDateReminderTextView.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
 
                     }
                 }, mYear, mMonth, mDay );
                 datePickerDialog.show();
             }
         } );
-        mProjectAdvanced = (TextView)findViewById( R.id.tv_projectAdvanced);
+        mProjectAdvanced = (TextView) findViewById( R.id.tv_projectAdvanced );
         mProjectAdvanced.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mProjectDialog.show( getSupportFragmentManager(), "mProjectDialog" );
-               // Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
 
             }
         } );
-        mAdvancedIndividuals = (TextView)findViewById( R.id.tv_individualsAdvanced);
+        mAdvancedIndividuals = (TextView) findViewById( R.id.tv_individualsAdvanced );
         mAdvancedIndividuals.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
 
             }
         } );
 
     }
+
     private void requestDynamicProjectList() {
-        HashMap<String,String> userId = session.getUserDetails();
-        String id= userId.get( UserPrefUtils.ID);
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse( id );
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
@@ -184,7 +175,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             for (int i = 0; project_records.size() > i; i++) {
                 ProjectListResponseRecords projectListResponseRecords = project_records.get( i );
                 ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
-                projectListResponseRecords1.setProject_code((projectListResponseRecords.getProject_code()));
+                projectListResponseRecords1.setProject_code( (projectListResponseRecords.getProject_code()) );
                 listOfProjectNames.add( new MultiSelectModel( Integer.parseInt( projectListResponseRecords.getProject_id() ), projectListResponseRecords.getName() ) );
             }
             mProjectDialog = new MultiSelectDialog()
@@ -200,7 +191,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                         @Override
                         public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
                             for (int i = 0; i < selectedIds.size(); i++) {
-                               // mProjectCheckBox.setText( dataString );
+                                // mProjectCheckBox.setText( dataString );
                                 //mProjectCheckBox.setText(projectcode);
 
                             }
@@ -215,69 +206,70 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         }
 
     }
+
     private void requestIndividualDynamicContent() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
+        String id = userId.get( UserPrefUtils.ID );
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
+        call.enqueue( new Callback<CheckBoxResponse>() {
             @Override
             public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setLoadCheckBox( response.body().getOrgn_users_records() );
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
 
             @Override
             public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+                Log.d( "CallBack", " Throwable is " + t );
             }
-        });
+        } );
 
     }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
-                orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
+                orgnUserRecordsCheckBox1.setEmail( orgnUserRecordsCheckBox.getEmail() );
+                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
             }
             mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                    .title( "Individuval" ) //setting title for dialog
+                    .titleSize( 25 )
+                    .positiveText( "Done" )
+                    .negativeText( "Cancel" )
+                    .preSelectIDsList( individualCheckBox )
+                    .setMinSelectionLimit( 0 )
+                    .setMaxSelectionLimit( listOfIndividuval.size() )
+                    .multiSelectList( listOfIndividuval ) // the multi select model list with ids and name
+                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
                         @Override
                         public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
                             for (int i = 0; i < selectedIds.size(); i++) {
                                 //mUserReminder.setText(dataString);
                             }
-                            individuvalArray = new JSONArray(selectedIds);
+                            individuvalArray = new JSONArray( selectedIds );
                         }
 
                         @Override
                         public void onCancel() {
-                            Log.d("TAG", "Dialog cancelled");
+                            Log.d( "TAG", "Dialog cancelled" );
                         }
-                    });
+                    } );
         }
     }
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_menu, menu);
+        getMenuInflater().inflate( R.menu.search_menu, menu );
         return true;
     }
 

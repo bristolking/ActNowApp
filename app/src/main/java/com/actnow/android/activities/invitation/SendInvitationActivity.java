@@ -3,10 +3,8 @@ package com.actnow.android.activities.invitation;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,16 +27,15 @@ import com.actnow.android.adapter.SendInvitationAdapter;
 
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
-import com.actnow.android.sdk.responses.UserSendInvitations;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
 import org.json.JSONArray;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -123,7 +120,7 @@ public class SendInvitationActivity extends AppCompatActivity {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View view) {
-                //mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
             }
         } );
         mTextShareIndividual = (TextView) findViewById( R.id.tv_allIndividuals );
@@ -157,36 +154,37 @@ public class SendInvitationActivity extends AppCompatActivity {
         } );
 
     }
-
-
     private void sendInvitationCall() {
-        String invite_emails = editText.getText().toString();
+        //String invite_emails = editText.getText().toString();
         //String invite_emails = String.valueOf( individuvalArray );
-        Call<UserSendInvitations> userSendInvitationsCall = ANApplications.getANApi().cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code, invite_emails );
+        String invite_emails = editText.getText().toString();
+        /*  try {
+            individuvalArray = new JSONArray( invite_emails );
+            System.out.println( "individuvalArray"+ individuvalArray );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
+
+        Call<ResponseBody> userSendInvitationsCall = ANApplications.getANApi().cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code,invite_emails );
         System.out.println( "severReponse" + id + orncode + sendInvitaionprojectCode + task_code + invite_emails );
-        userSendInvitationsCall.enqueue( new Callback<UserSendInvitations>() {
+        userSendInvitationsCall.enqueue( new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<UserSendInvitations> call, Response<UserSendInvitations> response) {
-                if (response.isSuccessful()) {
-                    System.out.println( "severReponse1" + response.raw() );
-                    if (response.body().getSuccess().equals( "true" )) {
-                        System.out.println( "severReponse2" + response.body().getSuccess() );
-                        Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
-                        startActivity( i );
-                        finish();
-
-                    } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-
-                    }
-                } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println( "severReponse5" + response.raw() );
+                if (response.isSuccessful()){
+                try {
+                    System.out.println("Server Response:1 "+response.body().string());
+                }catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }else {
+                    System.out.println( "Server Response:2 " + response.errorBody() );
+                }
+
             }
 
             @Override
-            public void onFailure(Call<UserSendInvitations> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d( "CALLBACk", "THORBALE" + t );
 
 
@@ -260,18 +258,18 @@ public class SendInvitationActivity extends AppCompatActivity {
                  mTvName = findViewById(R.id.textView);
                  mTvEmail = findViewById(R.id.textView2);
                  final String textEmail = mTvEmail.getText().toString();
-                view1.setOnClickListener( new View.OnClickListener() {
+                 view1.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Call<UserSendInvitations> userSendInvitationsCall = ANApplications.getANApi().
+                        Call<ResponseBody> userSendInvitationsCall = ANApplications.getANApi().
                                 cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code, textEmail );
                         System.out.println( "severReponse" + id + orncode + sendInvitaionprojectCode + task_code + textEmail );
-                        userSendInvitationsCall.enqueue( new Callback<UserSendInvitations>() {
+                        userSendInvitationsCall.enqueue( new Callback<ResponseBody>() {
                             @Override
-                            public void onResponse(Call<UserSendInvitations> call, Response<UserSendInvitations> response) {
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 if (response.isSuccessful()) {
                                     System.out.println( "severReponse1" + response.raw() );
-                                    if (response.body().getSuccess().equals( "true" )) {
+                                  /*  if (response.body().getSuccess().equals( "true" )) {
                                         System.out.println( "severReponse2" + response.body().getSuccess() );
                                         Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
                                         startActivity( i );
@@ -280,7 +278,7 @@ public class SendInvitationActivity extends AppCompatActivity {
                                     } else {
                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
 
-                                    }
+                                    }*/
                                 } else {
                                     AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
 
@@ -288,7 +286,7 @@ public class SendInvitationActivity extends AppCompatActivity {
                             }
 
                             @Override
-                            public void onFailure(Call<UserSendInvitations> call, Throwable t) {
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
                                 Log.d( "CALLBACk", "THORBALE" + t );
 
 
@@ -388,7 +386,7 @@ public class SendInvitationActivity extends AppCompatActivity {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
                 orgnUserRecordsCheckBox1.setEmail( orgnUserRecordsCheckBox.getEmail() );
-                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getEmail()), orgnUserRecordsCheckBox.getEmail()));
+                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getEmail()));
             }
             mIndividuvalDialog = new MultiSelectDialog()
                     .title( "Individuval" ) //setting title for dialog
@@ -406,7 +404,7 @@ public class SendInvitationActivity extends AppCompatActivity {
                                 //mTextShareIndividual.setText( dataString );
                                 editText.setText(dataString);
                             }
-                            individuvalArray = new JSONArray( selectedIds );
+                            //individuvalArray = new JSONArray( selectedIds );
                         }
 
                         @Override

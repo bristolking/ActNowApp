@@ -1,21 +1,30 @@
 package com.actnow.android.activities;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,18 +41,22 @@ import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
+import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.view.Gravity.NO_GRAVITY;
 
 public class TimeLineActivity extends AppCompatActivity {
     final Context context = this;
@@ -66,6 +79,8 @@ public class TimeLineActivity extends AppCompatActivity {
     Button mButtonAdavancedSearch;
     ImageView mImageBulbTask;
 
+    private int mYear, mMonth, mDay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,56 +99,65 @@ public class TimeLineActivity extends AppCompatActivity {
         requestDynamicContent();
         requestDynamicProjectList();
     }
-
     private void header() {
-        ImageView imgeBack = (ImageView) findViewById(R.id.image_backsetting);
+        ImageView imgeBack = (ImageView) findViewById(R.id.image_backTimeLine);
         imgeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        TextView tv_title = (TextView) findViewById(R.id.txt_titlesetting);
+        TextView tv_title = (TextView) findViewById(R.id.txt_titlesTimeLine);
         tv_title.setText("Time Line");
         ImageView mImgeProjectFilter = (ImageView) findViewById(R.id.img_filterProject);
         mImgeProjectFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getApplicationContext(),"slected by filter project",Toast.LENGTH_LONG).show();
                 mProjectDialogtime.show(getSupportFragmentManager(), "mProjectDialog");
-
             }
         });
+        ImageView imgCalnder =(ImageView)findViewById(R.id.img_calenderTimeLine);
+        imgCalnder.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get( Calendar.YEAR );
+                mMonth = c.get( Calendar.MONTH );
+                mDay = c.get( Calendar.DAY_OF_MONTH );
+                DatePickerDialog datePickerDialog = new DatePickerDialog( TimeLineActivity.this, new DatePickerDialog.OnDateSetListener() {
 
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        // mDateReminderTextView.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
+
+                    }
+                }, mYear, mMonth, mDay );
+                datePickerDialog.show();
+
+            }
+        } );
 
         ImageView imgeMenuEvent = (ImageView) findViewById(R.id.img_byEvent);
         imgeMenuEvent.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
             @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(true);
-                dialog.setContentView(R.layout.filterbyeventsandcollberator);
-                Window window = dialog.getWindow();
-                WindowManager.LayoutParams wlp = window.getAttributes();
-                wlp.gravity = Gravity.TOP | Gravity.RIGHT;
-                wlp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-                wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-                wlp.x = 1; // The new position of the X coordinates
-                wlp.y = 1; // The new position of the Y coordinates
-                wlp.width = 500; // Width
-                window.setAttributes(wlp);
-                TextView mCollaberator = (TextView) dialog.findViewById(R.id.tv_collaborater);
-                mCollaberator.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mIndividuvalDialogtime.show(getSupportFragmentManager(), "mIndividuvalDialog");
-                    }
-                });
-                TextView mEvent = (TextView) dialog.findViewById(R.id.tv_byevent);
-                mEvent.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            public void onClick(View view) {
+                showPopupTime( view );
+            }
+        });
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
+    private void showPopupTime(View view) {
+        PopupMenu popupMenu = new PopupMenu( this,view, Gravity.RIGHT|NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate( R.menu.menu_time_line ,popupMenu.getMenu());
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.by_eventtype :
                         listItems = getResources().getStringArray(R.array.eventtype);
                         checkedItems = new boolean[listItems.length];
                         AlertDialog.Builder mBuilder = new AlertDialog.Builder(TimeLineActivity.this);
@@ -173,13 +197,22 @@ public class TimeLineActivity extends AppCompatActivity {
                         });
                         AlertDialog mDialog = mBuilder.create();
                         mDialog.show();
-                    }
-                });
-                dialog.show();
+                        return  true;
+                    case R.id.by_collaborater:
+                        mIndividuvalDialogtime.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                        //  Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Work in progress!", Snackbar.LENGTH_SHORT ).show();
+
+                        return  true;
+                    default:
+                        return  false;
+                }
             }
-        });
+        } );
+
 
     }
+
     private void initializeViews() {
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);

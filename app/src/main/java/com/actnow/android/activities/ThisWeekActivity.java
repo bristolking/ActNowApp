@@ -31,6 +31,7 @@ import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
+import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
@@ -179,14 +180,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                                 startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
-                                HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get(UserPrefUtils.ID);
-                                String name = userId.get(UserPrefUtils.NAME);
-                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
-                                iprofile.putExtra("id", id);
-                                iprofile.putExtra("name", name);
-                                iprofile.putExtra("email", accountEmail);
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:

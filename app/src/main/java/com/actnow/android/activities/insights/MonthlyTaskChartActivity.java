@@ -27,6 +27,7 @@ import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
@@ -164,14 +165,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
                                 startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
-                                HashMap<String, String> userId = session.getUserDetails();
-                                String id = userId.get(UserPrefUtils.ID);
-                                String name = userId.get(UserPrefUtils.NAME);
-                                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                                Intent iprofile = new Intent(getApplicationContext(), EditAccountActivity.class);
-                                iprofile.putExtra("id", id);
-                                iprofile.putExtra("name", name);
-                                iprofile.putExtra("email", accountEmail);
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
                                 startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
@@ -213,7 +207,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_chart);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, arrayItems);
-        //arrayAdapter.setDropDownViewResource(R.layout.spinner_text_color);
+        //arrayAdapter.setDropDownViewResource(R.remider_footer_layout.spinner_text_color);
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

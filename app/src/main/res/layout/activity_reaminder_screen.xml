@@ -5,52 +5,72 @@
     android:id="@+id/drawer_reaminderList"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="right"
     android:background="@color/colorWhite"
-    tools:context=".activities.ReaminderScreenActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.ReaminderScreenActivity"
+    tools:openDrawer="right">
+
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="gone"/>
+            android:layout_centerVertical="true" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_layout"
             android:layout_marginTop="60dp"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Projects Names"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary"
-                    android:visibility="gone"/>
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/reminder_Tasklist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
+
         <include layout="@layout/app_header_two" />
-        <include layout="@layout/layout" />
+        <include layout="@layout/remider_footer_layout" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="40dp">
+            <TextView
+                android:id="@+id/tv_dateandTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            <TextView
+                android:id="@+id/tv_reminderUsers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+        </LinearLayout>
     </RelativeLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

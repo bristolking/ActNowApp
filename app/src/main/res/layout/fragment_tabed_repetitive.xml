@@ -21,7 +21,7 @@
 
         </LinearLayout>
 
-     <!--   <include layout="@layout/repet"/>-->
+     <!--   <include remider_footer_layout="@remider_footer_layout/repet"/>-->
 
         <LinearLayout
             android:layout_width="match_parent"

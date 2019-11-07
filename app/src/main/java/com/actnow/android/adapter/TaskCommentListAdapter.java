@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.TaskCommentListResponse;
 import com.bumptech.glide.Glide;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +37,39 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
         viewHolder.mTaskComment.setText( taskCommentListResponse.getComment());
         viewHolder.mTaskCommentDate.setText( taskCommentListResponse.getCreated_date());
         viewHolder.mTaskCommentUserName.setText( taskCommentListResponse.getUser_name());
+        viewHolder.mCommentId.setText( taskCommentListResponse.getComment_id());
         String imgUrl = taskCommentListResponse.getFiles();
-        System.out.println("image" + imgUrl);
-        Glide.with(context).load(imgUrl)
-                .centerCrop()
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_wrong_sign_red)
-                .into(viewHolder.imgComment);
+        if (imgUrl != null ){
+            if (!imgUrl.isEmpty()) {
+                if(imgUrl.contains(",")) {
+                    String str = imgUrl.replaceAll( "\\[", "" ).replaceAll( "\\]", "" );
+                    String[] oneImage = str.split( "," );
+                    oneImage[0] = oneImage[0].replaceAll( "^\"|\"$", "" );
+                    System.out.println( "image" + oneImage[0] );
+                    Glide.with( context ).load( oneImage[0] )
+                            .centerCrop()
+                            .override( 300, 200 )
+                            .placeholder( R.drawable.ic_launcher_background )
+                            .error( R.drawable.ic_wrong_sign_red )
+                            .into( viewHolder.imgComment );
+                }else {
+                    System.out.println( "imgUrl" + imgUrl );
+
+                    if (imgUrl.contains("[]") || imgUrl.contains( "null" )) {
+                    } else {
+                        String str = imgUrl.replaceAll( "\\[", "" ).replaceAll( "\\]", "" );
+                        str = str.replaceAll( "^\"|\"$", "" );
+                        Glide.with( context ).load( str )
+                                .centerCrop()
+                                .override( 300, 200 )
+                                .placeholder( R.drawable.ic_launcher_background )
+                                .error( R.drawable.ic_wrong_sign_red )
+                                .into( viewHolder.imgComment );
+                    }
+
+                }
+            }
+        }
 
     }
 
@@ -55,8 +79,7 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTaskComment, mTaskCommentDate, mTaskCommentUserName;
-        TextView mTaskProjectCode;
+        TextView mTaskComment, mTaskCommentDate, mTaskCommentUserName,mCommentId;
         ImageView imgComment;
         public ViewHolder(@NonNull View itemView) {
             super( itemView );
@@ -64,6 +87,7 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
             imgComment = (ImageView) itemView.findViewById( R.id.img_attachamentComment );
             mTaskCommentUserName = (TextView) itemView.findViewById( R.id.tv_userNameComment );
             mTaskCommentDate = (TextView) itemView.findViewById( R.id.tv_commentDate );
+            mCommentId =(TextView) itemView.findViewById(R.id.tv_commentId);
         }
     }
 }
