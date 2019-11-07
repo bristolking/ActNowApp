@@ -442,7 +442,6 @@ public class CommentsActivity extends AppCompatActivity {
                 projectCommentRecordsList.setUser_name( projectuserName);
                 String strImage = imgeFiles.replace("\\", "");
                 projectCommentRecordsList.setFiles(strImage);
-                System.out.println( "strImage" + strImage );
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -678,6 +677,7 @@ public class CommentsActivity extends AppCompatActivity {
                 String strImage = imge.replace("\\", "");
                 taskCommentListResponse.setFiles(strImage);
                 //System.out.println("myUri"+ strImage);
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
