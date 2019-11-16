@@ -59,6 +59,7 @@ import org.json.JSONArray;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -399,7 +400,6 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
                             }
                             individuvalArray = new JSONArray( selectedIds );
                         }
-
                         @Override
                         public void onCancel() {
                             Log.d( "TAG", "Dialog cancelled" );
@@ -555,8 +555,9 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
     private void addTheReminder() {
         String datetime = mdateandTime.getText().toString();
         mdateandTime.setError( null );
-        String individuvalName = String.valueOf( String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
         individuvalArray.remove( 0 );
+        String individuvalName =  String.valueOf( individuvalArray);
+       // System.out.println( "indviname" + individuvalName );
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty( datetime )) {
@@ -570,19 +571,19 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
             HashMap<String, String> userId = session.getUserDetails();
             String id = userId.get( UserPrefUtils.ID );
             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-            addtheremdinerList( id, task_code, datetime, individuvalName, orgn_code );
+            addtheremdinerList( id, task_code, datetime, String.valueOf( individuvalArray).replace( "[", "" ).replace( "]", "" ), orgn_code );
         }
     }
 
     private void addtheremdinerList(String a, String b, String c, String d, String e) {
         Call<ReminderAdd> call = ANApplications.getANApi().checTheReminderAdd( a, b, c, d, e );
-        System.out.println( "reminderFelids" + a + b + c + d + e );
+        System.out.println( "reminderFelids" + a + b + c + String.valueOf( individuvalArray).replace( "[", "" ).replace( "]", "" ) + e );
         call.enqueue( new Callback<ReminderAdd>() {
             @Override
             public void onResponse(Call<ReminderAdd> call, Response<ReminderAdd> response) {
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    System.out.println( "reminderReponse" + response.raw() );
+                    System.out.println("reminderReponse" + response.raw());
                     if (response.body().getSuccess().equals( "true" )) {
                         Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
                         i.putExtra( "TaskCode", task_code );

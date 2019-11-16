@@ -84,15 +84,15 @@ public class SignUpActivity extends AppCompatActivity {
         }else{
               if (mDisclaimer.isChecked()) {
                   AndroidUtils.showProgress(true,mProgressView,mContentLayout);
-                  requestSignUp(name,email,mobile,password);
+                  requestSignUp(name,email,"provider_id","provider_name",mobile,password);
               } else {
                 Snackbar.make(mContentLayout, "Accept Terms of Service & Privacy Policy", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
-    private void requestSignUp(String userName,String userEmail,String mobileNumber,String userPassword ){
+    private void requestSignUp(String userName,String userEmail,String provider_id,String provider_name,String mobileNumber,String userPassword ){
         System.out.println( "logindata"+ userEmail+userName+ mobileNumber+userPassword);
-        Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,mobileNumber,userPassword);
+        Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,provider_id,provider_name,mobileNumber,userPassword);
         call.enqueue(new Callback<SignUpResponse>() {
             @Override
             public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {

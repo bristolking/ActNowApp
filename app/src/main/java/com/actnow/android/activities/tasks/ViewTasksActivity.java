@@ -608,7 +608,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty(due_date)) {
-            mDueDateTask.setError( getString( R.string.error_required ) );
+            mDueDateTask.setError(getString( R.string.error_required ) );
             focusView = mDueDateTask;
             cancel = true;
 

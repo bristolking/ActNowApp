@@ -116,7 +116,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     TextView mCommentMeassgeTask;
     TextView mCommentId;
-    ImageView  imgComment;
+    ImageView imgComment;
 
     TextView mCommentMeassgeProject;
     TextView mCommentProjectId;
@@ -132,13 +132,14 @@ public class CommentsActivity extends AppCompatActivity {
     private Uri fileUri;
     private String mediaPath;
     private String mImageFileLocation = " ";
-    public static final String IMAGE_DIRECTORY_NAME = "Android File Upload";
-    String url = "http://actnow.cancri.biz/".replaceAll("(?<!https:)\\/\\/", "/");
 
 
     private String postPath;
     EditText commentUpdate;
-
+    View view1;
+    String comment;
+    String strImage;
+    String type = "ActNowApp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +159,7 @@ public class CommentsActivity extends AppCompatActivity {
         initializeViews();
         footer();
     }
+
     private void appHeaderTwo() {
         ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
         imgeBack.setOnClickListener( new View.OnClickListener() {
@@ -200,16 +202,16 @@ public class CommentsActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get(UserPrefUtils.EMAIL);
+                String email = userId.get( UserPrefUtils.EMAIL );
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH);
-                System.out.println( "img"+ img );
-                Glide.with(getApplicationContext())
-                        .load(img)
+                String img = userId.get( UserPrefUtils.IMAGEPATH );
+                System.out.println( "img" + img );
+                Glide.with( getApplicationContext() )
+                        .load( img )
                         .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.placeholder)
-                        .into(mImageProfile);
+                        .placeholder( R.drawable.placeholder )
+                        .error( R.drawable.placeholder )
+                        .into( mImageProfile );
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -219,59 +221,59 @@ public class CommentsActivity extends AppCompatActivity {
                 } );
                 TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
                 mTextName.setText( taskOwnerName );
-                TextView mTextEmail =(TextView)findViewById( R.id.tv_emailProfile);
+                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
                 mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
-                                startActivity(iToday);
+                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                startActivity( iToday );
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                                startActivity(iIdea);
+                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                                startActivity( iIdea );
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
+                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
+                                startActivity( ithisweek );
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent(getApplicationContext(), TaskAddListActivity.class);
-                                startActivity(iTaskfilter);
+                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
+                                startActivity( iTaskfilter );
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class);
-                                startActivity( iProjects);
+                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+                                startActivity( iProjects );
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-                                startActivity(iIndividuals);
+                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+                                startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-                                startActivity(iInsights);
+                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
-                                startActivity(iTimeLine);
+                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
+                                startActivity( iTimeLine );
                                 break;
                             case R.id.nav_profile:
-                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
-                                startActivity(iprofile);
+                                Intent iprofile = new Intent( getApplicationContext(), AccountSettingActivity.class );
+                                startActivity( iprofile );
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
-                                startActivity(ipremium);
+                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
+                                startActivity( ipremium );
                                 break;
-                            case  R.id.nav_logout:
+                            case R.id.nav_logout:
                                 session.logoutUser();
                                 break;
                         }
                         return false;
                     }
-                });
+                } );
                 final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_comments );
                 if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
@@ -296,7 +298,7 @@ public class CommentsActivity extends AppCompatActivity {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
         mEditAddComment = (EditText) findViewById( R.id.et_commentEdit );
-        mImgCommentAdd = (ImageView)findViewById( R.id.img_commnetAdd );
+        mImgCommentAdd = (ImageView) findViewById( R.id.img_commnetAdd );
         mCommentRecylcerView = (RecyclerView) findViewById( R.id.rv_recyclerViewComment );
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mCommentRecylcerView.setLayoutManager( mLayoutManager );
@@ -308,57 +310,59 @@ public class CommentsActivity extends AppCompatActivity {
         taskCommentListReponse();
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     private void showPopupProject(View view) {
-        PopupMenu popupMenu = new PopupMenu( this,view, Gravity.RIGHT|NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
+        PopupMenu popupMenu = new PopupMenu( this, view, Gravity.RIGHT | NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0 );
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate( R.menu.task_comment_menu ,popupMenu.getMenu());
+        inflater.inflate( R.menu.task_comment_menu, popupMenu.getMenu() );
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.editCommentTask :
-                        final String userProjectComment= mCommentMeassgeProject.getText().toString();
-                        System.out.println( "commentUpdate"  +  commentUpdate );
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CommentsActivity.this);
-                        builder.setTitle("UPDATE COMMENT");
-                        final EditText commentProjetUpdate = new EditText(CommentsActivity.this);
+                switch (item.getItemId()) {
+                    case R.id.editCommentTask:
+                        final String userProjectComment = mCommentMeassgeProject.getText().toString();
+                        System.out.println( "commentUpdate" + commentUpdate );
+                        AlertDialog.Builder builder = new AlertDialog.Builder( CommentsActivity.this );
+                        builder.setTitle( "UPDATE COMMENT" );
+                        final EditText commentProjetUpdate = new EditText( CommentsActivity.this );
                         final String updateProjectComment = commentProjetUpdate.getText().toString();
-                        commentProjetUpdate.setText(userProjectComment );
+                        commentProjetUpdate.setText( userProjectComment );
                         mCommentMeassgeProject.setText( updateProjectComment );
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
-                        commentProjetUpdate.setLayoutParams(lp);
+                                LinearLayout.LayoutParams.WRAP_CONTENT );
+                        commentProjetUpdate.setLayoutParams( lp );
                         builder.setView( commentProjetUpdate );
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                HashMap<String,String> userId = session.getUserDetails();
-                                String id= userId.get( UserPrefUtils.ID);
-                                String  orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME);
-                                String comment_id=mCommentProjectId.getText().toString();
+                                HashMap<String, String> userId = session.getUserDetails();
+                                String id = userId.get( UserPrefUtils.ID );
+                                String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                String comment_id = mCommentProjectId.getText().toString();
                                 String editComment = commentProjetUpdate.getText().toString();
-                                Call<TaskComplete> taskEditCall = ANApplications.getANApi().checkTheTaskEdit(id,comment_id,orgn_code,editComment,task_code,project_code);
-                                System.out.println( "editTaskFelis" + id + comment_id + orgn_code + editComment +task_code + project_code);
+                                Call<TaskComplete> taskEditCall = ANApplications.getANApi().checkTheTaskEdit( id, comment_id, orgn_code, editComment, task_code, project_code );
+                                System.out.println( "editTaskFelis" + id + comment_id + orgn_code + editComment + task_code + project_code );
                                 taskEditCall.enqueue( new Callback<TaskComplete>() {
                                     @Override
                                     public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                        if (response.isSuccessful()){
-                                            System.out.println( "editReponse"+response.raw());
-                                            if (response.body().getSuccess().equals("true")){
+                                        if (response.isSuccessful()) {
+                                            System.out.println( "editReponse" + response.raw() );
+                                            if (response.body().getSuccess().equals( "true" )) {
                                                 Snackbar.make( mContentLayout, "Comment edited successfully", Snackbar.LENGTH_SHORT ).show();
-                                                Intent i= new Intent( getApplicationContext(),CommentsActivity.class);
-                                                i.putExtra("projectcode",project_code);
-                                                startActivity(i);
-                                            }else {
+                                                Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                                i.putExtra( "projectcode", project_code );
+                                                startActivity( i );
+                                            } else {
                                                 Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                             }
-                                        }else {
-                                            AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                        } else {
+                                            AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(Call<TaskComplete> call, Throwable t) {
                                         Log.d( "CallBack", " Throwable is " + t );
@@ -367,7 +371,7 @@ public class CommentsActivity extends AppCompatActivity {
                                 } );
 
                             }
-                        });
+                        } );
                         builder.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -375,31 +379,65 @@ public class CommentsActivity extends AppCompatActivity {
                             }
                         } );
                         builder.show();
-                        return  true;
-                    case R.id.deleteCommentTask :
-                      //  Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
-                        Snackbar.make( mContentLayout, "Work in progress!", Snackbar.LENGTH_SHORT ).show();
+                        return true;
+                    case R.id.deleteCommentTask:
+                        type =("text");
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                        String comment_id = mCommentProjectId.getText().toString();
+                        Call<TaskComplete> deleteApiCall = ANApplications.getANApi().checkTheTaskDelete( id, orgn_code, comment_id, type );
+                        System.out.println( "commentValues" + id + orgn_code + comment_id + comment );
+                        deleteApiCall.enqueue( new Callback<TaskComplete>() {
+                            @Override
+                            public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                System.out.println( "commentDelete" + response.raw() );
+                                if (response.isSuccessful()) {
+                                    System.out.println( "deleteComment" + response.raw());
+                                    if (response.body().getSuccess().equals( "true")){
+                                        Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                        i.putExtra( "projectcode", project_code );
+                                        startActivity( i );
+                                        //Snackbar.make( mContentLayout, "Comment deleted successfully", Snackbar.LENGTH_SHORT ).show();
+                                        Snackbar.make( mContentLayout, "Comment deleted successfully", Snackbar.LENGTH_SHORT ).show();
 
-                        return  true;
+                                        //Toast.makeText( getApplicationContext(), "", Toast.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    }
+                                } else {
+                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+
+                                }
+                            }
+                            @Override
+                            public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                Log.d( "CallBack", " Throwable is " + t );
+
+                            }
+                        } );
+
+                        return true;
                     default:
-                        return  false;
+                        return false;
                 }
             }
         } );
 
 
     }
+
     private void projectCommentListReponse() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-        Call<ResponseBody> projectCommentCall = ANApplications.getANApi().checkProjectCommentList( id,project_code,orgn_code );
+        Call<ResponseBody> projectCommentCall = ANApplications.getANApi().checkProjectCommentList( id, project_code, orgn_code );
         projectCommentCall.enqueue( new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                AndroidUtils.showProgress(false,mProgressView,mContentLayout );
-                if (response.isSuccessful()){
-                    try{
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                if (response.isSuccessful()) {
+                    try {
                         try {
                             JSONObject jsonObject = new JSONObject( response.body().string() );
                             if (jsonObject.getString( "success" ).equals( "true" )) {
@@ -411,7 +449,7 @@ public class CommentsActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -427,44 +465,85 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void setProjectComment(JSONArray projectCommentTask) {
-        for (int i = 0; projectCommentTask.length() > i; i++){
+        for (int i = 0; projectCommentTask.length() > i; i++) {
             ProjectCommentRecordsList projectCommentRecordsList = new ProjectCommentRecordsList();
             try {
                 JSONObject values = projectCommentTask.getJSONObject( i );
                 String comment = values.getString( "comment" );
-                String  commentId = values.getString( "comment_id" );
-                String  dateProject = values.getString( "created_date");
-                String  projectuserName = values.getString( "user_name");
-                String  imgeFiles = values.getString( "files" );
-                projectCommentRecordsList.setComment( comment);
-                projectCommentRecordsList.setComment_id( commentId);
-                projectCommentRecordsList.setCreated_date( dateProject);
-                projectCommentRecordsList.setUser_name( projectuserName);
-                String strImage = imgeFiles.replace("\\", "");
-                projectCommentRecordsList.setFiles(strImage);
+                String commentId = values.getString( "comment_id" );
+                String dateProject = values.getString( "created_date" );
+                String projectuserName = values.getString( "user_name" );
+                String imgeFiles = values.getString( "files" );
+                projectCommentRecordsList.setComment( comment );
+                projectCommentRecordsList.setComment_id( commentId );
+                projectCommentRecordsList.setCreated_date( dateProject );
+                projectCommentRecordsList.setUser_name( projectuserName );
+                String strImage = imgeFiles.replace( "\\", "" );
+                projectCommentRecordsList.setFiles( strImage );
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            projectCommentRecordsListArrayList.add( projectCommentRecordsList);
+            projectCommentRecordsListArrayList.add( projectCommentRecordsList );
         }
-        mCommentRecylcerView.setAdapter( new ProjectCommentListAdapter(projectCommentRecordsListArrayList, R.layout.project_comment_list, getApplicationContext() ) );
+        mCommentRecylcerView.setAdapter( new ProjectCommentListAdapter( projectCommentRecordsListArrayList, R.layout.project_comment_list, getApplicationContext() ) );
         mCommentRecylcerView.addOnItemTouchListener( new CommentsActivity.RecyclerTouchListener( this, mCommentRecylcerView, new ClickListener() {
             @Override
             public void onClick(final View view, int position) {
                 View view1 = (View) view.findViewById( R.id.liner_projectList );
-                ImageView mMenuComment = (ImageView) view.findViewById(R.id.img_menuCommentProject);
+                ImageView mMenuComment = (ImageView) view.findViewById( R.id.img_menuCommentProject );
                 mMenuComment.setOnClickListener( new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View v) {
-                        showPopupProject( view);
+                        showPopupProject( view );
                     }
                 } );
                 TextView mCommentProjectUserName = (TextView) view.findViewById( R.id.tv_projectuserNameComment );
                 TextView mCommenProjecttDate = (TextView) view.findViewById( R.id.tv_projectcommentDate );
                 mCommentMeassgeProject = (TextView) view.findViewById( R.id.tv_projectcommentText );
-                mCommentProjectId= (TextView)view.findViewById( R.id.tv_projectcommentId);
+                mCommentProjectId = (TextView) view.findViewById( R.id.tv_projectcommentId );
+
+                ImageView imgProjectDelete =(ImageView)view.findViewById(R.id.img_attachamentProjectDelete);
+                imgProjectDelete.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        type = (strImage);
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                        String commentId = mCommentId.getText().toString();
+                        Call<TaskComplete> deleteApiCall = ANApplications.getANApi().checkTheTaskDelete( id, orgn_code, commentId,type );
+                        System.out.println( "commentImageValues" + id + orgn_code + commentId + type );
+                        deleteApiCall.enqueue( new Callback<TaskComplete>() {
+                            @Override
+                            public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                //System.out.println( "commentImageDelete" + response.raw() );
+                                if (response.isSuccessful()) {
+                                    //System.out.println( "Imagedelete" + response.raw() );
+                                    if (response.body().getSuccess().equals( "true" )) {
+                                        Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                        i.putExtra( "projectcode", project_code );
+                                        startActivity( i );
+                                        Snackbar.make( mContentLayout, "Image deleted successfully", Snackbar.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    }
+                                } else {
+                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                Log.d( "CallBack", " Throwable is " + t );
+
+                            }
+                        } );
+
+                    }
+                } );
             }
 
             @Override
@@ -527,53 +606,54 @@ public class CommentsActivity extends AppCompatActivity {
 
     /*Task Comment List*/
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void showPopupTask(View view){
-        PopupMenu popupMenu = new PopupMenu( this,view, Gravity.RIGHT|NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
+    public void showPopupTask(View view) {
+        PopupMenu popupMenu = new PopupMenu( this, view, Gravity.RIGHT | NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0 );
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate( R.menu.task_comment_menu ,popupMenu.getMenu());
+        inflater.inflate( R.menu.task_comment_menu, popupMenu.getMenu() );
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.editCommentTask :
-                        final String userComment= mCommentMeassgeTask.getText().toString();
-                        System.out.println( "commentUpdate"  +  commentUpdate );
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CommentsActivity.this);
-                        commentUpdate = new EditText(CommentsActivity.this);
+                switch (item.getItemId()) {
+                    case R.id.editCommentTask:
+                        final String userComment = mCommentMeassgeTask.getText().toString();
+                        System.out.println( "commentUpdate" + commentUpdate );
+                        AlertDialog.Builder builder = new AlertDialog.Builder( CommentsActivity.this );
+                        commentUpdate = new EditText( CommentsActivity.this );
                         String updateComment = commentUpdate.getText().toString();
-                        commentUpdate.setText(userComment );
+                        commentUpdate.setText( userComment );
                         mCommentMeassgeTask.setText( updateComment );
                         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
-                        commentUpdate.setLayoutParams(lp);
+                                LinearLayout.LayoutParams.WRAP_CONTENT );
+                        commentUpdate.setLayoutParams( lp );
                         builder.setView( commentUpdate );
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton( "OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                HashMap<String,String> userId = session.getUserDetails();
-                                String id= userId.get( UserPrefUtils.ID);
-                                String  orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME);
-                                String comment_id=mCommentId.getText().toString();
+                                HashMap<String, String> userId = session.getUserDetails();
+                                String id = userId.get( UserPrefUtils.ID );
+                                String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                String comment_id = mCommentId.getText().toString();
                                 String editComment = commentUpdate.getText().toString();
-                                Call<TaskComplete> taskEditCall = ANApplications.getANApi().checkTheTaskEdit(id,comment_id,orgn_code,editComment,task_code,project_code);
+                                Call<TaskComplete> taskEditCall = ANApplications.getANApi().checkTheTaskEdit( id, comment_id, orgn_code, editComment, task_code, project_code );
                                 taskEditCall.enqueue( new Callback<TaskComplete>() {
                                     @Override
                                     public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                        if (response.isSuccessful()){
-                                            if (response.body().getSuccess().equals("true")){
+                                        if (response.isSuccessful()) {
+                                            if (response.body().getSuccess().equals( "true" )) {
                                                 Snackbar.make( mContentLayout, "Comment edited successfully", Snackbar.LENGTH_SHORT ).show();
-                                                Intent i= new Intent( getApplicationContext(),CommentsActivity.class);
+                                                Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
                                                 i.putExtra( "TaskCode", task_code );
-                                                startActivity(i);
-                                            }else {
+                                                startActivity( i );
+                                            } else {
                                                 Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                             }
-                                        }else {
-                                            AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                        } else {
+                                            AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(Call<TaskComplete> call, Throwable t) {
                                         Log.d( "CallBack", " Throwable is " + t );
@@ -582,7 +662,7 @@ public class CommentsActivity extends AppCompatActivity {
                                 } );
 
                             }
-                        });
+                        } );
                         builder.setNegativeButton( "CANCEL", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -590,32 +670,46 @@ public class CommentsActivity extends AppCompatActivity {
                             }
                         } );
                         builder.show();
-                        return  true;
-                    case R.id.deleteCommentTask :
-                        HashMap<String,String> userId = session.getUserDetails();
-                        String id= userId.get( UserPrefUtils.ID);
-                        String  orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME);
-                        String text  = mCommentMeassgeTask.getText().toString();
-                        Call<TaskComplete> deleteApiCall = ANApplications.getANApi().checkTheTaskDelete( id,orgn_code,text);
-                        System.out.println( "commentValues" +   id +  orgn_code + text);
+                        return true;
+                    case R.id.deleteCommentTask:
+                        type =("text");
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                        String commentId = mCommentId.getText().toString();
+                        String commentMsg = mCommentMeassgeTask.getText().toString();
+                        Call<TaskComplete> deleteApiCall = ANApplications.getANApi().checkTheTaskDelete( id, orgn_code, commentId, type );
+                        System.out.println( "commentValues" + id + orgn_code + commentId + comment );
                         deleteApiCall.enqueue( new Callback<TaskComplete>() {
                             @Override
                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                System.out.println( "commentDelete" + response.raw());
-                                if (response.isSuccessful()){
+                                System.out.println( "commentDelete" + response.raw() );
+                                if (response.isSuccessful()) {
                                     System.out.println( "deleteComment" + response.raw());
+                                    if (response.body().getSuccess().equals( "true")){
+                                        Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                        i.putExtra( "TaskCode", task_code );
+                                        startActivity( i );
+                                        Snackbar.make( mContentLayout, "Comment deleted successfully", Snackbar.LENGTH_SHORT ).show();
+                                        //Toast.makeText( getApplicationContext(), "", Toast.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    }
+                                } else {
+                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+
                                 }
                             }
-
                             @Override
                             public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                Log.d( "CallBack", " Throwable is " + t );
 
                             }
                         } );
 
-                        return  true;
-                        default:
-                            return  false;
+                        return true;
+                    default:
+                        return false;
                 }
             }
         } );
@@ -630,7 +724,7 @@ public class CommentsActivity extends AppCompatActivity {
         callTask.enqueue( new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     try {
                         try {
@@ -655,27 +749,25 @@ public class CommentsActivity extends AppCompatActivity {
 
             }
         } );
-
     }
-
     private void setTaskComment(JSONArray commentTask) {
         for (int i = 0; commentTask.length() > i; i++) {
             TaskCommentListResponse taskCommentListResponse = new TaskCommentListResponse();
             try {
                 JSONObject values = commentTask.getJSONObject( i );
-                String comment = values.getString( "comment" );
+                comment = values.getString( "comment" );
                 String name = values.getString( "user_name" );
                 String date = values.getString( "created_date" );
-                String commentId = values.getString( "comment_id");
+                String commentId = values.getString( "comment_id" );
 
-                String imge =values.getString( "files");
+                String imge = values.getString( "files" );
 
-                taskCommentListResponse.setComment_id(commentId);
+                taskCommentListResponse.setComment_id( commentId );
                 taskCommentListResponse.setComment( comment );
                 taskCommentListResponse.setUser_name( name );
                 taskCommentListResponse.setCreated_date( date );
-                String strImage = imge.replace("\\", "");
-                taskCommentListResponse.setFiles(strImage);
+                 strImage = imge.replace( "\\", "" );
+                taskCommentListResponse.setFiles( strImage );
                 //System.out.println("myUri"+ strImage);
 
 
@@ -684,24 +776,64 @@ public class CommentsActivity extends AppCompatActivity {
             }
             taskCommentListResponseArrayList.add( taskCommentListResponse );
         }
-        mCommentRecylcerView.setAdapter( new TaskCommentListAdapter(taskCommentListResponseArrayList, R.layout.comment_custom_list, getApplicationContext() ) );
+        mCommentRecylcerView.setAdapter( new TaskCommentListAdapter( taskCommentListResponseArrayList, R.layout.comment_custom_list, getApplicationContext() ) );
         mCommentRecylcerView.addOnItemTouchListener( new CommentsActivity.RecyclerTouchListener( this, mCommentRecylcerView, new ClickListener() {
             @Override
             public void onClick(final View view, int position) {
-                View view1 = (View) view.findViewById( R.id.liner_projectList );
-                ImageView mMenuComment = (ImageView) view.findViewById(R.id.img_menuComment);
+                view1 = (View) view.findViewById( R.id.re_imagComment );
+                ImageView mMenuComment = (ImageView) view.findViewById( R.id.img_menuComment );
                 mMenuComment.setOnClickListener( new View.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void onClick(View v) {
-                        showPopupTask( view);
+                        showPopupTask( view );
                     }
                 } );
                 TextView mCommentUserName = (TextView) view.findViewById( R.id.tv_userNameComment );
                 TextView mCommentDate = (TextView) view.findViewById( R.id.tv_commentDate );
                 mCommentMeassgeTask = (TextView) view.findViewById( R.id.tv_commentText );
-                mCommentId= (TextView)view.findViewById( R.id.tv_commentId);
-                imgComment = (ImageView)findViewById( R.id.img_attachamentComment );
+                mCommentId = (TextView) view.findViewById( R.id.tv_commentId );
+                imgComment = (ImageView)view. findViewById( R.id.img_attachamentComment );
+                ImageView imgDelete = (ImageView)view.findViewById(R.id.img_attachamentDelete);
+                imgDelete.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        type = (strImage);
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                        String commentId = mCommentId.getText().toString();
+                        Call<TaskComplete> deleteApiCall = ANApplications.getANApi().checkTheTaskDelete( id, orgn_code, commentId,type );
+                        System.out.println( "commentImageValues" + id + orgn_code + commentId + type );
+                        deleteApiCall.enqueue( new Callback<TaskComplete>() {
+                            @Override
+                            public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                System.out.println( "commentImageDelete" + response.raw() );
+                                if (response.isSuccessful()) {
+                                    System.out.println( "Imagedelete" + response.raw() );
+                                    if (response.body().getSuccess().equals( "true" )) {
+                                        Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                        i.putExtra( "TaskCode", task_code );
+                                        startActivity( i );
+                                        Snackbar.make( mContentLayout, "Image deleted successfully", Snackbar.LENGTH_SHORT ).show();
+                                        //Toast.makeText( getApplicationContext(), "", Toast.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    }
+                                } else {
+                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                Log.d( "CallBack", " Throwable is " + t );
+
+                            }
+                        } );
+                    }
+                } );
 
             }
 
@@ -795,20 +927,20 @@ public class CommentsActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onClick(View v) {
-                Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
+                Toast.makeText( getApplicationContext(), "Work in progress!", Toast.LENGTH_LONG ).show();
                 String comment = mEditAddComment.getText().toString();
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-               if (postPath == null || postPath.equals( "" )) {
-                   Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
+                if (postPath == null || postPath.equals( "" )) {
+                    Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
                     return;
                 } else {
                     File file = new File( postPath );
                     RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
-                    System.out.println( "requsetBody"+ file );
+                    System.out.println( "requsetBody" + file );
                     MultipartBody.Part attachment = MultipartBody.Part.createFormData( "image", "image.jpg", requestBody );
-                    System.out.println( "body"+attachment );
+                    System.out.println( "body" + attachment );
                    /* Call<TaskComplete> taskAddResponseCall = ANApplications.getANApi().checkTheCommentAdd( id, orng_code, comment, task_code, project_code, attachment );
                     System.out.println( "taskAdd" + id + orng_code + comment + task_code + project_code + attachment );
                     taskAddResponseCall.enqueue( new Callback<TaskComplete>() {
@@ -839,22 +971,12 @@ public class CommentsActivity extends AppCompatActivity {
 
     }
 
-   /* @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void addTheComment() {
-        mEditAddComment.setError( null );
 
-
-    }*/
     private void chooseFile() {
         Intent galleryIntent = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
         startActivityForResult( galleryIntent, REQUEST_PICK_PHOTO );
     }
-   /* private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-    }*/
+
     protected void onActivityResult(int requstCode, int resultCode, Intent data) {
         super.onActivityResult( requstCode, resultCode, data );
         if (resultCode == RESULT_OK) {
@@ -886,7 +1008,6 @@ public class CommentsActivity extends AppCompatActivity {
             Toast.makeText( getApplicationContext(), "Sorry, there was on error!", Toast.LENGTH_LONG ).show();
         }
     }
-
 
     public void onBackPressed() {
         super.onBackPressed();

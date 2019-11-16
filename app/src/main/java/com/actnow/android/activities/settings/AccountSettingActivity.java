@@ -89,9 +89,7 @@ public class AccountSettingActivity extends AppCompatActivity {
             @SuppressLint("ResourceType")
             @Override
             public void onResponse(Call<UserDetailsResponse> call, Response<UserDetailsResponse> response) {
-                System.out.println("xxx" + response.raw());
                 if (response.isSuccessful()) {
-                    System.out.println("data" + response.raw());
                     mNameAccount.setText(response.body().getName());
                     mAccountEmail.setText(response.body().getEmail());
                     mEmailUnderAccount.setText(response.body().getEmail());

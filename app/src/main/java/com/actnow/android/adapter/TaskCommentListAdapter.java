@@ -1,8 +1,10 @@
 package com.actnow.android.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,11 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
 
                 }
             }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            viewHolder.mTaskComment.setText( Html.fromHtml( taskCommentListResponse.getComment(), Html.FROM_HTML_MODE_COMPACT ) );
+        } else {
+            viewHolder.mTaskComment.setText( Html.fromHtml( taskCommentListResponse.getComment() ) );
         }
 
     }

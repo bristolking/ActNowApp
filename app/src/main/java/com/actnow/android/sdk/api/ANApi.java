@@ -43,7 +43,7 @@ public interface ANApi {
 
     @FormUrlEncoded
     @POST("app/signup")
-    Call<SignUpResponse> userSignUp(@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String mail, @Field(Parameters.MOBILENO) String mobileNumber,@Field(Parameters.PASSWORD) String password);
+    Call<SignUpResponse> userSignUp(@Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String mail,@Field("provider_id") String provider_id,@Field("provider_name") String provider_name,@Field(Parameters.MOBILENO) String mobileNumber,@Field(Parameters.PASSWORD) String password);
 
     @GET("app/send_otp/{mobile_number}")
     Call<SendOtpResponse> sendOtp(@Path("mobile_number") String mobile_number);
@@ -152,7 +152,8 @@ public interface ANApi {
     Call<TaskComplete> checkTheTaskDelete(
             @Path("id")String id,
             @Field("orgn_code")String  orgn_code,
-            @Field("comment_id")String comment_id);
+            @Field("comment_id")String comment_id,
+            @Field ("type") String type);
 
 
     /*Reminder API delete and Savee*/

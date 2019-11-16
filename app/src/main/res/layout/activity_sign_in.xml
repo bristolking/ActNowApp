@@ -6,50 +6,58 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     tools:context=".activities.SignInActivity">
+
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/standard_24"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/standard_24">
+
                 <ImageView
                     android:id="@+id/img_logo"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/standard_128"
                     android:layout_margin="@dimen/standard_32"
-                    android:src="@drawable/img_actnow"/>
+                    android:src="@drawable/img_actnow" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
                     android:layout_marginBottom="@dimen/standard_12"
+                    android:text="Log In"
+                    android:textColor="@color/colorAccent"
                     android:textSize="@dimen/text_size_larger"
-                    android:text="Log In"/>
+                    android:textStyle="bold" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/name_text_in_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/standard_12">
+
                     <EditText
                         android:id="@+id/et_loginEmail"
                         android:layout_width="match_parent"
@@ -64,8 +72,9 @@
                     android:id="@+id/name_text_in_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:passwordToggleEnabled="true"
-                    android:layout_marginBottom="@dimen/standard_12">
+                    android:layout_marginBottom="@dimen/standard_12"
+                    app:passwordToggleEnabled="true">
+
                     <EditText
                         android:id="@+id/et_loginPassword"
                         android:layout_width="match_parent"
@@ -76,25 +85,27 @@
                         android:singleLine="true"
                         android:textSize="@dimen/text_size_default" />
                 </android.support.design.widget.TextInputLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-                   <!-- <CheckBox
-                        android:id="@+id/chk_disclaimer"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.7"
-                        android:text="Terms of Service &amp; Privacy Policy"
-                        android:textSize="@dimen/text_size_small" />-->
+                    <!-- <CheckBox
+                         android:id="@+id/chk_disclaimer"
+                         android:layout_width="0dp"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="0.7"
+                         android:text="Terms of Service &amp; Privacy Policy"
+                         android:textSize="@dimen/text_size_small" />-->
                     <TextView
                         android:id="@+id/forgot_password"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Forgot Password"
                         android:layout_alignParentRight="true"
+                        android:text="Forgot Password"
                         android:textSize="@dimen/text_size_small" />
                 </RelativeLayout>
+
                 <Button
                     android:id="@+id/bt_login"
                     android:layout_width="match_parent"
@@ -104,87 +115,93 @@
                     android:text="Login"
                     android:textAllCaps="true"
                     android:textSize="@dimen/text_size_default" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/standard_12"
                     android:gravity="center"
-                    android:layout_marginTop="@dimen/standard_12">
+                    android:orientation="horizontal">
+
                     <View
                         android:layout_width="0dp"
-                        android:layout_weight="0.33"
                         android:layout_height="1dp"
-                        android:background="@color/colorAccent"/>
+                        android:layout_weight="0.33"
+                        android:background="@color/colorAccent" />
+
                     <TextView
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/standard_8"
+                        android:layout_marginRight="@dimen/standard_8"
                         android:layout_weight="0.33"
                         android:text="or connect with"
                         android:textAlignment="center"
-                        android:layout_marginLeft="@dimen/standard_8"
-                        android:layout_marginRight="@dimen/standard_8"
-                        android:textColor="@color/colorAccent"
-                        android:layout_height="wrap_content" />
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_weight="0.33"
-                        android:layout_height="1dp"
-                        android:background="@color/colorAccent"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/standard_12">
-                    <Button
-                        android:id="@+id/bt_facebook"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.5"
-                        android:layout_height="32dp"
-                        android:background="@drawable/btn_primary"
-                        android:text="Facebook"
-                        android:backgroundTint="#3b579d"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/text_size_default" />
-                    <!--<com.google.android.gms.common.SignInButton
-                        android:id="@+id/btn_sign_in"
-                        android:layout_width="wrap_content"
-                        android:layout_weight="0.5"
-                        android:layout_height="wrap_content"/>-->
+                        android:textColor="@color/colorAccent" />
 
-                      <Button
-                          android:id="@+id/bt_google"
-                          android:layout_width="0dp"
-                          android:layout_weight="0.5"
-                          android:layout_height="@dimen/btn_h_32"
-                          android:background="@drawable/btn_primary"
-                          android:layout_marginLeft="@dimen/standard_8"
-                          android:text="Google"
-                          android:textAllCaps="true"
-                          android:textSize="@dimen/text_size_default" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="0.33"
+                        android:background="@color/colorAccent" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/standard_12">
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/login_button"
+                        style="@style/com_facebook_loginview_default_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Facebook"
+                        android:layout_weight="1"
+                        android:textAllCaps="true"
+                        android:layout_margin="10dp"/>
+                    <com.google.android.gms.common.SignInButton
+                        android:id="@+id/sign_in_button"
+                        android:layout_gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <!-- <com.google.android.gms.common.SignInButton
+                         android:id="@+id/sign_in_button"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textAllCaps="true"
+                         android:layout_marginTop="4dp"
+                         android:layout_gravity="center_horizontal"/>-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_12"
+                    android:orientation="horizontal">
+
                     <View
                         android:layout_width="0dp"
-                        android:layout_weight="0.25"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.25" />
+
                     <Button
                         android:id="@+id/bt_signup"
                         android:layout_width="0dp"
-                        android:layout_weight="0.5"
                         android:layout_height="@dimen/btn_h_32"
+                        android:layout_weight="0.5"
                         android:background="@drawable/btn_warning"
                         android:text="Sign Up"
                         android:textAllCaps="true"
                         android:textSize="@dimen/text_size_default" />
+
                     <View
                         android:layout_width="0dp"
-                        android:layout_weight="0.25"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.25" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

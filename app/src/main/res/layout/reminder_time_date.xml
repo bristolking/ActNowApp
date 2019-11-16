@@ -76,11 +76,12 @@
                 android:text="CancriTech"
                 android:textColor="@color/black" />
         </RelativeLayout>
+      <!--  <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/linebackground" />-->
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/linebackground" />
+
 </LinearLayout>
 
