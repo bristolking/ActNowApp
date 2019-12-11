@@ -15,6 +15,8 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 
 import android.view.View;
@@ -44,14 +46,20 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.fragment.AllTaskFragment;
 import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.fragment.PriorityFragment;
 import com.actnow.android.fragment.RepetitiveTabedFragment;
+import com.actnow.android.sdk.responses.ProjectListResponseRecords;
+import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.actnow.android.R.layout.task_list_cutsom;
 
 public class TaskAddListActivity extends AppCompatActivity {
     UserPrefUtils session;
@@ -67,7 +75,9 @@ public class TaskAddListActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
+    private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
+    TaskListAdapter mTaskListAdapter;
     private FrameLayout mainlayout;
     int someIndex;
 
@@ -237,34 +247,7 @@ public class TaskAddListActivity extends AppCompatActivity {
   /*      mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);*/
 
-        mImageBulbTask = findViewById(R.id.image_bulbTask);
-        mImageBulbTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                startActivity(i);
-            }
-        });
-        mTaskQucikSearch = findViewById(R.id.edit_searchTask);
-        mTaskQucikSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        mButtonAdavancedSearch = findViewById(R.id.button_searchTask);
-        mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);
-            }
-        });
-
     }
-
-
     private void tabView() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -273,41 +256,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-       /* mSpinnerReptOption = (Spinner) findViewById(R.id.spinnerReaptTask);
-        arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.remider_footer_layout.simple_dropdown_item_1line, repetitive);
-        mSpinnerReptOption.setAdapter(arrayAdapterReapt);
-        mSpinnerReptOption.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        Intent iDaily = new Intent(getApplicationContext(), DailyTaskListActivity.class);
-                        startActivity(iDaily);
-                        break;
-                    case 2:
-                        Intent iWeekly = new Intent(getApplicationContext(), WeeklyTaskListActivity.class);
-                        startActivity(iWeekly);
-                        break;
-                    case 3:
-                        Intent iMonthly = new Intent(getApplicationContext(), MonthlyTaskListSpinnerActivity.class);
-                        startActivity(iMonthly);
-                        break;
-                    case 4:
-                        Intent iYearly = new Intent(getApplicationContext(), YearlyTaskListActivity.class);
-                        startActivity(iYearly);
-                        break;
-                    default:
-                        break;
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
 
     }
 
@@ -330,7 +279,6 @@ public class TaskAddListActivity extends AppCompatActivity {
             }
             return fragment;
         }
-
         @Override
         public int getCount() {
             return 4;

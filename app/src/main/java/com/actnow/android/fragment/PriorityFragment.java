@@ -1,12 +1,7 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,73 +11,62 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.DatePicker;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
-import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.adapter.PriorityTaskAdapter;
+
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
-import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.actnow.android.R.layout.task_list_cutsom;
-
 
 public class PriorityFragment extends Fragment {
 
     RecyclerView mPriorityTaskRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
     FloatingActionButton fabPriorityTask;
-    TaskListAdapter mTaskListAdapter;
+    PriorityTaskAdapter mPriortyTaskAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     private String selectedType = "";
     TextView mTaskName;
 
+    EditText mTaskQucikSearch;
+    Button mButtonAdavancedSearch;
+    ImageView mImageBulbTask;
+
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
-
-
-    public  PriorityFragment(){
-
-    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils(getContext());
@@ -107,12 +91,55 @@ public class PriorityFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mPriorityTaskRecylcerView.setLayoutManager(mLayoutManager);
         mPriorityTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext());
-        mPriorityTaskRecylcerView.setAdapter(mTaskListAdapter);
+        mPriortyTaskAdapter = new PriorityTaskAdapter( );
+        mPriorityTaskRecylcerView.setAdapter(mPriortyTaskAdapter);
+        mImageBulbTask = view.findViewById( R.id.image_bulbTask );
+        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), ViewIdeasActivity.class );
+                startActivity(i);
+            }
+        } );
+        mTaskQucikSearch = view.findViewById( R.id.edit_searchTask );
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //filter(editable.toString());
+
+            }
+        } );
+        mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
+        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), AdvancedSearchActivity.class );
+                startActivity( i );
+            }
+        } );
+
         return  view;
     }
 
-
+  /*  private void filter(String toString) {
+        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
+        for (TaskListRecords name  :taskListRecordsArrayList){
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
+                taskListRecordsFilter.add(name);
+            }
+        }
+        mPriortyTaskAdapter.filterList(taskListRecordsFilter);
+    }*/
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -129,7 +156,7 @@ public class PriorityFragment extends Fragment {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
-                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
 
@@ -158,7 +185,8 @@ public class PriorityFragment extends Fragment {
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
             }
-            mPriorityTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, task_list_cutsom, getContext()));
+            mPriortyTaskAdapter.addAll( taskListRecordsArrayList );
+            mPriorityTaskRecylcerView.setAdapter(mPriortyTaskAdapter);
             mPriorityTaskRecylcerView.addOnItemTouchListener(new PriorityFragment.RecyclerTouchListener(this, mPriorityTaskRecylcerView, new PriorityFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {

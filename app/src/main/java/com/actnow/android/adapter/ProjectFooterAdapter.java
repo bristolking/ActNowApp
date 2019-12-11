@@ -22,9 +22,9 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
         this.projectListResponseRecordsList = projectListResponseRecordsArrayList;
     }
 
-  /*  public ProjectFooterAdapter(ProjectFooterActivity projectFooterActivity, ArrayList<ProjectListResponseRecords> projectListResponseRecordsList) {
-        this.projectListResponseRecordsList = projectListResponseRecordsList;
-    }*/
+    public ProjectFooterAdapter(ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList) {
+        this.projectListResponseRecordsList = projectListResponseRecordsArrayList;
+    }
 
     @NonNull
     @Override
@@ -44,6 +44,12 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
     @Override
     public int getItemCount() {
         return projectListResponseRecordsList.size();
+    }
+
+    public void filterList(ArrayList<ProjectListResponseRecords> projectListResponseRecordsFilter) {
+        projectListResponseRecordsList = projectListResponseRecordsFilter;
+        notifyDataSetChanged();
+
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

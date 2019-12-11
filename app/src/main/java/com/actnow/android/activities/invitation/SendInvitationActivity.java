@@ -195,13 +195,11 @@ public class SendInvitationActivity extends AppCompatActivity {
 
     private void filter(String text) {
         ArrayList<OrgnUserRecordsCheckBox> exampleItemfilteredList = new ArrayList<>();
-
         for (OrgnUserRecordsCheckBox item : orgnUserRecordsCheckBoxList) {
             if (item.getEmail().toLowerCase().contains( text.toLowerCase() ) && (item.getEmail().toLowerCase().contains( text.toLowerCase() ))) {
                 exampleItemfilteredList.add( item );
             }
         }
-
         mAdapter.filterList( exampleItemfilteredList );
     }
 

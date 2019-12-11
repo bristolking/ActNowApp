@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,8 +33,10 @@ import android.widget.TextView;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
@@ -77,16 +83,16 @@ public class OverdueFragment extends Fragment {
     String id;
     TextView mTaskName;
 
-    public OverdueFragment() {
+    EditText mTaskQucikSearch;
+    Button mButtonAdavancedSearch;
+    ImageView mImageBulbTask;
 
-    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_overdue, container, false );
         attemptTaskList();
 
-        //requestDynamicContent();
 /*
         if (AndroidUtils.isNetworkAvailable( getActivity() )) {
         } else {
@@ -111,10 +117,55 @@ public class OverdueFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager( getContext() );
         mTaskRecylcerView.setLayoutManager( mLayoutManager );
         mTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
         mTaskRecylcerView.setAdapter( mTaskListAdapter );
 
+        mImageBulbTask = view.findViewById( R.id.image_bulbTask );
+        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), ViewIdeasActivity.class );
+                startActivity( i );
+            }
+        } );
+        mTaskQucikSearch = view.findViewById( R.id.edit_searchTask );
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        } );
+        mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
+        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), AdvancedSearchActivity.class );
+                startActivity( i );
+            }
+        } );
+
         return view;
+    }
+
+    private void filter(String toString) {
+        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
+        for (TaskListRecords name  :taskListRecordsArrayList){
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
+                taskListRecordsFilter.add(name);
+            }
+        }
+        mTaskListAdapter.filterList(taskListRecordsFilter);
     }
 
     private void intentNoConnection() {
@@ -148,6 +199,7 @@ public class OverdueFragment extends Fragment {
 
         }
     }
+
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -217,7 +269,7 @@ public class OverdueFragment extends Fragment {
                 }
 
             }
-            mTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
+            mTaskRecylcerView.setAdapter(mTaskListAdapter);
             mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {

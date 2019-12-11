@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.actnow.android.R;
+import com.actnow.android.sdk.responses.OverDueTaskRecords;
 import com.actnow.android.sdk.responses.TaskListRecords;
 
 import java.util.ArrayList;
@@ -18,9 +19,8 @@ public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.
     private List<TaskListRecords> taskListRecordsList;
 
     public OverDueTaskAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int task_list_cutsom, Context applicationContext) {
-        this.taskListRecordsList = taskListRecordsArrayList;
+        this.taskListRecordsList =  taskListRecordsArrayList;
     }
-
 
     @NonNull
     @Override
@@ -31,16 +31,16 @@ public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        TaskListRecords taskListResponse = taskListRecordsList.get(i);
-        viewHolder.mOverDueTaskListTaskName.setText(taskListResponse.getName());
-        viewHolder.mOverDueDudate.setText(taskListResponse.getDue_date());
-        viewHolder.mOverDueTaskProjectName.setText(taskListResponse.getProject_name());
-        viewHolder.mOverDueRemdnier.setText(taskListResponse.getRemindars_count());
-        viewHolder.mOverDueTaskPriorty.setText(taskListResponse.getPriority());
-        viewHolder.mOverDueTaskCode.setText(taskListResponse.getTask_code());
-        viewHolder.mOverDueTaskStatus.setText(taskListResponse.getStatus());
-        viewHolder.mOverDueProjectCode.setText(taskListResponse.getProject_code());
-        viewHolder.mOverDueRepeat_type.setText(taskListResponse.getRepeat_type());
+        TaskListRecords taskListRecords = taskListRecordsList.get(i);
+        viewHolder.mOverDueTaskListTaskName.setText(taskListRecords.getName());
+        viewHolder.mOverDueDudate.setText(taskListRecords.getDue_date());
+        viewHolder.mOverDueTaskProjectName.setText(taskListRecords.getProject_name());
+        viewHolder.mOverDueRemdnier.setText(taskListRecords.getRemindars_count());
+        viewHolder.mOverDueTaskPriorty.setText(taskListRecords.getPriority());
+        viewHolder.mOverDueTaskCode.setText(taskListRecords.getTask_code());
+        viewHolder.mOverDueTaskStatus.setText(taskListRecords.getStatus());
+        viewHolder.mOverDueProjectCode.setText(taskListRecords.getProject_code());
+        viewHolder.mOverDueRepeat_type.setText(taskListRecords.getRepeat_type());
 
     }
     @Override

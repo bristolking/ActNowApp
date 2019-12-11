@@ -22,6 +22,11 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxArrayList, int individual_check, Context applicationContext) {
         this.orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxArrayList;
     }
+
+    public CheckBoxAdapter(ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList) {
+     this.orgnUserRecordsCheckBoxList = orgnUserRecordsCheckBoxList;
+    }
+
     @NonNull
     @Override
     public CheckBoxAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -41,11 +46,14 @@ public class CheckBoxAdapter extends RecyclerView.Adapter<CheckBoxAdapter.ViewHo
     public int getItemCount() {
         return orgnUserRecordsCheckBoxList.size();
     }
-
+    public void filterList(ArrayList<OrgnUserRecordsCheckBox> filteredList) {
+        orgnUserRecordsCheckBoxList = filteredList;
+        notifyDataSetChanged();
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mIndividualName,mindivdualEmail;
-       // EditText mEditText;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -1,92 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.AdvancedSearchActivity">
-    <RelativeLayout
-        android:id="@+id/progress_bar"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="gone"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/content_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/custom_quickfind_advnced_secarch" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/content_layout"
-            android:layout_marginTop="50dp"
             android:orientation="vertical">
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/linebackground"
-                android:layout_marginTop="4dp"/>
+                android:background="@color/linebackground" />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/tv_dateAdvanced"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Date"
-                    android:padding="10dp"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black"
                     android:background="@drawable/rounded_square"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Date"
+                    android:textAllCaps="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/black" />
+
                 <TextView
                     android:id="@+id/tv_projectAdvanced"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Project"
-                    android:textColor="@color/black"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAllCaps="true"
                     android:background="@drawable/rounded_square"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Project"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:padding="10dp"/>
+                    android:textColor="@color/black" />
+
                 <TextView
                     android:id="@+id/tv_individualsAdvanced"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Individuals"
-                    android:textColor="@color/black"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:textAllCaps="true"
                     android:background="@drawable/rounded_square"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Individuals"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:padding="10dp"/>
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/linebackground"
-                android:layout_marginTop="4dp"/>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/advancedSearch_recyclerView"
+                android:layout_marginTop="4dp"
+                android:background="@color/linebackground" />
+
+            <Button
+                android:id="@+id/bt_getInfoAdvanced"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/rounded_square"
+                android:backgroundTint="@color/colorAccent"
+                android:text="get Info"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorWhite" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"/>
-        </LinearLayout>
-        <include layout="@layout/custom_quickfind_advnced_secarch" />
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-    </RelativeLayout>
-</android.support.design.widget.CoordinatorLayout>
+                <TextView
+                    android:id="@+id/tv_dateAdvancedMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="date" />
+
+                <TextView
+                    android:id="@+id/tv_projectAdvancedMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" projectCode" />
+
+                <TextView
+                    android:id="@+id/tv_individualAdvancedMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="indivdual" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/advancedSearch_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

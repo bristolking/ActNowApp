@@ -1,18 +1,6 @@
 package com.actnow.android.sdk.responses;
 
  public class TaskListRecords {
-     private boolean expanded;
-
-
-
-
-     public void setExpanded(boolean expanded) {
-         this.expanded = expanded;
-     }
-
-     public boolean isExpanded() {
-         return expanded;
-     }
 
      private String task_id;
      private String name;

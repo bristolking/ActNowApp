@@ -1,7 +1,6 @@
 package com.actnow.android.activities.settings.notification;
 
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -11,8 +10,6 @@ import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -23,8 +20,6 @@ import android.widget.Toast;
 import com.actnow.android.R;
 
 import static android.view.Gravity.NO_GRAVITY;
-import static android.view.View.TEXT_ALIGNMENT_CENTER;
-
 
 public class DailyReviewActivity extends AppCompatActivity {
    Switch mSwitch;

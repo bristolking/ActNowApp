@@ -1,12 +1,9 @@
 package com.actnow.android.activities.settings;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actnow.android.R;
-import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.settings.notification.NotificationActivity;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -92,10 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         } );
-
-
     }
-
     private void initializeViews() {
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
@@ -134,6 +127,21 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
+
+        View viewAbout = (View)findViewById(R.id.setting_about);
+        viewAbout.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_LONG).show();
+            }
+        } );
+        View viewSysnc = (View)findViewById(R.id.setting_sysnc);
+        viewSysnc.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_LONG).show();
+            }
+        } );
         Button mSettingLogout = (Button) findViewById(R.id.setting_logout);
         mSettingLogout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,8 +1,8 @@
 package com.actnow.android.sdk.api;
 
+import com.actnow.android.sdk.responses.AdavancedSearch;
 import com.actnow.android.sdk.responses.CheckOtpResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
-import com.actnow.android.sdk.responses.OverDueTaskListResponse;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
 import com.actnow.android.sdk.responses.ProjectEditResponse;
@@ -15,12 +15,13 @@ import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.TaskAddResponse;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskListResponse;
-import com.actnow.android.sdk.responses.UpdateProfileResponses;
+import com.actnow.android.sdk.responses.TimeLineList;
+import com.actnow.android.sdk.responses.TimeLineTaskList;
 import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
-import com.actnow.android.sdk.responses.UserSendInvitations;
 
 import java.util.List;
 
@@ -87,8 +88,11 @@ public interface ANApi {
 
     @GET("app/tasks/priority/{id}")
     Call<PriortyTaskListResponse> checkPriorityTaskList(@Path("id") String id);
+
+    /*@GET("app/tasks/overdue/{id}")
+    Call<OverDueTaskListResponse> checkOverDueTaskList(@Path("id") String id);*/
     @GET("app/tasks/overdue/{id}")
-    Call<OverDueTaskListResponse> checkOverDueTaskList(@Path("id") String id);
+    Call<TaskListResponse> checkOverDueTaskList(@Path("id") String id);
 
 
     @GET("app/project/list/{id}")
@@ -125,6 +129,10 @@ public interface ANApi {
     @FormUrlEncoded
     @POST("app/task/disapprove/{id}/{task_code}")
     Call<TaskComplete> checkTheDisApprove(@Path( "id") String id,@Path("task_code")String task_code,@Field("orgn_code")String orgn_code);
+    @FormUrlEncoded
+    @POST("app/task/delete/{id}/{task_code}")
+    Call<TaskDelete> checkTheDelete(@Path("id") String id,@Path("task_code")String task_code,@Field( "orgn_code")String  orgn_code);
+
 
     /*Comment Api TASk and Project */
 
@@ -136,7 +144,8 @@ public interface ANApi {
             @Part("comment")RequestBody comment,
             @Part("project_code")RequestBody project_code,
             @Part("task_code")RequestBody task_code,
-            @Part MultipartBody.Part[]  files);
+            @Part("image_path") RequestBody imageName,
+            @Part MultipartBody.Part image);
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")
@@ -178,16 +187,6 @@ public interface ANApi {
             @Path("reminder_task_id")String reminder_task_id,
             @Path("orgn_code")String orgn_code);
 
-    /* Invitation delete and send*/
-   /* @Multipart
-    @POST("app/invitation/create/{id}")
-    Call<UserSendInvitations>  cheTheUserSend(
-            @Path("id") RequestBody  id,
-            @Part("orgn_code")RequestBody  orgn_code,
-            @Part("project_code")RequestBody  project_code,
-            @Part("task_code")RequestBody  task_code,
-            @Part ("invite_emails") RequestBody invite_emails);
-*/
 
     @FormUrlEncoded
     @POST("app/invitation/create/{id}")
@@ -203,6 +202,29 @@ public interface ANApi {
             @Field("task_code")String  task_code,
             @Field("invitee_id")String  invitee_id);
 
+    /*Timeline API CALLS*/
+
+
+    @FormUrlEncoded
+    @POST("app/timeline/{id}")
+    Call<TimeLineTaskList>  checktheTimeLineTaskList(
+            @Path("id")String id,
+            @Field("action")String action,
+            @Field("action_date")String action_date,
+            @Field("project_codes")String project_codes,
+            @Field("individuals")String individuals);
+  /*  @FormUrlEncoded
+    @POST("app/timeline/{id}")
+    Call<TimeLineList> timeLineStatus (@Path("id") String id,@Field( "action")String action,@Field( "action_date" )String action_date,@Field( "project_codes")String project_codes,@Field( "individuals")String  individuals);
+*/
+    /*Adavanced Search API CAll*/
+    @FormUrlEncoded
+    @POST("app/advsearch/{id}")
+    Call<AdavancedSearch> adavancedSearch(@Path("id")String id,
+                                          @Field("task_keyword")String task_keyword,
+                                          @Field( "search_date")String  search_date,
+                                          @Field("project_codes")String project_codes,
+                                          @Field( "individuals")String individuals);
 
     /*
     @GET("app/project/get/{id}/{projectCode}")

@@ -26,9 +26,8 @@ public class ThisWeekAdapter extends RecyclerView.Adapter<ThisWeekAdapter.ViewHo
       this.context = applicationContext;
     }
 
-    public ThisWeekAdapter(Context context, ArrayList<String> itemArrayList) {
-        this.arrayList = itemArrayList;
-        this.context = context;
+    public ThisWeekAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
+        this.taskListRecordsList = taskListRecordsArrayList;
     }
 
 
@@ -59,6 +58,12 @@ public class ThisWeekAdapter extends RecyclerView.Adapter<ThisWeekAdapter.ViewHo
         return taskListRecordsList.size();
     }
 
+    public void filterList(ArrayList<TaskListRecords> taskListRecordsFilter) {
+        taskListRecordsList = taskListRecordsFilter;
+        notifyDataSetChanged();
+
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskWeekTaskName;
         TextView mWeekDudate;
@@ -83,4 +88,5 @@ public class ThisWeekAdapter extends RecyclerView.Adapter<ThisWeekAdapter.ViewHo
 
         }
     }
+
 }

@@ -58,6 +58,7 @@
                     android:padding="10dp">
 
                     <RelativeLayout
+                        android:id="@+id/re_gettingGuide"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorWhite"
@@ -86,6 +87,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/re_helpcenter"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorWhite"
@@ -114,6 +116,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/re_contactSupport"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorWhite"
@@ -134,14 +137,9 @@
                             android:layout_margin="5dp"
                             app:srcCompat="@drawable/ic_right_arrow"/>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="2dp"
-                            android:layout_below="@+id/imge_arrow2"
-                            android:background="@color/linebackground" />
                     </RelativeLayout>
 
-                    <RelativeLayout
+                   <!-- <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/colorWhite"
@@ -161,7 +159,7 @@
                             android:layout_alignParentRight="true"
                             android:layout_margin="5dp"
                             app:srcCompat="@drawable/ic_right_arrow" />
-                    </RelativeLayout>
+                    </RelativeLayout>-->
                 </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -189,6 +187,7 @@
                         android:orientation="vertical"
                         android:padding="10dp">
                         <RelativeLayout
+                            android:id="@+id/rateApp_appstore"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@color/colorWhite"
@@ -215,6 +214,7 @@
                         </RelativeLayout>
 
                         <RelativeLayout
+                            android:id="@+id/re_shreApp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@color/colorWhite"

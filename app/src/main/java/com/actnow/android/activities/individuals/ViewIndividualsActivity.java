@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
@@ -59,6 +61,7 @@ import static android.view.View.GONE;
 public class ViewIndividualsActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mIndivivalLayoutManager;
+    CheckBoxAdapter checkBoxAdapter;
     private ArrayList<OrgnUserRecordsCheckBox> orgnUserRecordsCheckBoxList = new ArrayList<OrgnUserRecordsCheckBox>();
     UserPrefUtils session;
     View mProgressView, mContentLayout;
@@ -66,11 +69,13 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     Button mIndividualButtonAdavancedSearch;
     ImageView mIndividualImageBulbTask;
 
+
     String id;
     String taskOwnerName;
 
     final Context context = this;
     Typeface typeface;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,13 +241,25 @@ public class ViewIndividualsActivity extends AppCompatActivity {
             }
         });
         mIndividualQucikSearch = findViewById(R.id.edit_searchIndividuals);
-        mIndividualQucikSearch.setOnClickListener(new View.OnClickListener() {
+        mIndividualQucikSearch.addTextChangedListener( new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Work in Progress!",Toast.LENGTH_LONG).show();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-        });
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(mRecyclerView.getVisibility() != View.VISIBLE)
+                    mRecyclerView.setVisibility( View.VISIBLE );
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        } );
+
         mIndividualButtonAdavancedSearch = findViewById(R.id.button_searchIndividuals);
         mIndividualButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,7 +272,9 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         mIndivivalLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mIndivivalLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-       CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
+        checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList);
+
+        //CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
         mRecyclerView.setAdapter(checkBoxAdapter);
 
         HashMap<String, String> userId = session.getUserDetails();
@@ -286,6 +305,15 @@ public class ViewIndividualsActivity extends AppCompatActivity {
             }
         });
     }
+    private void filter(String text) {
+        ArrayList<OrgnUserRecordsCheckBox> exampleItemfilteredList = new ArrayList<>();
+        for (OrgnUserRecordsCheckBox item : orgnUserRecordsCheckBoxList) {
+            if (item.getEmail().toLowerCase().contains( text.toLowerCase() ) && (item.getEmail().toLowerCase().contains( text.toLowerCase() ))) {
+                exampleItemfilteredList.add( item );
+            }
+        }
+        checkBoxAdapter.filterList( exampleItemfilteredList );
+    }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         System.out.println("output" + orgn_users_records);
@@ -298,7 +326,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
                 orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox1);
             }
-            mRecyclerView.setAdapter(new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext()));
+            mRecyclerView.setAdapter(checkBoxAdapter);
             mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {

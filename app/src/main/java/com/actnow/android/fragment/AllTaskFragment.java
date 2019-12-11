@@ -11,20 +11,26 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
@@ -43,9 +49,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.actnow.android.R.layout.task_list_cutsom;
-
-
 public class AllTaskFragment extends Fragment {
     RecyclerView mAllTaskRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
@@ -53,6 +56,9 @@ public class AllTaskFragment extends Fragment {
     TaskListAdapter mTaskListAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
+    EditText mTaskQucikSearch;
+    Button mButtonAdavancedSearch;
+    ImageView mImageBulbTask;
     private String selectedType = "";
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
@@ -60,9 +66,6 @@ public class AllTaskFragment extends Fragment {
 
     TextView mTaskName;
 
-    public AllTaskFragment() {
-
-    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
@@ -86,11 +89,60 @@ public class AllTaskFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager( getContext() );
         mAllTaskRecylcerView.setLayoutManager( mLayoutManager );
         mAllTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
         mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
         attemptTaskList();
+
+        mImageBulbTask = view.findViewById( R.id.image_bulbTask );
+        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), ViewIdeasActivity.class );
+                startActivity( i );
+            }
+        } );
+        mTaskQucikSearch = view.findViewById( R.id.edit_searchTask );
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        } );
+
+
+
+        mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
+        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), AdvancedSearchActivity.class );
+                startActivity( i );
+            }
+        } );
         return view;
     }
+
+    private void filter(String toString) {
+        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
+        for (TaskListRecords name  :taskListRecordsArrayList){
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
+                taskListRecordsFilter.add(name);
+            }
+        }
+        mTaskListAdapter.filterList(taskListRecordsFilter);
+    }
+
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -116,6 +168,7 @@ public class AllTaskFragment extends Fragment {
             }
         } );
     }
+
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -134,7 +187,8 @@ public class AllTaskFragment extends Fragment {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
-            mAllTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
+            mAllTaskRecylcerView.setAdapter(mTaskListAdapter);
+            //mAllTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
             mAllTaskRecylcerView.addOnItemTouchListener( new AllTaskFragment.RecyclerTouchListener( this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {

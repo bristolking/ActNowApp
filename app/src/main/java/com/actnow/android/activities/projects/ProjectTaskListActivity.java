@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
@@ -26,8 +28,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.AdvancedSearchActivity;
@@ -47,17 +47,13 @@ import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
-
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -89,14 +85,6 @@ public class ProjectTaskListActivity extends AppCompatActivity {
     ImageView mImageBulbTask;
 
     private String selectedType = "";
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-
-    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
-    JSONArray individuvalArray;
-    JSONArray projectArray;
-
     TextView mTaskName;
     String task_code;
 
@@ -271,33 +259,40 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             }
         });
         mTaskQucikSearch = findViewById(R.id.edit_searchTask);
-        mTaskQucikSearch.setOnClickListener(new View.OnClickListener() {
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-        });
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(mProjectTaskRecylcerView.getVisibility() != View.VISIBLE)
+                    mProjectTaskRecylcerView.setVisibility( View.VISIBLE );
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        } );
+
         mButtonAdavancedSearch = findViewById(R.id.button_searchTask);
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);            }
+                startActivity(i);
+            }
         });
-
-        mIndividuvalDialog = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
-
-        requestDynamicContent();
-
 
         mProjectTaskRecylcerView = findViewById(R.id.projectTaskList_recyclerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mProjectTaskRecylcerView.setLayoutManager(mLayoutManager);
         mProjectTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList);
         mProjectTaskRecylcerView.setAdapter(mTaskListAdapter);
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -324,7 +319,16 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             }
         });
     }
+    private void filter(String toString) {
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>(  );
+        for (TaskListRecords name :taskListRecordsArrayList){
+            if (name.getName().toLowerCase().contains( toString.toLowerCase())){
+                taskListRecordsFilter.add(name);
+            }
 
+        }
+        mTaskListAdapter.filterList(taskListRecordsFilter);
+    }
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -342,7 +346,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                     }
                 }
             }
-            mProjectTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
+            mProjectTaskRecylcerView.setAdapter(mTaskListAdapter);
             mProjectTaskRecylcerView.addOnItemTouchListener(new ProjectTaskListActivity.RecyclerTouchListener(this, mProjectTaskRecylcerView, new ProjectTaskListActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
@@ -525,63 +529,6 @@ public class ProjectTaskListActivity extends AppCompatActivity {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
 
-    }
-    private void requestDynamicContent() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
-            }
-        });
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
-            }
-            mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                // mIndividualCheckBox.setText(dataString);
-                            }
-                            individuvalArray = new JSONArray(selectedIds);
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d("TAG", "Dialog cancelled");
-                        }
-                    });
-        }
     }
 
     private void appFooter() {

@@ -1,16 +1,23 @@
 package com.actnow.android.activities;
 
-
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,6 +28,10 @@ import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.adapter.AdavncedSearchAdapter;
+import com.actnow.android.adapter.NewTaskProjectAdapter;
+import com.actnow.android.sdk.responses.AdavancedSearch;
+import com.actnow.android.sdk.responses.AdavancedTaskRecords;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
@@ -41,20 +52,42 @@ import retrofit2.Response;
 
 
 public class AdvancedSearchActivity extends AppCompatActivity {
-    Context context;
+    final Context context = this;
     View mProgressView, mContentLayout;
     UserPrefUtils session;
     TextView mDateAdvanced, mProjectAdvanced, mAdvancedIndividuals;
     private int mYear, mMonth, mDay;
 
 
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<com.abdeveloper.library.MultiSelectModel>();
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
+    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
 
     MultiSelectDialog mIndividuvalDialog, mProjectDialog;
     ArrayList<Integer> individualCheckBox, projectListCheckBox;
     JSONArray individuvalArray;
     JSONArray projectArray;
+
+    RecyclerView mRecyclerViewAdavanced;
+    RecyclerView.LayoutManager mLayoutManager;
+    AdavncedSearchAdapter mAdavncedSearchAdapter;
+    private ArrayList<AdavancedTaskRecords> adavancedTaskRecordsArrayList = new ArrayList<AdavancedTaskRecords>();
+
+    Button mButtonInfo;
+    EditText mAdvancedSearchEditText;
+
+    TextView mDateInVisible, mProjectCodeInvisible, mIndividualInvisible;
+
+
+    RecyclerView mRecyclerViewDateTime;
+    NewTaskProjectAdapter mNewTaskProjectAdapter;
+    RecyclerView.LayoutManager mProjectLayoutManager;
+    private ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList = new ArrayList<ProjectListResponseRecords>();
+
+    String projectcode;
+    String projectName;
+
+    TextView mProjectNameDailog;
+    TextView mProjectCodeDailog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,32 +107,16 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 onBackPressed();
             }
         } );
-        EditText mAdvancedSearchEditText = (EditText) findViewById( R.id.edit_advncedSearch );
-       /* mAdvancedSearchEditText.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
-            }
-        } );*/
-      /*  ImageView mSearchAdvancedImg =(ImageView)findViewById(R.id.img_advncedSearch);
-        mSearchAdvancedImg.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_LONG).show();
-
-            }
-        } );*/
+        mAdvancedSearchEditText = (EditText) findViewById( R.id.edit_advncedSearch );
 
     }
 
     private void initializeViews() {
-
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
         mProjectDialog = new MultiSelectDialog();
         projectListCheckBox = new ArrayList<>();
         projectListCheckBox.add( 0 );
-        requestDynamicProjectList();
 
         mIndividuvalDialog = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
@@ -114,10 +131,9 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 mMonth = c.get( Calendar.MONTH );
                 mDay = c.get( Calendar.DAY_OF_MONTH );
                 DatePickerDialog datePickerDialog = new DatePickerDialog( AdvancedSearchActivity.this, new DatePickerDialog.OnDateSetListener() {
-
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        // mDateReminderTextView.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
+                        mDateInVisible.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
 
                     }
                 }, mYear, mMonth, mDay );
@@ -128,8 +144,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         mProjectAdvanced.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProjectDialog.show( getSupportFragmentManager(), "mProjectDialog" );
-
+                projectDailog();
             }
         } );
         mAdvancedIndividuals = (TextView) findViewById( R.id.tv_individualsAdvanced );
@@ -140,7 +155,124 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
             }
         } );
+        mButtonInfo = (Button) findViewById( R.id.bt_getInfoAdvanced );
+        mButtonInfo.setOnClickListener( new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onClick(View view) {
+                getInfoAdvanced();
+            }
+        } );
+        mDateInVisible = (TextView) findViewById( R.id.tv_dateAdvancedMain );
+        mProjectCodeInvisible = (TextView) findViewById( R.id.tv_projectAdvancedMain );
+        mIndividualInvisible = (TextView) findViewById( R.id.tv_individualAdvancedMain );
+        mRecyclerViewAdavanced = findViewById( R.id.advancedSearch_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getApplicationContext() );
+        mRecyclerViewAdavanced.setLayoutManager( mLayoutManager );
+        mRecyclerViewAdavanced.setItemAnimator( new DefaultItemAnimator() );
+        mAdavncedSearchAdapter = new AdavncedSearchAdapter( adavancedTaskRecordsArrayList, R.layout.custom_advanced_list, getApplicationContext() );
+        mRecyclerViewAdavanced.setAdapter( mAdavncedSearchAdapter );
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void getInfoAdvanced() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        String editText = mAdvancedSearchEditText.getText().toString();
+        mAdvancedSearchEditText.setError( null );
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty( editText )) {
+            mAdvancedSearchEditText.setError( "please entere the Task_key" );
+            focusView = mAdvancedSearchEditText;
+            cancel = true;
+        }
+        String date = mDateInVisible.getText().toString();
+        String projectCode = mProjectCodeInvisible.getText().toString();
+        if (mDateInVisible != null) {
+            date = mDateInVisible.getText().toString();
+        }
+        if (mProjectCodeInvisible != null) {
+            projectCode = mProjectCodeInvisible.getText().toString();
+        }
+        if (individuvalArray != null) {
+            individuvalArray.remove( 0 );
+        }
+
+        Call<AdavancedSearch> adavancedSearchCall = ANApplications.getANApi().adavancedSearch( id, editText, date, projectCode, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
+        System.out.println( "adavmcedValues " + id + editText + date + projectCode
+                + String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
+        adavancedSearchCall.enqueue( new Callback<AdavancedSearch>() {
+            @Override
+            public void onResponse(Call<AdavancedSearch> call, Response<AdavancedSearch> response) {
+                System.out.println( "advancedReponse2" + response.raw() );
+                if (response.isSuccessful()) {
+                    System.out.println( "advancedReponse" + response.raw() );
+                    if (response.body().getSuccess().equals( "true" )) {
+                        System.out.println( "advancedReponse1" + response.body().getTask_records() );
+                        advanceList( response.body().getTask_records() );
+                    } else {
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_LONG ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AdavancedSearch> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+
+            }
+        } );
+    }
+
+    private void advanceList(List<AdavancedTaskRecords> task_records) {
+        if (task_records.size() > 0) {
+            for (int i = 0; task_records.size() > i; i++) {
+                AdavancedTaskRecords adavancedTaskRecords = task_records.get( i );
+                AdavancedTaskRecords adavancedTaskRecords1 = new AdavancedTaskRecords();
+                adavancedTaskRecords1.setName( adavancedTaskRecords.getName() );
+                adavancedTaskRecords1.setTask_code( adavancedTaskRecords.getTask_code() );
+                adavancedTaskRecords1.setTask_id( adavancedTaskRecords.getTask_id() );
+                adavancedTaskRecordsArrayList.add( adavancedTaskRecords1 );
+                System.out.println( "Adavanceddate" + adavancedTaskRecords1 );
+
+            }
+            mRecyclerViewAdavanced.setAdapter( new AdavncedSearchAdapter( adavancedTaskRecordsArrayList, R.layout.custom_advanced_list, getApplicationContext() ) );
+        }
+    }
+
+    private void projectDailog() {
+        requestDynamicProjectList();
+        final Dialog dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
+        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
+        dialog.setCancelable( true );
+        dialog.setContentView( R.layout.dailog_projectname_projectcode );
+        mRecyclerViewDateTime = dialog.findViewById( R.id.recyleView_projectNameCode );
+        mProjectLayoutManager = new LinearLayoutManager( getApplicationContext() );
+        mRecyclerViewDateTime.setLayoutManager( mProjectLayoutManager );
+        mRecyclerViewDateTime.setItemAnimator( new DefaultItemAnimator() );
+        mNewTaskProjectAdapter = new NewTaskProjectAdapter( projectListResponseRecordsArrayList, R.layout.custom_project_dailog, getApplicationContext() );
+        mRecyclerViewDateTime.setAdapter( mNewTaskProjectAdapter );
+        TextView tv_ok = (TextView) dialog.findViewById( R.id.tv_dailogOk );
+        tv_ok.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                projectName = mProjectNameDailog.getText().toString();
+                projectcode = mProjectCodeDailog.getText().toString();
+                mProjectCodeInvisible.setText( projectcode );
+                dialog.dismiss();
+            }
+        } );
+        TextView tv_cancel = (TextView) dialog.findViewById( R.id.tv_dailogCancel );
+        tv_cancel.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        } );
+        dialog.show();
     }
 
     private void requestDynamicProjectList() {
@@ -155,7 +287,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
                     AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
@@ -170,68 +301,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
     }
 
-    private void setProjectFooterList(List<ProjectListResponseRecords> project_records) {
-        if (project_records.size() > 0) {
-            for (int i = 0; project_records.size() > i; i++) {
-                ProjectListResponseRecords projectListResponseRecords = project_records.get( i );
-                ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
-                projectListResponseRecords1.setProject_code( (projectListResponseRecords.getProject_code()) );
-                listOfProjectNames.add( new MultiSelectModel( Integer.parseInt( projectListResponseRecords.getProject_id() ), projectListResponseRecords.getName() ) );
-            }
-            mProjectDialog = new MultiSelectDialog()
-                    .title( "Project" ) //setting title for dialog
-                    .titleSize( 25 )
-                    .positiveText( "Done" )
-                    .negativeText( "Cancel" )
-                    .preSelectIDsList( projectListCheckBox )
-                    .setMinSelectionLimit( 0 )
-                    .setMaxSelectionLimit( listOfProjectNames.size() )
-                    .multiSelectList( listOfProjectNames ) // the multi select model list with ids and name
-                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                // mProjectCheckBox.setText( dataString );
-                                //mProjectCheckBox.setText(projectcode);
-
-                            }
-                            projectArray = new JSONArray( selectedIds );
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d( "TAG", "Dialog cancelled" );
-                        }
-                    } );
-        }
-
-    }
-
-    private void requestIndividualDynamicContent() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get( UserPrefUtils.ID );
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
-        call.enqueue( new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setLoadCheckBox( response.body().getOrgn_users_records() );
-                    } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
-            }
-        } );
-
-    }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         if (orgn_users_records.size() > 0) {
@@ -254,7 +323,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                         @Override
                         public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
                             for (int i = 0; i < selectedIds.size(); i++) {
-                                //mUserReminder.setText(dataString);
+                                mIndividualInvisible.setText( dataString );
                             }
                             individuvalArray = new JSONArray( selectedIds );
                         }
@@ -267,6 +336,108 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         }
     }
 
+    private void requestIndividualDynamicContent() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
+        call.enqueue( new Callback<CheckBoxResponse>() {
+            @Override
+            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setLoadCheckBox( response.body().getOrgn_users_records() );
+                    } else {
+                        // Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+            }
+        } );
+
+    }
+
+    private void setProjectFooterList(List<ProjectListResponseRecords> project_records) {
+        if (project_records.size() > 0) {
+            for (int i = 0; project_records.size() > i; i++) {
+                ProjectListResponseRecords projectListResponseRecords = project_records.get( i );
+                ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
+                projectListResponseRecords1.setName( projectListResponseRecords.getName() );
+                projectListResponseRecords1.setProject_code( (projectListResponseRecords.getProject_code()) );
+                projectListResponseRecordsArrayList.add( projectListResponseRecords1 );
+            }
+            mRecyclerViewDateTime.setAdapter( new NewTaskProjectAdapter( projectListResponseRecordsArrayList, R.layout.custom_project_footer, getApplicationContext() ) );
+            mRecyclerViewDateTime.addOnItemTouchListener( new AdvancedSearchActivity.RecyclerTouchListener( this, mRecyclerViewDateTime, new AdvancedSearchActivity.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+
+                    mProjectNameDailog = (TextView) view.findViewById( R.id.tv_projectNameDailog );
+                    projectName = mProjectNameDailog.getText().toString();
+                    mProjectCodeDailog = (TextView) view.findViewById( R.id.tv_projectCodeDailog );
+
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            } ) );
+        }
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+    }
+
+    class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private AdvancedSearchActivity.ClickListener clicklistener;
+        private GestureDetector gestureDetector;
+
+        public RecyclerTouchListener(AdvancedSearchActivity context, final RecyclerView mRecylerViewSingleSub, AdvancedSearchActivity.ClickListener clickListener) {
+            this.clicklistener = clickListener;
+
+            gestureDetector = new GestureDetector( context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
+                    if (child != null && clicklistener != null) {
+                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
+                    }
+                }
+            } );
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            View child = rv.findChildViewUnder( e.getX(), e.getY() );
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
+                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
+            }
+
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate( R.menu.search_menu, menu );

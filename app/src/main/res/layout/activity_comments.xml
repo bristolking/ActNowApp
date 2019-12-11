@@ -36,12 +36,19 @@
                     android:layout_height="wrap_content" />
         </LinearLayout>
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:padding="10dp"
             android:layout_marginBottom="50dp">
+            <GridView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/gv"
+                android:numColumns="3">
+            </GridView>
             <ImageView
                 android:id="@+id/img_commnetAdd"
                 android:layout_width="40dp"

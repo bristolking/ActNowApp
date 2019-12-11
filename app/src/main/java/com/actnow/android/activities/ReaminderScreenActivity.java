@@ -56,10 +56,8 @@ import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,7 +96,7 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
 
     TextView mUserReminder;
     TextView mReminderUserTaskId;
-    TextView mdateandTime;
+    TextView mDateandTime;
 
 
     @Override
@@ -263,7 +261,7 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
         individualCheckBox = new ArrayList<>();
         individualCheckBox.add( 0 );
         mUserReminder = (TextView) findViewById( R.id.tv_reminderUsers );
-        mdateandTime = (TextView)findViewById(R.id.tv_dateandTime);
+        mDateandTime = (TextView)findViewById(R.id.tv_dateandTime);
         mReminderTaskList = findViewById( R.id.reminder_Tasklist );
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mReminderTaskList.setLayoutManager( mLayoutManager );
@@ -431,13 +429,9 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(View v) {
                         showPopup( view );
-
                     }
                 } );
-
-
             }
-
             @Override
             public void onLongClick(View view, int position) {
 
@@ -464,7 +458,6 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
-
                 public void onLongPress(MotionEvent e) {
                     View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
                     if (child != null && clicklistener != null) {
@@ -473,7 +466,6 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
                 }
             } );
         }
-
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
             View child = rv.findChildViewUnder( e.getX(), e.getY() );
@@ -492,8 +484,15 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
     private void footer() {
+        ImageView mUserIntivationReminder = (ImageView) findViewById( R.id.img_individualReminder );
+        mUserIntivationReminder.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+
+            }
+        } );
         ImageView mImageSend = (ImageView) findViewById( R.id.sendImg_reminder );
         mImageSend.setOnClickListener( new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -518,14 +517,7 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
             }
         } );
 
-        ImageView mUserIntivationReminder = (ImageView) findViewById( R.id.img_individualReminder );
-        mUserIntivationReminder.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
 
-            }
-        } );
     }
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
@@ -537,32 +529,29 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
         mHour = calendarTime.get( Calendar.HOUR_OF_DAY );
         mMinute = calendarTime.get( Calendar.MINUTE);
         mSeconds = calendarTime.get( Calendar.SECOND);
-
         TimePickerDialog timePickerDialog  = new TimePickerDialog( ReaminderScreenActivity.
                 this,ReaminderScreenActivity.this,mHour,mMinute, DateFormat.is24HourFormat( this));
         timePickerDialog.show();
-
     }
-
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
         hourFinal = i;
         minuteFinal = i1;
-        mdateandTime.setText( yearFinal + "-" + monthFinal + "-" + dayFinal + " " + hourFinal + ":" + minuteFinal );
+        mDateandTime.setText( yearFinal + "-" + monthFinal + "-" + dayFinal + " " + hourFinal + ":" + minuteFinal );
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void addTheReminder() {
-        String datetime = mdateandTime.getText().toString();
-        mdateandTime.setError( null );
+        String datetime = mDateandTime.getText().toString();
+        mDateandTime.setError( null );
         individuvalArray.remove( 0 );
         String individuvalName =  String.valueOf( individuvalArray);
        // System.out.println( "indviname" + individuvalName );
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty( datetime )) {
-            mdateandTime.setError( getString( R.string.error_required ) );
-            focusView = mdateandTime;
+            mDateandTime.setError(getString(R.string.error_required));
+            focusView = mDateandTime;
             cancel = true;
         }
         if (cancel) {

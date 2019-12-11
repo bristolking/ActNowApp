@@ -15,9 +15,17 @@ import java.util.List;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
     private List<TaskListRecords>  taskListRecordsList;
+
+
     public TaskListAdapter(ArrayList<TaskListRecords> taskListResponseArrayList, int task_list_cutsom, Context applicationContext) {
         this.taskListRecordsList = taskListResponseArrayList;
     }
+
+    public TaskListAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
+        this.taskListRecordsList = taskListRecordsArrayList;
+    }
+
+
 
     @NonNull
     @Override
@@ -43,9 +51,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public int getItemCount() {
         return taskListRecordsList.size();
     }
+    public void filterList(ArrayList<TaskListRecords> taskListRecordsFilter) {
+        taskListRecordsList = taskListRecordsFilter;
+        notifyDataSetChanged();
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-       //RadioButton mRadioButtonTaskName;
         TextView mTaskListTaskName;
         TextView mDudate;
         TextView mTaskProjectName,mRemdnier;

@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
@@ -240,16 +242,12 @@ public class ViewIdeasActivity extends AppCompatActivity {
 
     }
     private void initializeViews() {
-
         requestDynamicContent();
-
         mIndividuvalDialog = new MultiSelectDialog();
         individualCheckBox = new ArrayList<>();
         individualCheckBox.add(0);
-
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
-
         mImageBulbTask = findViewById(R.id.image_bulbTask);
         mImageBulbTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,14 +255,25 @@ public class ViewIdeasActivity extends AppCompatActivity {
                Toast.makeText(getApplicationContext(),"selected the Idea",Toast.LENGTH_LONG).show();
             }
         });
-        mTaskQucikSearch = findViewById(R.id.edit_searchTask);
-        mTaskQucikSearch.setOnClickListener(new View.OnClickListener() {
+        mTaskQucikSearch = findViewById( R.id.edit_searchTask );
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG).show();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-        });
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(mTaskRecylcerView.getVisibility() != View.VISIBLE)
+                    mTaskRecylcerView.setVisibility( View.VISIBLE );
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        } );
         mButtonAdavancedSearch = findViewById(R.id.button_searchTask);
         mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -290,7 +299,9 @@ public class ViewIdeasActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTaskRecylcerView.setLayoutManager(mLayoutManager);
         mTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList);
+
+        // mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
         mTaskRecylcerView.setAdapter(mTaskListAdapter);
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -315,6 +326,17 @@ public class ViewIdeasActivity extends AppCompatActivity {
         });
     }
 
+
+    private void filter(String toString) {
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>(  );
+        for (TaskListRecords name :taskListRecordsArrayList){
+            if (name.getName().toLowerCase().contains( toString.toLowerCase())){
+                taskListRecordsFilter.add(name);
+            }
+
+        }
+        mTaskListAdapter.filterList(taskListRecordsFilter);
+    }
     private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -331,8 +353,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
             }
-            mTaskRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext()));
-
+            mTaskRecylcerView.setAdapter(mTaskListAdapter);
             mTaskRecylcerView.addOnItemTouchListener(new ViewIdeasActivity.RecyclerTouchListener(this, mTaskRecylcerView, new ViewIdeasActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {

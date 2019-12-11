@@ -3,16 +3,11 @@ package com.actnow.android.activities.settings;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,13 +16,10 @@ import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.activities.tasks.EditTaskActivity;
-import com.actnow.android.sdk.responses.UpdateProfileResponses;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 

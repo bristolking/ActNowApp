@@ -71,12 +71,12 @@
         <activity android:name=".activities.tasks.ViewTasksActivity" />
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.SignUpActivity" />
-        <activity android:name=".activities.SignInActivity" />
+        <activity android:name=".activities.SignInActivity"
+            />
         <activity android:name=".activities.MeActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -85,7 +85,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
         <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
         <provider android:authorities="com.facebook.app.FacebookContentProvider1234"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />

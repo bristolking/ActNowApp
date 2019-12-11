@@ -39,13 +39,13 @@
                 android:orientation="vertical"
                  android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-                <TextView
+                <!--<TextView
                     android:id="@+id/tv_titleThisWeek"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tasks Names"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary" />-->
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/thisweek_recyclerView"
                     android:layout_width="match_parent"
@@ -54,6 +54,17 @@
         </LinearLayout>
         <include layout="@layout/app_header_two"/>
         <include layout="@layout/app_footer"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_thisTaskadd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="65dp"
+            app:srcCompat="@drawable/ic_add_circular"
+            tools:ignore="VectorDrawableCompat" />
 
     </RelativeLayout>
 

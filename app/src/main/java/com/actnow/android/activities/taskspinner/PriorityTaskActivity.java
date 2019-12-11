@@ -30,6 +30,7 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.adapter.PriorityTaskAdapter;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.PriorityTaskListRecords;
+import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -46,7 +47,7 @@ public class PriorityTaskActivity extends AppCompatActivity  {
     RecyclerView.LayoutManager mLayoutManager;
     PriorityTaskAdapter mPriorityTaskAdapter;
     String[] arrayItems = {"Priorty Task","Over Due Task"};
-    private List<PriorityTaskListRecords> priorityTaskListRecords =new ArrayList<PriorityTaskListRecords>();
+    private List<TaskListRecords> priorityTaskListRecords =new ArrayList<TaskListRecords>();
     UserPrefUtils session;
     View mProgressView,mContentLayout;
     @Override
@@ -177,7 +178,6 @@ public class PriorityTaskActivity extends AppCompatActivity  {
         mLayoutManager  = new LinearLayoutManager(getApplicationContext());
         mOverDueTaskRecyclerView.setLayoutManager(mLayoutManager);
         mOverDueTaskRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mPriorityTaskAdapter = new PriorityTaskAdapter(priorityTaskListRecords, R.layout.custom_priority_task, getApplicationContext());
         mOverDueTaskRecyclerView.setAdapter(mPriorityTaskAdapter);
 
         HashMap<String,String> userId = session.getUserDetails();
@@ -192,7 +192,7 @@ public class PriorityTaskActivity extends AppCompatActivity  {
                    // System.out.println("response1"+response.raw());
                     if (response.body().getSuccess().equals("true")){
                         //System.out.println("response2"+response.body().getTask_records());
-                        setPriortyList(response.body().getTask_records());
+                       // setPriortyList(response.body().getTask_records());
                     }else{
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -208,10 +208,10 @@ public class PriorityTaskActivity extends AppCompatActivity  {
         });
 
     }
-    private void setPriortyList(List<PriorityTaskListRecords> task_recordsList) {
+   /* private void setPriortyList(List<PriorityTaskListRecords> task_recordsList) {
         if(task_recordsList.size() > 0){
             for (int i=0;task_recordsList.size() > i; i++){
-                PriorityTaskListRecords priorityTaskListRecordsList = task_recordsList.get(i);
+                Ta priorityTaskListRecordsList = task_recordsList.get(i);
                 System.out.println("priorityTaskListRecordsList"+ priorityTaskListRecordsList);
                 PriorityTaskListRecords priorityTaskListRecords1 = new PriorityTaskListRecords();
                 priorityTaskListRecords1.setName(priorityTaskListRecordsList.getName());
@@ -221,5 +221,5 @@ public class PriorityTaskActivity extends AppCompatActivity  {
             }
             mOverDueTaskRecyclerView.setAdapter(new PriorityTaskAdapter(priorityTaskListRecords, R.layout.custom_priority_task, getApplicationContext()));
         }
-    }
+    }*/
 }

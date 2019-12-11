@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
@@ -24,12 +26,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abdeveloper.library.MultiSelectDialog;
-import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
@@ -38,17 +39,13 @@ import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ApprovalAdapter;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
-
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,14 +69,6 @@ public class ApprovalsActivity extends AppCompatActivity {
 
     private String selectedType = "";
     final Context context = this;
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<com.abdeveloper.library.MultiSelectModel>();
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-
-    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
-    JSONArray individuvalArray;
-    JSONArray projectArray;
-
 
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
@@ -143,16 +132,16 @@ public class ApprovalsActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get( UserPrefUtils.EMAIL);
+                String email = userId.get( UserPrefUtils.EMAIL );
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH);
-                System.out.println( "img"+ img );
-                Glide.with(getApplicationContext())
-                        .load(img)
+                String img = userId.get( UserPrefUtils.IMAGEPATH );
+                System.out.println( "img" + img );
+                Glide.with( getApplicationContext() )
+                        .load( img )
                         .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.placeholder)
-                        .into(mImageProfile);
+                        .placeholder( R.drawable.placeholder )
+                        .error( R.drawable.placeholder )
+                        .into( mImageProfile );
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -163,52 +152,52 @@ public class ApprovalsActivity extends AppCompatActivity {
 
                 TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
                 mTextName.setText( taskOwnerName );
-                TextView mTextEmail =(TextView)findViewById( R.id.tv_emailProfile);
+                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
                 mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
-                                startActivity(iToday);
+                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                startActivity( iToday );
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                                startActivity(iIdea);
+                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                                startActivity( iIdea );
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
+                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
+                                startActivity( ithisweek );
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent(getApplicationContext(),TaskAddListActivity.class);
-                                startActivity(iTaskfilter);
+                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
+                                startActivity( iTaskfilter );
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(),ProjectFooterActivity.class);
-                                startActivity( iProjects);
+                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+                                startActivity( iProjects );
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-                                startActivity(iIndividuals);
+                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+                                startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-                                startActivity(iInsights);
+                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
-                                startActivity(iTimeLine);
+                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
+                                startActivity( iTimeLine );
                                 break;
                             case R.id.nav_profile:
-                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
-                                startActivity(iprofile);
+                                Intent iprofile = new Intent( getApplicationContext(), AccountSettingActivity.class );
+                                startActivity( iprofile );
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
-                                startActivity(ipremium);
-                               break;
+                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
+                                startActivity( ipremium );
+                                break;
                             case R.id.nav_logout:
                                 session.logoutUser();
                                 break;
@@ -216,7 +205,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                });
+                } );
                 final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_approval );
                 if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
@@ -241,10 +230,6 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void initializeViews() {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
-        requestDynamicContent();
-        mIndividuvalDialog = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add( 0 );
         mImageBulbTaskApproval = findViewById( R.id.image_approvalbuldProject );
         mImageBulbTaskApproval.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -254,19 +239,30 @@ public class ApprovalsActivity extends AppCompatActivity {
             }
         } );
         mApprovalQucikSearch = findViewById( R.id.edit_searchApproval );
-        mApprovalQucikSearch.setOnClickListener( new View.OnClickListener() {
+        mApprovalQucikSearch.addTextChangedListener( new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG ).show();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter( editable.toString() );
 
             }
         } );
+
         mButtonAdavancedSearchApproval = findViewById( R.id.button_searchApproval );
         mButtonAdavancedSearchApproval.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), AdvancedSearchActivity.class );
+                startActivity( i );
             }
         } );
 
@@ -274,7 +270,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager( getApplicationContext() );
         mRecyclerViewApproval.setLayoutManager( mLayoutManager );
         mRecyclerViewApproval.setItemAnimator( new DefaultItemAnimator() );
-        mApprovalAdapter = new ApprovalAdapter( taskListRecordsArrayList, R.layout.custom_approval_tasklist, getApplicationContext() );
+        mApprovalAdapter = new ApprovalAdapter( taskListRecordsArrayList );
         mRecyclerViewApproval.setAdapter( mApprovalAdapter );
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -305,33 +301,42 @@ public class ApprovalsActivity extends AppCompatActivity {
         } );
     }
 
+    private void filter(String toString) {
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>();
+        for (TaskListRecords name : taskListRecordsArrayList) {
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
+                taskListRecordsFilter.add( name );
+
+            }
+        }
+        mApprovalAdapter.filterList( taskListRecordsFilter );
+    }
+
     private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get( i );
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName( taskListRecords.getName());
-                taskListRecords1.setDue_date( taskListRecords.getDue_date());
-                taskListRecords1.setPriority( taskListRecords.getPriority());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
-                taskListRecords1.setProject_name( taskListRecords.getProject_name());
-                taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                if (taskListRecords.getStatus().equals("2")) {
-                    taskListRecordsArrayList.add(taskListRecords1);
-                    System.out.println( "OutputValues" + taskListRecords1);
-
+                taskListRecords1.setName( taskListRecords.getName() );
+                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
+                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                if (taskListRecords.getStatus().equals( "2" )) {
+                    taskListRecordsArrayList.add( taskListRecords1 );
                 }
 
             }
-            mRecyclerViewApproval.setAdapter( new ApprovalAdapter( taskListRecordsArrayList, R.layout.custom_approval_tasklist, getApplicationContext() ) );
+            mRecyclerViewApproval.setAdapter( mApprovalAdapter );
             mRecyclerViewApproval.addOnItemTouchListener( new ApprovalsActivity.RecyclerTouchListener( this, mRecyclerViewApproval, new ApprovalsActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
                     mTaskApprovalName = (TextView) view.findViewById( R.id.approvalTaskName );
                     mTaskApprovalDate = (TextView) view.findViewById( R.id.approvalTaskDate );
                     mTaskApprovalPriority = (TextView) view.findViewById( R.id.tv_approvalTaskPriority );
-                    mTaskCode=(TextView)view.findViewById( R.id.tv_taskCodeApproval);
-
+                    mTaskCode = (TextView) view.findViewById( R.id.tv_taskCodeApproval );
+                    final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_approvalProjectCode );
                     ImageView mImageTick = (ImageView) view.findViewById( R.id.img_checkedTaskApproval );
                     mImageTick.setOnClickListener( new View.OnClickListener() {
                         @Override
@@ -345,9 +350,9 @@ public class ApprovalsActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                     if (response.isSuccessful()) {
-                                        if (response.body().getSuccess().equals( "true" )){
-                                            Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
-                                            startActivity(i);
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
+                                            startActivity( i );
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }
@@ -355,6 +360,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                                         AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(Call<TaskComplete> call, Throwable t) {
                                     Log.d( "CallBack", " Throwable is " + t );
@@ -377,9 +383,9 @@ public class ApprovalsActivity extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                     if (response.isSuccessful()) {
-                                        if (response.body().getSuccess().equals( "true")){
-                                            Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
-                                            startActivity(i);
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
+                                            startActivity( i );
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }
@@ -387,6 +393,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                                         AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(Call<TaskComplete> call, Throwable t) {
                                     Log.d( "CallBack", " Throwable is " + t );
@@ -400,7 +407,12 @@ public class ApprovalsActivity extends AppCompatActivity {
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+                            String task_code = mTaskCode.getText().toString();
+                            String projectCode = mProjectCode.getText().toString();
+                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "SenIvitaionprojectCode", projectCode );
+                            startActivity( i );
                         }
                     } );
                     ImageView mImageComment = (ImageView) view.findViewById( R.id.img_approvalcommentTaskList );
@@ -409,6 +421,44 @@ public class ApprovalsActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
                             startActivity( i );
+                        }
+                    } );
+                    ImageView mImgeDelete = (ImageView) view.findViewById( R.id.img_approvalTaskDelete );
+                    mImgeDelete.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = mTaskCode.getText().toString();
+                            Call<TaskDelete> callTaskDelete = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                            System.out.println( "deleteFields" + id + task_code + orgn_code );
+                            callTaskDelete.enqueue( new Callback<TaskDelete>() {
+                                @Override
+                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    System.out.println( "deleteResponse" + response.raw() );
+                                    if (response.isSuccessful()) {
+                                        System.out.println( "deleteResponse1" + response.raw() );
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            System.out.println( "deleteResponse2" + response.raw() );
+                                            Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
+                                            startActivity(i);
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                    }
+
+                                }
+                                @Override
+                                public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
+
                         }
                     } );
 
@@ -470,63 +520,6 @@ public class ApprovalsActivity extends AppCompatActivity {
         }
     }
 
-    private void requestDynamicContent() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get( UserPrefUtils.ID );
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
-        call.enqueue( new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setLoadCheckBox( response.body().getOrgn_users_records() );
-                    } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
-            }
-        } );
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get( i );
-                listOfIndividuval.add( new MultiSelectModel( Integer.parseInt( orgnUserRecordsCheckBox.getId() ), orgnUserRecordsCheckBox.getName() ) );
-            }
-            mIndividuvalDialog = new MultiSelectDialog()
-                    .title( "Individuval" ) //setting title for dialog
-                    .titleSize( 25 )
-                    .positiveText( "Done" )
-                    .negativeText( "Cancel" )
-                    .preSelectIDsList( individualCheckBox )
-                    .setMinSelectionLimit( 0 )
-                    .setMaxSelectionLimit( listOfIndividuval.size() )
-                    .multiSelectList( listOfIndividuval ) // the multi select model list with ids and name
-                    .onSubmit( new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                // mIndividualCheckBox.setText(dataString);
-                            }
-                            individuvalArray = new JSONArray( selectedIds );
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d( "TAG", "Dialog cancelled" );
-                        }
-                    } );
-        }
-    }
 
     private void appFooter() {
         View btnMe = findViewById( R.id.btn_me );

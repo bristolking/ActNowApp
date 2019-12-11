@@ -17,8 +17,12 @@ import java.util.List;
 public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHolder> {
     private List<TaskListRecords>  mTaskListRecords;
 
-    public ApprovalAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int custom_approval_tasklist, Context applicationContext) {
+    /*public ApprovalAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int custom_approval_tasklist, Context applicationContext) {
         this.mTaskListRecords = taskListRecordsArrayList;
+    }*/
+
+    public ApprovalAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
+        this.mTaskListRecords= taskListRecordsArrayList;
     }
 
 
@@ -42,6 +46,10 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHo
     @Override
     public int getItemCount() {
         return mTaskListRecords.size();
+    }
+
+    public void filterList(ArrayList<TaskListRecords> taskListRecordsFilter) {
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

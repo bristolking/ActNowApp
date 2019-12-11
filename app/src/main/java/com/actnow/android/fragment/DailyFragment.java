@@ -12,12 +12,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -25,8 +29,10 @@ import android.widget.TextView;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
@@ -59,9 +65,9 @@ public class DailyFragment extends Fragment {
     private String selectedType = "";
     TextView mTaskName;
 
-
-    public DailyFragment() {
-    }
+    EditText mTaskQucikSearch;
+    Button mButtonAdavancedSearch;
+    ImageView mImageBulbTask;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,11 +93,54 @@ public class DailyFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager( getContext() );
         mDailyRepetTask.setLayoutManager( mLayoutManager );
         mDailyRepetTask.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
         mDailyRepetTask.setAdapter( mTaskListAdapter );
+
+        mImageBulbTask = view.findViewById( R.id.image_bulbTask );
+        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), ViewIdeasActivity.class );
+                startActivity( i );
+            }
+        } );
+        mTaskQucikSearch = view.findViewById( R.id.edit_searchTask );
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+
+            }
+        } );
+        mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
+        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getActivity(), AdvancedSearchActivity.class );
+                startActivity( i );
+            }
+        } );
         return view;
     }
-
+    private void filter(String toString) {
+        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
+        for (TaskListRecords name  :taskListRecordsArrayList){
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
+                taskListRecordsFilter.add(name);
+            }
+        }
+        mTaskListAdapter.filterList(taskListRecordsFilter);
+    }
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -140,7 +189,7 @@ public class DailyFragment extends Fragment {
             }
         }
 
-        mDailyRepetTask.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
+        mDailyRepetTask.setAdapter(mTaskListAdapter);
         mDailyRepetTask.addOnItemTouchListener( new DailyFragment.RecyclerTouchListener( this, mDailyRepetTask, new DailyFragment.ClickListener() {
             @Override
             public void onClick(final View view, int position) {
@@ -153,7 +202,7 @@ public class DailyFragment extends Fragment {
                 final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                 final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
                 final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
-                groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
+                groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @SuppressLint("ResourceType")
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -181,7 +230,6 @@ public class DailyFragment extends Fragment {
                                         view1.setVisibility( View.GONE );
                                         HashMap<String, String> userId = session.getUserDetails();
                                         String id = userId.get( UserPrefUtils.ID );
-                                        System.out.println( "id" + id );
                                         final String taskOwnerName = userId.get( UserPrefUtils.NAME );
                                         final String name = mTaskName.getText().toString();
                                         final String date = tv_dueDate.getText().toString();
@@ -278,7 +326,6 @@ public class DailyFragment extends Fragment {
                         Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
                         i.putExtra( "TaskCode", task_code );
                         startActivity( i );
-
                     }
                 } );
 

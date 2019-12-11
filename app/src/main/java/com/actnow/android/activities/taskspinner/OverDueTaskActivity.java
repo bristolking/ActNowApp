@@ -180,7 +180,7 @@ public class OverDueTaskActivity extends AppCompatActivity {
         String id = userId.get(UserPrefUtils.ID);
        // System.out.println("userId" + id);
 
-        Call<OverDueTaskListResponse> call = ANApplications.getANApi().checkOverDueTaskList(id);
+      /*  Call<OverDueTaskListResponse> call = ANApplications.getANApi().checkOverDueTaskList(id);
         call.enqueue(new Callback<OverDueTaskListResponse>() {
             @Override
             public void onResponse(Call<OverDueTaskListResponse> call, Response<OverDueTaskListResponse> response) {
@@ -202,7 +202,7 @@ public class OverDueTaskActivity extends AppCompatActivity {
                 Log.d("CallBack", " Throwable is " + t);
 
             }
-        });
+        });*/
 
     }
 

@@ -20,7 +20,15 @@ import com.actnow.android.sdk.responses.SignInResponse;;
 import com.actnow.android.sdk.responses.SignUpResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -31,12 +39,17 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignInActivity extends AppCompatActivity implements
-        View.OnClickListener,
+public class SignInActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener{
     UserPrefUtils session;
     View mProgressView,mContentLayout;
@@ -44,6 +57,7 @@ public class SignInActivity extends AppCompatActivity implements
     Button mLogin,mSignUp /*mFacebookButton,mGoogleButton*/;
     TextView mForgotPassWord;
 
+    private static final String TAG = SignInActivity.class.getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
@@ -54,6 +68,14 @@ public class SignInActivity extends AppCompatActivity implements
     String providerId;
     String providerName = "actNowapp";
     ImageView imgLogo;
+
+
+    public LoginButton loginButton;
+    public Button fb, google;
+    public CallbackManager callbackManager;
+    public String id, name, emailFacebook, gender, birthday;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +86,9 @@ public class SignInActivity extends AppCompatActivity implements
         }
         setContentView(R.layout.activity_sign_in);
         initializeViews();
+
     }
+
     private void initializeViews() {
         imgLogo =(ImageView)findViewById(R.id.img_logo);
         mProgressView = findViewById(R.id.progress_bar);
@@ -92,7 +116,75 @@ public class SignInActivity extends AppCompatActivity implements
                 activitySignUp();
             }
         });
-        btnSignIn = (SignInButton) findViewById(R.id.sign_in_button);
+        initializeControls();
+        initializeGPlusSettings();
+        facebookLogin();
+
+    }
+    private void facebookLogin() {
+        callbackManager = CallbackManager.Factory.create();
+        fb = (Button) findViewById(R.id.fb);
+        providerName = "Facebook";
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        List< String > permissionNeeds = Arrays.asList("user_photos", "email", "user_birthday", "public_profile", "AccessToken");
+        loginButton.registerCallback(callbackManager, new FacebookCallback< LoginResult >() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(fullName,email,providerId,providerName," "," " );
+                System.out.println( "facebookSignup" + fullName + email +providerId + providerName );
+                call.enqueue( new Callback<SignUpResponse>() {
+                    @Override
+                    public void onResponse(Call<SignUpResponse> call, Response<SignUpResponse> response) {
+                        System.out.println( "facebookreponse"+ response.raw());
+                        AndroidUtils.showProgress(false,mProgressView,mContentLayout);
+                        if (response.isSuccessful()){
+                            System.out.println( "facebookReonse" + response.raw() );
+                            if (response.body().getSuccess().equals("true")){
+                                SignUpResponse response2= response.body();
+                                session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name(),response2.getImage_path());
+
+                                System.out.println( "facebookimge" + response2.getImage_path());
+                                activityMe();
+                                AndroidUtils.displayToast(getApplicationContext(),"Your account has been Login");
+
+                            } else {
+                                Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
+                            }
+                        }else {
+                            AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<SignUpResponse> call, Throwable t) {
+                        Log.d("CallBack", " Throwable is " + t);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancel() {
+                System.out.println("onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                System.out.println("onError");
+                Log.v("LoginActivity", error.getCause().toString());
+
+            }
+        } );
+
+    }
+
+    private void initializeControls() {
+        google = (Button) findViewById(R.id.google);
+        btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
+
+        google.setOnClickListener(this);
+
+    }
+    private void initializeGPlusSettings() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -102,19 +194,33 @@ public class SignInActivity extends AppCompatActivity implements
                 .addApi( Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        btnSignIn.setOnClickListener(this);
-
+        btnSignIn.setSize(SignInButton.SIZE_STANDARD);
+        btnSignIn.setScopes(gso.getScopeArray());
 
     }
     public void onClick(View v) {
-        int id = v.getId();
-
-        switch (id) {
-            case R.id.sign_in_button:
-                providerName = ("Google");
-                signIn();
-                break;
+        if (v == fb) {
+            providerName = "Facebook";
+            loginButton.performClick();
+        }else if(v == google) {
+            providerName = "Google";
+            signIn();
+           OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+           if (opr.isDone()) {
+               GoogleSignInResult result = opr.get();
+               handleSignInResult(result);
+           } else {
+               showProgressDialog();
+               opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                   @Override
+                   public void onResult(GoogleSignInResult googleSignInResult) {
+                       hideProgressDialog();
+                       handleSignInResult(googleSignInResult);
+                   }
+               });
+           }
         }
+
     }
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -122,18 +228,17 @@ public class SignInActivity extends AppCompatActivity implements
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
     }
-    @Override
+  /*  @Override
     public void onStart() {
         super.onStart();
-
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
-
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
@@ -146,10 +251,10 @@ public class SignInActivity extends AppCompatActivity implements
                 }
             });
         }
-    }
+    }*/
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
@@ -157,17 +262,7 @@ public class SignInActivity extends AppCompatActivity implements
             fullName = acct.getDisplayName();
             email = acct.getEmail();
             providerId= acct.getId();
-            //String personPhotoUrl = acct.getPhotoUrl().toString();
             Log.e("googlelogin", "Name: " +fullName + ", email: " + email + "id:" + providerId  +",providerName :" + providerName );
-           /* Glide.with(getApplicationContext()).load()
-                    .thumbnail(0.5f)
-                    .crossFade()
-                    .diskCacheStrategy( DiskCacheStrategy.ALL)
-                    .into(imgLogo);*/
-          /*  Glide.with(getApplicationContext())
-                    .load(personPhotoUrl)
-                    .centerCrop()
-                    .into(imgLogo);*/
             updateUI(true);
         } else {
             updateUI(false);
@@ -188,7 +283,6 @@ public class SignInActivity extends AppCompatActivity implements
             mProgressDialog.hide();
         }
     }
-
     private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(fullName,email,providerId,providerName," "," " );

@@ -61,7 +61,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
         ImageView imgeView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgeView = (ImageView)itemView.findViewById(R.id.imageView1);
+           // imgeView = (ImageView)itemView.findViewById(R.id.imageView1);
         }
     }
 }
