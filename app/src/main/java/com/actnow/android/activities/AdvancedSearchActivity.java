@@ -152,7 +152,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
-
             }
         } );
         mButtonInfo = (Button) findViewById( R.id.bt_getInfoAdvanced );
@@ -186,10 +185,10 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             mAdvancedSearchEditText.setError( "please entere the Task_key" );
             focusView = mAdvancedSearchEditText;
             cancel = true;
-        }
-        String date = mDateInVisible.getText().toString();
-        String projectCode = mProjectCodeInvisible.getText().toString();
-        if (mDateInVisible != null) {
+        } else {
+     /*   String date = mDateInVisible.getText().toString();
+        String projectCode = mProjectCodeInvisible.getText().toString();*/
+     /*   if (mDateInVisible != null) {
             date = mDateInVisible.getText().toString();
         }
         if (mProjectCodeInvisible != null) {
@@ -197,34 +196,34 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         }
         if (individuvalArray != null) {
             individuvalArray.remove( 0 );
-        }
-
-        Call<AdavancedSearch> adavancedSearchCall = ANApplications.getANApi().adavancedSearch( id, editText, date, projectCode, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
-        System.out.println( "adavmcedValues " + id + editText + date + projectCode
-                + String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
-        adavancedSearchCall.enqueue( new Callback<AdavancedSearch>() {
-            @Override
-            public void onResponse(Call<AdavancedSearch> call, Response<AdavancedSearch> response) {
-                System.out.println( "advancedReponse2" + response.raw() );
-                if (response.isSuccessful()) {
-                    System.out.println( "advancedReponse" + response.raw() );
-                    if (response.body().getSuccess().equals( "true" )) {
-                        System.out.println( "advancedReponse1" + response.body().getTask_records() );
-                        advanceList( response.body().getTask_records() );
+        }*/
+            Call<AdavancedSearch> adavancedSearchCall = ANApplications.getANApi().adavancedSearch( id, editText, "", "", "" );
+            System.out.println( "adavmcedValues " + id + editText + "" + ""
+                    + String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) );
+            adavancedSearchCall.enqueue( new Callback<AdavancedSearch>() {
+                @Override
+                public void onResponse(Call<AdavancedSearch> call, Response<AdavancedSearch> response) {
+                    System.out.println( "advancedReponse2" + response.raw() );
+                    if (response.isSuccessful()) {
+                        System.out.println( "advancedReponse" + response.raw() );
+                        if (response.body().getSuccess().equals( "true" )) {
+                            System.out.println( "advancedReponse1" + response.body().getTask_records() );
+                            advanceList( response.body().getTask_records() );
+                        } else {
+                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_LONG ).show();
+                        }
                     } else {
-                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_LONG ).show();
+                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                     }
-                } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
-            }
 
-            @Override
-            public void onFailure(Call<AdavancedSearch> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
+                @Override
+                public void onFailure(Call<AdavancedSearch> call, Throwable t) {
+                    Log.d( "CallBack", " Throwable is " + t );
 
-            }
-        } );
+                }
+            } );
+        }
     }
 
     private void advanceList(List<AdavancedTaskRecords> task_records) {
@@ -237,12 +236,10 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 adavancedTaskRecords1.setTask_id( adavancedTaskRecords.getTask_id() );
                 adavancedTaskRecordsArrayList.add( adavancedTaskRecords1 );
                 System.out.println( "Adavanceddate" + adavancedTaskRecords1 );
-
             }
             mRecyclerViewAdavanced.setAdapter( new AdavncedSearchAdapter( adavancedTaskRecordsArrayList, R.layout.custom_advanced_list, getApplicationContext() ) );
         }
     }
-
     private void projectDailog() {
         requestDynamicProjectList();
         final Dialog dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
