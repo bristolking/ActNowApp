@@ -172,7 +172,7 @@ public class EditTaskActivity extends AppCompatActivity {
             }
         } );
         TextView tv_title = (TextView) findViewById( R.id.txt_title );
-        tv_title.setText( "Task Edit Name" );
+        tv_title.setText( "TaskOffline Edit Name" );
         Spinner spinner = (Spinner) findViewById( R.id.spinner );
         spinner.setVisibility( View.GONE );
         ImageView imageMenu = (ImageView) findViewById( R.id.image_menu );

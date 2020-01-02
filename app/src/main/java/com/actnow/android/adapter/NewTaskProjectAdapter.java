@@ -17,12 +17,16 @@ import java.util.List;
 
 public class NewTaskProjectAdapter extends RecyclerView.Adapter<NewTaskProjectAdapter.MyViewHolder> {
     private List<ProjectListResponseRecords> projectListResponseRecordsList;
+    Context context;
 
     public NewTaskProjectAdapter(ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList, int custom_project_dailog, Context applicationContext) {
        this.projectListResponseRecordsList = projectListResponseRecordsArrayList;
     }
 
-
+    public NewTaskProjectAdapter(Context applicationContext, ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList) {
+        this.projectListResponseRecordsList = projectListResponseRecordsArrayList;
+        this.context = applicationContext;
+    }
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

@@ -343,7 +343,7 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }
                                     });
@@ -353,7 +353,7 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                                         @Override
                                         public void onClick(View v) {
                                             view1.setVisibility(View.GONE);
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
                                         }
                                     });

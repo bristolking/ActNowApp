@@ -10,7 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -22,6 +21,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -80,6 +81,10 @@ public class ThisWeekActivity extends AppCompatActivity {
     TextView mTaskName;
     FloatingActionButton fabThisTask;
 
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +141,6 @@ public class ThisWeekActivity extends AppCompatActivity {
                 String email = userId.get( UserPrefUtils.EMAIL );
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
                 String img = userId.get( UserPrefUtils.IMAGEPATH );
-                System.out.println( "img" + img );
                 Glide.with( getApplicationContext() )
                         .load( img )
                         .centerCrop()
@@ -229,7 +233,7 @@ public class ThisWeekActivity extends AppCompatActivity {
     private void initializeViews() {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
-       // mTextViewWeeks = findViewById( R.id.tv_titleThisWeek );
+        // mTextViewWeeks = findViewById( R.id.tv_titleThisWeek );
         mImageBulbTask = findViewById( R.id.image_bulbTask );
         mImageBulbTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -363,7 +367,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                                             view1.setVisibility( View.VISIBLE );
                                             Intent i = new Intent( getApplicationContext(), ThisWeekActivity.class );
                                             startActivity( i );
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -402,7 +406,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
 
                                         }

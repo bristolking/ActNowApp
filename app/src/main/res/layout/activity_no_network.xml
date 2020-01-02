@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorYellow"
+    tools:context=".activities.NoNetworkActivity">
+    <ImageView
+        android:id="@+id/imageNonetwork"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/standard_128"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/img_actnow"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#26000000">
+        <RelativeLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32dp"
+                    android:textAlignment="center"
+                    android:fontFamily="sans-serif-condensed"
+                    android:textStyle="normal"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="8dp"
+                    android:text="no connection"/>
+                <Button
+                    android:id="@+id/btn_try"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:text="Try Again"
+                    android:textColor="@color/colorWhite"
+                    android:background="@drawable/samllroundsquare"
+                    android:textSize="20dp"
+                    android:fontFamily="sans-serif-condensed" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

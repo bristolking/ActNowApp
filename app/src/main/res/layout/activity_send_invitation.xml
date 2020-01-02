@@ -72,26 +72,33 @@
                     android:layout_height="1dp"
                     android:background="@color/linebackground" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/editTextRecylerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Enter your email"
+                        android:layout_weight="1"
                         android:layout_margin="4dp"/>
 
-                    <ImageView
-                        android:id="@+id/img_search_send"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_search"
-                        android:layout_margin="4dp"/>
-                </RelativeLayout>
+                    <Button
+                        android:id="@+id/bt_search_send"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="intive"
+                        android:layout_weight="1.8"
+                        android:textColor="@color/colorWhite"
+                        android:layout_margin="4dp"
+                        android:textAllCaps="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:backgroundTint="@color/colorAccent"
+                        android:background="@drawable/rounded_square"/>
+
+                </LinearLayout>
 
 
                 <android.support.v7.widget.RecyclerView
@@ -107,14 +114,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
-
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@drawable/rounded_square"
                         android:padding="10dp"
                         app:srcCompat="@drawable/ic_individuals" />
-
                     <TextView
                         android:id="@+id/tv_allIndividuals"
                         android:layout_width="match_parent"

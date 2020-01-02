@@ -34,6 +34,7 @@ public class OrngActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         session = new UserPrefUtils(getApplicationContext());
         setContentView(R.layout.activity_orng);
+        session.checkLogin();
         initializeViews();
     }
 
@@ -45,7 +46,11 @@ public class OrngActivity extends AppCompatActivity {
         mOrngCodeSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptCreateOrngCode();
+                if (AndroidUtils.isNetworkAvailable( getApplicationContext() )){
+                    attemptCreateOrngCode();
+                }else{
+
+                }
             }
         });
     }

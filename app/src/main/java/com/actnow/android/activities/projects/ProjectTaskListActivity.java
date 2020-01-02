@@ -264,14 +264,11 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if(mProjectTaskRecylcerView.getVisibility() != View.VISIBLE)
                     mProjectTaskRecylcerView.setVisibility( View.VISIBLE );
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 filter(editable.toString());
@@ -371,7 +368,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                             Intent i =new Intent(getApplicationContext(),ProjectTaskListActivity.class);
                                             i.putExtra("projectcode",project_code);
                                             startActivity(i);
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }
                                     });
@@ -408,7 +405,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
 
                                         }

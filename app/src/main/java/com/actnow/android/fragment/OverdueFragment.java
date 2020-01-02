@@ -41,16 +41,11 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
-import com.actnow.android.databse.TaskDatabaseHelper;
-import com.actnow.android.sdk.responses.Task;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -64,8 +59,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import java.util.Date;
-
-import static com.actnow.android.R.layout.task_list_cutsom;
 
 
 public class OverdueFragment extends Fragment {
@@ -92,12 +85,6 @@ public class OverdueFragment extends Fragment {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_overdue, container, false );
         attemptTaskList();
-
-/*
-        if (AndroidUtils.isNetworkAvailable( getActivity() )) {
-        } else {
-            intentNoConnection();
-        }*/
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
         fabTask = view.findViewById( R.id.fab_task );
@@ -167,39 +154,6 @@ public class OverdueFragment extends Fragment {
         }
         mTaskListAdapter.filterList(taskListRecordsFilter);
     }
-
-    private void intentNoConnection() {
-        TaskDatabaseHelper taskDatabaseHelper = new TaskDatabaseHelper( getActivity() );
-        Task task = new Task();
-        task.setId( id );
-
-        Task task1 = taskDatabaseHelper.getSpecificTask( task );
-        JSONObject data = new JSONObject();
-        try {
-            data.put( "id", task1.getId() );
-            data.put( "name", task1.getName() );
-            data.put( "task_code", task1.getTask_code() );
-            data.put( "project_code", task1.getProject_code() );
-            data.put( "priority", task1.getPriority() );
-            data.put( "due_date", task1.getDue_date() );
-            data.put( "task_members", task1.getTask_members() );
-            data.put( "status", task1.getStatus() );
-            data.put( "approval_status", task1.getApproval_status() );
-            data.put( "created_by", task1.getCreated_by() );
-            data.put( "created_date", task1.getCreated_date() );
-            data.put( "updated_by", task1.getUpdated_by() );
-            data.put( "updated_date", task1.getUpdated_date() );
-            data.put( "orgn_code", task1.getOrgn_code() );
-            data.put( "repeat_type", task1.getRepeat_type() );
-            data.put( "repeat_months", task1.getRepeat_months() );
-            data.put( "repeat_week", task1.getRepeat_week() );
-            data.put( "repeat_days", task1.getRepeat_days() );
-            data.put( "parenrt_task_code", task1.getParenrt_task_code());
-        } catch (JSONException e) {
-
-        }
-    }
-
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -216,7 +170,7 @@ public class OverdueFragment extends Fragment {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
+                      AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
 
@@ -298,7 +252,7 @@ public class OverdueFragment extends Fragment {
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
                                             fragmentTransaction.commit();
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -340,7 +294,7 @@ public class OverdueFragment extends Fragment {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
                                         }
                                     } );

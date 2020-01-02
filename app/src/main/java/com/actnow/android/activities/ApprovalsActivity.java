@@ -443,7 +443,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                                             System.out.println( "deleteResponse2" + response.raw() );
                                             Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
                                             startActivity(i);
-                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }

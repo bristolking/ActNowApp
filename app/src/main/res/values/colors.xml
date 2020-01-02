@@ -19,7 +19,9 @@
     <color name="colorWhite">#fafafa</color>
 
 
-    <color name="contact_name">#333333</color>
-    <color name="contact_number">#8c8c8c</color>
+    <color name ="contact_name">#333333</color>
+    <color name ="contact_number">#8c8c8c</color>
+
+    <color name ="green_color">#8BC61D</color>
 
 </resources>

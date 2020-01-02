@@ -47,6 +47,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
+import com.actnow.android.adapter.expandleRecyclerView.TodayTaskAdapter;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
@@ -55,8 +56,11 @@ import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +85,7 @@ public class TodayTaskActivity extends AppCompatActivity {
 
     RecyclerView mTodayRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
-    TaskListAdapter mTaskListAdapter;
+    TodayTaskAdapter mTodayTaskAdapter;
 
     EditText mTaskQucikSearch;
     Button mButtonAdavancedSearch;
@@ -106,6 +110,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         initializeViews();
         checkPermission( Manifest.permission.WRITE_EXTERNAL_STORAGE, STORAGE_PERMISSION_CODE );
         checkPermission( Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE );
+        overDueTask();
     }
 
     private void appHeaderTwo() {
@@ -269,7 +274,6 @@ public class TodayTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG ).show();
-
             }
         } );
         mButtonAdavancedSearch = findViewById( R.id.button_searchTask );
@@ -293,8 +297,15 @@ public class TodayTaskActivity extends AppCompatActivity {
                 startActivity( i );
             }
         } );
-        overDueTask();
-        todayOverDue();
+
+
+        View view =(View)findViewById(R.id.liner_todaytaskview);
+        view.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                todayOverDue();
+            }
+        } );
 
     }
     private void overDueTask() {
@@ -302,36 +313,37 @@ public class TodayTaskActivity extends AppCompatActivity {
         mLayoutManagerOverDue = new LinearLayoutManager( getApplicationContext() );
         mToadyOverDueTask.setLayoutManager( mLayoutManagerOverDue );
         mToadyOverDueTask.setItemAnimator( new DefaultItemAnimator() );
-        mOverDueTaskAdapter = new OverDueTaskAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() );
-        mToadyOverDueTask.setAdapter( mOverDueTaskAdapter );
-        HashMap<String, String> userOverId = session.getUserDetails();
-        String id = userOverId.get( UserPrefUtils.ID );
-        Call<TaskListResponse> call = ANApplications.getANApi().checkOverDueTaskList(id);
-        call.enqueue(new Callback<TaskListResponse>() {
+        mTodayTaskAdapter = new TodayTaskAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mToadyOverDueTask.setAdapter(mTodayTaskAdapter);
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
+        call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                System.out.println( "onResponse " + response.raw());
-                AndroidUtils.showProgress(false,mProgressView,mContentLayout);
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
-                    System.out.println("response1" + response.raw());
+                    System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
-                        setOverDueList(response.body().getTask_records());
-                        System.out.println("response2" + response.body().getTask_records());
-
-                    }else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        setOverDueList( response.body().getTask_records() );
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
-                }else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                } else {
+                    //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
-
+                Log.d( "CallBack", " Throwable is " + t );
             }
-        });
+        } );
 
+    }
+    private Date yesterday() {
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal.getTime();
     }
 
     private void setOverDueList(List<TaskListRecords> task_records) {
@@ -345,10 +357,28 @@ public class TodayTaskActivity extends AppCompatActivity {
                 taskListRecords1.setProject_code(taskListRecords.getProject_code());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
                 taskListRecords1.setTask_code(taskListRecords.getTask_code());
-                taskListRecordsArrayList.add(taskListRecords1);
+                Date date1 = new Date();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                String formattedDate = df.format(date1);
+                String date2[] = taskListRecords.getDue_date().split( " " );
+                String date3 = date2[0];
 
+                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
+                String dateYes = dateFormat.format( yesterday() );
+                Date dat6 = new Date( dateYes );
+                System.out.println( "dateys" + dat6 );
+
+                try {
+                    Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
+                    System.out.println( "date3"+ date4 );
+                    if(date4.before(dat6) && taskListRecords.getStatus().equals( "1" )){
+                        taskListRecordsArrayList.add(taskListRecords1);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
-            mToadyOverDueTask.setAdapter( new OverDueTaskAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() ) );
+            mToadyOverDueTask.setAdapter( new TaskListAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() ) );
             mToadyOverDueTask.addOnItemTouchListener( new TodayTaskActivity.RecyclerTouchListener( this, mTodayRecyclerView, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
@@ -374,7 +404,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                                             view1.setVisibility( View.VISIBLE );
                                             Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
                                             startActivity( i );
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -412,7 +442,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
 
                                         }
@@ -542,16 +572,16 @@ public class TodayTaskActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mTodayRecyclerView.setLayoutManager(mLayoutManager);
         mTodayRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
-        mTodayRecyclerView.setAdapter(mTaskListAdapter);
+        mTodayTaskAdapter = new TodayTaskAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
+        mTodayRecyclerView.setAdapter(mTodayTaskAdapter);
         HashMap<String, String> userOverId = session.getUserDetails();
         String id = userOverId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call2 = ANApplications.getANApi().checkTheTaskListResponse(id);
         call2.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                System.out.println("ress"+ response.raw() );
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                System.out.println( "todat task" + response.raw());
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
                         setTaskList(response.body().getTask_records());
@@ -572,7 +602,7 @@ public class TodayTaskActivity extends AppCompatActivity {
 
     }
 
-    // Today Task list
+    // Today TaskOffline list
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -596,7 +626,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                 }
 
             }
-            mTodayRecyclerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() ) );
+            mTodayRecyclerView.setAdapter( new TodayTaskAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext() ) );
             mToadyOverDueTask.addOnItemTouchListener( new TodayTaskActivity.RecyclerTouchListener( this, mTodayRecyclerView, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
@@ -622,7 +652,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                                             view1.setVisibility( View.VISIBLE );
                                             Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
                                             startActivity( i );
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -660,7 +690,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
 
                                         }

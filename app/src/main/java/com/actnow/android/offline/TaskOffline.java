@@ -1,7 +1,8 @@
-package com.actnow.android.sdk.responses;
+package com.actnow.android.offline;
 
-public class Task {
-    private String id;
+public class TaskOffline {
+
+    private String task_id;
     private String name;
     private String task_code;
     private String project_code;
@@ -14,19 +15,45 @@ public class Task {
     private String created_date;
     private String updated_by;
     private String updated_date;
-    private String orgn_code;
+    private String remindars_count;
+    private String project_name;
     private String repeat_type;
     private String repeat_months;
-    private String repeat_week;
+    private String repeat_weeks;
     private String repeat_days;
-    private String parenrt_task_code;
+    private String parent_task_code;
+    private String orng_code;
 
-    public String getId() {
-        return id;
+    public TaskOffline(String task_id, String name, String task_code, String project_code, String priority, String due_date, String task_members, String status, String approval_status, String created_by, String created_date, String updated_by, String updated_date, String remindars_count, String project_name, String repeat_type, String repeat_months, String repeat_weeks, String repeat_days, String parent_task_code, String orng_code) {
+        this.task_id = task_id;
+        this.name = name;
+        this.task_code = task_code;
+        this.project_code = project_code;
+        this.priority = priority;
+        this.due_date = due_date;
+        this.task_members = task_members;
+        this.status = status;
+        this.approval_status = approval_status;
+        this.created_by = created_by;
+        this.created_date = created_date;
+        this.updated_by = updated_by;
+        this.updated_date = updated_date;
+        this.remindars_count = remindars_count;
+        this.project_name = project_name;
+        this.repeat_type = repeat_type;
+        this.repeat_months = repeat_months;
+        this.repeat_weeks = repeat_weeks;
+        this.repeat_days = repeat_days;
+        this.parent_task_code = parent_task_code;
+        this.orng_code = orng_code;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getTask_id() {
+        return task_id;
+    }
+
+    public void setTask_id(String task_id) {
+        this.task_id = task_id;
     }
 
     public String getName() {
@@ -125,12 +152,20 @@ public class Task {
         this.updated_date = updated_date;
     }
 
-    public String getOrgn_code() {
-        return orgn_code;
+    public String getRemindars_count() {
+        return remindars_count;
     }
 
-    public void setOrgn_code(String orgn_code) {
-        this.orgn_code = orgn_code;
+    public void setRemindars_count(String remindars_count) {
+        this.remindars_count = remindars_count;
+    }
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
     }
 
     public String getRepeat_type() {
@@ -149,12 +184,12 @@ public class Task {
         this.repeat_months = repeat_months;
     }
 
-    public String getRepeat_week() {
-        return repeat_week;
+    public String getRepeat_weeks() {
+        return repeat_weeks;
     }
 
-    public void setRepeat_week(String repeat_week) {
-        this.repeat_week = repeat_week;
+    public void setRepeat_weeks(String repeat_weeks) {
+        this.repeat_weeks = repeat_weeks;
     }
 
     public String getRepeat_days() {
@@ -165,18 +200,30 @@ public class Task {
         this.repeat_days = repeat_days;
     }
 
-    public String getParenrt_task_code() {
-        return parenrt_task_code;
+    public String getParent_task_code() {
+        return parent_task_code;
     }
 
-    public void setParenrt_task_code(String parenrt_task_code) {
-        this.parenrt_task_code = parenrt_task_code;
+    public void setParent_task_code(String parent_task_code) {
+        this.parent_task_code = parent_task_code;
+    }
+
+    public String getOrng_code() {
+        return orng_code;
+    }
+
+    public void setOrng_code(String orng_code) {
+        this.orng_code = orng_code;
+    }
+
+    public TaskOffline() {
+
     }
 
     @Override
     public String toString() {
-        return "Task{" +
-                "id='" + id + '\'' +
+        return "TaskOffline{" +
+                "task_id='" + task_id + '\'' +
                 ", name='" + name + '\'' +
                 ", task_code='" + task_code + '\'' +
                 ", project_code='" + project_code + '\'' +
@@ -189,12 +236,14 @@ public class Task {
                 ", created_date='" + created_date + '\'' +
                 ", updated_by='" + updated_by + '\'' +
                 ", updated_date='" + updated_date + '\'' +
-                ", orgn_code='" + orgn_code + '\'' +
+                ", remindars_count='" + remindars_count + '\'' +
+                ", project_name='" + project_name + '\'' +
                 ", repeat_type='" + repeat_type + '\'' +
                 ", repeat_months='" + repeat_months + '\'' +
-                ", repeat_week='" + repeat_week + '\'' +
+                ", repeat_weeks='" + repeat_weeks + '\'' +
                 ", repeat_days='" + repeat_days + '\'' +
-                ", parenrt_task_code='" + parenrt_task_code + '\'' +
+                ", parent_task_code='" + parent_task_code + '\'' +
+                ", orng_code='" + orng_code + '\'' +
                 '}';
     }
 }

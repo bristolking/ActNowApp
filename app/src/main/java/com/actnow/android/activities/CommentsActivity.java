@@ -1,12 +1,12 @@
 package com.actnow.android.activities;
 
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -29,7 +29,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -48,6 +50,7 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.FileAdapter;
+import com.actnow.android.adapter.GalleryAdapter;
 import com.actnow.android.adapter.ProjectCommentListAdapter;
 import com.actnow.android.adapter.TaskCommentListAdapter;
 import com.actnow.android.sdk.responses.ProjectCommentRecordsList;
@@ -65,6 +68,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -129,17 +133,24 @@ public class CommentsActivity extends AppCompatActivity {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
 
+    int PICK_IMAGE_MULTIPLE = 1;
+
     private Uri fileUri;
     private String mediaPath;
     private String mImageFileLocation = " ";
 
 
-    private String postPath;
+    String postPath;
     EditText commentUpdate;
     View view1;
     String comment;
     String strImage;
     String type = "ActNowApp";
+
+    String imageEncoded;
+    List<String> imagesEncodedList;
+    private GridView gvGallery;
+    private GalleryAdapter galleryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -295,6 +306,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        gvGallery = (GridView)findViewById(R.id.gv);
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
         mEditAddComment = (EditText) findViewById( R.id.et_commentEdit );
@@ -604,7 +616,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
 
-    /*Task Comment List*/
+    /*TaskOffline Comment List*/
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void showPopupTask(View view) {
         PopupMenu popupMenu = new PopupMenu( this, view, Gravity.RIGHT | NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0 );
@@ -798,7 +810,7 @@ public class CommentsActivity extends AppCompatActivity {
                 imgDelete.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        type = (strImage);
+                        type = strImage;
                         HashMap<String, String> userId = session.getUserDetails();
                         String id = userId.get( UserPrefUtils.ID );
                         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -900,14 +912,27 @@ public class CommentsActivity extends AppCompatActivity {
         imageGallery.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseFile();
+               /* chooseFile();*/
+               /* Intent i =new Intent(getApplicationContext(),GalleryActivity.class);
+                startActivity(i);*/
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
             }
         } );
         ImageView imageAttachament = (ImageView) findViewById( R.id.image_attachament );
         imageAttachament.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseFile();
+               // chooseFile();
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
             }
         } );
         ImageView imageCamera = (ImageView) findViewById( R.id.image_camera );
@@ -928,21 +953,23 @@ public class CommentsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText( getApplicationContext(), "Work in progress!", Toast.LENGTH_LONG ).show();
-                String comment = mEditAddComment.getText().toString();
+                String userComment = mEditAddComment.getText().toString();
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID );
-                String orng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                if (postPath == null || postPath.equals( "" )) {
-                    Toast.makeText( getApplicationContext(), "Please select an image", Toast.LENGTH_LONG ).show();
-                    return;
-                } else {
+                String uid = userId.get( UserPrefUtils.ID );
+                String userorng_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                     File file = new File( postPath );
                     RequestBody requestBody = RequestBody.create( MediaType.parse( "*/*" ), file );
-                    System.out.println( "requsetBody" + file );
+                    //System.out.println( "requsetBody" + file );
+                    RequestBody id = RequestBody.create( MediaType.parse( "multipart/form-data" ), uid );
+                    RequestBody orng_code = RequestBody.create( MediaType.parse( "multipart/form-data" ), userorng_code );
+                    RequestBody comment = RequestBody.create( MediaType.parse( "multipart/form-data" ), userComment );
+                    RequestBody userTask_code = RequestBody.create( MediaType.parse( "multipart/form-data" ), task_code );
+                    RequestBody userProject_code = RequestBody.create( MediaType.parse( "multipart/form-data" ), project_code );
+                    RequestBody path = RequestBody.create( MediaType.parse( "multipart/form-data" ), postPath );
                     MultipartBody.Part attachment = MultipartBody.Part.createFormData( "image", "image.jpg", requestBody );
                     System.out.println( "body" + attachment );
-                   /* Call<TaskComplete> taskAddResponseCall = ANApplications.getANApi().checkTheCommentAdd( id, orng_code, comment, task_code, project_code, attachment );
-                    System.out.println( "taskAdd" + id + orng_code + comment + task_code + project_code + attachment );
+                    Call<TaskComplete> taskAddResponseCall = ANApplications.getANApi().checkTheCommentAdd( id, orng_code, comment, userTask_code, userProject_code,path, attachment );
+                    System.out.println( "taskAdd" + id + orng_code + comment + userTask_code + userProject_code + attachment );
                     taskAddResponseCall.enqueue( new Callback<TaskComplete>() {
 
                        public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
@@ -963,8 +990,8 @@ public class CommentsActivity extends AppCompatActivity {
 
                        }
 
-                    } );*/
-                }
+                    } );
+
 
             }
         } );
@@ -976,6 +1003,79 @@ public class CommentsActivity extends AppCompatActivity {
         Intent galleryIntent = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI );
         startActivityForResult( galleryIntent, REQUEST_PICK_PHOTO );
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            // When an Image is picked
+            if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK
+                    && null != data) {
+                // Get the Image from data
+
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                imagesEncodedList = new ArrayList<String>();
+                if(data.getData()!=null){
+
+                    Uri mImageUri=data.getData();
+
+                    // Get the cursor
+                    Cursor cursor = getContentResolver().query(mImageUri,
+                            filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    imageEncoded  = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                    mArrayUri.add(mImageUri);
+                    galleryAdapter = new GalleryAdapter(getApplicationContext(),mArrayUri);
+                    gvGallery.setAdapter(galleryAdapter);
+                    gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
+                    ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                            .getLayoutParams();
+                    mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+
+                } else {
+                    if (data.getClipData() != null) {
+                        ClipData mClipData = data.getClipData();
+                        ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                        for (int i = 0; i < mClipData.getItemCount(); i++) {
+
+                            ClipData.Item item = mClipData.getItemAt(i);
+                            Uri uri = item.getUri();
+                            mArrayUri.add(uri);
+                            // Get the cursor
+                            Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+                            // Move to first row
+                            cursor.moveToFirst();
+
+                            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                            imageEncoded  = cursor.getString(columnIndex);
+                            imagesEncodedList.add(imageEncoded);
+                            cursor.close();
+
+                            galleryAdapter = new GalleryAdapter(getApplicationContext(),mArrayUri);
+                            gvGallery.setAdapter(galleryAdapter);
+                            gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
+                            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                                    .getLayoutParams();
+                            mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+
+                        }
+                        Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
+                    }
+                }
+            } else {
+                Toast.makeText(this, "You haven't picked Image",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
+                    .show();
+        }
+/*
 
     protected void onActivityResult(int requstCode, int resultCode, Intent data) {
         super.onActivityResult( requstCode, resultCode, data );
@@ -1007,6 +1107,8 @@ public class CommentsActivity extends AppCompatActivity {
         } else if (requstCode != RESULT_CANCELED) {
             Toast.makeText( getApplicationContext(), "Sorry, there was on error!", Toast.LENGTH_LONG ).show();
         }
+    }
+*/
     }
 
     public void onBackPressed() {

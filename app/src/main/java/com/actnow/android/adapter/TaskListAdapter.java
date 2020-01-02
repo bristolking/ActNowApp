@@ -25,8 +25,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         this.taskListRecordsList = taskListRecordsArrayList;
     }
 
-
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -55,8 +53,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         taskListRecordsList = taskListRecordsFilter;
         notifyDataSetChanged();
     }
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskListTaskName;
         TextView mDudate;

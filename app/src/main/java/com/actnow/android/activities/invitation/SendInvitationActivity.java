@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -145,8 +146,8 @@ public class SendInvitationActivity extends AppCompatActivity {
                 filter(s.toString());
             }
         } );
-        ImageView imgSendInvitations = (ImageView) findViewById( R.id.img_search_send );
-        imgSendInvitations.setOnClickListener( new View.OnClickListener() {
+        Button btSendInvitations = (Button) findViewById( R.id.bt_search_send );
+        btSendInvitations.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendInvitationCall();
@@ -174,6 +175,8 @@ public class SendInvitationActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                 try {
                     System.out.println("Server Response:1 "+response.body().string());
+                    Intent i =new Intent( getApplicationContext(),InvitationActivity.class );
+                    startActivity(i);
                 }catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -186,7 +189,6 @@ public class SendInvitationActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d( "CALLBACk", "THORBALE" + t );
-
 
             }
         } );
@@ -259,34 +261,29 @@ public class SendInvitationActivity extends AppCompatActivity {
                  view1.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Call<ResponseBody> userSendInvitationsCall = ANApplications.getANApi().
-                                cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code, textEmail );
+                        Call<ResponseBody> userSendInvitationsCall = ANApplications.getANApi().cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code,textEmail );
                         System.out.println( "severReponse" + id + orncode + sendInvitaionprojectCode + task_code + textEmail );
                         userSendInvitationsCall.enqueue( new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                if (response.isSuccessful()) {
-                                    System.out.println( "severReponse1" + response.raw() );
-                                  /*  if (response.body().getSuccess().equals( "true" )) {
-                                        System.out.println( "severReponse2" + response.body().getSuccess() );
-                                        Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
-                                        startActivity( i );
-                                        finish();
-
-                                    } else {
-                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-
-                                    }*/
-                                } else {
-                                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-
+                                System.out.println( "severReponse5" + response.raw() );
+                                if (response.isSuccessful()){
+                                    try {
+                                        System.out.println("Server Response:1 "+response.body().string());
+                                        Intent i =new Intent( getApplicationContext(),InvitationActivity.class );
+                                        startActivity(i);
+                                    }catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else {
+                                    System.out.println( "Server Response:2 " + response.errorBody() );
                                 }
+
                             }
 
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
                                 Log.d( "CALLBACk", "THORBALE" + t );
-
 
                             }
                         } );

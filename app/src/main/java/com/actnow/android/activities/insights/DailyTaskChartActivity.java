@@ -222,7 +222,7 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
                 //((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.colorWhite.colorAccent));
                 switch (position) {
                     case 0:
-                        Toast.makeText(getApplicationContext(), "Seleted the Toady Task Chart", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Seleted the Toady TaskOffline Chart", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
                         Intent i = new Intent(getBaseContext(), WeekelyTaskChartActivity.class);

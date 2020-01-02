@@ -48,6 +48,7 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.adapter.NewTaskProjectAdapter;
 import com.actnow.android.adapter.TaskWeeknameAdapter;
+import com.actnow.android.fragment.AllTaskFragment;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskAddResponse;
@@ -657,7 +658,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         }
     }
     private void requestCreateTask(String id, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type,  String list, String days, String months) {
-        System.out.println("values"+ id+taskName+duedate+days+priorty+project_code+orgn_code+repeat_type+week_days+days+months);
+        System.out.println("taskfelids"+ id+taskName+duedate+days+priorty+project_code+orgn_code+repeat_type+week_days+days+months);
         Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse( id, taskName, duedate, priorty,project_code,orgn_code,repeat_type,list,days,months);
         call.enqueue( new Callback<TaskAddResponse>() {
             @Override
@@ -665,12 +666,9 @@ public class ViewTasksActivity extends AppCompatActivity {
                 System.out.println("arjun"+response.raw());
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        Intent i = new Intent(ViewTasksActivity.this, TaskAddListActivity.class);
-                        i.putExtra( "projectName",projectName);
-                        startActivity( i );
-                        //Snackbar.make( mContentLayout, "Task will be Created", Snackbar.LENGTH_SHORT ).show();
+                        Intent i = new Intent(getApplicationContext(),TaskAddListActivity.class);
+                        startActivity(i);
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
                     AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
@@ -794,6 +792,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         tv_create.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {
                 attemptCreateTask();
+
             }
         } );
     }

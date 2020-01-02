@@ -44,7 +44,7 @@ import retrofit2.Response;
 public class OverDueTaskActivity extends AppCompatActivity {
     RecyclerView mRecyclerViewPriority;
     RecyclerView.LayoutManager mLayoutManager;
-    String[] arrayItems = {"Over Due Task", "Priorty Task"};
+    String[] arrayItems = {"Over Due TaskOffline", "Priorty TaskOffline"};
     private ArrayList<OverDueTaskRecords> overDueTaskRecordsArrayList = new ArrayList<OverDueTaskRecords>();
     UserPrefUtils session;
     View mProgressView,mContentLayout;
@@ -150,7 +150,7 @@ public class OverDueTaskActivity extends AppCompatActivity {
                 ((TextView) spinner.getSelectedView()).setTextColor(getResources().getColor(R.color.colorAccent));
                 switch (position) {
                     case 0:
-                        Toast.makeText(getApplicationContext(), "Over Due Task", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Over Due TaskOffline", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
                         Intent i = new Intent(OverDueTaskActivity.this, PriorityTaskActivity.class);

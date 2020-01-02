@@ -46,7 +46,7 @@ public class PriorityTaskActivity extends AppCompatActivity  {
     RecyclerView mOverDueTaskRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     PriorityTaskAdapter mPriorityTaskAdapter;
-    String[] arrayItems = {"Priorty Task","Over Due Task"};
+    String[] arrayItems = {"Priorty TaskOffline","Over Due TaskOffline"};
     private List<TaskListRecords> priorityTaskListRecords =new ArrayList<TaskListRecords>();
     UserPrefUtils session;
     View mProgressView,mContentLayout;

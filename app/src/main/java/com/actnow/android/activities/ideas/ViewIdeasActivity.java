@@ -378,7 +378,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
                                             view1.setVisibility(View.VISIBLE);
                                             Intent i= new Intent( getApplicationContext(),ViewIdeasActivity.class);
                                             startActivity(i);
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }
                                     });
@@ -417,7 +417,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
 
                                         }

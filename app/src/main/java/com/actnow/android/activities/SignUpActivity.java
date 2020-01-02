@@ -47,7 +47,12 @@ public class SignUpActivity extends AppCompatActivity {
         msignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptSignUp();
+                if (AndroidUtils.isNetworkAvailable(getApplicationContext())){
+                    attemptSignUp();
+                }else {
+                    intentNoConnection();
+                }
+
             }
         });
     }
@@ -120,6 +125,10 @@ public class SignUpActivity extends AppCompatActivity {
     private void activityLogin() {
         Intent login=new Intent(SignUpActivity.this,OrngActivity.class);
         startActivity(login);
+    }
+    private void intentNoConnection() {
+        Intent iNetWork = new Intent( getApplicationContext(),NoNetworkActivity.class);
+        startActivity(iNetWork);
     }
     private static long back_pressed;
     @Override

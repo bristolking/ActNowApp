@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
@@ -38,18 +37,14 @@ import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
-
 import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class AdvancedSearchActivity extends AppCompatActivity {
     final Context context = this;
@@ -225,7 +220,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             } );
         }
     }
-
     private void advanceList(List<AdavancedTaskRecords> task_records) {
         if (task_records.size() > 0) {
             for (int i = 0; task_records.size() > i; i++) {
@@ -271,7 +265,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         } );
         dialog.show();
     }
-
     private void requestDynamicProjectList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -297,8 +290,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         } );
 
     }
-
-
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
@@ -332,7 +323,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                     } );
         }
     }
-
     private void requestIndividualDynamicContent() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -358,7 +348,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         } );
 
     }
-
     private void setProjectFooterList(List<ProjectListResponseRecords> project_records) {
         if (project_records.size() > 0) {
             for (int i = 0; project_records.size() > i; i++) {
@@ -372,13 +361,11 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             mRecyclerViewDateTime.addOnItemTouchListener( new AdvancedSearchActivity.RecyclerTouchListener( this, mRecyclerViewDateTime, new AdvancedSearchActivity.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
-
                     mProjectNameDailog = (TextView) view.findViewById( R.id.tv_projectNameDailog );
                     projectName = mProjectNameDailog.getText().toString();
                     mProjectCodeDailog = (TextView) view.findViewById( R.id.tv_projectCodeDailog );
 
                 }
-
                 @Override
                 public void onLongClick(View view, int position) {
 
@@ -386,7 +373,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             } ) );
         }
     }
-
     public interface ClickListener {
         void onClick(View view, int position);
 
@@ -394,13 +380,10 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     }
 
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
-
         private AdvancedSearchActivity.ClickListener clicklistener;
         private GestureDetector gestureDetector;
-
         public RecyclerTouchListener(AdvancedSearchActivity context, final RecyclerView mRecylerViewSingleSub, AdvancedSearchActivity.ClickListener clickListener) {
             this.clicklistener = clickListener;
-
             gestureDetector = new GestureDetector( context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
@@ -416,7 +399,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 }
             } );
         }
-
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
             View child = rv.findChildViewUnder( e.getX(), e.getY() );
@@ -430,17 +412,14 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         @Override
         public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         }
-
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate( R.menu.search_menu, menu );
         return true;
     }
-
     public void onBackPressed() {
         super.onBackPressed();
 

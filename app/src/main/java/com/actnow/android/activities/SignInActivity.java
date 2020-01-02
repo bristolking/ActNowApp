@@ -106,7 +106,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptLogin();
+                if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+                    attemptLogin();
+                } else {
+                    intentNoConnection();
+                }
             }
         });
         mSignUp = findViewById(R.id.bt_signup);
@@ -121,6 +125,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         facebookLogin();
 
     }
+
     private void facebookLogin() {
         callbackManager = CallbackManager.Factory.create();
         fb = (Button) findViewById(R.id.fb);
@@ -397,6 +402,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
         finish();
     }
+    private void intentNoConnection() {
+        Intent iNetWork = new Intent( getApplicationContext(),NoNetworkActivity.class);
+        startActivity(iNetWork);
+    }
+
     private static long back_pressed;
     @Override
     public void onBackPressed() {

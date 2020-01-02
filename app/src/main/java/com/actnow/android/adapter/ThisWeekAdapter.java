@@ -19,7 +19,6 @@ import java.util.List;
 public class ThisWeekAdapter extends RecyclerView.Adapter<ThisWeekAdapter.ViewHolder> {
     private List<TaskListRecords> taskListRecordsList;
     private  Context context;
-    private ArrayList<String> arrayList;
 
     public ThisWeekAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int custom_task_weekname_list, Context applicationContext) {
       this.taskListRecordsList = taskListRecordsArrayList;

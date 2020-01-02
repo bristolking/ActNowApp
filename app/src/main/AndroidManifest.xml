@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.invitation.SendInvitationActivity"></activity>
+        <activity android:name=".activities.NoNetworkActivity"></activity>
+        <activity android:name=".activities.invitation.SendInvitationActivity" />
         <activity android:name=".activities.GalleryActivity" />
         <activity android:name=".activities.AdvancedSearchActivity" />
         <activity android:name=".activities.invitation.ShareActivity" />
@@ -71,12 +72,12 @@
         <activity android:name=".activities.tasks.ViewTasksActivity" />
         <activity android:name=".activities.ForgotPasswordActivity" />
         <activity android:name=".activities.SignUpActivity" />
-        <activity android:name=".activities.SignInActivity"
-            />
+        <activity android:name=".activities.SignInActivity" />
         <activity android:name=".activities.MeActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -84,11 +85,14 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
-        <provider android:authorities="com.facebook.app.FacebookContentProvider1234"
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:value="@string/facebook_app_id" />
+
+        <provider
             android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1234"
             android:exported="true" />
         <provider
             android:name="android.support.v4.content.FileProvider"

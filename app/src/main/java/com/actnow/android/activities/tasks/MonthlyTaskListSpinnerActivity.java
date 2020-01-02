@@ -412,7 +412,7 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
                                             view1.setVisibility( View.VISIBLE );
                                             Intent i = new Intent( getApplicationContext(), MonthlyTaskListSpinnerActivity.class );
                                             startActivity( i );
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -452,7 +452,7 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
 
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
 
                                         }
