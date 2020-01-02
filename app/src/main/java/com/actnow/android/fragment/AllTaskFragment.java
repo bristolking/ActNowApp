@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.AdvancedSearchActivity;
@@ -36,6 +37,7 @@ import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -89,7 +91,7 @@ public class AllTaskFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager( getContext() );
         mAllTaskRecylcerView.setLayoutManager( mLayoutManager );
         mAllTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
         mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
         attemptTaskList();
 
@@ -115,11 +117,10 @@ public class AllTaskFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+                filter( editable.toString() );
 
             }
         } );
-
 
 
         mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
@@ -134,13 +135,13 @@ public class AllTaskFragment extends Fragment {
     }
 
     private void filter(String toString) {
-        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
-        for (TaskListRecords name  :taskListRecordsArrayList){
-            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
-                taskListRecordsFilter.add(name);
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
+        for (TaskListRecords name : taskListRecordsArrayList) {
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
+                taskListRecordsFilter.add( name );
             }
         }
-        mTaskListAdapter.filterList(taskListRecordsFilter);
+        mTaskListAdapter.filterList( taskListRecordsFilter );
     }
 
 
@@ -161,6 +162,7 @@ public class AllTaskFragment extends Fragment {
                 } else {
                 }
             }
+
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
                 Log.d( "CallBack", " Throwable is " + t );
@@ -187,8 +189,7 @@ public class AllTaskFragment extends Fragment {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
-            mAllTaskRecylcerView.setAdapter(mTaskListAdapter);
-            //mAllTaskRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() ) );
+            mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
             mAllTaskRecylcerView.addOnItemTouchListener( new AllTaskFragment.RecyclerTouchListener( this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
@@ -297,9 +298,8 @@ public class AllTaskFragment extends Fragment {
                             String projectCode = tv_projectCode.getText().toString();
                             Intent i = new Intent( getActivity(), InvitationActivity.class );
                             i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "SenIvitaionprojectCode",projectCode);
+                            i.putExtra( "SenIvitaionprojectCode", projectCode );
                             startActivity( i );
-
                         }
                     } );
                     ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
@@ -324,10 +324,49 @@ public class AllTaskFragment extends Fragment {
                             Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
                             i.putExtra( "TaskCode", task_code );
                             System.out.println( "maximum" + task_code );
-                            startActivity( i );
+                            startActivity(i);
+                        }
+                    } );
+                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                    mImageDelete.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = tv_taskcode.getText().toString();
+                            Call<TaskDelete> callTaskDelete = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                            System.out.println( "deleteFields" + id + task_code + orgn_code );
+                            callTaskDelete.enqueue( new Callback<TaskDelete>() {
+                                @Override
+                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    System.out.println( "deleteResponse" + response.raw() );
+                                    if (response.isSuccessful()) {
+                                        System.out.println( "deleteResponse1" + response.raw() );
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            System.out.println( "deleteResponse2" + response.raw() );
+                                            Intent i = new Intent( getActivity(), AllTaskFragment.class );
+                                            startActivity( i );
+                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
 
                         }
                     } );
+
 
                 }
 

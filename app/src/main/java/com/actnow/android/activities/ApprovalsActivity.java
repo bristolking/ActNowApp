@@ -558,7 +558,6 @@ public class ApprovalsActivity extends AppCompatActivity {
             }
         } );
 
-
     }
 
     private void activityToady() {
@@ -594,7 +593,6 @@ public class ApprovalsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //overridePendingTransition(R.anim.from_left_in, R.anim.from_right_out);
     }
 }
 
