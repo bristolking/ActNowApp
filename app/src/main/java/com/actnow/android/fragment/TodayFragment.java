@@ -1,5 +1,6 @@
 package com.actnow.android.fragment;
 
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,16 +12,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,22 +25,21 @@ import android.widget.TextView;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
-import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
-import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.TaskComplete;
-import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,31 +47,35 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AllTaskFragment extends Fragment {
-    RecyclerView mAllTaskRecylcerView;
-    RecyclerView.LayoutManager mLayoutManager;
-    FloatingActionButton fabAllTask;
-    TaskListAdapter mTaskListAdapter;
+import static com.actnow.android.R.layout.task_list_cutsom;
+
+
+public class TodayFragment extends Fragment {
+    RecyclerView mTodayRecylcerView;
+    RecyclerView.LayoutManager mTodayLayoutManager;
+    FloatingActionButton fabTodayTask;
+    TaskListAdapter mTodayTaskListAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
-    EditText mTaskQucikSearch;
-    Button mButtonAdavancedSearch;
-    ImageView mImageBulbTask;
     private String selectedType = "";
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-    final AllTaskFragment context = this;
 
+    final TodayFragment context = this;
+    String id;
     TextView mTaskName;
 
+    public TodayFragment() {
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
-        View view = inflater.inflate( R.layout.fragment_all_task, container, false );
+        View view =  inflater.inflate( R.layout.fragment_today, container, false );
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
-        fabAllTask = view.findViewById( R.id.fab_alltask );
-        fabAllTask.setOnClickListener( new View.OnClickListener() {
+        fabTodayTask = view.findViewById( R.id.fab_todaytask );
+        fabTodayTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
@@ -87,88 +87,42 @@ public class AllTaskFragment extends Fragment {
                 startActivity( i );
             }
         } );
-        mAllTaskRecylcerView = (RecyclerView) view.findViewById( R.id.alltask_recyclerView );
-        mLayoutManager = new LinearLayoutManager( getContext() );
-        mAllTaskRecylcerView.setLayoutManager( mLayoutManager );
-        mAllTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
-        mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
+        mTodayRecylcerView = (RecyclerView) view.findViewById( R.id.toady_recylerView );
+        mTodayLayoutManager = new LinearLayoutManager( getContext() );
+        mTodayRecylcerView.setLayoutManager( mTodayLayoutManager );
+        mTodayRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mTodayTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
+        mTodayRecylcerView.setAdapter( mTodayTaskListAdapter );
         attemptTaskList();
-
-        mImageBulbTask = view.findViewById( R.id.image_bulbTask );
-        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent( getActivity(), ViewIdeasActivity.class );
-                startActivity( i );
-            }
-        } );
-        mTaskQucikSearch = view.findViewById( R.id.edit_searchTask );
-        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                filter( editable.toString() );
-
-            }
-        } );
-        mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
-        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent( getActivity(), AdvancedSearchActivity.class );
-                startActivity( i );
-            }
-        } );
         return view;
     }
 
-    private void filter(String toString) {
-        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
-        for (TaskListRecords name : taskListRecordsArrayList) {
-            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
-                taskListRecordsFilter.add( name );
-            }
-        }
-        mTaskListAdapter.filterList( taskListRecordsFilter );
-    }
-
-
     private void attemptTaskList() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get( UserPrefUtils.ID );
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
-        call.enqueue( new Callback<TaskListResponse>() {
+        HashMap<String,String> userTodayId = session.getUserDetails();
+        String id = userTodayId.get(UserPrefUtils.ID);
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
+        call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                System.out.println("ress"+ response.raw() );
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setTaskList( response.body().getTask_records() );
+                    if (response.body().getSuccess().equals("true")) {
+                        setTaskList(response.body().getTask_records());
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
+                    AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                 }
             }
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
 
             }
-        } );
+        });
     }
-
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -179,16 +133,21 @@ public class AllTaskFragment extends Fragment {
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
                 taskListRecords1.setProject_code( taskListRecords.getProject_code() );
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
-                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
-                taskListRecords1.setStatus( taskListRecords.getStatus() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                if (taskListRecords.getStatus().equals( "1" )) {
+                Date date1 = new Date();
+                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
+                String formattedDate = df.format( date1 );
+                System.out.println( "formattedDate" + formattedDate );
+                String date2[] = taskListRecords.getDue_date().split( " " );
+                String date3 = date2[0];
+                if (date3.equals( formattedDate ) && taskListRecords.getStatus().equals( "1" )) {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
+
             }
-            mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
-            mAllTaskRecylcerView.addOnItemTouchListener( new AllTaskFragment.RecyclerTouchListener( this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
+            mTodayRecylcerView.setAdapter(new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getActivity()));
+            mTodayRecylcerView.addOnItemTouchListener( new TodayFragment.RecyclerTouchListener( this, mTodayRecylcerView, new TodayFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
@@ -198,8 +157,8 @@ public class AllTaskFragment extends Fragment {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
-                    final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
-                    final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
+                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
                     groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
@@ -211,10 +170,10 @@ public class AllTaskFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                            TodayFragment mTodayFragment = new TodayFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
+                                            fragmentTransaction.replace(R.id.fragment_today, mTodayFragment);
                                             fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
@@ -240,10 +199,10 @@ public class AllTaskFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                                            TodayFragment mTodayFragment = new TodayFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
+                                                            fragmentTransaction.replace(R.id.fragment_today, mTodayFragment);
                                                             fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -292,12 +251,9 @@ public class AllTaskFragment extends Fragment {
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String task_code = tv_taskcode.getText().toString();
-                            String projectCode = tv_projectCode.getText().toString();
-                            Intent i = new Intent( getActivity(), InvitationActivity.class );
-                            i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "SenIvitaionprojectCode", projectCode );
-                            startActivity( i );
+                            Intent i= new Intent(getActivity(), InvitationActivity.class);
+                            startActivity(i);
+
                         }
                     } );
                     ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
@@ -319,52 +275,13 @@ public class AllTaskFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
+                            Intent i=new Intent( getActivity(), ReaminderScreenActivity.class);
                             i.putExtra( "TaskCode", task_code );
                             System.out.println( "maximum" + task_code );
                             startActivity(i);
-                        }
-                    } );
-                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
-                    mImageDelete.setOnClickListener( new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            HashMap<String, String> userId = session.getUserDetails();
-                            String id = userId.get( UserPrefUtils.ID );
-                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                            String task_code = tv_taskcode.getText().toString();
-                            Call<TaskDelete> callTaskDelete = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
-                            System.out.println( "deleteFields" + id + task_code + orgn_code );
-                            callTaskDelete.enqueue( new Callback<TaskDelete>() {
-                                @Override
-                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
-                                    System.out.println( "deleteResponse" + response.raw() );
-                                    if (response.isSuccessful()) {
-                                        System.out.println( "deleteResponse1" + response.raw() );
-                                        if (response.body().getSuccess().equals( "true" )) {
-                                            System.out.println( "deleteResponse2" + response.raw() );
-                                            Intent i = new Intent( getActivity(), AllTaskFragment.class );
-                                            startActivity( i );
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
-                                        } else {
-                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                        }
-                                    } else {
-                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
-                                    }
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<TaskDelete> call, Throwable t) {
-                                    Log.d( "CallBack", " Throwable is " + t );
-
-                                }
-                            } );
 
                         }
                     } );
-
 
                 }
 
@@ -385,10 +302,10 @@ public class AllTaskFragment extends Fragment {
 
     public class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-        private AllTaskFragment.ClickListener clicklistener;
+        private TodayFragment.ClickListener clicklistener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListener(AllTaskFragment context, final RecyclerView mRecylerViewSingleSub, AllTaskFragment.ClickListener clickListener) {
+        public RecyclerTouchListener(TodayFragment context, final RecyclerView mRecylerViewSingleSub, TodayFragment.ClickListener clickListener) {
             this.clicklistener = clickListener;
             gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
 
@@ -423,7 +340,6 @@ public class AllTaskFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
+
 }
-
-
-

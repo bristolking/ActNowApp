@@ -256,7 +256,6 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             }
         } );
-
         mButtonAdavancedSearchApproval = findViewById( R.id.button_searchApproval );
         mButtonAdavancedSearchApproval.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -300,7 +299,6 @@ public class ApprovalsActivity extends AppCompatActivity {
             }
         } );
     }
-
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>();
         for (TaskListRecords name : taskListRecordsArrayList) {
