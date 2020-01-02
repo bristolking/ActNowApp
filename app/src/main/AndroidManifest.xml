@@ -89,7 +89,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:value="@string/facebook_app_id" />
-
+<!--
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider1234"
@@ -99,7 +99,7 @@
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-        </provider>
+        </provider>-->
     </application>
 
 </manifest>
