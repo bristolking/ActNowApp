@@ -31,6 +31,8 @@ import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -159,12 +161,12 @@ public class SendInvitationActivity extends AppCompatActivity {
         //String invite_emails = editText.getText().toString();
         //String invite_emails = String.valueOf( individuvalArray );
         String invite_emails = editText.getText().toString();
-        /*  try {
+          try {
             individuvalArray = new JSONArray( invite_emails );
             System.out.println( "individuvalArray"+ individuvalArray );
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
 
         Call<ResponseBody> userSendInvitationsCall = ANApplications.getANApi().cheTheUserSend( id, orncode, sendInvitaionprojectCode, task_code,invite_emails );
         System.out.println( "severReponse" + id + orncode + sendInvitaionprojectCode + task_code + invite_emails );

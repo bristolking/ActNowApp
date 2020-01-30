@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layoutTaskView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/colorWhite"
-    tools:openDrawer="right"
-    tools:context=".activities.tasks.ViewTasksActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.tasks.ViewTasksActivity"
+    tools:openDrawer="right">
 
     <include layout="@layout/app_bar_side_menu" />
 
@@ -59,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/name_text_in_newTaskTitle"
                     android:layout_width="match_parent"
@@ -69,12 +69,12 @@
                         android:id="@+id/et_newtaskTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:drawableLeft="@drawable/ic_usertwo"
+                        android:editable="false"
                         android:hint="TaskOwner"
                         android:maxLines="1"
-                        android:clickable="false"
-                        android:editable="false"
                         android:singleLine="true"
-                        android:drawableLeft="@drawable/ic_usertwo"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -110,7 +110,6 @@
                     android:id="@+id/re_projrectNewTask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1">
 
                     <ImageView
@@ -118,147 +117,158 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         app:srcCompat="@drawable/ic_plus" />
-
-                    <TextView
-                        android:id="@+id/tv_projectTask"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/name_project"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/image_project"
-                        android:text="Project"
-                        android:paddingLeft="8dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/textColor" />
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/tv_projectTask"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="40dp"
+                            android:hint="Project"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorAccent" />
+                    </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/re_priorityNewTask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1">
                     <ImageView
                         android:id="@+id/image_priority"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         app:srcCompat="@drawable/ic_plus" />
-                    <TextView
-                        android:id="@+id/tv_taskPriorty"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/name_priority"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/image_priority"
-                        android:paddingLeft="8dp"
-                        android:text="Priority"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/textColor" />
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/tv_taskPriorty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Priority"
+                            android:paddingLeft="40dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/colorAccent" />
+                    </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
+
                 <RelativeLayout
                     android:id="@+id/re_repeatTypeNewTask"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_weight="1">
+
                     <ImageView
                         android:id="@+id/image_reminder"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        app:srcCompat="@drawable/ic_plus"
-                        android:layout_marginTop="20dp"/>
+                        android:layout_marginTop="20dp"
+                        app:srcCompat="@drawable/ic_plus" />
 
                     <Spinner
                         android:id="@+id/spinnerReapt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Repat Option"
+                        android:paddingLeft="25dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         app:fontFamily="@font/montserrat"
-                        app:met_floatingLabel="normal"
-                        android:paddingLeft="25dp"/>
+                        app:met_floatingLabel="normal" />
                 </RelativeLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp">
-            <RelativeLayout
-                android:id="@+id/re_weekly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:visibility="gone">
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/ic_down_arrow_square"  />
-
-                <TextView
-                    android:id="@+id/tv_weekly"
+                <RelativeLayout
+                    android:id="@+id/re_weekly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="Weekly"
-                    android:textColor="@color/black"/>
-            </RelativeLayout>
+                    android:padding="10dp"
+                    android:visibility="gone">
 
-            <RelativeLayout
-                android:id="@+id/re_monthly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:visibility="gone">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_down_arrow_square" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/ic_down_arrow_square"  />
+                    <TextView
+                        android:id="@+id/tv_weekly"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Weekly"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_datesMonthly"
+                <RelativeLayout
+                    android:id="@+id/re_monthly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="Monthly"
-                    android:textColor="@color/black"/>
-            </RelativeLayout>
+                    android:padding="10dp"
+                    android:visibility="gone">
 
-            <RelativeLayout
-                android:id="@+id/re_yearly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:visibility="gone">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_down_arrow_square" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/ic_down_arrow_square"  />
+                    <TextView
+                        android:id="@+id/tv_datesMonthly"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Monthly"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_yearly"
+                <RelativeLayout
+                    android:id="@+id/re_yearly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:text="Yearly"
-                    android:textColor="@color/black"/>
-            </RelativeLayout>
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_down_arrow_square" />
+
+                    <TextView
+                        android:id="@+id/tv_yearly"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Yearly"
+                        android:textColor="@color/black" />
+                </RelativeLayout>
             </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>
+
     <include layout="@layout/footer" />
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

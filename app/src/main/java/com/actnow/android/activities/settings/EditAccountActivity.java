@@ -134,7 +134,6 @@ public class EditAccountActivity extends AppCompatActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-
             HashMap<String, String> useId = session.getUserDetails();
             String uid = useId.get( UserPrefUtils.ID );
             if (picturePath == null || picturePath.equals( "" )) {
@@ -150,9 +149,8 @@ public class EditAccountActivity extends AppCompatActivity {
                 RequestBody path = RequestBody.create( MediaType.parse( "multipart/form-data" ), picturePath );
                 MultipartBody.Part body = MultipartBody.Part.createFormData( "image", file.getName(), requestFile );
 
-
-                Call<ResponseBody> call = ANApplications.getANApi().profileUpdate( id, name, mail, pass, path, body );
-                call.enqueue( new Callback<ResponseBody>() {
+               Call<ResponseBody> call = ANApplications.getANApi().profileUpdate( id, name, mail, pass, path, body );
+               call.enqueue( new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {

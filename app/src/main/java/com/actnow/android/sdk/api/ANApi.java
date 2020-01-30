@@ -2,6 +2,7 @@ package com.actnow.android.sdk.api;
 
 import com.actnow.android.sdk.responses.AdavancedSearch;
 import com.actnow.android.sdk.responses.CheckOtpResponse;
+import com.actnow.android.sdk.responses.CommentAdd;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
@@ -58,12 +59,6 @@ public interface ANApi {
     @GET("app/user_details/{id}")
     Call<UserDetailsResponse> checkTheUserDetailsResponse(@Path("id")String id);
 
-    /*@Multipart
-    //@FormUrlEncoded
-    @POST("app/update_profile/{id}")
-    //Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") RequestBody id, @Part(Parameters.NAME) RequestBody name, @Part(Parameters.EMAIL) RequestBody email, @Part(Parameters.PASSWORD) RequestBody password, @Part MultipartBody.Part file);
-    Call<UpdateProfileResponses> checkUpdateProfile(@Part("id") String id, @Part(Parameters.NAME) String name, @Part(Parameters.EMAIL) String  email, @Part(Parameters.PASSWORD) String password, @Part MultipartBody.Part image_path);
-    //Call<UpdateProfileResponses> checkUpdateProfile(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.EMAIL) String  email, @Field(Parameters.PASSWORD) String password);*/
 
     @Multipart
     @POST("/app/update_profile/{id}")
@@ -83,16 +78,16 @@ public interface ANApi {
     @GET("app/organization/users/{id}")
     Call<CheckBoxResponse> checktheSpinnerResponse(@Path("id") String id);
 
-    @GET("app/organization/users/{id}")
-    Call<List<OrgnUserRecordsCheckBox>> checkTheSearchandSendInvitations (@Path("id")String id);
+   /* @GET("app/organization/users/{id}")
+    Call<List<OrgnUserRecordsCheckBox>> checkTheSearchandSendInvitations (@Path("id")String id);*/
 
     @GET("app/tasks/priority/{id}")
     Call<PriortyTaskListResponse> checkPriorityTaskList(@Path("id") String id);
 
     /*@GET("app/tasks/overdue/{id}")
     Call<OverDueTaskListResponse> checkOverDueTaskList(@Path("id") String id);*/
-    @GET("app/tasks/overdue/{id}")
-    Call<TaskListResponse> checkOverDueTaskList(@Path("id") String id);
+   /* @GET("app/tasks/overdue/{id}")
+    Call<TaskListResponse> checkOverDueTaskList(@Path("id") String id);*/
 
 
     @GET("app/project/list/{id}")
@@ -137,15 +132,15 @@ public interface ANApi {
     /*Comment Api TASk and Project */
 
     @Multipart
-    @POST("app/comment/add/{id}")
-    Call<TaskComplete> checkTheCommentAdd(
-            @Part("id")RequestBody id,
+    @POST("app/comment/add/2")
+    Call<ResponseBody> checkTheCommentAdd(
+            @Part("id") RequestBody id,
             @Part("orgn_code")RequestBody orgn_code,
             @Part("comment")RequestBody comment,
-            @Part("project_code")RequestBody project_code,
             @Part("task_code")RequestBody task_code,
+            @Part("project_code")RequestBody project_code,
             @Part("image_path") RequestBody imageName,
-            @Part MultipartBody.Part image);
+            @Part List<MultipartBody.Part> files);
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")
@@ -213,10 +208,7 @@ public interface ANApi {
             @Field("action_date")String action_date,
             @Field("project_codes")String project_codes,
             @Field("individuals")String individuals);
-  /*  @FormUrlEncoded
-    @POST("app/timeline/{id}")
-    Call<TimeLineList> timeLineStatus (@Path("id") String id,@Field( "action")String action,@Field( "action_date" )String action_date,@Field( "project_codes")String project_codes,@Field( "individuals")String  individuals);
-*/
+
     /*Adavanced Search API CAll*/
     @FormUrlEncoded
     @POST("app/advsearch/{id}")

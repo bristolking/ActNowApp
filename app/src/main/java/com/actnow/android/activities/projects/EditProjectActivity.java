@@ -33,7 +33,9 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.databse.ProjectDBHelper;
 import com.actnow.android.sdk.responses.ProjectEditResponse;
+import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
@@ -59,6 +61,7 @@ public class EditProjectActivity extends AppCompatActivity {
     String projectOwnerName;
     String projectName;
     String projectcode;
+    String color;
     TextView mColorCodePojectEdit;
     ImageView mImgePojectEditColor;
     private int currentBackgroundColor = 0xffffffff;
@@ -80,6 +83,9 @@ public class EditProjectActivity extends AppCompatActivity {
             mEditProjectOwnerName.setText(" " + projectOwnerName);
             projectName = (String) b.get("projectName");
             mEditProjectName.setText("" + projectName);
+            color = (String)b.get( "color");
+            mColorCodePojectEdit.setText( " " + color );
+
         }
     }
 
@@ -269,21 +275,24 @@ public class EditProjectActivity extends AppCompatActivity {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
         String orgn_code= userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        String projectEditName= mEditProjectName.getText().toString();
         String color = mColorCodePojectEdit.getText().toString();
         String mColor= color.substring(2);
         System.out.println( "mColor"+mColor);
-        requestCrateTask(id, projectcode,projectName,mColor,orgn_code);
-        System.out.println("daa"+ id+projectcode+projectName+mColor+orgn_code);
+        requestCrateTask(id, projectcode,projectEditName,mColor,orgn_code);
+        System.out.println("daa"+ id+projectcode+projectEditName+mColor+orgn_code);
     }
     private void requestCrateTask(String id, String project_code,String name,String color,String orgn_code) {
+
         Call<ProjectEditResponse> call = ANApplications.getANApi().checkProjectEditResponse(id,project_code,name,color,orgn_code);
         call.enqueue(new Callback<ProjectEditResponse>() {
             @Override
             public void onResponse(Call<ProjectEditResponse> call, Response<ProjectEditResponse> response) {
-               // System.out.println("content"+ response.raw());
+                System.out.println("severReponse"+ response.raw());
                 if (response.isSuccessful()) {
+                    System.out.println("severReponse1"+ response.raw());
                     if (response.body().getSuccess().equals("true")) {
-                        System.out.println("naaa"+response.body().getMessage());
+                        System.out.println("severReponse2"+response.body().getMessage());
                         Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
                         startActivity(i);
                     } else {
@@ -317,9 +326,34 @@ public class EditProjectActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                attemptUpdateTask();
+                if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+                    attemptUpdateTask();
+
+                } else {
+                    attemptUpdateOfflineProjects();
+                }
             }
         });
+    }
+
+    private void attemptUpdateOfflineProjects() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        String orgn_code= userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        String projectEditName= mEditProjectName.getText().toString();
+        String color = mColorCodePojectEdit.getText().toString();
+        String mColor= color.substring(2);
+        ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
+        projectListResponseRecords1.setProject_id( id );
+        projectListResponseRecords1.setName(projectEditName);
+        projectListResponseRecords1.setColor(mColor);
+        System.out.println("felids" + mColor + projectEditName );
+        ProjectDBHelper projectDBHelper = new ProjectDBHelper(EditProjectActivity.this);
+        projectDBHelper.insertUserDetails(projectListResponseRecords1);
+        Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
+        Toast.makeText( getApplicationContext(), "Project Offline Updated Sucessfully", Toast.LENGTH_SHORT ).show();
+        startActivity(i);
+
     }
 
     public void onBackPressed() {

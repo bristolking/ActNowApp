@@ -2,19 +2,7 @@ package com.actnow.android.sdk.responses;
 
 public class ProjectListResponseRecords {
 
-    public static final  String  TABLE_NAME = "actNowProject_db";
-    public static String PROJECTID ="project_id";
-    public static String NAME ="name";
-    public static String PROJECTCODE ="project_code";
-    public static String COLOR ="color";
-    public static String PRIORITY ="priority";
-    public static String DUEDATE ="due_date";
-    public static String PROJECTMEMBERS ="project_members";
-    public static String CREATEDBY ="created_by";
-    public static String CREATEDDATE ="created_date";
-    public static String UPDATEDBY ="updated_by";
-    public static String UPDATEDDATE ="updated_date";
-    public static String ORNGCODE ="orng_code";
+
 
     private  String project_id;
     private  String name;
@@ -29,7 +17,6 @@ public class ProjectListResponseRecords {
     private  String updated_date;
     private  String orgn_code;
 
-    public static final  String CREATE_TABLE = "CREATE TABLE actNowProject_db(project_id bigint(75) UNIQUE,name varchar(150), project_code varchar(150),color varchar(150),priority varchar(150), due_date varchar(150),project_members varchar(150),created_by varchar(150),created_date varchar(150),updated_by varchar(150), updated_date varchar(150), orgn_code varchar(150))";
 
 
 

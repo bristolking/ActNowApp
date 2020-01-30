@@ -48,7 +48,9 @@ import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.expandleRecyclerView.TodayTaskAdapter;
+import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -340,6 +342,7 @@ public class TodayTaskActivity extends AppCompatActivity {
         } );
 
     }
+
     private Date yesterday() {
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
@@ -508,6 +511,42 @@ public class TodayTaskActivity extends AppCompatActivity {
                             startActivity( i );
                         }
                     } );
+                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                    mImageDelete.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = tv_taskcode.getText().toString();
+                            Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                            taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                                @Override
+                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            Intent i = new Intent( getApplicationContext(),TodayTaskActivity.class );
+                                            startActivity( i );
+                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
+
+                        }
+                    } );
+
 
                 }
 

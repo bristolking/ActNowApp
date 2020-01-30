@@ -30,6 +30,7 @@ import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
+import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
@@ -45,6 +46,8 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
+import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -72,23 +75,17 @@ import static com.activeandroid.Cache.getContext;
 public class MonthlyTaskListActivity extends AppCompatActivity    {
     View mProgressView, mContentLayout;
     UserPrefUtils session;
-    CalendarView calendarView;
     RecyclerView mRecyclerViewMonthly;
     TaskListAdapter mTaskListAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
     private String currentMonth;
-
     final Context context = this;
     private String selectedType = "";
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfIndividuval = new ArrayList<com.abdeveloper.library.MultiSelectModel>();
-    ArrayList<com.abdeveloper.library.MultiSelectModel> listOfProjectNames = new ArrayList<MultiSelectModel>();
-    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
 
+    TextView mTaskName;
+    String task_code;
 
-    ArrayList<Integer> individualCheckBox, projectListCheckBox;
-    JSONArray individuvalArray;
-    JSONArray projectArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,10 +234,6 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
         mContentLayout = findViewById(R.id.content_layout);
         mProgressView = findViewById(R.id.progress_bar);
 
-        requestDynamicContent();
-        mIndividuvalDialog = new MultiSelectDialog();
-        individualCheckBox = new ArrayList<>();
-        individualCheckBox.add(0);
 
 
         MaterialCalendarView materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
@@ -329,34 +322,71 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
             mRecyclerViewMonthly.addOnItemTouchListener(new MonthlyTaskListActivity.RecyclerTouchListener(this, mRecyclerViewMonthly, new MonthlyTaskListActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
-                    final View view1 = view.findViewById(R.id.taskList_liner);
-                    RadioGroup groupTask = (RadioGroup)view.findViewById(R.id.taskradioGroupTask);
-                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
-                    final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
+                    final View view1 = view.findViewById( R.id.taskList_liner );
+                    RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
+                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                    final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
+                    final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
+                    task_code = tv_taskcode.getText().toString();
                     groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            view1.setVisibility(View.VISIBLE);
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
+                                            view1.setVisibility( View.VISIBLE );
+                                            Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                            startActivity( i );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
-                                    });
+                                    } );
                                     View sbView = snackbar.getView();
-                                    TextView textView =(TextView)sbView.findViewById(R.id.snackbar_text);
-                                    textView.setOnClickListener(new View.OnClickListener() {
+                                    TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
+                                    textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            view1.setVisibility(View.GONE);
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT);
+                                            view1.setVisibility( View.GONE );
+                                            HashMap<String, String> userId = session.getUserDetails();
+                                            String id = userId.get( UserPrefUtils.ID );
+                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            final String name = mTaskName.getText().toString();
+                                            final String date = tv_dueDate.getText().toString();
+                                            String task_prioroty = tv_priority.getText().toString();
+                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                                @Override
+                                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                    if (response.isSuccessful()) {
+                                                        if (response.body().getSuccess().equals( "true" )) {
+                                                            Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                                            startActivity( i );
+                                                        } else {
+                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
+                                                        }
+                                                    } else {
+                                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                }
+                                            } );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
+
                                         }
-                                    });
+                                    } );
                                     snackbar.show();
                                 } else if (checkedId == 0) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -364,8 +394,8 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                                 }
                             }
                         }
-                    });
-                    TextView mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                    } );
+                    mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
                     mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -384,26 +414,74 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                     mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mIndividuvalDialog.show(getSupportFragmentManager(), "mIndividuvalDialog");
+                            String task_code = tv_taskcode.getText().toString();
+                            String projectCode = tv_projectCode.getText().toString();
+                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
+                            i.putExtra( "TaskCode", task_code );
+                            i.putExtra( "SenIvitaionprojectCode", projectCode );
+                            startActivity( i );
                         }
                     });
                     ImageView mImageComment =(ImageView)view.findViewById(R.id.img_commentTaskList);
                     mImageComment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
-                            startActivity(i);
+                            Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                            String name = mTaskName.getText().toString();
+                            String date = tv_dueDate.getText().toString();
+                            String task_code = tv_taskcode.getText().toString();
+                            i.putExtra( "TaskName", name );
+                            i.putExtra( "TaskDate", date );
+                            i.putExtra( "TaskCode", task_code );
+                            startActivity( i );
                         }
                     });
                     ImageView mImageRaminder =(ImageView)view.findViewById(R.id.img_raminderTaskList);
                     mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i =new Intent( getApplicationContext(), ReaminderScreenActivity.class);
-                            startActivity(i);
+                            String task_code = tv_taskcode.getText().toString();
+                            Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
+                            i.putExtra( "TaskCode", task_code );
+                            startActivity( i );
                         }
 
                     });
+                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                    mImageDelete.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = tv_taskcode.getText().toString();
+                            Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                            taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                                @Override
+                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            Intent i = new Intent( getApplicationContext(),TodayTaskActivity.class );
+                                            startActivity( i );
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
+
+                        }
+                    } );
                 }
                 @Override
                 public void onLongClick(View view, int position) {
@@ -457,63 +535,6 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        }
-    }
-    private void requestDynamicContent() {
-        HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
-        call.enqueue(new Callback<CheckBoxResponse>() {
-            @Override
-            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setLoadCheckBox(response.body().getOrgn_users_records());
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
-                    }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
-            }
-        });
-
-    }
-
-    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        if (orgn_users_records.size() > 0) {
-            for (int i = 0; orgn_users_records.size() > i; i++) {
-                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
-                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getName()));
-            }
-            mIndividuvalDialog = new MultiSelectDialog()
-                    .title("Individuval") //setting title for dialog
-                    .titleSize(25)
-                    .positiveText("Done")
-                    .negativeText("Cancel")
-                    .preSelectIDsList(individualCheckBox)
-                    .setMinSelectionLimit(0)
-                    .setMaxSelectionLimit(listOfIndividuval.size())
-                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
-                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
-                        @Override
-                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
-                            for (int i = 0; i < selectedIds.size(); i++) {
-                                // mIndividualCheckBox.setText(dataString);
-                            }
-                            individuvalArray = new JSONArray(selectedIds);
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            Log.d("TAG", "Dialog cancelled");
-                        }
-                    });
         }
     }
 

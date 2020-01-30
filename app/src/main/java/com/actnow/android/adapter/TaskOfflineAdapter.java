@@ -1,11 +1,11 @@
 package com.actnow.android.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.actnow.android.R;
@@ -14,23 +14,18 @@ import com.actnow.android.sdk.responses.TaskListRecords;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
+public class TaskOfflineAdapter extends RecyclerView.Adapter<TaskOfflineAdapter.ViewHolder> {
     private List<TaskListRecords> taskListRecordsList;
 
-
-    public TaskListAdapter(ArrayList<TaskListRecords> taskListResponseArrayList, int task_list_cutsom, Context applicationContext) {
-        this.taskListRecordsList = taskListResponseArrayList;
-    }
-
-    public TaskListAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
+    public TaskOfflineAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
         this.taskListRecordsList = taskListRecordsArrayList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from( viewGroup.getContext() ).inflate( R.layout.task_list_cutsom, viewGroup, false );
-        return new ViewHolder( view );
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate( R.layout.task_list_cutsom,viewGroup,false );
+        return new ViewHolder(view);
     }
 
     @Override
@@ -46,19 +41,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         viewHolder.mTaskStatus.setText( taskListResponse.getStatus() );
         viewHolder.mProjectCode.setText( taskListResponse.getProject_code() );
         viewHolder.mRepeat_type.setText( taskListResponse.getRepeat_type() );
-        System.out.println( "name" + taskListRecordsList );
+
     }
 
     @Override
     public int getItemCount() {
         return taskListRecordsList.size();
-    }
 
+    }
     public void filterList(ArrayList<TaskListRecords> taskListRecordsFilter) {
         taskListRecordsList = taskListRecordsFilter;
         notifyDataSetChanged();
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTaskID, mTaskListTaskName;
@@ -69,7 +63,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         TextView mTaskStatus;
         TextView mProjectCode;
         TextView mRepeat_type;
-
         public ViewHolder(@NonNull View itemView) {
             super( itemView );
             mTaskID = itemView.findViewById( R.id.tv_taskID );
@@ -82,8 +75,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             mTaskStatus = itemView.findViewById( R.id.tv_taskstatus );
             mProjectCode = itemView.findViewById( R.id.tv_projectCodeTaskList );
             mRepeat_type = itemView.findViewById( R.id.tv_taskRepeatType );
+            ImageView mImageUserAdd = (ImageView)itemView.findViewById( R.id.img_useraddTaskList );
+            mImageUserAdd.setVisibility( View.GONE );
+
+
 
         }
     }
-
 }

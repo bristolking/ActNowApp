@@ -40,7 +40,9 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.databse.ProjectDBHelper;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
+import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
@@ -59,8 +61,8 @@ import static android.view.View.GONE;
 
 
 public class ViewProjectsActivity extends AppCompatActivity {
-    EditText mProjectName,mProjectOwnerName;
-    View  mProjectColor;
+    EditText mProjectName, mProjectOwnerName;
+    View mProjectColor;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     final Context context = this;
@@ -108,16 +110,16 @@ public class ViewProjectsActivity extends AppCompatActivity {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get( UserPrefUtils.EMAIL);
+                String email = userId.get( UserPrefUtils.EMAIL );
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH);
-                System.out.println( "img"+ img );
-                Glide.with(getApplicationContext())
-                        .load(img)
+                String img = userId.get( UserPrefUtils.IMAGEPATH );
+                System.out.println( "img" + img );
+                Glide.with( getApplicationContext() )
+                        .load( img )
                         .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.placeholder)
-                        .into(mImageProfile);
+                        .placeholder( R.drawable.placeholder )
+                        .error( R.drawable.placeholder )
+                        .into( mImageProfile );
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -128,51 +130,51 @@ public class ViewProjectsActivity extends AppCompatActivity {
 
                 TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
                 mTextName.setText( taskOwnerName );
-                TextView mTextEmail =(TextView)findViewById( R.id.tv_emailProfile);
+                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
                 mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
-                                startActivity(iToday);
+                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                startActivity( iToday );
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                                startActivity(iIdea);
+                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                                startActivity( iIdea );
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
+                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
+                                startActivity( ithisweek );
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent(getApplicationContext(), TaskAddListActivity.class);
-                                startActivity(iTaskfilter);
+                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
+                                startActivity( iTaskfilter );
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(),ProjectFooterActivity.class);
-                                startActivity( iProjects);
+                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+                                startActivity( iProjects );
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-                                startActivity(iIndividuals);
+                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+                                startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-                                startActivity(iInsights);
+                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
-                                startActivity(iTimeLine);
+                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
+                                startActivity( iTimeLine );
                                 break;
                             case R.id.nav_profile:
-                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
-                                startActivity(iprofile);
+                                Intent iprofile = new Intent( getApplicationContext(), AccountSettingActivity.class );
+                                startActivity( iprofile );
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
-                                startActivity(ipremium);
+                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
+                                startActivity( ipremium );
                                 break;
                             case R.id.nav_logout:
                                 session.logoutUser();
@@ -181,7 +183,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                });
+                } );
                 final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layoutProjectView );
                 if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
@@ -210,7 +212,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
 
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
-        mColorCodePoject = (TextView)findViewById( R.id.tv_newProjectColorCode );
+        mColorCodePoject = (TextView) findViewById( R.id.tv_newProjectColorCode );
         mProjectColor = findViewById( R.id.liner_newPojectColor );
         mImgeCircleColor = findViewById( R.id.img_newProjectcolor );
         mProjectColor.setOnClickListener( new View.OnClickListener() {
@@ -228,6 +230,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
                                 toast( "onColorSelected: 0x" + Integer.toHexString( selectedColor ) );
                                 String color = Integer.toHexString( selectedColor );
                                 mColorCodePoject.setText( color );
+                                System.out.println( "color"+color );
                             }
                         } )
                         .setPositiveButton( "ok", new ColorPickerClickListener() {
@@ -242,7 +245,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
                                             continue;
                                         if (sb == null)
                                             sb = new StringBuilder( "Color List:" );
-                                        sb.append( "\r\n#" + Integer.toHexString( color ).toUpperCase() );
+                                        sb.append( "#" + Integer.toHexString( color ).toUpperCase() );
                                     }
 
                                     if (sb != null)
@@ -262,12 +265,14 @@ public class ViewProjectsActivity extends AppCompatActivity {
             }
         } );
     }
+
     private void changeBackgroundColor(int selectedColor) {
         currentBackgroundColor = selectedColor;
-        mImgeCircleColor.setBackgroundColor(selectedColor);
+        mImgeCircleColor.setBackgroundColor( selectedColor );
     }
+
     private void toast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        Toast.makeText( this, text, Toast.LENGTH_SHORT ).show();
     }
 
 
@@ -275,9 +280,9 @@ public class ViewProjectsActivity extends AppCompatActivity {
     private void attemptCreateProject() {
         mProjectName.setError( null );
         projectName = mProjectName.getText().toString();
-        //String mIndividualCheckBox = String.valueOf(individuvalArray);
-        //individuvalArray.remove(0);
-        String color= mColorCodePoject.getText().toString();
+        String color = mColorCodePoject.getText().toString();
+        String mColor= color.substring(2);
+        System.out.println( "mColor"+mColor);
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty( projectName )) {
@@ -291,7 +296,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
             HashMap<String, String> userId = session.getUserDetails();
             String id = userId.get( UserPrefUtils.ID );
             //requestCrateTask(id, projectName, String.valueOf(individuvalArray).replace("[", "").replace("]", ""));
-            requestCrateTask( id, projectName,color);
+            requestCrateTask( id, projectName, mColor );
             System.out.println( "project" + id + projectName + color );
         }
     }
@@ -339,10 +344,44 @@ public class ViewProjectsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    attemptCreateProject();
+                    if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+                        attemptCreateProject();
+                    } else {
+                        attemptCreateOfflineProjects();
+                    }
                 }
             }
         } );
+
+    }
+
+    private void attemptCreateOfflineProjects() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        mProjectName.setError( null );
+        projectName = mProjectName.getText().toString();
+        String color = mColorCodePoject.getText().toString();
+        boolean cancel = false;
+        View focusView = null;
+        if (TextUtils.isEmpty( projectName )) {
+            mProjectName.setError( getString( R.string.error_required ) );
+            focusView = mProjectName;
+            cancel = true;
+        }
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            ProjectListResponseRecords projectListResponseRecords1 = new ProjectListResponseRecords();
+            projectListResponseRecords1.setProject_id( id );
+            projectListResponseRecords1.setName(projectName);
+            projectListResponseRecords1.setColor(color);
+            ProjectDBHelper projectDBHelper = new ProjectDBHelper(ViewProjectsActivity.this);
+            projectDBHelper.insertUserDetails(projectListResponseRecords1);
+            Intent i = new Intent( ViewProjectsActivity.this, ProjectFooterActivity.class );
+            Toast.makeText( getApplicationContext(), "Project Offline Created Sucessfully", Toast.LENGTH_SHORT ).show();
+            startActivity(i);
+
+        }
 
     }
 

@@ -3,6 +3,7 @@ package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,7 +38,9 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
+import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -52,6 +55,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.actnow.android.R.layout.task_list_cutsom;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class WeeklyFragment extends Fragment {
@@ -72,9 +76,13 @@ public class WeeklyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_weekly, container, false );
-        attemptTaskList();
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+            attemptTaskList();
+        } else {
+            weeklyTypeNoConnection();
+        }
         fabWeeklyrepetTask = view.findViewById( R.id.fab_weeklytask );
         fabWeeklyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -328,6 +336,45 @@ public class WeeklyFragment extends Fragment {
 
                     }
                 } );
+                ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                mImageDelete.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                        String task_code = tv_taskcode.getText().toString();
+                        Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                        taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                            @Override
+                            public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body().getSuccess().equals( "true" )) {
+                                        WeeklyFragment weeklyFragment = new WeeklyFragment();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
+                                        fragmentTransaction.commit();
+                                        Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    }
+                                } else {
+                                    AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                Log.d( "CallBack", " Throwable is " + t );
+
+                            }
+                        } );
+
+                    }
+                } );
+
 
             }
 
@@ -384,6 +431,40 @@ public class WeeklyFragment extends Fragment {
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
+    }
+
+    private void weeklyTypeNoConnection() {
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
+        Cursor cursor = taskDBHelper.getAllData();
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                TaskListRecords taskListRecords = new TaskListRecords();
+                String name = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_NAME ) );
+                String date = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_DUEDATE ) );
+                String priority = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PRIORITY ) );
+                String projectcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_CODE ) );
+                String taskcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_TASK_CODE ) );
+                String remindarscount = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REMINDARS_COUNT ) );
+                String status = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_STATUS ) );
+                String projectName = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_NAME ) );
+                String type = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REPEAT_TYPE ) );
+                taskListRecords.setName( name );
+                taskListRecords.setDue_date( date );
+                taskListRecords.setPriority( priority );
+                taskListRecords.setProject_code( projectcode );
+                taskListRecords.setTask_code( taskcode );
+                taskListRecords.setRemindars_count( remindarscount );
+                taskListRecords.setStatus( status );
+                taskListRecords.setProject_name( projectName );
+                taskListRecords.setRepeat_type( type );
+                if (status.equals( "1" ) && type.equals( "Weekly" )) {
+                    taskListRecordsArrayList.add( taskListRecords );
+                }
+            }
+        }
+
+
     }
 
 }

@@ -5,14 +5,16 @@
     android:id="@+id/drawer_comments"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="right"
     android:background="@color/colorWhite"
-    tools:context=".activities.CommentsActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.CommentsActivity"
+    tools:openDrawer="right">
+
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
@@ -20,45 +22,57 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content_layout"
             android:layout_marginTop="50dp"
             android:orientation="vertical">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_recyclerViewComment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_recyclerViewComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="300dp">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:padding="10dp"
-            android:layout_marginBottom="50dp">
-            <GridView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/gv"
-                android:numColumns="3">
-            </GridView>
-            <ImageView
-                android:id="@+id/img_commnetAdd"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"/>
+            android:layout_marginBottom="50dp"
+            android:padding="10dp">
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/name_text_in_commentNewProject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp">
+
                 <EditText
                     android:id="@+id/et_commentEdit"
                     android:layout_width="match_parent"
@@ -66,11 +80,13 @@
                     android:hint="Write a Comment....."
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
             </android.support.design.widget.TextInputLayout>
-
         </RelativeLayout>
+
         <include layout="@layout/footer" />
+
         <include layout="@layout/app_header_two" />
     </RelativeLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

@@ -39,6 +39,9 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
         myViewHolder.mProjectNameFooter.setText(projectListResponseRecords.getName());
         myViewHolder.mProjectCode.setText(projectListResponseRecords.getProject_code());
         myViewHolder.mProjectId.setText(projectListResponseRecords.getProject_id());
+        myViewHolder.mProjectColor.setText( projectListResponseRecords.getColor());
+      //  myViewHolder.mProjectDueDate.setText( projectListResponseRecords.getDue_date());
+
     }
 
     @Override
@@ -55,13 +58,16 @@ public class ProjectFooterAdapter extends RecyclerView.Adapter<ProjectFooterAdap
     public class MyViewHolder extends RecyclerView.ViewHolder {
         RadioButton mProjectNameFooter;
         TextView mProjectCode;
-        TextView mProjectId;
+        TextView mProjectId,mProjectColor,mProjectDueDate;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             mProjectNameFooter = (RadioButton) itemView.findViewById(R.id.projectNameFooter);
             mProjectCode = (TextView) itemView.findViewById(R.id.tv_projectCode);
             mProjectId =(TextView)itemView.findViewById(R.id.tv_projectId);
+            mProjectColor =(TextView)itemView.findViewById(R.id.tv_projectColor);
+
+            //  mProjectDueDate =(TextView)itemView.findViewById(R.id.tv_projectDueDate);
         }
     }
 }

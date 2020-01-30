@@ -2,6 +2,7 @@ package com.actnow.android.activities.projects;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -48,12 +49,15 @@ import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 
+import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,81 +91,87 @@ public class ProjectTaskListActivity extends AppCompatActivity {
     private String selectedType = "";
     TextView mTaskName;
     String task_code;
+    String offlineProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        session = new UserPrefUtils(getApplicationContext());
-        setContentView(R.layout.activity_project_task_list);
+        super.onCreate( savedInstanceState );
+        session = new UserPrefUtils( getApplicationContext() );
+        setContentView( R.layout.activity_project_task_list );
         appHeaderTwo();
         initializeViews();
         appFooter();
         HashMap<String, String> userId = session.getUserDetails();
-        id = userId.get(UserPrefUtils.ID);
-        orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        id = userId.get( UserPrefUtils.ID );
+        orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            projectName = (String) b.get("projectName");
-            btnLink1.setText("" + projectName);
-            project_code = (String) b.get("projectcode");
-            System.out.println("passsed" + project_code + projectName);
+            projectName = (String) b.get( "projectName" );
+            btnLink1.setText( "" + projectName );
+            offlineProject= (String)b.get( "projectName");
+            project_code = (String) b.get( "projectcode" );
+            System.out.println( "passsed" + project_code + projectName );
         }
-
+        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+            attemptProjectOfflineList();
+        } else {
+            projectTaskListOfflineNoConnection();
+        }
     }
 
     private void appHeaderTwo() {
-        ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
-        imgeBack.setOnClickListener(new View.OnClickListener() {
+        ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
+        imgeBack.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
-        btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
-        TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
-        btnLink2.setVisibility(View.GONE);
+        } );
+        btnLink1 = (TextView) findViewById( R.id.btn_link_1_two );
+        TextView btnLink2 = (TextView) findViewById( R.id.btn_link_2_two );
+        btnLink2.setVisibility( View.GONE );
         //btnLink1.setText("Projects");
-        btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
-        btnCalendar.setVisibility(View.GONE);
-        ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
-        btnNotifications.setOnClickListener(new View.OnClickListener() {
+        btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
+        btnCalendar.setVisibility( View.GONE );
+        ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
+        btnNotifications.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT).show();
+                Toast.makeText( getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT ).show();
             }
-        });
-        ImageView btnSettings = (ImageView) findViewById(R.id.btn_settingsAppHeaderTwo);
-        btnSettings.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView btnSettings = (ImageView) findViewById( R.id.btn_settingsAppHeaderTwo );
+        btnSettings.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String accountEmail = userId.get(UserPrefUtils.EMAIL);
-                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
-                i.putExtra("email", accountEmail);
-                startActivity(i);
+                String accountEmail = userId.get( UserPrefUtils.EMAIL );
+                Intent i = new Intent( getApplicationContext(), SettingsActivity.class );
+                i.putExtra( "email", accountEmail );
+                startActivity( i );
                 finish();
             }
-        });
-        ImageView btnMenu = (ImageView) findViewById(R.id.img_menuTopTwo);
-        btnMenu.setOnClickListener(new View.OnClickListener() {
+        } );
+        ImageView btnMenu = (ImageView) findViewById( R.id.img_menuTopTwo );
+        btnMenu.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final NavigationView navigationView = (NavigationView) findViewById( R.id.nav_view );
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get( UserPrefUtils.ID );
                 String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get( UserPrefUtils.EMAIL);
+                String email = userId.get( UserPrefUtils.EMAIL );
                 ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH);
-                System.out.println( "img"+ img );
-                Glide.with(getApplicationContext())
-                        .load(img)
+                String img = userId.get( UserPrefUtils.IMAGEPATH );
+                System.out.println( "img" + img );
+                Glide.with( getApplicationContext() )
+                        .load( img )
                         .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.placeholder)
-                        .into(mImageProfile);
+                        .placeholder( R.drawable.placeholder )
+                        .error( R.drawable.placeholder )
+                        .into( mImageProfile );
                 mImageProfile.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -172,51 +182,51 @@ public class ProjectTaskListActivity extends AppCompatActivity {
 
                 TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
                 mTextName.setText( taskOwnerName );
-                TextView mTextEmail =(TextView)findViewById( R.id.tv_emailProfile);
+                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
                 mTextEmail.setText( email );
                 navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
-                                startActivity(iToday);
+                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                startActivity( iToday );
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                                startActivity(iIdea);
+                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                                startActivity( iIdea );
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
-                                startActivity(ithisweek);
+                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
+                                startActivity( ithisweek );
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent(getApplicationContext(),TaskAddListActivity.class);
-                                startActivity(iTaskfilter);
+                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
+                                startActivity( iTaskfilter );
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(),ProjectFooterActivity.class);
-                                startActivity( iProjects);
+                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+                                startActivity( iProjects );
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-                                startActivity(iIndividuals);
+                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+                                startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-                                startActivity(iInsights);
+                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
-                                startActivity(iTimeLine);
+                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
+                                startActivity( iTimeLine );
                                 break;
                             case R.id.nav_profile:
-                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
-                                startActivity(iprofile);
+                                Intent iprofile = new Intent( getApplicationContext(), AccountSettingActivity.class );
+                                startActivity( iprofile );
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
-                                startActivity(ipremium);
+                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
+                                startActivity( ipremium );
                                 break;
                             case R.id.nav_logout:
                                 session.logoutUser();
@@ -225,87 +235,93 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                });
-                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_projectTaskList);
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                } );
+                final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_projectTaskList );
+                if (drawer.isDrawerOpen( GravityCompat.START )) {
                 } else {
-                    drawer.openDrawer(GravityCompat.START);
+                    drawer.openDrawer( GravityCompat.START );
                 }
-                ImageView imgeClose = (ImageView) findViewById(R.id.nav_close);
-                imgeClose.setOnClickListener(new View.OnClickListener() {
+                ImageView imgeClose = (ImageView) findViewById( R.id.nav_close );
+                imgeClose.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (drawer.isDrawerOpen(GravityCompat.START)) {
-                            drawer.closeDrawer(GravityCompat.START);
+                        if (drawer.isDrawerOpen( GravityCompat.START )) {
+                            drawer.closeDrawer( GravityCompat.START );
                         } else {
-                            drawer.openDrawer(GravityCompat.START);
+                            drawer.openDrawer( GravityCompat.START );
                         }
                     }
-                });
+                } );
             }
-        });
+        } );
     }
 
     private void initializeViews() {
 
-        mProgressView = findViewById(R.id.progress_bar);
-        mContentLayout = findViewById(R.id.content_layout);
-        mImageBulbTask = findViewById(R.id.image_bulbTask);
-        mImageBulbTask.setOnClickListener(new View.OnClickListener() {
+        mProgressView = findViewById( R.id.progress_bar );
+        mContentLayout = findViewById( R.id.content_layout );
+        mImageBulbTask = findViewById( R.id.image_bulbTask );
+        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), ViewIdeasActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                startActivity( i );
             }
-        });
-        mTaskQucikSearch = findViewById(R.id.edit_searchTask);
+        } );
+        mTaskQucikSearch = findViewById( R.id.edit_searchTask );
         mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(mProjectTaskRecylcerView.getVisibility() != View.VISIBLE)
+                if (mProjectTaskRecylcerView.getVisibility() != View.VISIBLE)
                     mProjectTaskRecylcerView.setVisibility( View.VISIBLE );
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+                filter( editable.toString() );
 
             }
         } );
 
-        mButtonAdavancedSearch = findViewById(R.id.button_searchTask);
-        mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
+        mButtonAdavancedSearch = findViewById( R.id.button_searchTask );
+        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i= new Intent( getApplicationContext(), AdvancedSearchActivity.class);
-                startActivity(i);
+                Intent i = new Intent( getApplicationContext(), AdvancedSearchActivity.class );
+                startActivity( i );
             }
-        });
+        } );
 
-        mProjectTaskRecylcerView = findViewById(R.id.projectTaskList_recyclerView);
-        mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        mProjectTaskRecylcerView.setLayoutManager(mLayoutManager);
-        mProjectTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
-        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList);
-        mProjectTaskRecylcerView.setAdapter(mTaskListAdapter);
+        mProjectTaskRecylcerView = findViewById( R.id.projectTaskList_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getApplicationContext() );
+        mProjectTaskRecylcerView.setLayoutManager( mLayoutManager );
+        mProjectTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
+        mProjectTaskRecylcerView.setAdapter( mTaskListAdapter );
+
+    }
+
+    private void attemptProjectOfflineList() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get(UserPrefUtils.ID);
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
-        call.enqueue(new Callback<TaskListResponse>() {
+        String id = userId.get( UserPrefUtils.ID );
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
+        call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals("true")) {
-                        setTaskList(response.body().getTask_records());
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
             }
 
@@ -314,70 +330,73 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                 Log.d( "CallBack", " Throwable is " + t );
 
             }
-        });
+        } );
     }
+
+
     private void filter(String toString) {
-        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>(  );
-        for (TaskListRecords name :taskListRecordsArrayList){
-            if (name.getName().toLowerCase().contains( toString.toLowerCase())){
-                taskListRecordsFilter.add(name);
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>();
+        for (TaskListRecords name : taskListRecordsArrayList) {
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
+                taskListRecordsFilter.add( name );
             }
 
         }
-        mTaskListAdapter.filterList(taskListRecordsFilter);
+        mTaskListAdapter.filterList( taskListRecordsFilter );
     }
+
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
-                TaskListRecords taskListRecords = taskListRecordsList.get(i);
+                TaskListRecords taskListRecords = taskListRecordsList.get( i );
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName(taskListRecords.getName());
-                taskListRecords1.setDue_date(taskListRecords.getDue_date());
-                taskListRecords1.setPriority(taskListRecords.getPriority());
-                taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
-                taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setName( taskListRecords.getName() );
+                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
+                taskListRecords1.setPriority( taskListRecords.getPriority() );
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 if (taskListRecords.getProject_name().equals( projectName )) {
                     if (taskListRecords.getStatus().equals( "1" )) {
                         taskListRecordsArrayList.add( taskListRecords1 );
                     }
                 }
             }
-            mProjectTaskRecylcerView.setAdapter(mTaskListAdapter);
-            mProjectTaskRecylcerView.addOnItemTouchListener(new ProjectTaskListActivity.RecyclerTouchListener(this, mProjectTaskRecylcerView, new ProjectTaskListActivity.ClickListener() {
+            mProjectTaskRecylcerView.setAdapter( mTaskListAdapter );
+            mProjectTaskRecylcerView.addOnItemTouchListener( new ProjectTaskListActivity.RecyclerTouchListener( this, mProjectTaskRecylcerView, new ProjectTaskListActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
-                    final View view1 = view.findViewById(R.id.taskList_liner);
-                    RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
-                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
+                    final View view1 = view.findViewById( R.id.taskList_liner );
+                    RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
                     final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                     task_code = tv_taskcode.getText().toString();
-                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            view1.setVisibility(View.VISIBLE);
-                                            Intent i =new Intent(getApplicationContext(),ProjectTaskListActivity.class);
-                                            i.putExtra("projectcode",project_code);
-                                            startActivity(i);
-                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
+                                            view1.setVisibility( View.VISIBLE );
+                                            Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
+                                            i.putExtra( "projectcode", project_code );
+                                            startActivity( i );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
-                                    });
+                                    } );
                                     View sbView = snackbar.getView();
-                                    TextView textView =(TextView)sbView.findViewById(R.id.snackbar_text);
-                                    textView.setOnClickListener(new View.OnClickListener() {
+                                    TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
+                                    textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            view1.setVisibility(View.GONE);
+                                            view1.setVisibility( View.GONE );
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
                                             final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -391,25 +410,26 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            Intent i =new Intent(getApplicationContext(),ProjectTaskListActivity.class);
-                                                            startActivity(i);
+                                                            Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
+                                                            startActivity( i );
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
                                                         }
                                                     } else {
-                                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!" );
+                                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                                                     }
                                                 }
+
                                                 @Override
                                                 public void onFailure(Call<TaskComplete> call, Throwable t) {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT);
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
 
                                         }
-                                    });
+                                    } );
                                     snackbar.show();
                                 } else if (checkedId == 0) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -417,9 +437,9 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                    });
-                    mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
-                    mTaskName.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
+                    mTaskName.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
@@ -427,47 +447,82 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent(getApplicationContext(), EditTaskActivity.class);
+                            Intent i = new Intent( getApplicationContext(), EditTaskActivity.class );
                             i.putExtra( "TaskName", name );
                             i.putExtra( "TaskDate", date );
                             i.putExtra( "TaskCode", task_code );
                             i.putExtra( "taskOwnerName", taskOwnerName );
-                            startActivity(i);
+                            startActivity( i );
                         }
-                    });
-                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
-                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
+                    mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent(getApplicationContext(), InvitationActivity.class );
+                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
                             i.putExtra( "TaskCode", task_code );
                             startActivity( i );
                         }
-                    });
-                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
-                    mImageComment.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
+                    mImageComment.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
+                            Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
                             i.putExtra( "TaskName", name );
                             i.putExtra( "TaskDate", date );
                             i.putExtra( "TaskCode", task_code );
-                            startActivity(i);
+                            startActivity( i );
                         }
-                    });
-                    ImageView mImageRaminder = (ImageView) view.findViewById(R.id.img_raminderTaskList);
-                    mImageRaminder.setOnClickListener(new View.OnClickListener() {
+                    } );
+                    ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
+                    mImageRaminder.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i =new Intent( getApplicationContext(), ReaminderScreenActivity.class);
+                            Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
                             i.putExtra( "TaskCode", task_code );
-                            startActivity(i);
+                            startActivity( i );
                         }
-                    });
+                    } );
+                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                    mImageDelete.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = tv_taskcode.getText().toString();
+                            Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                            taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                                @Override
+                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
+                                            startActivity( i );
+                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
+
+                        }
+                    } );
 
                 }
 
@@ -476,7 +531,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
 
                 }
 
-            }));
+            } ) );
         }
     }
 
@@ -493,26 +548,26 @@ public class ProjectTaskListActivity extends AppCompatActivity {
 
         public RecyclerTouchListener(ProjectTaskListActivity context, final RecyclerView mRecylerViewSingleSub, ProjectTaskListActivity.ClickListener clickListener) {
             this.clicklistener = clickListener;
-            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
+                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
+                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
                     }
                 }
-            });
+            } );
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder(e.getX(), e.getY());
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
-                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
+            View child = rv.findChildViewUnder( e.getX(), e.getY() );
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
+                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
             }
 
             return false;
@@ -525,77 +580,120 @@ public class ProjectTaskListActivity extends AppCompatActivity {
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
+    }
+
+    private void projectTaskListOfflineNoConnection() {
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
+        Cursor cursor = taskDBHelper.getAllData();
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                TaskListRecords taskListRecords1 = new TaskListRecords();
+                String name = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_NAME ) );
+                String date = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_DUEDATE ) );
+                String priority = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PRIORITY ) );
+                String projectcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_CODE ) );
+                String taskcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_TASK_CODE ) );
+                String remindarscount = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REMINDARS_COUNT ) );
+                String status = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_STATUS ) );
+                String projectname1 = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_NAME ) );
+                String type = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REPEAT_TYPE ) );
+                taskListRecords1.setName( name );
+                taskListRecords1.setDue_date( date );
+                taskListRecords1.setPriority( priority );
+                taskListRecords1.setProject_code( projectcode );
+                taskListRecords1.setTask_code( taskcode );
+                taskListRecords1.setRemindars_count( remindarscount );
+                taskListRecords1.setStatus( status );
+                taskListRecords1.setProject_name( projectname1 );
+                taskListRecords1.setRepeat_type( type );
+                System.out.println( " Nagarjuna "  +  projectname1  + " "  + offlineProject );
+                //taskListRecordsArrayList.add( taskListRecords );
+               /* if (status.equals( "1" )) {
+                    taskListRecordsArrayList.add( taskListRecords1 );
+                    System.out.println( "projectiTaskList" + taskListRecords1 );
+
+                }*/
+
+                if (projectname1.equals( projectName )) {
+                    System.out.println("dddddd" + projectName );
+                    if (status.equals( "1" )) {
+                        taskListRecordsArrayList.add( taskListRecords1 );
+                    }
+                }
+            }
+        }
 
     }
 
     private void appFooter() {
-        View btnMe = findViewById(R.id.btn_me);
-        btnMe.setOnClickListener(new View.OnClickListener() {
+        View btnMe = findViewById( R.id.btn_me );
+        btnMe.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityToady();
             }
-        });
-        View btnProject = findViewById(R.id.btn_projects);
-        btnProject.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnProject = findViewById( R.id.btn_projects );
+        btnProject.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityProject();
 
             }
-        });
-        View btnTask = findViewById(R.id.btn_task);
-        btnTask.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnTask = findViewById( R.id.btn_task );
+        btnTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityTasks();
             }
-        });
-        View btnIndividuals = findViewById(R.id.btn_individuals);
-        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnIndividuals = findViewById( R.id.btn_individuals );
+        btnIndividuals.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityIndividuals();
             }
-        });
-        View btnInsights = findViewById(R.id.btn_insights);
-        btnInsights.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnInsights = findViewById( R.id.btn_insights );
+        btnInsights.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        });
+        } );
 
     }
 
     private void activityToady() {
-        Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityProject() {
-        Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityTasks() {
-        Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityIndividuals() {
-        Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     private void activityInsights() {
-        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
 
     @Override

@@ -156,9 +156,7 @@ public class EditTaskActivity extends AppCompatActivity {
             mDateTaskEdit.setText( "" + taskDate );
             task_code = (String) b.get( "TaskCode" );
             projectName = (String) b.get( "projectName" );
-            // mProjectCheckBox.setText(projectName);
             projectcode = (String) b.get( "projectCode" );
-            //mEditProjectCheckBox.setText( projectcode );
             System.out.println( "passsed" + taskOwnerName + id + taskName + taskDate );
         }
     }
@@ -172,7 +170,7 @@ public class EditTaskActivity extends AppCompatActivity {
             }
         } );
         TextView tv_title = (TextView) findViewById( R.id.txt_title );
-        tv_title.setText( "TaskOffline Edit Name" );
+        tv_title.setText( "Task Edit Name" );
         Spinner spinner = (Spinner) findViewById( R.id.spinner );
         spinner.setVisibility( View.GONE );
         ImageView imageMenu = (ImageView) findViewById( R.id.image_menu );
@@ -763,7 +761,7 @@ public class EditTaskActivity extends AppCompatActivity {
     }
 
     private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
-        System.out.println( "values" + id + taskName + duedate + days + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
+        System.out.println( "values" + id + taskName + duedate  + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
 
         Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
         call.enqueue( new Callback<TaskEditResponse>() {

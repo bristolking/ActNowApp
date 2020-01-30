@@ -20,16 +20,15 @@
                 android:layout_height="wrap_content"
                 android:text="some"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black"
-                android:layout_gravity="center"/>
+                android:textColor="@color/black" />
             <RelativeLayout
                 android:id="@+id/re_imagComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/img_attachamentComment"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                 <ImageView
                     android:id="@+id/img_attachamentDelete"
                     android:layout_width="wrap_content"
@@ -67,6 +66,7 @@
                     android:layout_weight="1"
                     android:text="1"
                     android:visibility="gone" />
+
             </LinearLayout>
         </LinearLayout>
         <ImageView

@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:paddingRight="75dp"
+            android:paddingRight="90dp"
             app:srcCompat="@drawable/ic_chat" />
         <ImageView
             android:id="@+id/img_WeekraminderTaskList"
@@ -151,7 +151,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="35dp"
+            android:layout_marginRight="60dp"
             app:srcCompat="@drawable/ic_alarm_clock" />
         <ImageView
             android:id="@+id/img_WeekuseraddTaskList"
@@ -159,7 +159,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
             app:srcCompat="@drawable/ic_useradd" />
+        <ImageView
+            android:id="@+id/img_WeekuseraddDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_trash_can" />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"

@@ -166,7 +166,7 @@ public class InvitationActivity extends AppCompatActivity {
                     orncode = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                     String email = userId.get( UserPrefUtils.EMAIL );
                     invitee_id = mShereId.getText().toString();
-                    ImageView mImgDelete = (ImageView) view.findViewById( R.id.img_delete );
+                    ImageView mImgDelete = (ImageView) view.findViewById( R.id.img_sharedelete );
                     mImgDelete.setOnClickListener( new View.OnClickListener() {
                         @RequiresApi(api = Build.VERSION_CODES.M)
                         @Override
@@ -266,23 +266,3 @@ public class InvitationActivity extends AppCompatActivity {
 
 
 
-
- /* @RequiresApi(api = Build.VERSION_CODES.M)
-    public void showPopup(View view){
-        final PopupMenu popupMenu = new PopupMenu( this,view );
-        popupMenu.inflate( R.menu.delete);
-        popupMenu.setGravity(Gravity.RIGHT|Gravity.CENTER);
-        popupMenu.show();
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.menu_delete :
-                        Toast.makeText( getApplicationContext(),"Work in progress!",Toast.LENGTH_SHORT).show();
-                        return  true;
-                    default:
-                        return  false;
-                }
-            }
-        } );
-    }*/

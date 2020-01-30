@@ -22,9 +22,6 @@ public class RepetitiveTabedFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
-    public RepetitiveTabedFragment() {
-    }
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils(getContext());

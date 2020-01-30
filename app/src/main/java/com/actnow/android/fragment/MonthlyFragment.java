@@ -3,6 +3,7 @@ package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,6 +38,7 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
+import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
@@ -52,6 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.actnow.android.R.layout.task_list_cutsom;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class MonthlyFragment extends Fragment {
@@ -73,10 +76,14 @@ public class MonthlyFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
-         View view=inflater.inflate( R.layout.fragment_monthly, container, false );
-        attemptTaskList();
+        View view=inflater.inflate( R.layout.fragment_monthly, container, false );
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+            attemptTaskList();
+        } else {
+            monthlyTypeNoConnection();
+        }
         fabMonthlyrepetTask = view.findViewById( R.id.fab_monthlytask );
         fabMonthlyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -380,5 +387,40 @@ public class MonthlyFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
+    private void monthlyTypeNoConnection() {
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
+        Cursor cursor = taskDBHelper.getAllData();
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                TaskListRecords taskListRecords = new TaskListRecords();
+                String name = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_NAME ) );
+                String date = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_DUEDATE ) );
+                String priority = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PRIORITY ) );
+                String projectcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_CODE ) );
+                String taskcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_TASK_CODE ) );
+                String remindarscount = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REMINDARS_COUNT ) );
+                String status = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_STATUS ) );
+                String projectName = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_NAME ) );
+                String type = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REPEAT_TYPE ) );
+                taskListRecords.setName( name );
+                taskListRecords.setDue_date( date );
+                taskListRecords.setPriority( priority );
+                taskListRecords.setProject_code( projectcode );
+                taskListRecords.setTask_code( taskcode );
+                taskListRecords.setRemindars_count( remindarscount );
+                taskListRecords.setStatus( status );
+                taskListRecords.setProject_name( projectName );
+                taskListRecords.setRepeat_type( type );
+                if (status.equals( "1" ) && type.equals( "Monthly" )) {
+                    taskListRecordsArrayList.add( taskListRecords );
+                }
+            }
+        }
+
+
+    }
+
 
 }

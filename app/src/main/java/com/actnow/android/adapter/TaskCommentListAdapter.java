@@ -73,9 +73,9 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            viewHolder.mTaskComment.setText( Html.fromHtml( taskCommentListResponse.getComment(), Html.FROM_HTML_MODE_COMPACT ) );
+            viewHolder.mTaskComment.setText( taskCommentListResponse.getComment());
         } else {
-            viewHolder.mTaskComment.setText( Html.fromHtml( taskCommentListResponse.getComment() ) );
+            viewHolder.mTaskComment.setText(taskCommentListResponse.getComment());
         }
 
     }
@@ -86,7 +86,7 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTaskComment, mTaskCommentDate, mTaskCommentUserName,mCommentId;
+        TextView mTaskComment, mTaskCommentDate, mTaskCommentUserName,mCommentId,  mCommentUserName;
         ImageView imgComment;
         public ViewHolder(@NonNull View itemView) {
             super( itemView );
@@ -95,6 +95,7 @@ public class TaskCommentListAdapter extends RecyclerView.Adapter<TaskCommentList
             mTaskCommentUserName = (TextView) itemView.findViewById( R.id.tv_userNameComment );
             mTaskCommentDate = (TextView) itemView.findViewById( R.id.tv_commentDate );
             mCommentId =(TextView) itemView.findViewById(R.id.tv_commentId);
+
         }
     }
 }

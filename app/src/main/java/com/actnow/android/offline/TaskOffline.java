@@ -1,5 +1,7 @@
 package com.actnow.android.offline;
 
+import android.support.v4.app.FragmentActivity;
+
 public class TaskOffline {
 
     private String task_id;
@@ -22,9 +24,8 @@ public class TaskOffline {
     private String repeat_weeks;
     private String repeat_days;
     private String parent_task_code;
-    private String orng_code;
 
-    public TaskOffline(String task_id, String name, String task_code, String project_code, String priority, String due_date, String task_members, String status, String approval_status, String created_by, String created_date, String updated_by, String updated_date, String remindars_count, String project_name, String repeat_type, String repeat_months, String repeat_weeks, String repeat_days, String parent_task_code, String orng_code) {
+    public TaskOffline(String task_id, String name, String task_code, String project_code, String priority, String due_date, String task_members, String status, String approval_status, String created_by, String created_date, String updated_by, String updated_date, String remindars_count, String project_name, String repeat_type, String repeat_months, String repeat_weeks, String repeat_days, String parent_task_code) {
         this.task_id = task_id;
         this.name = name;
         this.task_code = task_code;
@@ -45,8 +46,9 @@ public class TaskOffline {
         this.repeat_weeks = repeat_weeks;
         this.repeat_days = repeat_days;
         this.parent_task_code = parent_task_code;
-        this.orng_code = orng_code;
     }
+
+
 
     public String getTask_id() {
         return task_id;
@@ -208,18 +210,6 @@ public class TaskOffline {
         this.parent_task_code = parent_task_code;
     }
 
-    public String getOrng_code() {
-        return orng_code;
-    }
-
-    public void setOrng_code(String orng_code) {
-        this.orng_code = orng_code;
-    }
-
-    public TaskOffline() {
-
-    }
-
     @Override
     public String toString() {
         return "TaskOffline{" +
@@ -243,7 +233,6 @@ public class TaskOffline {
                 ", repeat_weeks='" + repeat_weeks + '\'' +
                 ", repeat_days='" + repeat_days + '\'' +
                 ", parent_task_code='" + parent_task_code + '\'' +
-                ", orng_code='" + orng_code + '\'' +
                 '}';
     }
 }

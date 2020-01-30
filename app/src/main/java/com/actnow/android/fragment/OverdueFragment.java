@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 
 import android.content.Intent;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -41,7 +42,9 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
+import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -58,7 +61,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 import java.util.Date;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class OverdueFragment extends Fragment {
@@ -84,9 +90,13 @@ public class OverdueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_overdue, container, false );
-        attemptTaskList();
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+            attemptTaskList();
+        } else {
+           overDueNoConnection();
+        }
         fabTask = view.findViewById( R.id.fab_task );
         fabTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -104,7 +114,7 @@ public class OverdueFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager( getContext() );
         mTaskRecylcerView.setLayoutManager( mLayoutManager );
         mTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
         mTaskRecylcerView.setAdapter( mTaskListAdapter );
 
         mImageBulbTask = view.findViewById( R.id.image_bulbTask );
@@ -129,7 +139,7 @@ public class OverdueFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+                filter( editable.toString() );
 
             }
         } );
@@ -146,14 +156,15 @@ public class OverdueFragment extends Fragment {
     }
 
     private void filter(String toString) {
-        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
-        for (TaskListRecords name  :taskListRecordsArrayList){
-            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
-                taskListRecordsFilter.add(name);
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
+        for (TaskListRecords name : taskListRecordsArrayList) {
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
+                taskListRecordsFilter.add( name );
             }
         }
-        mTaskListAdapter.filterList(taskListRecordsFilter);
+        mTaskListAdapter.filterList( taskListRecordsFilter );
     }
+
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -170,7 +181,7 @@ public class OverdueFragment extends Fragment {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
                 } else {
-                      AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
+                    AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                 }
             }
 
@@ -184,9 +195,10 @@ public class OverdueFragment extends Fragment {
 
     private Date yesterday() {
         final Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add( Calendar.DATE, -1 );
         return cal.getTime();
     }
+
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
@@ -195,15 +207,15 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setName( taskListRecords.getName() );
                 taskListRecords1.setDue_date( taskListRecords.getDue_date() );
                 taskListRecords1.setPriority( taskListRecords.getPriority() );
-                taskListRecords1.setProject_code( taskListRecords.getProject_code());
-                taskListRecords1.setTask_code( taskListRecords.getTask_code());
-                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count());
-                taskListRecords1.setStatus( taskListRecords.getStatus());
-                taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
+                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
+                taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
+                taskListRecords1.setStatus( taskListRecords.getStatus() );
+                taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
                 Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                String formattedDate = df.format(date1);
+                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
+                String formattedDate = df.format( date1 );
                 String date2[] = taskListRecords.getDue_date().split( " " );
                 String date3 = date2[0];
 
@@ -213,17 +225,17 @@ public class OverdueFragment extends Fragment {
                 System.out.println( "dateys" + dat6 );
 
                 try {
-                    Date date4 = new SimpleDateFormat("yyyy-MM-dd" ).parse( date3);
-                    System.out.println( "date3"+ date4 );
-                    if(date4.before(dat6) && taskListRecords.getStatus().equals( "1" )){
-                        taskListRecordsArrayList.add(taskListRecords1);
+                    Date date4 = new SimpleDateFormat( "yyyy-MM-dd" ).parse( date3 );
+                    System.out.println( "date3" + date4 );
+                    if (date4.before( dat6 ) && taskListRecords.getStatus().equals( "1" )) {
+                        taskListRecordsArrayList.add( taskListRecords1 );
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
             }
-            mTaskRecylcerView.setAdapter(mTaskListAdapter);
+            mTaskRecylcerView.setAdapter( mTaskListAdapter );
             mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
                 @Override
                 public void onClick(final View view, int position) {
@@ -234,8 +246,8 @@ public class OverdueFragment extends Fragment {
                     final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
                     final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
-                    final TextView tv_projectName =(TextView)view.findViewById(R.id.tv_projectNameTaskList);
-                    final TextView tv_projectCode =(TextView)view.findViewById(R.id.tv_projectCodeTaskList);
+                    final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
+                    final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
                     groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
@@ -250,9 +262,9 @@ public class OverdueFragment extends Fragment {
                                             OverdueFragment fragment2 = new OverdueFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
+                                            fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
                                             fragmentTransaction.commit();
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -279,7 +291,7 @@ public class OverdueFragment extends Fragment {
                                                             OverdueFragment fragment2 = new OverdueFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace(R.id.fragment_overDue, fragment2);
+                                                            fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
                                                             fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -294,7 +306,7 @@ public class OverdueFragment extends Fragment {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
                                         }
                                     } );
@@ -332,7 +344,7 @@ public class OverdueFragment extends Fragment {
                             String projectCode = tv_projectCode.getText().toString();
                             Intent i = new Intent( getActivity(), InvitationActivity.class );
                             i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "SenIvitaionprojectCode",projectCode);
+                            i.putExtra( "SenIvitaionprojectCode", projectCode );
                             startActivity( i );
 
                         }
@@ -356,13 +368,54 @@ public class OverdueFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i=new Intent( getActivity(), ReaminderScreenActivity.class);
+                            Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
                             i.putExtra( "TaskCode", task_code );
                             System.out.println( "maximum" + task_code );
-                            startActivity(i);
+                            startActivity( i );
 
                         }
                     } );
+                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                    mImageDelete.setOnClickListener( new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
+                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String task_code = tv_taskcode.getText().toString();
+                            Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                            taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                                @Override
+                                public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    System.out.println( "reponsedelete" + response.raw() );
+                                    if (response.isSuccessful()) {
+                                        System.out.println( "deleteResponse1" + response.raw() );
+                                        if (response.body().getSuccess().equals( "true" )) {
+                                            OverdueFragment fragment2 = new OverdueFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
+                                            fragmentTransaction.commit();
+                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        } else {
+                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        }
+                                    } else {
+                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                    Log.d( "CallBack", " Throwable is " + t );
+
+                                }
+                            } );
+
+                        }
+                    } );
+
 
                 }
 
@@ -421,6 +474,60 @@ public class OverdueFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+    private void overDueNoConnection() {
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        TaskDBHelper taskDBHelper = new TaskDBHelper(getContext());
+        Cursor cursor = taskDBHelper.getAllData();
+        if (cursor.getCount()!=0) {
+            while (cursor.moveToNext()){
+                TaskListRecords taskListRecords = new TaskListRecords();
+                String name = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_NAME));
+                String date  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_DUEDATE));
+                String priority = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PRIORITY));
+                String projectcode  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_CODE));
+                String taskcode = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_TASK_CODE));
+                String remindarscount  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REMINDARS_COUNT));
+                String status = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_STATUS));
+                String projectName  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_NAME));
+                String type  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REPEAT_TYPE));
+                taskListRecords.setName(name);
+                taskListRecords.setDue_date(date);
+                taskListRecords.setPriority(priority);
+                taskListRecords.setProject_code( projectcode );
+                taskListRecords.setTask_code( taskcode );
+                taskListRecords.setRemindars_count(remindarscount);
+                taskListRecords.setStatus( status );
+                taskListRecords.setProject_name( projectName );
+                taskListRecords.setRepeat_type( type );
+                //taskListRecordsArrayList.add( taskListRecords );
+               /* if ( status.equals( "1" )){
+                    taskListRecordsArrayList.add( taskListRecords );
+
+                }*/
+                Date date1 = new Date();
+                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
+                String formattedDate = df.format( date1 );
+                String date2[] =date.split( " " );
+                String date3 = date2[0];
+
+                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
+                String dateYes = dateFormat.format( yesterday() );
+                Date dat6 = new Date( dateYes );
+                System.out.println( "dateys" + dat6 );
+
+                try {
+                    Date date4 = new SimpleDateFormat( "yyyy-MM-dd" ).parse( date3 );
+                    System.out.println( "date3" + date4 );
+                    if (date4.before( dat6 ) && taskListRecords.getStatus().equals( "1" )) {
+                        taskListRecordsArrayList.add( taskListRecords );
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
 
+            }
+        }
+
+    }
 }

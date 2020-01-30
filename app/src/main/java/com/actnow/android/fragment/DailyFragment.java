@@ -3,6 +3,7 @@ package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,6 +38,7 @@ import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
+import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
@@ -53,6 +55,7 @@ import retrofit2.Response;
 
 import static com.activeandroid.Cache.getContext;
 import static com.actnow.android.R.layout.task_list_cutsom;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class DailyFragment extends Fragment {
     RecyclerView mDailyRepetTask;
@@ -73,9 +76,13 @@ public class DailyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_daily, container, false );
-        attemptTaskList();
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+            attemptTaskList();
+        } else {
+            dailyTypeNoConnection();
+        }
         fabDailyrepetTask = view.findViewById( R.id.fab_dailyrepettask );
         fabDailyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -93,7 +100,7 @@ public class DailyFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager( getContext() );
         mDailyRepetTask.setLayoutManager( mLayoutManager );
         mDailyRepetTask.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
         mDailyRepetTask.setAdapter( mTaskListAdapter );
 
         mImageBulbTask = view.findViewById( R.id.image_bulbTask );
@@ -118,7 +125,7 @@ public class DailyFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+                filter( editable.toString() );
 
             }
         } );
@@ -132,15 +139,18 @@ public class DailyFragment extends Fragment {
         } );
         return view;
     }
+
+
     private void filter(String toString) {
-        ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
-        for (TaskListRecords name  :taskListRecordsArrayList){
-            if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
-                taskListRecordsFilter.add(name);
+        ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
+        for (TaskListRecords name : taskListRecordsArrayList) {
+            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
+                taskListRecordsFilter.add( name );
             }
         }
-        mTaskListAdapter.filterList(taskListRecordsFilter);
+        mTaskListAdapter.filterList( taskListRecordsFilter );
     }
+
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
@@ -181,15 +191,15 @@ public class DailyFragment extends Fragment {
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
                 taskListRecords1.setRemindars_count( taskListRecords.getRemindars_count() );
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
-                taskListRecords1.setProject_name( taskListRecords.getProject_name());
-                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
+                taskListRecords1.setProject_name( taskListRecords.getProject_name() );
+                taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
                 if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals( "Daily" )) {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
         }
 
-        mDailyRepetTask.setAdapter(mTaskListAdapter);
+        mDailyRepetTask.setAdapter( mTaskListAdapter );
         mDailyRepetTask.addOnItemTouchListener( new DailyFragment.RecyclerTouchListener( this, mDailyRepetTask, new DailyFragment.ClickListener() {
             @Override
             public void onClick(final View view, int position) {
@@ -202,7 +212,7 @@ public class DailyFragment extends Fragment {
                 final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                 final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
                 final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
-                groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
                     @SuppressLint("ResourceType")
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -299,7 +309,7 @@ public class DailyFragment extends Fragment {
                         String projectCode = tv_projectCode.getText().toString();
                         Intent i = new Intent( getActivity(), InvitationActivity.class );
                         i.putExtra( "TaskCode", task_code );
-                        i.putExtra( "SenIvitaionprojectCode",projectCode);
+                        i.putExtra( "SenIvitaionprojectCode", projectCode );
                         startActivity( i );
 
                     }
@@ -384,6 +394,40 @@ public class DailyFragment extends Fragment {
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
+    }
+
+    private void dailyTypeNoConnection() {
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
+        Cursor cursor = taskDBHelper.getAllData();
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                TaskListRecords taskListRecords = new TaskListRecords();
+                String name = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_NAME ) );
+                String date = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_DUEDATE ) );
+                String priority = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PRIORITY ) );
+                String projectcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_CODE ) );
+                String taskcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_TASK_CODE ) );
+                String remindarscount = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REMINDARS_COUNT ) );
+                String status = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_STATUS ) );
+                String projectName = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_NAME ) );
+                String type = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REPEAT_TYPE ) );
+                taskListRecords.setName( name );
+                taskListRecords.setDue_date( date );
+                taskListRecords.setPriority( priority );
+                taskListRecords.setProject_code( projectcode );
+                taskListRecords.setTask_code( taskcode );
+                taskListRecords.setRemindars_count( remindarscount );
+                taskListRecords.setStatus( status );
+                taskListRecords.setProject_name( projectName );
+                taskListRecords.setRepeat_type( type );
+                if (status.equals( "1" ) && type.equals( "Daily" )) {
+                    taskListRecordsArrayList.add( taskListRecords );
+                }
+            }
+        }
+
+
     }
 
 }

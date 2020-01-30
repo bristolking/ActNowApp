@@ -27,37 +27,31 @@
                 android:buttonTint="@color/textColor"
                 android:textColor="@color/textColor"/>
         </RadioGroup>
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_gravity="center"
+            android:gravity="right"
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/img_editPencilProjectList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_edit_pencil"
-                android:layout_centerInParent="true"
-                android:layout_alignParentRight="true"
-                android:paddingRight="85dp"/>
+                app:srcCompat="@drawable/ic_edit_pencil" />
 
             <ImageView
                 android:id="@+id/img_commentProjectList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_chat"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:paddingRight="50dp"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
             <ImageView
                 android:id="@+id/img_useraddProjectList"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_useradd"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:paddingRight="10dp"/>
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_useradd" />
             <TextView
                 android:id="@+id/tv_projectCode"
                 android:layout_width="wrap_content"
@@ -74,8 +68,24 @@
                 android:text="projectId"
                 android:textColor="@color/colorAccent"
                 android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tv_projectColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="projectColor"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tv_projectDueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="projectDueDate"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

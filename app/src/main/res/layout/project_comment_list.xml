@@ -75,7 +75,16 @@
                         <ImageView
                             android:id="@+id/img_projectattachamentComment"
                             android:layout_width="50dp"
-                            android:layout_height="50dp" />
+                            android:layout_height="50dp"
+                            android:layout_alignParentLeft="true"
+                            android:src="@drawable/img_actnow"/>
+
+                        <ImageView
+                            android:id="@+id/img_projectattachamentCommentTwo"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="50dp"
+                            app:srcCompat="@drawable/ic_trash_can"/>
 
                         <ImageView
                             android:id="@+id/img_attachamentProjectDelete"

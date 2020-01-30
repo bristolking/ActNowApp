@@ -1,6 +1,8 @@
 package com.actnow.android.sdk.responses;
 
- public class TaskListRecords {
+import com.actnow.android.fragment.AllTaskFragment;
+
+public class TaskListRecords {
 
      private String task_id;
      private String name;
@@ -22,7 +24,6 @@ package com.actnow.android.sdk.responses;
      private String repeat_weeks;
      private String repeat_days;
      private String parent_task_code;
-
 
 
      public String getTask_id() {
