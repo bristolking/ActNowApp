@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".activities.insights.IndividualsInsightsActivity"></activity>
+        <activity android:name=".activities.insights.ProjectInsightsActivity" />
+        <activity android:name=".activities.TodayFragmentActivity" />
         <activity android:name=".activities.NoNetworkActivity" />
         <activity android:name=".activities.invitation.SendInvitationActivity" />
         <activity android:name=".activities.AdvancedSearchActivity" />

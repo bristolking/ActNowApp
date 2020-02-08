@@ -1,5 +1,6 @@
 package com.actnow.android.activities.projects;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.CommentsActivity;
+import com.actnow.android.activities.insights.ProjectInsightsActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
@@ -47,6 +49,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectFooterAdapter;
 import com.actnow.android.adapter.ProjectOfflineAdapter;
 import com.actnow.android.databse.ProjectDBHelper;
+import com.actnow.android.fragment.TomorrowFragment;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
@@ -77,6 +80,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
     Button mButtonProjectAdvanced;
     String id;
     ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList;
+
+    RadioButton mRadioButtonProjectName;
 
     int textlength = 0;
     private String selectedType = "";
@@ -114,8 +119,15 @@ public class ProjectFooterActivity extends AppCompatActivity {
         btnLink2.setVisibility( GONE );
         btnLink1.setText( "Projects" );
         btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
-        btnCalendar.setVisibility( GONE );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
+        btnCalendar.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent i = new Intent(getApplicationContext(), ProjectInsightsActivity.class);
+               startActivity( i);
+
+            }
+        } );
         ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
         btnNotifications.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -343,8 +355,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 projectListResponseRecords1.setName(projectListResponseRecords.getName());
                 projectListResponseRecords1.setProject_code(projectListResponseRecords.getProject_code());
                 projectListResponseRecords1.setColor(projectListResponseRecords.getColor());
-                projectListResponseRecordsArrayList.add(projectListResponseRecords1 );
-                projectDBHelper.insertUserDetails( projectListResponseRecords1 );
+                projectListResponseRecordsArrayList.add(projectListResponseRecords1);
+                projectDBHelper.insertUserDetails(projectListResponseRecords1);
                 System.out.println( "index: " + i + " database: " + id );
             }
             mRecyclerViewProjectFooter.setAdapter( mProjectFooterAdapter );
@@ -353,14 +365,16 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 public void onClick(View view, int position) {
                     View view1 = (View) findViewById( R.id.liner_projectList );
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById( R.id.radioGroupProject );
-                    final RadioButton mRadioButtonProjectName = (RadioButton) view.findViewById( R.id.projectNameFooter );
+                    mRadioGroup.clearCheck();
                     final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_projectCode );
                     final TextView mProjectId = (TextView) view.findViewById( R.id.tv_projectId );
                     final TextView mProjectColor =(TextView)view.findViewById(R.id.tv_projectColor );
                     mRadioGroup.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
+                        @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            if (checkedId == R.id.projectNameFooter) {
+                          mRadioButtonProjectName = (RadioButton)findViewById( R.id.projectNameFooter );
+                            if (null != mRadioButtonProjectName && checkedId > -1) {
                                 if (checkedId == R.id.projectNameFooter) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
                                     String projectcode = mProjectCode.getText().toString();
@@ -374,7 +388,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     i.putExtra( "projectOwnerName", projectOwnerName );
                                     i.putExtra( "projectcode", projectcode );
                                     startActivity( i );
-                                } else if (checkedId != -1) {
+                                } else if (checkedId != 0) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
                                 }
                             }
@@ -493,10 +507,10 @@ public class ProjectFooterActivity extends AppCompatActivity {
 
     private void attemptOfflineProjects() {
         AndroidUtils.showProgress( false, mProgressView, mContentLayout );
-        ProjectDBHelper projectDBHelper = new ProjectDBHelper( getApplicationContext() );
+        ProjectDBHelper projectDBHelper = new ProjectDBHelper(getApplicationContext());
         Cursor cursor = projectDBHelper.getProjectAllData();
         if (cursor.getCount() != 0) {
-            while (cursor.moveToNext()) {
+            while (cursor.moveToNext()){
                 ProjectListResponseRecords projectListResponseRecords = new ProjectListResponseRecords();
                 String name = cursor.getString( cursor.getColumnIndex( projectDBHelper.KEY_NAME ) );
                 String date = cursor.getString( cursor.getColumnIndex( projectDBHelper.KEY_DUEDATE ) );

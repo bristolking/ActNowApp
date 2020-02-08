@@ -5,62 +5,143 @@
     android:id="@+id/drawer_layoutWeekView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/colorWhite"
-    tools:openDrawer="right"
-    tools:context=".activities.ThisWeekActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.ThisWeekActivity"
+    tools:openDrawer="right">
 
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
     </RelativeLayout>
+
+
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:orientation="vertical">
-
-            <include layout="@layout/bulb_qucik_advanced"/>
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                 android:paddingLeft="10dp"
-                android:paddingRight="10dp">
-                <!--<TextView
-                    android:id="@+id/tv_titleThisWeek"
+                android:layout_marginTop="50dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tasks Names"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary" />-->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/thisweek_recyclerView"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/one_fragment"
+                        android:name="com.actnow.android.fragment.OverDueTodayFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_over_due_today" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-
-               <!-- <ExpandableListView
-                    android:id="@+id/lvExp"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>-->
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/two_fragment"
+                        android:name="com.actnow.android.fragment.TodayFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_today" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/tomorrow_fragment"
+                        android:name="com.actnow.android.fragment.TomorrowFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_week_name_one" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/three_fragment"
+                        android:name="com.actnow.android.fragment.WeekNameOneFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_week_name_one" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/four_fragment"
+                        android:name="com.actnow.android.fragment.WeekNameTwoFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_week_name_two" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/five_fragment"
+                        android:name="com.actnow.android.fragment.WeekNameThreeFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_week_name_three" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/six_fragment"
+                        android:name="com.actnow.android.fragment.WeekNameFourFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_week_name_four" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <fragment
+                        android:id="@+id/seven_fragment"
+                        android:name="com.actnow.android.fragment.WeekNameFiveFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:layout="@layout/fragment_week_name_five" />
+                </LinearLayout>
             </LinearLayout>
+        </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp">
+
+            <include layout="@layout/bulb_qucik_advanced"/>
+
         </LinearLayout>
-        <include layout="@layout/app_header_two"/>
-        <include layout="@layout/app_footer"/>
+        <include layout="@layout/app_header_two" />
+
+        <include layout="@layout/app_footer" />
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_thisTaskadd"
             android:layout_width="wrap_content"

@@ -133,7 +133,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
         btnLink2.setVisibility( View.GONE );
         //btnLink1.setText("Projects");
         btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
         btnCalendar.setVisibility( View.GONE );
         ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
         btnNotifications.setOnClickListener( new View.OnClickListener() {

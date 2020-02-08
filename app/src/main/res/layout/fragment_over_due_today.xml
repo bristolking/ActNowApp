@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_overdue_today"
+    tools:context=".fragment.OverDueTodayFragment">
+
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+<!--
+        <com.trncic.library.DottedProgressBar
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:activeDot="@drawable/active_dot"
+            app:dotSize="29dp"
+            app:inactiveDot="@drawable/inactive_dot"
+            app:jumpingSpeed="250"
+            app:spacing="15dp" />-->
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+     <!--   <include layout="@layout/bulb_qucik_advanced" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="60dp"
+            android:padding="8dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dash_board_background"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/dayOverdue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ove Due"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/colorPrimary" />
+                <TextView
+                    android:id="@+id/weekNameOverdue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:textColor="@color/colorPrimary" />
+                <TextView
+                    android:id="@+id/monthOverdue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+
+                    android:textColor="@color/colorPrimary" />
+                <TextView
+                    android:id="@+id/dateOverdue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:textColor="@color/colorPrimary" />
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/task_overdue_todayrecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>

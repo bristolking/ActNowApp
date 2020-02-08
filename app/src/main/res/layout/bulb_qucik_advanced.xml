@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:padding="8dp">
-
         <ImageView
             android:id="@+id/image_bulbTask"
             android:layout_width="wrap_content"
@@ -29,7 +30,8 @@
             android:background="@drawable/rounded_square"
             android:drawableRight="@drawable/ic_search"
             android:hint="Quick Find"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:singleLine="true"/>
 
         <Button
             android:id="@+id/button_searchTask"

@@ -35,6 +35,7 @@
             android:orientation="vertical"
             android:padding="8dp">
             <include layout="@layout/taskchatinsights" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

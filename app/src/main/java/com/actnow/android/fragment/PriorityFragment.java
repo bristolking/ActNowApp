@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
@@ -36,6 +37,7 @@ import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
+import com.actnow.android.adapter.PriorityOfflineAdapter;
 import com.actnow.android.adapter.PriorityTaskAdapter;
 
 import com.actnow.android.databse.TaskDBHelper;
@@ -63,6 +65,7 @@ public class PriorityFragment extends Fragment {
     RecyclerView.LayoutManager mLayoutManager;
     FloatingActionButton fabPriorityTask;
     PriorityTaskAdapter mPriortyTaskAdapter;
+    PriorityOfflineAdapter mPriorityOfflineAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     private String selectedType = "";
@@ -72,13 +75,25 @@ public class PriorityFragment extends Fragment {
     Button mButtonAdavancedSearch;
     ImageView mImageBulbTask;
 
-    private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
+    private ArrayList<TaskListRecords> taskListRecordsArrayList;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_priority, container, false );
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        taskListRecordsArrayList = new ArrayList<TaskListRecords>();
+
+        mPriorityTaskRecylcerView = (RecyclerView) view.findViewById( R.id.prioritytask_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getContext() );
+        mPriorityTaskRecylcerView.setLayoutManager( mLayoutManager );
+        mPriorityTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
+        mPriortyTaskAdapter = new PriorityTaskAdapter();
+        mPriorityTaskRecylcerView.setAdapter( mPriortyTaskAdapter );
+
+        mPriorityOfflineAdapter = new PriorityOfflineAdapter();
+        mPriorityTaskRecylcerView.setAdapter( mPriorityOfflineAdapter );
+
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptTaskList();
         } else {
@@ -97,12 +112,7 @@ public class PriorityFragment extends Fragment {
                 startActivity( i );
             }
         } );
-        mPriorityTaskRecylcerView = (RecyclerView) view.findViewById( R.id.prioritytask_recyclerView );
-        mLayoutManager = new LinearLayoutManager( getContext() );
-        mPriorityTaskRecylcerView.setLayoutManager( mLayoutManager );
-        mPriorityTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mPriortyTaskAdapter = new PriorityTaskAdapter();
-        mPriorityTaskRecylcerView.setAdapter( mPriortyTaskAdapter );
+
         mImageBulbTask = view.findViewById( R.id.image_bulbTask );
         mImageBulbTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -209,7 +219,7 @@ public class PriorityFragment extends Fragment {
                     final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
                     final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
                     final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
-                    groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
+                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -435,6 +445,10 @@ public class PriorityFragment extends Fragment {
         }
     }
 
+
+
+    //OFFLINE Data
+
     private void  priorotyNoConnection() {
         AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
@@ -460,15 +474,161 @@ public class PriorityFragment extends Fragment {
                 taskListRecords.setStatus( status );
                 taskListRecords.setProject_name( projectName );
                 taskListRecords.setRepeat_type( type );
-                //taskListRecordsArrayList.add( taskListRecords );
                 if (status.equals( "1" )) {
                     taskListRecordsArrayList.add( taskListRecords );
                 }
             }
 
         }
+        mPriorityOfflineAdapter.addAll( taskListRecordsArrayList );
+        mPriorityTaskRecylcerView.setAdapter( mPriorityOfflineAdapter );
+        mPriorityTaskRecylcerView.addOnItemTouchListener( new PriorityFragment.RecyclerTouchListener( this, mPriorityTaskRecylcerView, new PriorityFragment.ClickListener() {
+            @Override
+            public void onClick(final View view, int position) {
+                final View view1 = view.findViewById( R.id.taskList_liner );
+                RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
+                final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
+                final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
+                final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
+                groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @SuppressLint("ResourceType")
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (checkedId == R.id.radio_buttonAction) {
+                            if (checkedId == R.id.radio_buttonAction) {
+                                selectedType = radioButtonTaskName.getText().toString();
+                                Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        view1.setVisibility( View.VISIBLE );
+                                        PriorityFragment priorityFragment = new PriorityFragment();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
+                                        fragmentTransaction.commit();
+                                        Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                        snackbar1.show();
+                                    }
+                                } );
+                                View sbView = snackbar.getView();
+                                TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
+                                textView.setOnClickListener( new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        view1.setVisibility( View.GONE );
+                                        HashMap<String, String> userId = session.getUserDetails();
+                                        String id = userId.get( UserPrefUtils.ID );
+                                        System.out.println( "id" + id );
+                                        final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                        final String name = mTaskName.getText().toString();
+                                        final String date = tv_dueDate.getText().toString();
+                                        String task_code = tv_taskcode.getText().toString();
+                                        String task_prioroty = tv_priority.getText().toString();
+                                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                        Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                        callComplete.enqueue( new Callback<TaskComplete>() {
+                                            @Override
+                                            public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                if (response.isSuccessful()) {
+                                                    if (response.body().getSuccess().equals( "true" )) {
+                                                        PriorityFragment priorityFragment = new PriorityFragment();
+                                                        FragmentManager fragmentManager = getFragmentManager();
+                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                        fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
+                                                        fragmentTransaction.commit();
+                                                    } else {
+                                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                                    }
+                                                } else {
+                                                    AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                                }
+                                            }
 
+                                            @Override
+                                            public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                Log.d( "CallBack", " Throwable is " + t );
+                                            }
+                                        } );
+                                        Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
+                                        snackbar2.show();
+
+                                    }
+                                } );
+                                snackbar.show();
+                            } else if (checkedId == 0) {
+                                selectedType = radioButtonTaskName.getText().toString();
+
+                            }
+                        }
+                    }
+                } );
+                mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
+                mTaskName.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                        String name = mTaskName.getText().toString();
+                        String date = tv_dueDate.getText().toString();
+                        String task_code = tv_taskcode.getText().toString();
+                        Intent i = new Intent( getActivity(), EditTaskActivity.class );
+                        i.putExtra( "TaskName", name );
+                        i.putExtra( "TaskDate", date );
+                        i.putExtra( "TaskCode", task_code );
+                        i.putExtra( "taskOwnerName", taskOwnerName );
+                        System.out.println( "priorty" + name + date + taskOwnerName );
+                        startActivity( i );
+                    }
+                } );
+
+                ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
+                mImageComment.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent( getActivity(), CommentsActivity.class );
+                        String name = mTaskName.getText().toString();
+                        String date = tv_dueDate.getText().toString();
+                        String task_code = tv_taskcode.getText().toString();
+                        i.putExtra( "TaskName", name );
+                        i.putExtra( "TaskDate", date );
+                        i.putExtra( "TaskCode", task_code );
+                        startActivity( i );
+                    }
+                } );
+                ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
+                mImageRaminder.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String task_code = tv_taskcode.getText().toString();
+                        Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
+                        i.putExtra( "TaskCode", task_code );
+                        startActivity( i );
+
+                    }
+                } );
+                ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                mImageDelete.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
+
+                    }
+                } );
+
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+
+        } ) );
     }
 
-
 }
+
+

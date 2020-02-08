@@ -118,7 +118,7 @@ public class MonthlyTaskListSpinnerActivity extends AppCompatActivity {
         btnLink2.setVisibility(View.GONE);
         btnLink1.setText("Tasks");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         //btnCalendar.setVisibility(View.GONE);
         btnCalendar.setOnClickListener(new View.OnClickListener() {
             @Override

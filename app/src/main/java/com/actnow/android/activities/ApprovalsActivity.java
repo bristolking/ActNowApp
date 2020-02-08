@@ -3,9 +3,17 @@ package com.actnow.android.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,6 +29,7 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +49,7 @@ import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ApprovalAdapter;
+
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -46,6 +57,7 @@ import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +89,12 @@ public class ApprovalsActivity extends AppCompatActivity {
     TextView mTaskApprovalName;
     TextView mTaskCode;
 
-    private String status;
+    private int edit_position;
+    private View view;
+    private boolean add = false;
+    private Paint p = new Paint();
+    String task_code;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +104,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         appHeaderTwo();
         initializeViews();
         appFooter();
+
 
     }
 
@@ -103,7 +121,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         btnLink2.setVisibility( View.GONE );
         btnLink1.setText( "Approvals" );
         btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
         btnCalendar.setVisibility( View.GONE );
         ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
         btnNotifications.setOnClickListener( new View.OnClickListener() {
@@ -228,6 +246,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
         mImageBulbTaskApproval = findViewById( R.id.image_approvalbuldProject );
@@ -271,6 +290,15 @@ public class ApprovalsActivity extends AppCompatActivity {
         mRecyclerViewApproval.setItemAnimator( new DefaultItemAnimator() );
         mApprovalAdapter = new ApprovalAdapter( taskListRecordsArrayList );
         mRecyclerViewApproval.setAdapter( mApprovalAdapter );
+        mApprovalAdapter.notifyDataSetChanged();
+        view = getLayoutInflater().inflate( R.layout.custom_approval_tasklist, null );
+
+        apiCall();
+        initSwipe();
+
+    }
+
+    private void apiCall() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -298,7 +326,97 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             }
         } );
+
     }
+
+    private void initSwipe(){
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if (direction == ItemTouchHelper.LEFT){
+                    mApprovalAdapter.removeItem(position);
+
+                } else {
+                    removeView();
+                    edit_position = position;
+                    mApprovalAdapter.removeItem(position);
+
+                   /* HashMap<String, String> userId = session.getUserDetails();
+                    String id = userId.get( UserPrefUtils.ID );
+                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                    task_code = mTaskCode.getText().toString();
+                    Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskApprove( id, task_code, orgn_code );
+                    callComplete.enqueue( new Callback<TaskComplete>() {
+                        @Override
+                        public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                            if (response.isSuccessful()) {
+                                if (response.body().getSuccess().equals( "true" )) {
+                                    Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
+                                    startActivity( i );
+                                } else {
+                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                }
+                            } else {
+                                AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<TaskComplete> call, Throwable t) {
+                            Log.d( "CallBack", " Throwable is " + t );
+
+                        }
+                    } );*/
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                Bitmap icon;
+                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+
+                    if(dX > 0){
+                        p.setColor(Color.parseColor("#388E3C"));
+                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
+                        c.drawRect(background,p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit_white);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
+                        c.drawBitmap(icon,null,icon_dest,p);
+                    } else {
+                        p.setColor(Color.parseColor("#D32F2F"));
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background,p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
+                        c.drawBitmap(icon,null,icon_dest,p);
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerViewApproval);
+    }
+    private void removeView(){
+        if(view.getParent()!=null) {
+            ((ViewGroup) view.getParent()).removeView(view);
+        }
+    }
+
+
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>();
         for (TaskListRecords name : taskListRecordsArrayList) {
@@ -335,7 +453,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                     mTaskApprovalPriority = (TextView) view.findViewById( R.id.tv_approvalTaskPriority );
                     mTaskCode = (TextView) view.findViewById( R.id.tv_taskCodeApproval );
                     final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_approvalProjectCode );
-                    ImageView mImageTick = (ImageView) view.findViewById( R.id.img_checkedTaskApproval );
+                    /*ImageView mImageTick = (ImageView) view.findViewById( R.id.img_checkedTaskApproval );
                     mImageTick.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -367,8 +485,8 @@ public class ApprovalsActivity extends AppCompatActivity {
                             } );
 
                         }
-                    } );
-                    ImageView mImageWrong = (ImageView) view.findViewById( R.id.img_wrongTaskApproval );
+                    } );*/
+                   /* ImageView mImageWrong = (ImageView) view.findViewById( R.id.img_wrongTaskApproval );
                     mImageWrong.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -400,7 +518,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                             } );
 
                         }
-                    } );
+                    } );*/
                     ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_approvaluseraddTaskList );
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
@@ -439,8 +557,8 @@ public class ApprovalsActivity extends AppCompatActivity {
                                         System.out.println( "deleteResponse1" + response.raw() );
                                         if (response.body().getSuccess().equals( "true" )) {
                                             System.out.println( "deleteResponse2" + response.raw() );
-                                            Intent i =new Intent( getApplicationContext(),ApprovalsActivity.class);
-                                            startActivity(i);
+                                            Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
+                                            startActivity( i );
                                             Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -450,6 +568,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                                     }
 
                                 }
+
                                 @Override
                                 public void onFailure(Call<TaskDelete> call, Throwable t) {
                                     Log.d( "CallBack", " Throwable is " + t );
@@ -592,6 +711,8 @@ public class ApprovalsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }
+
 
 

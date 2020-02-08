@@ -140,7 +140,7 @@ public interface ANApi {
             @Part("task_code")RequestBody task_code,
             @Part("project_code")RequestBody project_code,
             @Part("image_path") RequestBody imageName,
-            @Part List<MultipartBody.Part> files);
+            @Part MultipartBody.Part files);
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")

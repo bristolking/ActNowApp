@@ -62,7 +62,7 @@ public class AllTaskFragment extends Fragment {
     RecyclerView.LayoutManager mLayoutManager;
     FloatingActionButton fabAllTask;
     TaskListAdapter mTaskListAdapter;
-    TaskListAdapter mTaskOfflineAdapter;
+    TaskOfflineAdapter mTaskOfflineAdapter;
     UserPrefUtils session;
     View mProgressView, mContentLayout;
     EditText mTaskQucikSearch;
@@ -81,10 +81,11 @@ public class AllTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_all_task, container, false );
-        taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        taskListRecordsArrayList = new ArrayList<TaskListRecords>();
+
         mAllTaskRecylcerView = (RecyclerView) view.findViewById( R.id.alltask_recyclerView );
         mLayoutManager = new LinearLayoutManager( getContext() );
         mAllTaskRecylcerView.setLayoutManager( mLayoutManager );
@@ -92,7 +93,7 @@ public class AllTaskFragment extends Fragment {
         mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
         mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
 
-        mTaskOfflineAdapter = new TaskListAdapter( taskListRecordsArrayList );
+        mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mAllTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
 
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
@@ -460,24 +461,24 @@ public class AllTaskFragment extends Fragment {
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 TaskListRecords taskListRecords = new TaskListRecords();
-                String name = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_NAME ) );
-                String date = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_DUEDATE ) );
-                String priority = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PRIORITY ) );
-                String projectcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_CODE ) );
-                String taskcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_TASK_CODE ) );
-                String remindarscount = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REMINDARS_COUNT ) );
-                String status = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_STATUS ) );
-                String projectName = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_NAME ) );
-                String type = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REPEAT_TYPE ) );
-                taskListRecords.setName( name );
-                taskListRecords.setDue_date( date );
-                taskListRecords.setPriority( priority );
-                taskListRecords.setProject_code( projectcode );
-                taskListRecords.setTask_code( taskcode );
-                taskListRecords.setRemindars_count( remindarscount );
-                taskListRecords.setStatus( status );
-                taskListRecords.setProject_name( projectName );
-                taskListRecords.setRepeat_type( type );
+                String name = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_NAME));
+                String date = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_DUEDATE));
+                String priority = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_PRIORITY));
+                String projectcode = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_CODE));
+                String taskcode = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_TASK_CODE));
+                String remindarscount = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_REMINDARS_COUNT));
+                String status = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_STATUS));
+                String projectName = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_NAME));
+                String type = cursor.getString( cursor.getColumnIndex(taskDBHelper.KEY_REPEAT_TYPE));
+                taskListRecords.setName(name);
+                taskListRecords.setDue_date(date);
+                taskListRecords.setPriority(priority);
+                taskListRecords.setProject_code(projectcode);
+                taskListRecords.setTask_code(taskcode);
+                taskListRecords.setRemindars_count(remindarscount);
+                taskListRecords.setStatus(status);
+                taskListRecords.setProject_name(projectName);
+                taskListRecords.setRepeat_type(type);
                 if (status.equals( "1" )) {
                     taskListRecordsArrayList.add( taskListRecords );
                 }
@@ -584,18 +585,6 @@ public class AllTaskFragment extends Fragment {
                         System.out.println( "user" + task_code );
                     }
                 } );
-                /*ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
-                mImageUserAdd.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String task_code = tv_taskcode.getText().toString();
-                        String projectCode = tv_projectCode.getText().toString();
-                        Intent i = new Intent( getActivity(), InvitationActivity.class );
-                        i.putExtra( "TaskCode", task_code );
-                        i.putExtra( "SenIvitaionprojectCode", projectCode );
-                        startActivity( i );
-                    }
-                } );*/
                 ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
                 mImageComment.setOnClickListener( new View.OnClickListener() {
                     @Override
@@ -638,6 +627,7 @@ public class AllTaskFragment extends Fragment {
 
         } ) );
     }
+
 }
 
 

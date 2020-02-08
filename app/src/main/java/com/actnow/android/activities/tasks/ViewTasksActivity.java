@@ -763,12 +763,17 @@ public class ViewTasksActivity extends AppCompatActivity {
             focusView = mDueDateTask;
             cancel = true;
 
+        } if (TextUtils.isEmpty( taskName )){
+            mTaskProjectName.setError( getString( R.string.error_required ) );
+            focusView = mTaskProjectName;
+            cancel = true;
+
+
              /* if (repeat_type.equals( "" )) {
                   cancel = false;
               }else {
                   cancel = true;
               }*/
-
         }
         if (cancel) {
             focusView.requestFocus();

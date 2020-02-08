@@ -68,7 +68,7 @@
             android:id="@+id/btn_calendar"
             android:layout_width="@dimen/standard_24"
             android:layout_height="@dimen/standard_24"
-            app:srcCompat="@drawable/ic_calendar"/>
+            app:srcCompat="@drawable/ic_bar_graph"/>
         <ImageView
             android:id="@+id/btn_notifications"
             android:layout_width="@dimen/standard_24"

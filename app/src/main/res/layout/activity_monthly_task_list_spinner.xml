@@ -62,7 +62,8 @@
                         android:background="@drawable/rounded_square"
                         android:drawableRight="@drawable/ic_search"
                         android:hint="Quick Find"
-                        android:padding="10dp" />
+                        android:padding="10dp"
+                        android:singleLine="true"/>
 
                     <Button
                         android:id="@+id/button_searchMonthlyTaskList"

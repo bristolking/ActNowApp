@@ -122,7 +122,7 @@ public class DailyTaskListActivity extends AppCompatActivity {
         btnLink2.setVisibility( View.GONE );
         btnLink1.setText( "TASKS" );
         btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
         btnCalendar.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {

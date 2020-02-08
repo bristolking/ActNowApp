@@ -80,7 +80,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
         btnLink1.setText("This month");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
 
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         btnCalendar.setVisibility(GONE);
         ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
         btnNotifications.setOnClickListener(new View.OnClickListener() {

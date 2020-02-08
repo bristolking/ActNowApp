@@ -109,7 +109,7 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
         btnLink2.setVisibility(GONE);
         btnLink1.setText("Tasks");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         btnCalendar.setVisibility(GONE);
         ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
         btnNotifications.setOnClickListener(new View.OnClickListener() {
@@ -234,8 +234,6 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
         mContentLayout = findViewById(R.id.content_layout);
         mProgressView = findViewById(R.id.progress_bar);
 
-
-
         MaterialCalendarView materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
         Calendar cal = Calendar.getInstance();
         currentMonth = new SimpleDateFormat("MM").format(cal.getTime());
@@ -310,11 +308,12 @@ public class MonthlyTaskListActivity extends AppCompatActivity    {
                 taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setPriority(taskListRecords.getPriority());
                 taskListRecords1.setProject_name( taskListRecords.getProject_name());
+                taskListRecords1.setStatus( taskListRecords.getStatus());
                 String date = taskListRecords.getDue_date();
                 String[] dateArray = date.split(" ");
                 String[] finalDateArray = dateArray[0].split("-");
                 String month = finalDateArray[1];
-                if (currentMonth.equals(month)) {
+                if (currentMonth.equals(month) && taskListRecords.getStatus().equals( "1" )) {
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
             }

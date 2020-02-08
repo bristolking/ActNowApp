@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +46,7 @@ import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.ThisWeekAdapter;
+import com.actnow.android.fragment.OverDueTodayFragment;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -80,12 +83,10 @@ public class ThisWeekActivity extends AppCompatActivity {
     final Context context = this;
 
     TextView mTaskName;
-    FloatingActionButton fabThisTask;
+    FloatingActionButton  fabThisTask;
 
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+   /* private FragmentRefreshListener fragmentRefreshListener;*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,9 @@ public class ThisWeekActivity extends AppCompatActivity {
         session = new UserPrefUtils( getApplicationContext() );
         setContentView( R.layout.activity_this_week );
         appHeaderTwo();
+       /* if(getFragmentRefreshListener()!= null){
+            getFragmentRefreshListener().onRefresh();
+        }*/
         initializeViews();
         appFooter();
     }
@@ -110,7 +114,7 @@ public class ThisWeekActivity extends AppCompatActivity {
         btnLink2.setVisibility( GONE );
         btnLink1.setText( "Thisweek" );
         btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_calendarAppHeaderTwo );
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
         btnCalendar.setVisibility( GONE );
         ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
         btnNotifications.setOnClickListener( new View.OnClickListener() {
@@ -234,7 +238,6 @@ public class ThisWeekActivity extends AppCompatActivity {
     private void initializeViews() {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
-        // mTextViewWeeks = findViewById( R.id.tv_titleThisWeek );
         mImageBulbTask = findViewById( R.id.image_bulbTask );
         mImageBulbTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -243,6 +246,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                 startActivity( i );
             }
         } );
+
         mTaskQucikSearch = findViewById( R.id.edit_searchTask );
         mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
             @Override
@@ -252,13 +256,13 @@ public class ThisWeekActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(mThisweekrecyclerView.getVisibility() != View.VISIBLE)
-                    mThisweekrecyclerView.setVisibility( View.VISIBLE );
+               /* if(mThisweekrecyclerView.getVisibility() != View.VISIBLE)
+                    mThisweekrecyclerView.setVisibility( View.VISIBLE );*/
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+                //filter(editable.toString());
 
             }
         } );
@@ -284,7 +288,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                 startActivity( i );
             }
         } );
-        mThisweekrecyclerView = findViewById( R.id.thisweek_recyclerView );
+       /* mThisweekrecyclerView = findViewById( R.id.thisweek_recyclerView );
         mThisweekrecyclerView.setHasFixedSize( true );
         mLayoutManager = new LinearLayoutManager( this );
         mThisWeekAdapter = new ThisWeekAdapter(taskListRecordsArrayList);
@@ -311,10 +315,17 @@ public class ThisWeekActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
             }
-        } );
+        } );*/
+    }
+   /* public FragmentRefreshListener getFragmentRefreshListener() {
+        return fragmentRefreshListener;
     }
 
-    private void filter(String toString) {
+    public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) {
+        this.fragmentRefreshListener = fragmentRefreshListener;
+    }*/
+
+   /* private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>(  );
         for (TaskListRecords name :taskListRecordsArrayList){
             if (name.getName().toLowerCase().contains( toString.toLowerCase())){
@@ -324,9 +335,9 @@ public class ThisWeekActivity extends AppCompatActivity {
         }
         mThisWeekAdapter.filterList(taskListRecordsFilter);
     }
+*/
 
-
-    private void setTaskList(List<TaskListRecords> taskListRecordsList) {
+  /*  private void setTaskList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get( i );
@@ -564,7 +575,7 @@ public class ThisWeekActivity extends AppCompatActivity {
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
-    }
+    }*/
 
     private void appFooter() {
         View btnMe = findViewById( R.id.btn_me );
@@ -639,4 +650,9 @@ public class ThisWeekActivity extends AppCompatActivity {
         super.onBackPressed();
 
     }
+    public  interface FragmentRefreshListener {
+        void onRefresh();
+
+    }
+
 }

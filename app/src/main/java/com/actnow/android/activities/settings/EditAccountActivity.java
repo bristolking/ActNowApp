@@ -102,7 +102,6 @@ public class EditAccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chooseFile();
-                //uploadFile();
             }
         } );
     }

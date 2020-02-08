@@ -53,7 +53,8 @@
                     android:layout_weight="1.5"
                     android:padding="10dp"
                     android:layout_margin="5dp"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_centerHorizontal="true"
+                    android:singleLine="true"/>
                 <Button
                     android:id="@+id/button_searchApproval"
                     android:layout_width="wrap_content"
@@ -74,6 +75,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
                 <TextView
+                    android:id="@+id/tv_approval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Approvals"

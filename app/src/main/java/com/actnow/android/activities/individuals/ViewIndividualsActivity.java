@@ -32,6 +32,7 @@ import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
+import com.actnow.android.activities.insights.IndividualsInsightsActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.settings.AccountSettingActivity;
@@ -107,8 +108,15 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         btnLink2.setVisibility(View.GONE);
         btnLink1.setText("Individuals");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
-        btnCalendar.setVisibility(GONE);
+        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
+        btnCalendar.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Intent i =new Intent(getApplicationContext(), IndividualsInsightsActivity.class );
+               startActivity(i);
+
+            }
+        } );
         ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
         btnNotifications.setOnClickListener(new View.OnClickListener() {
             @Override

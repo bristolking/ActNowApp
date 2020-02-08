@@ -78,7 +78,7 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
         btnLink2.setVisibility(GONE);
         btnLink1.setText("This year");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         btnCalendar.setVisibility(GONE);
 
         ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);

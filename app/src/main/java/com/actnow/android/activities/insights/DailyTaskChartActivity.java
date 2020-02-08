@@ -87,7 +87,7 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
         btnLink2.setVisibility(GONE);
         btnLink1.setText("Today");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
-        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_calendarAppHeaderTwo);
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         btnCalendar.setVisibility(GONE);
         ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
         btnNotifications.setOnClickListener(new View.OnClickListener() {
