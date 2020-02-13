@@ -2,6 +2,7 @@ package com.actnow.android.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -66,7 +67,7 @@ public class WeekNameFourFragment extends Fragment {
     private String selectedType = "";
     private ArrayList<TaskListRecords> taskListRecordsArrayList;
     final WeekNameFourFragment context = this;
-
+    private ProgressDialog mProgressDialog;
     TextView mTaskName;
     String id;
 
@@ -115,6 +116,21 @@ public class WeekNameFourFragment extends Fragment {
             // weeKThreeFrgmentNoConnection();
         }
         return view;
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();

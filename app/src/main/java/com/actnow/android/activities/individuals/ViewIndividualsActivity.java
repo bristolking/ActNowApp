@@ -1,5 +1,6 @@
 package com.actnow.android.activities.individuals;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -69,6 +70,9 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     EditText mIndividualQucikSearch;
     Button mIndividualButtonAdavancedSearch;
     ImageView mIndividualImageBulbTask;
+
+    private ProgressDialog mProgressDialog;
+
 
 
     String id;
@@ -281,14 +285,11 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mIndivivalLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList);
-
-        //CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList, R.layout.individual_check, getApplicationContext());
         mRecyclerView.setAdapter(checkBoxAdapter);
-
+        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
         System.out.println("id" + id);
-
         Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse(id);
         call.enqueue(new Callback<CheckBoxResponse>() {
             @Override
@@ -299,6 +300,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals("true")) {
                         System.out.println("data" + response.body().getSuccess());
                         setLoadCheckBox(response.body().getOrgn_users_records());
+                        hideProgressDialog();
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -403,6 +405,23 @@ public class ViewIndividualsActivity extends AppCompatActivity {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
+
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 

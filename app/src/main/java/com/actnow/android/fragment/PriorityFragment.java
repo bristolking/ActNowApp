@@ -1,6 +1,7 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -74,7 +75,7 @@ public class PriorityFragment extends Fragment {
     EditText mTaskQucikSearch;
     Button mButtonAdavancedSearch;
     ImageView mImageBulbTask;
-
+    private ProgressDialog mProgressDialog;
     private ArrayList<TaskListRecords> taskListRecordsArrayList;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

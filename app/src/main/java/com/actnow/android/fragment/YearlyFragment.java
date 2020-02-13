@@ -1,6 +1,7 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -74,7 +75,7 @@ public class YearlyFragment extends Fragment {
     EditText mTaskQucikSearch;
     Button mButtonAdavancedSearch;
     ImageView mImageBulbTask;
-
+    private ProgressDialog mProgressDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
@@ -150,7 +151,21 @@ public class YearlyFragment extends Fragment {
         return view;
 
     }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
 
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
@@ -354,6 +369,7 @@ public class YearlyFragment extends Fragment {
                 mImageDelete.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        showProgressDialog();
                         HashMap<String, String> userId = session.getUserDetails();
                         String id = userId.get( UserPrefUtils.ID );
                         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -364,6 +380,7 @@ public class YearlyFragment extends Fragment {
                             public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body().getSuccess().equals( "true" )) {
+                                        hideProgressDialog();
                                         YearlyFragment yearlyFragment = new YearlyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

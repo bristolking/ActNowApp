@@ -1,6 +1,7 @@
 package com.actnow.android.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -78,6 +79,7 @@ public class RepetitiveFragment extends Fragment {
     EditText mTaskQucikSearch;
     Button mButtonAdavancedSearch;
     ImageView mImageBulbTask;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

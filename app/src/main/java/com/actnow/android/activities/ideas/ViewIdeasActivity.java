@@ -1,5 +1,6 @@
 package com.actnow.android.activities.ideas;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -95,6 +96,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
     JSONArray projectArray;
 
     TextView mTaskName;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -301,9 +303,8 @@ public class ViewIdeasActivity extends AppCompatActivity {
         mTaskRecylcerView.setLayoutManager(mLayoutManager);
         mTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
         mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList);
-
-        // mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList, R.layout.task_list_cutsom, getApplicationContext());
         mTaskRecylcerView.setAdapter(mTaskListAdapter);
+        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
@@ -314,6 +315,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
                         setProjectFooterList(response.body().getTask_records());
+                        hideProgressDialog();
                     }else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -633,6 +635,23 @@ public class ViewIdeasActivity extends AppCompatActivity {
                             Log.d("TAG", "Dialog cancelled");
                         }
                     });
+        }
+    }
+
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
     private void appFooter() {

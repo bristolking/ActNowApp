@@ -99,23 +99,6 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/colorAccent" />
             </LinearLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tasks"
-                android:textColor="@color/colorAccent" />
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barchart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:padding="10dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Project One"
-                android:textColor="@color/colorAccent"
-                android:paddingLeft="25dp"/>
         </LinearLayout>
 
         <include layout="@layout/app_header_two" />

@@ -18,7 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/content_layout"
@@ -74,13 +75,13 @@
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-                <TextView
+              <!--  <TextView
                     android:id="@+id/tv_approval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Approvals"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary" />-->
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/approval_recyclerView"
                     android:layout_width="match_parent"

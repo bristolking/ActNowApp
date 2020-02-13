@@ -2,6 +2,7 @@ package com.actnow.android.activities.invitation;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,6 +53,8 @@ public class InvitationActivity extends AppCompatActivity {
     String id;
     String invitee_id;
     String sendInvitaionprojectCode;
+
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -113,7 +116,7 @@ public class InvitationActivity extends AppCompatActivity {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         System.out.println( "id" + id );
-
+        showProgressDialog();
         Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
         call.enqueue( new Callback<CheckBoxResponse>() {
             @Override
@@ -125,6 +128,7 @@ public class InvitationActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals( "true" )) {
                         System.out.println( "data" + response.body().getSuccess() );
                         setLoadCheckBox( response.body().getOrgn_users_records() );
+                        hideProgressDialog();
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -260,6 +264,22 @@ public class InvitationActivity extends AppCompatActivity {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 }

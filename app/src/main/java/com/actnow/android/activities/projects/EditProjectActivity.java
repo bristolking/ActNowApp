@@ -1,5 +1,6 @@
 package com.actnow.android.activities.projects;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -66,7 +67,7 @@ public class EditProjectActivity extends AppCompatActivity {
     ImageView mImgePojectEditColor;
     private int currentBackgroundColor = 0xffffffff;
 
-
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -283,7 +284,7 @@ public class EditProjectActivity extends AppCompatActivity {
         System.out.println("daa"+ id+projectcode+projectEditName+mColor+orgn_code);
     }
     private void requestCrateTask(String id, String project_code,String name,String color,String orgn_code) {
-
+        showProgressDialog();
         Call<ProjectEditResponse> call = ANApplications.getANApi().checkProjectEditResponse(id,project_code,name,color,orgn_code);
         call.enqueue(new Callback<ProjectEditResponse>() {
             @Override
@@ -292,6 +293,7 @@ public class EditProjectActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     System.out.println("severReponse1"+ response.raw());
                     if (response.body().getSuccess().equals("true")) {
+                        hideProgressDialog();
                         System.out.println("severReponse2"+response.body().getMessage());
                         Intent i = new Intent(EditProjectActivity.this, ProjectFooterActivity.class);
                         startActivity(i);
@@ -356,9 +358,27 @@ public class EditProjectActivity extends AppCompatActivity {
 
     }
 
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
+
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }
 
 

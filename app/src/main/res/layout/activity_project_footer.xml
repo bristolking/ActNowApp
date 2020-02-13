@@ -9,17 +9,7 @@
     tools:openDrawer="right"
     android:background="@color/colorWhite"
     tools:context=".activities.projects.ProjectFooterActivity">
-    <RelativeLayout
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
-    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
@@ -73,12 +63,12 @@
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
-                <TextView
+           <!--     <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Projects Names"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary" />-->
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/projectfooter_recyclerView"
                     android:layout_width="match_parent"
@@ -101,6 +91,26 @@
         <include layout="@layout/app_header_two" />
 
         <include layout="@layout/app_footer" />
+
+        <RelativeLayout
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp">
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
+        </RelativeLayout>
     </RelativeLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

@@ -34,7 +34,7 @@
                 android:orientation="vertical"
                 android:layout_weight="1">
                 <fragment
-                    android:id="@+id/one_fragment"
+                    android:id="@+id/overdue_today_fragment"
                     android:name="com.actnow.android.fragment.OverDueTodayFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 android:orientation="vertical"
                 android:layout_weight="0.5">
                 <fragment
-                    android:id="@+id/two_frament"
+                    android:id="@+id/today_t_frament"
                     android:name="com.actnow.android.fragment.TodayFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

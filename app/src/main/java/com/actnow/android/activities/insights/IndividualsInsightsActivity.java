@@ -36,6 +36,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.view.View.GONE;
 
@@ -189,16 +190,21 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         barChart = (BarChart) findViewById(R.id.barchart);
+
+        barChart.setDrawBarShadow( false );
+        barChart.setDrawValueAboveBar( true );
+        barChart.setMaxVisibleValueCount( 50 );
+        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground( true );
+
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(8f, 0));
         entries.add(new BarEntry(2f, 1));
         entries.add(new BarEntry(5f, 2));
         entries.add(new BarEntry(20f, 3));
-        entries.add(new BarEntry(15f, 4));
-        entries.add(new BarEntry(19f, 5));
 
-        BarDataSet bardataset = new BarDataSet(entries, "Cells");
-
+        BarDataSet bardataset = new BarDataSet(entries, "Data Set1");
+        bardataset.setColors(ColorTemplate.COLORFUL_COLORS );
         ArrayList<String> labels = new ArrayList<String>();
         labels.add("");
         labels.add("");
@@ -208,13 +214,13 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         labels.add("");
 
         BarData data = new BarData(labels, bardataset);
-        barChart.setData(data); // set the data and list of lables into chart
-
-        //barChart.setDescription("Set Bar Chart Description");  // set the description
-
+        barChart.setData(data);
+        barChart.setDescription("Set Bar Chart Description");
         bardataset.setColors( ColorTemplate.COLORFUL_COLORS);
-
         barChart.animateY(5000);
+
+
+
 
     }
     private void appFooter() {

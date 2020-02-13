@@ -49,10 +49,10 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ViewHolder> 
         String email = userId.get( UserPrefUtils.EMAIL);
         System.out.println( "emailReponse" + email + " " + viewHolder.mShareEmail.getText().toString());
 
-        if (email.equals( viewHolder.mShareEmail.getText().toString())) {
+       /* if (email.equals( viewHolder.mShareEmail.getText().toString())) {
             viewHolder.mImgDelete.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_logout_red));
         }
-
+*/
 
     }
 

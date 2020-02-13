@@ -1,6 +1,7 @@
 package com.actnow.android.activities.projects;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -49,24 +50,18 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectFooterAdapter;
 import com.actnow.android.adapter.ProjectOfflineAdapter;
 import com.actnow.android.databse.ProjectDBHelper;
-import com.actnow.android.fragment.TomorrowFragment;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import static android.view.View.GONE;
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 public class ProjectFooterActivity extends AppCompatActivity {
     RecyclerView mRecyclerViewProjectFooter;
     ProjectFooterAdapter mProjectFooterAdapter;
@@ -82,6 +77,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
     ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList;
 
     RadioButton mRadioButtonProjectName;
+    private ProgressDialog mProgressDialog;
+
 
     int textlength = 0;
     private String selectedType = "";
@@ -251,6 +248,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
         mContentLayout = findViewById( R.id.content_layout );
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptProjectList();
+            showProgressDialog();
         } else {
             attemptOfflineProjects();
         }
@@ -329,6 +327,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
+                        hideProgressDialog();
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -505,6 +504,21 @@ public class ProjectFooterActivity extends AppCompatActivity {
         }
     }
 
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
     private void attemptOfflineProjects() {
         AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         ProjectDBHelper projectDBHelper = new ProjectDBHelper(getApplicationContext());

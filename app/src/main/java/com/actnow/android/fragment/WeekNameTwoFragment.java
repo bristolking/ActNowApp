@@ -2,6 +2,7 @@ package com.actnow.android.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -73,6 +74,7 @@ public class WeekNameTwoFragment extends Fragment {
     String id;
 
     TextView mWeekNameTwo;
+    private ProgressDialog mProgressDialog;
 
     public WeekNameTwoFragment() {
 
@@ -116,6 +118,21 @@ public class WeekNameTwoFragment extends Fragment {
             weeKTwoFrgmentNoConnection();
         }
         return  view;
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
     private void attemptTaskList() {

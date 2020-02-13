@@ -7,6 +7,7 @@ import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
 import com.actnow.android.sdk.responses.ProjectEditResponse;
+import com.actnow.android.sdk.responses.ProjectInsightsReponse;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ReminderAdd;
 import com.actnow.android.sdk.responses.ReminderResponse;
@@ -110,8 +111,10 @@ public interface ANApi {
     @FormUrlEncoded
     @POST("app/task/edit/{id}/{task_code}")
     Call<TaskEditResponse> checkTheTaskEditReponse(@Path("id")String id,@Path( "task_code")String task_code,@Field("name")String name,@Field("due_date")String due_date,@Field( "priority")String priority,@Field("project_code")String project_code,@Field("orgn_code")String orgn_code,@Field("repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field("months")String months);
+
     @GET("app/task/list/{id}")
     Call<TaskListResponse> checkTheTaskListResponse(@Path("id") String id);
+
     @FormUrlEncoded
     @POST("app/task/comments/{id}/{code}")
     Call<ResponseBody> checkTheTaskCommentList(@Path("id")String id,@Path("code")String task_code,@Field("orgn_code") String orgn_code);
@@ -139,8 +142,7 @@ public interface ANApi {
             @Part("comment")RequestBody comment,
             @Part("task_code")RequestBody task_code,
             @Part("project_code")RequestBody project_code,
-            @Part("image_path") RequestBody imageName,
-            @Part MultipartBody.Part files);
+            @Part List<MultipartBody.Part> files);
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")
@@ -217,6 +219,15 @@ public interface ANApi {
                                           @Field( "search_date")String  search_date,
                                           @Field("project_codes")String project_codes,
                                           @Field( "individuals")String individuals);
+
+
+
+
+
+    /*INSIGHTS API CALL*/
+
+    @GET("app/proinsights/{id}")
+    Call<ProjectInsightsReponse> projectInsightsReponse(@Path("id")String id);
 
     /*
     @GET("app/project/get/{id}/{projectCode}")

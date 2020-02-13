@@ -11,16 +11,7 @@
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<!--
-        <com.trncic.library.DottedProgressBar
-            android:id="@+id/progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:activeDot="@drawable/active_dot"
-            app:dotSize="29dp"
-            app:inactiveDot="@drawable/inactive_dot"
-            app:jumpingSpeed="250"
-            app:spacing="15dp" />-->
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"

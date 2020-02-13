@@ -1,6 +1,7 @@
 package com.actnow.android.activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +21,9 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
@@ -48,7 +54,9 @@ import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.expandleRecyclerView.TodayTaskAdapter;
+import com.actnow.android.fragment.OverDueTodayFragment;
 import com.actnow.android.fragment.OverdueFragment;
+import com.actnow.android.fragment.TodayFragment;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -91,9 +99,9 @@ public class TodayTaskActivity extends AppCompatActivity {
     private String selectedType = "";
     TextView mTaskName;
     String task_code;
-
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
+
 
 
     @Override
@@ -246,6 +254,7 @@ public class TodayTaskActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+
         HashMap<String, String> userId = session.getUserDetails();
         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
         if (orgn_code == null || TextUtils.isEmpty( orgn_code )) {
@@ -256,29 +265,6 @@ public class TodayTaskActivity extends AppCompatActivity {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
 
-      /*  mImageBulbTask = findViewById( R.id.image_bulbTask );
-        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent( getApplicationContext(), ViewIdeasActivity.class );
-                startActivity( i );
-            }
-        } );
-        mTaskQucikSearch = findViewById( R.id.edit_searchTask );
-        mTaskQucikSearch.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText( getApplicationContext(), "Work in Progress!", Toast.LENGTH_LONG ).show();
-            }
-        } );
-        mButtonAdavancedSearch = findViewById( R.id.button_searchTask );
-        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent( getApplicationContext(), AdvancedSearchActivity.class );
-                startActivity( i );
-            }
-        } );*/
         fabTodayTask = findViewById( R.id.fab_todayTaskadd );
         fabTodayTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -292,8 +278,45 @@ public class TodayTaskActivity extends AppCompatActivity {
                 startActivity( i );
             }
         } );
+        mImageBulbTask = findViewById( R.id.image_bulbTask );
+        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent( getApplicationContext(), ViewIdeasActivity.class );
+                startActivity( i );
+            }
+        } );
 
+        mTaskQucikSearch = findViewById( R.id.edit_searchTask );
+        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+               /* if(mThisweekrecyclerView.getVisibility() != View.VISIBLE)
+                    mThisweekrecyclerView.setVisibility( View.VISIBLE );*/
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //filter(editable.toString());
+
+            }
+        } );
+      /*  OverDueTodayFragment frg=new OverDueTodayFragment();//create the fragment instance for the top fragment
+        TodayFragment frg1=new TodayFragment();//create the fragment instance for the middle fragment
+
+        FragmentManager manager=getSupportFragmentManager();//create an instance of fragment manager
+
+        FragmentTransaction transaction=manager.beginTransaction();//create an instance of Fragment-transaction
+
+        transaction.add(R.id.overdue_today_fragment, frg, "Frag_Top_tag");
+        transaction.add(R.id.today_today_frament, frg1, "Frag_Middle_tag");
+
+        transaction.commit();*/
     }
 
 
@@ -377,7 +400,7 @@ public class TodayTaskActivity extends AppCompatActivity {
                     new String[]{permission},
                     requestCode );
         } else {
-            Toast.makeText( TodayTaskActivity.this, "Permission already granted", Toast.LENGTH_SHORT ).show();
+            //Toast.makeText( TodayTaskActivity.this, "Permission already granted", Toast.LENGTH_SHORT ).show();
         }
     }
 

@@ -17,9 +17,13 @@ import java.util.List;
 
 public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.ViewHolder> {
     private List<TaskListRecords> taskListRecordsList;
+/* public OverDueTaskAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int task_list_cutsom, Context applicationContext) {
+//        this.taskListRecordsList =  taskListRecordsArrayList;
+//    }*/
+//
 
-    public OverDueTaskAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int task_list_cutsom, Context applicationContext) {
-        this.taskListRecordsList =  taskListRecordsArrayList;
+    public OverDueTaskAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
+        this.taskListRecordsList = taskListRecordsArrayList;
     }
 
     @NonNull
@@ -72,5 +76,15 @@ public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.
 
 
         }
+
+    }
+    public void filterList(ArrayList<TaskListRecords> taskListRecordsFilter) {
+        taskListRecordsList = taskListRecordsFilter;
+        notifyDataSetChanged();
+    }
+    public void removeItem(int position) {
+        taskListRecordsList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, taskListRecordsList.size());
     }
 }

@@ -20,7 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -79,12 +80,12 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
 
-                <TextView
+               <!-- <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Individuals Names"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary" />-->
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/Individuals_recyclerView"

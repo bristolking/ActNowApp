@@ -13,7 +13,7 @@ public class ProjectDBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "projectListDB";
-    public static final String TABLE_Users = "projectoffline";
+    public static final String TABLE_USERS = "projectoffline";
     public static final String KEY_ID = "id";
     public static final String KEY_NAME = "name";
     public static final String KEY_DUEDATE = "due_date";
@@ -25,16 +25,14 @@ public class ProjectDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_Users + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_DUEDATE + " TEXT," + KEY_PROJECTCODE + " TEXT" + ")";
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_USERS + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_DUEDATE + " TEXT," + KEY_PROJECTCODE + " TEXT" + ")";
         db.execSQL( CREATE_TABLE );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        db.execSQL( " DROP TABLE IF EXISTS " + TABLE_Users );
-        //db.execSQL( "DROP TABLE IF EXISTS " + TABLE_Users );
-        onCreate( db );
+        db.execSQL("DROP TABLE IF EXISTS '" + TABLE_USERS + "'");
+        onCreate(db);
     }
 
     public void insertUserDetails(ProjectListResponseRecords projectListRecords) {
@@ -43,13 +41,13 @@ public class ProjectDBHelper extends SQLiteOpenHelper {
         cValues.put( KEY_NAME, projectListRecords.getName() );
         cValues.put( KEY_DUEDATE, projectListRecords.getDue_date() );
         cValues.put( KEY_PROJECTCODE, projectListRecords.getProject_code() );
-        long newRowId = db.insert( TABLE_Users, null, cValues );
+        long newRowId = db.insert( TABLE_USERS, null, cValues );
         db.close();
     }
 
     public Cursor getProjectAllData() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery( "SELECT * FROM " + TABLE_Users, null );
+        Cursor res = db.rawQuery( "SELECT * FROM " + TABLE_USERS, null );
         return res;
     }
 }

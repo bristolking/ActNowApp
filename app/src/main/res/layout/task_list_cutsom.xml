@@ -29,8 +29,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/textColor"
-                    android:scaleX="1"
-                    android:scaleY="1.5"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/textColor" />
             </RadioGroup>

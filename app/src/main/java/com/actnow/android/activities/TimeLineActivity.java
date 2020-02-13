@@ -3,6 +3,7 @@ package com.actnow.android.activities;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -111,6 +112,7 @@ public class TimeLineActivity extends AppCompatActivity {
     String date;
     String projectCode;
     String action;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,6 +323,7 @@ public class TimeLineActivity extends AppCompatActivity {
         mRecylerViewTimeline.setItemAnimator( new DefaultItemAnimator() );
         mTimeLineAdapter = new TimeLineAdapter( timeLineRecordsTaskListArrayList, R.layout.timeline_custom, getApplicationContext() );
         mRecylerViewTimeline.setAdapter( mTimeLineAdapter );
+        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
         Call<TimeLineTaskList> timeLineTaskListCall = ANApplications.getANApi().checktheTimeLineTaskList( id, "", "", "", "" );
@@ -331,6 +334,7 @@ public class TimeLineActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTimeLIneRecords( response.body().getTimeline_records());
+                        hideProgressDialog();
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -570,7 +574,21 @@ public class TimeLineActivity extends AppCompatActivity {
         }
     }
 
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
 
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
     private void appFooter() {
         View btnMe = findViewById( R.id.btn_me );
         btnMe.setOnClickListener( new View.OnClickListener() {

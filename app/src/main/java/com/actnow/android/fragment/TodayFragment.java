@@ -181,8 +181,8 @@ public class TodayFragment extends Fragment {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
-
-                           /* if (checkedId == R.id.radio_buttonAction) {
+/*
+                            if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
                                     Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {

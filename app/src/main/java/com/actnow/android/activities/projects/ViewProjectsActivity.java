@@ -1,5 +1,6 @@
 package com.actnow.android.activities.projects;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,6 +74,8 @@ public class ViewProjectsActivity extends AppCompatActivity {
     TextView mColorCodePoject;
     private int currentBackgroundColor = 0xffffffff;
 
+    private ProgressDialog mProgressDialog;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         session = new UserPrefUtils( getApplicationContext() );
@@ -87,6 +90,22 @@ public class ViewProjectsActivity extends AppCompatActivity {
             projectOwnerName = (String) b.get( "projectOwnerName" );
             mProjectOwnerName.setText( " " + projectOwnerName );
             System.out.println( "passsed" + projectOwnerName + id );
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 
@@ -303,6 +322,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
 
     private void requestCrateTask(String a, String b, String c) {
         System.out.println( "values" + a + b + c );
+        showProgressDialog();
         Call<ProjectAddResponse> call = ANApplications.getANApi().checkProjectAddReponse( a, b, c );
         call.enqueue( new Callback<ProjectAddResponse>() {
             @Override
@@ -310,6 +330,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
                 System.out.println( "arjun" + response.raw() );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
+                        hideProgressDialog();
                         Intent i = new Intent( ViewProjectsActivity.this, ProjectFooterActivity.class );
                         startActivity( i );
                     } else {

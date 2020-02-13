@@ -3,6 +3,7 @@ package com.actnow.android.activities.tasks;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -131,6 +132,10 @@ public class ViewTasksActivity extends AppCompatActivity {
 
     TextView mProjectNameDailog;
     TextView mProjectCodeDailog;
+
+    private ProgressDialog mProgressDialog;
+
+    View mProgressView, mContentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,7 +286,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                 myCalendar.set( Calendar.YEAR, year );
                 myCalendar.set( Calendar.MONTH, monthOfYear );
                 myCalendar.set( Calendar.DAY_OF_MONTH, dayOfMonth );
-                String myFormat = "yyyy-MM-dd";
+                String myFormat = "yyyy-MM-dd HH:mm:ss";
                 SimpleDateFormat sdf = new SimpleDateFormat( myFormat, Locale.UK );
                 mDueDateTask.setText( sdf.format( myCalendar.getTime() ) );
             }
@@ -309,6 +314,8 @@ public class ViewTasksActivity extends AppCompatActivity {
                 dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
                 dialog.setCancelable( true );
                 dialog.setContentView( R.layout.dailog_projectname_projectcode );
+                mProgressView = dialog.findViewById( R.id.progress_bar );
+                mContentLayout = dialog.findViewById( R.id.content_layout );
                 mRecyclerViewDateTime = dialog.findViewById( R.id.recyleView_projectNameCode );
                 mLayoutManager = new LinearLayoutManager( getApplicationContext() );
                 mRecyclerViewDateTime.setLayoutManager( mLayoutManager );
@@ -434,7 +441,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     reWeeklyView.setVisibility( GONE );
                 }
 
-                if (repeat_type.equals( "RepeatType" )) {
+                if (repeat_type.equals( null)) {
                     reYearly.setVisibility( GONE );
                     reMonthly.setVisibility( GONE );
                     reWeeklyView.setVisibility( GONE );
@@ -590,13 +597,16 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
     private void requestDynamicProjectList() {
+        //showProgressDialog();
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse( id );
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
             public void onResponse(Call<ProjectListResponse> call, Response<ProjectListResponse> response) {
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
+                        //hideProgressDialog();
                     } else {
                         Toast.makeText( ViewTasksActivity.this, "", Toast.LENGTH_SHORT ).show();
                     }
@@ -686,6 +696,9 @@ public class ViewTasksActivity extends AppCompatActivity {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
+
+
 
     private void attemptOfflineProjects() {
         ProjectDBHelper projectDBHelper = new ProjectDBHelper( getApplicationContext() );
@@ -814,6 +827,7 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
     private void requestCreateTask(String id, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
+        showProgressDialog();
         Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse( id, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
         System.out.println( "taskfelids" + id  +  taskName + duedate  +  priorty +  project_code  +  orgn_code  +  repeat_type +  week_days  +  days  +  months );
         call.enqueue( new Callback<TaskAddResponse>() {
@@ -821,6 +835,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
+                        hideProgressDialog();
                         Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
                         startActivity( i );
                     } else {
@@ -837,6 +852,25 @@ public class ViewTasksActivity extends AppCompatActivity {
             }
         } );
     }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
+
+
+
+   /*/ OFFLINE TASK CREATE*/
 
     private void attemptCreateOfflineTask() {
         HashMap<String, String> userId = session.getUserDetails();

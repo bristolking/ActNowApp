@@ -1,6 +1,7 @@
 package com.actnow.android.activities;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -94,6 +95,8 @@ public class ApprovalsActivity extends AppCompatActivity {
     private boolean add = false;
     private Paint p = new Paint();
     String task_code;
+    private ProgressDialog mProgressDialog;
+
 
 
     @Override
@@ -294,7 +297,7 @@ public class ApprovalsActivity extends AppCompatActivity {
         view = getLayoutInflater().inflate( R.layout.custom_approval_tasklist, null );
 
         apiCall();
-        initSwipe();
+        showProgressDialog();
 
     }
 
@@ -312,6 +315,7 @@ public class ApprovalsActivity extends AppCompatActivity {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getTask_records() );
+                        hideProgressDialog();
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -327,93 +331,6 @@ public class ApprovalsActivity extends AppCompatActivity {
             }
         } );
 
-    }
-
-    private void initSwipe(){
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-
-                if (direction == ItemTouchHelper.LEFT){
-                    mApprovalAdapter.removeItem(position);
-
-                } else {
-                    removeView();
-                    edit_position = position;
-                    mApprovalAdapter.removeItem(position);
-
-                   /* HashMap<String, String> userId = session.getUserDetails();
-                    String id = userId.get( UserPrefUtils.ID );
-                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                    task_code = mTaskCode.getText().toString();
-                    Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskApprove( id, task_code, orgn_code );
-                    callComplete.enqueue( new Callback<TaskComplete>() {
-                        @Override
-                        public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body().getSuccess().equals( "true" )) {
-                                    Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
-                                    startActivity( i );
-                                } else {
-                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                }
-                            } else {
-                                AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<TaskComplete> call, Throwable t) {
-                            Log.d( "CallBack", " Throwable is " + t );
-
-                        }
-                    } );*/
-                }
-            }
-
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-
-                Bitmap icon;
-                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-
-                    View itemView = viewHolder.itemView;
-                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-                    float width = height / 3;
-
-                    if(dX > 0){
-                        p.setColor(Color.parseColor("#388E3C"));
-                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
-                        c.drawRect(background,p);
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit_white);
-                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
-                        c.drawBitmap(icon,null,icon_dest,p);
-                    } else {
-                        p.setColor(Color.parseColor("#D32F2F"));
-                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
-                        c.drawRect(background,p);
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white);
-                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
-                        c.drawBitmap(icon,null,icon_dest,p);
-                    }
-                }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerViewApproval);
-    }
-    private void removeView(){
-        if(view.getParent()!=null) {
-            ((ViewGroup) view.getParent()).removeView(view);
-        }
     }
 
 
@@ -452,73 +369,9 @@ public class ApprovalsActivity extends AppCompatActivity {
                     mTaskApprovalDate = (TextView) view.findViewById( R.id.approvalTaskDate );
                     mTaskApprovalPriority = (TextView) view.findViewById( R.id.tv_approvalTaskPriority );
                     mTaskCode = (TextView) view.findViewById( R.id.tv_taskCodeApproval );
+                    initSwipe();
                     final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_approvalProjectCode );
-                    /*ImageView mImageTick = (ImageView) view.findViewById( R.id.img_checkedTaskApproval );
-                    mImageTick.setOnClickListener( new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            HashMap<String, String> userId = session.getUserDetails();
-                            String id = userId.get( UserPrefUtils.ID );
-                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                            String task_code = mTaskCode.getText().toString();
-                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskApprove( id, task_code, orgn_code );
-                            callComplete.enqueue( new Callback<TaskComplete>() {
-                                @Override
-                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                    if (response.isSuccessful()) {
-                                        if (response.body().getSuccess().equals( "true" )) {
-                                            Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
-                                            startActivity( i );
-                                        } else {
-                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                        }
-                                    } else {
-                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                                    }
-                                }
 
-                                @Override
-                                public void onFailure(Call<TaskComplete> call, Throwable t) {
-                                    Log.d( "CallBack", " Throwable is " + t );
-
-                                }
-                            } );
-
-                        }
-                    } );*/
-                   /* ImageView mImageWrong = (ImageView) view.findViewById( R.id.img_wrongTaskApproval );
-                    mImageWrong.setOnClickListener( new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            HashMap<String, String> userId = session.getUserDetails();
-                            String id = userId.get( UserPrefUtils.ID );
-                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                            String task_code = mTaskCode.getText().toString();
-                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheDisApprove( id, task_code, orgn_code );
-                            callComplete.enqueue( new Callback<TaskComplete>() {
-                                @Override
-                                public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
-                                    if (response.isSuccessful()) {
-                                        if (response.body().getSuccess().equals( "true" )) {
-                                            Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
-                                            startActivity( i );
-                                        } else {
-                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                        }
-                                    } else {
-                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<TaskComplete> call, Throwable t) {
-                                    Log.d( "CallBack", " Throwable is " + t );
-
-                                }
-                            } );
-
-                        }
-                    } );*/
                     ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_approvaluseraddTaskList );
                     mImageUserAdd.setOnClickListener( new View.OnClickListener() {
                         @Override
@@ -637,6 +490,133 @@ public class ApprovalsActivity extends AppCompatActivity {
         }
     }
 
+
+    private void initSwipe(){
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if (direction == ItemTouchHelper.LEFT){
+                    mApprovalAdapter.removeItem(position);
+                    HashMap<String, String> userId = session.getUserDetails();
+                    String id = userId.get( UserPrefUtils.ID );
+                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                    task_code = mTaskCode.getText().toString();
+                    Call<TaskComplete> callDelete = ANApplications.getANApi().checkTheTaskApprove( id, task_code, orgn_code );
+                    callDelete.enqueue( new Callback<TaskComplete>() {
+                        @Override
+                        public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                            if (response.isSuccessful()) {
+                                if (response.body().getSuccess().equals( "true" )) {
+                                    Toast.makeText(getApplicationContext(),"TASK APPROVE",Toast.LENGTH_SHORT ).show();
+
+                                } else {
+                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                }
+                            } else {
+                                AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<TaskComplete> call, Throwable t) {
+                            Log.d( "CallBack", " Throwable is " + t );
+
+                        }
+                    } );
+
+                } else {
+                    removeView();
+                    edit_position = position;
+                    mApprovalAdapter.removeItem(position);
+                    HashMap<String, String> userId = session.getUserDetails();
+                    String id = userId.get( UserPrefUtils.ID );
+                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                    task_code = mTaskCode.getText().toString();
+                    Call<TaskComplete> callEdit = ANApplications.getANApi().checkTheDisApprove( id, task_code, orgn_code );
+                    callEdit.enqueue( new Callback<TaskComplete>() {
+                        @Override
+                        public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                            if (response.isSuccessful()) {
+                                if (response.body().getSuccess().equals( "true" )) {
+                                    Toast.makeText(getApplicationContext(),"TASK DISAPPROVE",Toast.LENGTH_SHORT ).show();
+                                } else {
+                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                }
+                            } else {
+                                AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<TaskComplete> call, Throwable t) {
+                            Log.d( "CallBack", " Throwable is " + t );
+
+                        }
+                    } );
+
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                Bitmap icon;
+                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+
+                    if(dX > 0){
+                        p.setColor(Color.parseColor("#388E3C"));
+                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
+                        c.drawRect(background,p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit_white);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
+                        c.drawBitmap(icon,null,icon_dest,p);
+                    } else {
+                        p.setColor(Color.parseColor("#D32F2F"));
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background,p);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
+                        c.drawBitmap(icon,null,icon_dest,p);
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerViewApproval);
+    }
+    private void removeView(){
+        if(view.getParent()!=null) {
+            ((ViewGroup) view.getParent()).removeView(view);
+        }
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
 
     private void appFooter() {
         View btnMe = findViewById( R.id.btn_me );

@@ -3,6 +3,7 @@ package com.actnow.android.activities.tasks;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,9 +50,11 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.adapter.NewTaskProjectAdapter;
+import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskEditResponse;
+import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
@@ -137,6 +140,7 @@ public class EditTaskActivity extends AppCompatActivity {
     TextView mProjectNameDailog;
     TextView mProjectCodeDailog;
 
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -288,7 +292,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 myCalendar.set( Calendar.YEAR, year );
                 myCalendar.set( Calendar.MONTH, monthOfYear );
                 myCalendar.set( Calendar.DAY_OF_MONTH, dayOfMonth );
-                String myFormat = "yyyy-MM-dd";
+                String myFormat = "yyyy-MM-dd HH:mm:ss";;
                 SimpleDateFormat sdf = new SimpleDateFormat( myFormat, Locale.UK );
                 mDateTaskEdit.setText( sdf.format( myCalendar.getTime() ) );
             }
@@ -372,7 +376,7 @@ public class EditTaskActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         projectName = mProjectNameDailog.getText().toString();
                         projectcode = mProjectCodeDailog.getText().toString();
-                        mEditProjectCheckBox.setText(projectName);
+                        mEditProjectCheckBox.setText(projectcode);
                         dialog.dismiss();
 
                        /* if (!TextUtils.isEmpty(projectName)) {
@@ -593,7 +597,21 @@ public class EditTaskActivity extends AppCompatActivity {
             }
         } );
     }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
 
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
 
     private void requestDynamicProjectList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -753,6 +771,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 if (week_days.contains( "Sunday" )) {
                     list.add( "7" );
                 }
+                showProgressDialog();
             requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( list ), days, months );
         }else {
                 requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( week_days ), days, months );
@@ -762,7 +781,7 @@ public class EditTaskActivity extends AppCompatActivity {
 
     private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
         System.out.println( "values" + id + taskName + duedate  + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
-
+        showProgressDialog();
         Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
         call.enqueue( new Callback<TaskEditResponse>() {
 
@@ -771,6 +790,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 System.out.println( "arjun" + response.raw() );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
+                        hideProgressDialog();
                         Intent i = new Intent( EditTaskActivity.this, TaskAddListActivity.class );
                         startActivity( i );
                     } else {
@@ -805,9 +825,45 @@ public class EditTaskActivity extends AppCompatActivity {
         tv_create.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attemptUpdateTask();
+                if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+                    attemptUpdateTask();
+                } else {
+                    attemptOfflineEditTask();
+                }
+
             }
         } );
+    }
+
+    private void attemptOfflineEditTask() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+        TaskListRecords taskListRecords = new TaskListRecords();
+        String taskName = mTaskEditName.getText().toString();
+        String due_date = mDateTaskEdit.getText().toString();
+        String priorty = mPriortyEditTask.getText().toString();
+        String project_code = mEditProjectCheckBox.getText().toString();
+        String status = "1";
+        taskListRecords.setTask_id( id );
+        taskListRecords.setName(taskName );
+        taskListRecords.setDue_date( due_date );
+        taskListRecords.setPriority( priorty );
+        taskListRecords.setProject_code( project_code );
+        taskListRecords.setStatus(status);
+        taskListRecords.setRepeat_type(repeat_type );
+        taskListRecords.setRepeat_months( months );
+        taskListRecords.setRepeat_days(days );
+        taskListRecords.setRepeat_weeks( week_days );
+        System.out.println( "EditTaskOfflineValues" + id +  taskName + due_date + priorty + project_code + status );
+        ArrayList<String> list = new ArrayList<>();
+        TaskDBHelper taskDBHelper = new TaskDBHelper(EditTaskActivity.this );
+        taskDBHelper.insertTaskDetails(taskListRecords);
+        Intent i = new Intent(getApplicationContext(),TaskAddListActivity.class );
+        Toast.makeText( EditTaskActivity.this, "Task Offline Edited Sucessfully", Toast.LENGTH_SHORT ).show();
+        startActivity(i);
+
+
     }
 
 

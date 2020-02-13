@@ -2,51 +2,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:background="@color/colorWhite"
+    android:gravity="center"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="ADD TO PROJECT"
-            android:textColor="@color/colorAccent"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:gravity="center"/>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyleView_projectNameCode"
+            android:textColor="@color/colorAccent" />
+
+        <RelativeLayout
+            android:id="@+id/progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyleView_projectNameCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
     </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="10dp">
+
         <TextView
             android:id="@+id/tv_dailogCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="dismiss"
             android:layout_alignParentRight="true"
             android:paddingRight="80dp"
+            android:text="dismiss"
             android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent" />
+
         <TextView
             android:id="@+id/tv_dailogOk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OK"
             android:layout_alignParentRight="true"
             android:paddingRight="20dp"
+            android:text="OK"
             android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent" />
 
     </RelativeLayout>
 

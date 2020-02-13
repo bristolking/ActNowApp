@@ -368,6 +368,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         session.createLoginSession(response1.getId(),response1.getName(),response1.getEmail(),response1.getMobile_number(),response1.getOrgn_code(),response1.getUser_type(),response1.getProvider_id(),response1.getProvider_name(),response1.getImage_path());
                         System.out.println("response1"+getTaskId());
                        activityMe();
+                        showProgressDialog();
                     } else {
                         Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
                     }

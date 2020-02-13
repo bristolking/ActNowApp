@@ -85,7 +85,6 @@ public class ThisWeekActivity extends AppCompatActivity {
     TextView mTaskName;
     FloatingActionButton  fabThisTask;
 
-   /* private FragmentRefreshListener fragmentRefreshListener;*/
 
 
     @Override
@@ -94,9 +93,6 @@ public class ThisWeekActivity extends AppCompatActivity {
         session = new UserPrefUtils( getApplicationContext() );
         setContentView( R.layout.activity_this_week );
         appHeaderTwo();
-       /* if(getFragmentRefreshListener()!= null){
-            getFragmentRefreshListener().onRefresh();
-        }*/
         initializeViews();
         appFooter();
     }
@@ -650,9 +646,7 @@ public class ThisWeekActivity extends AppCompatActivity {
         super.onBackPressed();
 
     }
-    public  interface FragmentRefreshListener {
-        void onRefresh();
 
-    }
+
 
 }
