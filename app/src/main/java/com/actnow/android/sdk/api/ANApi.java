@@ -62,7 +62,7 @@ public interface ANApi {
 
 
     @Multipart
-    @POST("/app/update_profile/{id}")
+    @POST("app/update_profile/{id}")
     Call<ResponseBody> profileUpdate(
             @Part("id") RequestBody id,
             @Part("name") RequestBody username,
@@ -133,16 +133,22 @@ public interface ANApi {
 
 
     /*Comment Api TASk and Project */
-
     @Multipart
     @POST("app/comment/add/2")
+    Call<TaskComplete> callCommentAdd(@Part("id")RequestBody id,@Part("orgn_code") RequestBody orgn_code,@Part("comment") RequestBody comment,@Part("task_code") RequestBody task_code,@Part("project_code") RequestBody project_code,@Part("size") RequestBody size, @Part MultipartBody.Part files);
+
+/*
+    @Multipart
+    @POST("app/comment/add/{id}")
     Call<ResponseBody> checkTheCommentAdd(
             @Part("id") RequestBody id,
-            @Part("orgn_code")RequestBody orgn_code,
-            @Part("comment")RequestBody comment,
-            @Part("task_code")RequestBody task_code,
-            @Part("project_code")RequestBody project_code,
+            @Part("orgn_code") RequestBody orgn_code,
+            @Part("comment") RequestBody comment,
+            @Part("task_code") RequestBody task_code,
+            @Part("project_code") RequestBody project_code,
+            @Part("size") RequestBody size,
             @Part List<MultipartBody.Part> files);
+*/
 
     @FormUrlEncoded
     @POST("app/comment/edit/{id}")

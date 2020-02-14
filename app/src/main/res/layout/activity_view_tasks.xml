@@ -126,7 +126,7 @@
                             android:id="@+id/tv_projectTask"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="40dp"
+                            android:paddingLeft="35dp"
                             android:hint="Project"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textColor="@color/colorAccent" />
@@ -152,7 +152,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Priority"
-                            android:paddingLeft="40dp"
+                            android:paddingLeft="35dp"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textColor="@color/colorAccent" />
                     </android.support.design.widget.TextInputLayout>

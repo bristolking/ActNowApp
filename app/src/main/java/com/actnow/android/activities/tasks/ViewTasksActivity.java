@@ -441,7 +441,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     reWeeklyView.setVisibility( GONE );
                 }
 
-                if (repeat_type.equals( null)) {
+                if (repeat_type.equals( "RepeatType" )) {
                     reYearly.setVisibility( GONE );
                     reMonthly.setVisibility( GONE );
                     reWeeklyView.setVisibility( GONE );
@@ -597,7 +597,6 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
     private void requestDynamicProjectList() {
-        //showProgressDialog();
         Call<ProjectListResponse> call = ANApplications.getANApi().checkProjectListResponse( id );
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
@@ -606,7 +605,6 @@ public class ViewTasksActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
-                        //hideProgressDialog();
                     } else {
                         Toast.makeText( ViewTasksActivity.this, "", Toast.LENGTH_SHORT ).show();
                     }

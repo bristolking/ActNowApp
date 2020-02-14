@@ -8,12 +8,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
@@ -26,6 +31,11 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.adapter.ApprovalAdapter;
+import com.actnow.android.adapter.ProjectInsightsAdapter;
+import com.actnow.android.sdk.responses.ProjectInsightsRecords;
+import com.actnow.android.sdk.responses.ProjectInsightsReponse;
+import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
@@ -36,13 +46,22 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 
 public class ProjectInsightsActivity extends AppCompatActivity {
     View mProgressView, mContentLayout;
     UserPrefUtils session;
-    BarChart barChart;
+    ProjectInsightsAdapter mProjectInsightsAdapter;
+    RecyclerView mRecyclerViewProjectInsights;
+    RecyclerView.LayoutManager mLayoutManager;
+
+    ArrayList<ProjectInsightsRecords> projectInsightsRecordsArrayList = new ArrayList<ProjectInsightsRecords>();
 
 
     @Override
@@ -50,7 +69,6 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         super.onCreate( savedInstanceState );
         session = new UserPrefUtils( getApplicationContext() );
         setContentView( R.layout.activity_project_insights );
-
         appHeaderTwo();
         initializeViews();
         appFooter();
@@ -188,102 +206,142 @@ public class ProjectInsightsActivity extends AppCompatActivity {
             }
         } );
     }
+
     private void initializeViews() {
-        mProgressView = findViewById(R.id.progress_bar);
-        mContentLayout = findViewById(R.id.content_layout);
-         barChart = (BarChart) findViewById(R.id.barchart);
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(8f, 0));
-        entries.add(new BarEntry(2f, 1));
-        entries.add(new BarEntry(5f, 2));
-        entries.add(new BarEntry(20f, 3));
-        entries.add(new BarEntry(15f, 4));
-        entries.add(new BarEntry(19f, 5));
+        mProgressView = findViewById( R.id.progress_bar );
+        mContentLayout = findViewById( R.id.content_layout );
 
-        BarDataSet bardataset = new BarDataSet(entries, "Cells");
+        mRecyclerViewProjectInsights = (RecyclerView) findViewById( R.id.projectInsights_recyclerView );
+        mLayoutManager = new LinearLayoutManager( getApplicationContext() );
+        mRecyclerViewProjectInsights.setLayoutManager( mLayoutManager );
+        mRecyclerViewProjectInsights.setItemAnimator( new DefaultItemAnimator() );
+        mProjectInsightsAdapter = new ProjectInsightsAdapter( projectInsightsRecordsArrayList, R.layout.custom_project_insights, getApplicationContext() );
+        mRecyclerViewProjectInsights.setAdapter( mProjectInsightsAdapter );
 
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add("");
-        labels.add("");
-        labels.add("");
-        labels.add("");
-        labels.add("");
-        labels.add("");
+        apiCallProjectInsights();
 
-        BarData data = new BarData(labels, bardataset);
-        barChart.setData(data); // set the data and list of lables into chart
-
-        //barChart.setDescription("Set Bar Chart Description");  // set the description
-
-        bardataset.setColors( ColorTemplate.COLORFUL_COLORS);
-
-        barChart.animateY(5000);
 
     }
 
+    private void apiCallProjectInsights() {
+        HashMap<String, String> user = session.getUserDetails();
+        String id = user.get( UserPrefUtils.ID );
+        String orngcode = user.get( UserPrefUtils.ORGANIZATIONNAME );
+        Call<ProjectInsightsReponse> callprojects = ANApplications.getANApi().projectInsightsReponse( id );
+        callprojects.enqueue( new Callback<ProjectInsightsReponse>() {
+            @Override
+            public void onResponse(Call<ProjectInsightsReponse> call, Response<ProjectInsightsReponse> response) {
+                System.out.println( "severReponse" + response.raw() );
+                if (response.isSuccessful()) {
+                    System.out.println( "severReponse1" + response.raw() );
+                    if (response.body().getSuccess().equals( "true" )) {
+                        System.out.println( "severReponse2" + response.body().getSuccess() );
+                        setProjectInsights( response.body().getProjectInsightsRecords() );
+
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+
+            }
+            @Override
+            public void onFailure(Call<ProjectInsightsReponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+
+            }
+        } );
+
+    }
+
+    private void setProjectInsights(List<ProjectInsightsRecords> projectInsightsRecords) {
+        if (projectInsightsRecords.size() > 0){
+            for (int i=0; projectInsightsRecords.size() >i; i++){
+                ProjectInsightsRecords projectInsightsRecords1 = projectInsightsRecordsArrayList.get(i);
+                ProjectInsightsRecords  projectInsightsRecords2 = new ProjectInsightsRecords();
+                projectInsightsRecords2.setName( projectInsightsRecords1.getName());
+                projectInsightsRecords2.setApproval( projectInsightsRecords1.getApproval());
+                projectInsightsRecords2.setCompleted(projectInsightsRecords1.getCompleted());
+                projectInsightsRecords2.setPending( projectInsightsRecords1.getPending());
+                projectInsightsRecords2.setOngoing(projectInsightsRecords1.getOngoing());
+                projectInsightsRecords2.setColor(projectInsightsRecords1.getColor());
+                projectInsightsRecordsArrayList.add( projectInsightsRecords2);
+
+            }
+
+        }
+        mRecyclerViewProjectInsights.setAdapter( mProjectInsightsAdapter );
+    }
+
     private void appFooter() {
-        View btnMe = findViewById(R.id.btn_me);
-        btnMe.setOnClickListener(new View.OnClickListener() {
+        View btnMe = findViewById( R.id.btn_me );
+        btnMe.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityToady();
             }
-        });
-        View btnProject = findViewById(R.id.btn_projects);
-        btnProject.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnProject = findViewById( R.id.btn_projects );
+        btnProject.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityProject();
             }
-        });
-        View btnTask = findViewById(R.id.btn_task);
-        btnTask.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnTask = findViewById( R.id.btn_task );
+        btnTask.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityTasks();
             }
-        });
-        View btnIndividuals = findViewById(R.id.btn_individuals);
-        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnIndividuals = findViewById( R.id.btn_individuals );
+        btnIndividuals.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityIndividuals();
             }
-        });
-        View btnInsights = findViewById(R.id.btn_insights);
-        btnInsights.setOnClickListener(new View.OnClickListener() {
+        } );
+        View btnInsights = findViewById( R.id.btn_insights );
+        btnInsights.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        });
-        ImageView imgProject = (ImageView) findViewById(R.id.img_insights);
-        imgProject.setImageResource(R.drawable.ic_insight_red);
-        TextView txtIndividual = (TextView) findViewById(R.id.txt_insights);
-        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));
+        } );
+        ImageView imgProject = (ImageView) findViewById( R.id.img_insights );
+        imgProject.setImageResource( R.drawable.ic_insight_red );
+        TextView txtIndividual = (TextView) findViewById( R.id.txt_insights );
+        txtIndividual.setTextColor( getResources().getColor( R.color.colorAccent ) );
     }
+
     private void activityToady() {
-        Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
+        Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
+        startActivity( i );
+        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
+
     private void activityProject() {
-        Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
-        startActivity(i);
+        Intent i = new Intent( getApplicationContext(), ProjectFooterActivity.class );
+        startActivity( i );
 
     }
+
     private void activityTasks() {
-        Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
-        startActivity(i);
+        Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
+        startActivity( i );
 
     }
+
     private void activityIndividuals() {
-        Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
-        startActivity(i);
+        Intent i = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
+        startActivity( i );
     }
 
     private void activityInsights() {
-        Toast.makeText(getApplicationContext(), "selected Insights", Toast.LENGTH_SHORT).show();
+        Toast.makeText( getApplicationContext(), "selected Insights", Toast.LENGTH_SHORT ).show();
 
     }
 }

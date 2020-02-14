@@ -363,6 +363,8 @@ public class EditTaskActivity extends AppCompatActivity {
                 dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
                 dialog.setCancelable( true );
                 dialog.setContentView( R.layout.dailog_projectname_projectcode );
+                mProgressView = dialog.findViewById( R.id.progress_bar );
+                mContentLayout = dialog.findViewById( R.id.content_layout );
                 mRecyclerViewDateTime = dialog.findViewById( R.id.recyleView_projectNameCode );
                 mLayoutManager = new LinearLayoutManager( getApplicationContext() );
                 mRecyclerViewDateTime.setLayoutManager( mLayoutManager );
@@ -620,7 +622,7 @@ public class EditTaskActivity extends AppCompatActivity {
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
             public void onResponse(Call<ProjectListResponse> call, Response<ProjectListResponse> response) {
-                System.out.println( "api" + response.raw() );
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     System.out.println( "data" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {

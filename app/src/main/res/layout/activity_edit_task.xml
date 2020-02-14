@@ -114,18 +114,20 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         app:srcCompat="@drawable/ic_plus" />
-
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/edit_name_project"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
                     <TextView
                         android:id="@+id/tv_editTaskProject"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/image_project"
-                        android:text="Project"
-                        android:paddingLeft="8dp"
+                        android:hint="Project"
+                        android:paddingLeft="35dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/textColor" />
+                        android:textColor="@color/colorAccent" />
+                    </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/re_EditpriorityNewTask"
@@ -138,17 +140,20 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         app:srcCompat="@drawable/ic_plus" />
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/edit_name_priorty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
                     <TextView
                         android:id="@+id/tv_editTaskPriorty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/image_priorityEdit"
-                        android:paddingLeft="8dp"
-                        android:text="Priority"
+                        android:paddingLeft="35dp"
+                        android:hint="Priority"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/textColor" />
+                        android:textColor="@color/colorAccent" />
+                    </android.support.design.widget.TextInputLayout>
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
