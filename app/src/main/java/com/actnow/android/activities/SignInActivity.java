@@ -278,6 +278,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();

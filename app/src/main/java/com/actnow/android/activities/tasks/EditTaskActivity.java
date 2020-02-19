@@ -604,6 +604,7 @@ public class EditTaskActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -738,12 +739,12 @@ public class EditTaskActivity extends AppCompatActivity {
         //individuvalArray.remove(0);
 
         String oldprojectsName = String.valueOf( projectArray );
-        mDateTaskEdit.setError( null );
+        mTaskEditName.setError( null );
         boolean cancel = false;
         View focusView = null;
-        if (TextUtils.isEmpty( due_date )) {
-            mDateTaskEdit.setError( getString( R.string.error_required ) );
-            focusView = mDateTaskEdit;
+        if (TextUtils.isEmpty( taskName )) {
+            mTaskEditName.setError( getString( R.string.error_required ) );
+            focusView = mTaskEditName;
             cancel = true;
         }
         if (cancel) {

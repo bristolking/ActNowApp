@@ -111,7 +111,6 @@ public class TomorrowFragment extends Fragment {
         String dateWeekMonth =dfWeek.format( tomorrow);
         mWeekNameTomorrow.setText( " " + dateWeekMonth );
 
-
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptTaskList();
         } else {
@@ -120,7 +119,7 @@ public class TomorrowFragment extends Fragment {
 
         return view;
     }
-    private void showProgressDialog() {
+  /*  private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -134,7 +133,7 @@ public class TomorrowFragment extends Fragment {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }
+    }*/
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
@@ -179,22 +178,26 @@ public class TomorrowFragment extends Fragment {
                 taskListRecords.setProject_name( taskListRecords1.getProject_name() );
                 taskListRecords.setRepeat_type( taskListRecords1.getRepeat_type() );
                 dbHelper.insertTaskDetails( taskListRecords );
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                Date tomorrow = calendar.getTime();
-                SimpleDateFormat dfWeek = new SimpleDateFormat( "E MMM dd" );
-                String dateWeekMonth =dfWeek.format( tomorrow);
-                mWeekNameTomorrow.setText( " " + dateWeekMonth );
 
-                String tomorrowDate = df.format(tomorrow);
-                System.out.println("tomorrow: " + tomorrowDate);
 
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
+                if (taskListRecords.getDue_date()!=null) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_YEAR, 1);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date tomorrow = calendar.getTime();
+                    SimpleDateFormat dfWeek = new SimpleDateFormat("E MMM dd");
+                    String dateWeekMonth = dfWeek.format(tomorrow);
+                    mWeekNameTomorrow.setText(" " + dateWeekMonth);
 
-                if (taskListRecords.getStatus().equals( "1" )&& date3.equals(tomorrowDate)) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                    String tomorrowDate = df.format(tomorrow);
+                    System.out.println("tomorrow: " + tomorrowDate);
+
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
+
+                    if (taskListRecords.getStatus().equals("1") && date3.equals(tomorrowDate)) {
+                        taskListRecordsArrayList.add(taskListRecords);
+                    }
                 }
             }
             mTomorrowRecylcerView.setAdapter( mTaskListAdapter );

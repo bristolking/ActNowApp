@@ -168,6 +168,7 @@ public class AllTaskFragment extends Fragment {
     }
 
     private void attemptTaskList() {
+        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
@@ -177,6 +178,7 @@ public class AllTaskFragment extends Fragment {
                 AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
+                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -458,6 +460,7 @@ public class AllTaskFragment extends Fragment {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();

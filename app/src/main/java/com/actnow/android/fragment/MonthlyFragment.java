@@ -156,6 +156,7 @@ public class MonthlyFragment extends Fragment {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -176,6 +177,7 @@ public class MonthlyFragment extends Fragment {
         mTaskListAdapter.filterList(taskListRecordsFilter);
     }
     private void attemptTaskList() {
+        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
         Call<TaskListResponse> call;
@@ -188,6 +190,7 @@ public class MonthlyFragment extends Fragment {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setTaskList(response.body().getTask_records());
+                        hideProgressDialog();
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }

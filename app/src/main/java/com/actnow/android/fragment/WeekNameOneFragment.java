@@ -118,6 +118,7 @@ public class WeekNameOneFragment extends Fragment {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -171,22 +172,25 @@ public class WeekNameOneFragment extends Fragment {
                 taskListRecords.setProject_name( taskListRecords1.getProject_name() );
                 taskListRecords.setRepeat_type( taskListRecords1.getRepeat_type() );
                 dbHelper.insertTaskDetails( taskListRecords );
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_YEAR, 2);
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                Date tomorrow = calendar.getTime();
-                String tomorrowDate = df.format(tomorrow);
+
+                if (taskListRecords.getDue_date()!=null) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_YEAR, 2);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date tomorrow = calendar.getTime();
+                    String tomorrowDate = df.format(tomorrow);
           /*      SimpleDateFormat dfWeek = new SimpleDateFormat( "EEEE MMM dd" );
                 String dateWeekMonth =dfWeek.format( tomorrow);
                 mWeekNameOne.setText( " " + dateWeekMonth );*/
 
-                System.out.println("tomorrow: " + tomorrowDate);
+                    System.out.println("tomorrow: " + tomorrowDate);
 
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
 
-                if (taskListRecords.getStatus().equals( "1" )&& date3.equals(tomorrowDate)) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                    if (taskListRecords.getStatus().equals("1") && date3.equals(tomorrowDate)) {
+                        taskListRecordsArrayList.add(taskListRecords);
+                    }
                 }
             }
             mWeekOneRecylcerView.setAdapter( mTaskListAdapter );

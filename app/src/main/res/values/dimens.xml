@@ -55,5 +55,8 @@
     <dimen name="ic_delete">30dp</dimen>
     <dimen name="thumbnail">90dp</dimen>
 
+    <dimen name="item_offset">2dp</dimen>
+
+
 
 </resources>

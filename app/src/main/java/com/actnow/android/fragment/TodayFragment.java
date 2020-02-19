@@ -151,15 +151,19 @@ public class TodayFragment extends Fragment {
                 taskListRecords1.setTask_code( taskListRecords.getTask_code() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                String formattedDate = df.format( date1 );
-                System.out.println( "formattedDate" + formattedDate );
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
-                System.out.println( "date3" + date3 );
-                if (date3.equals( formattedDate ) && taskListRecords.getStatus().equals( "1" )) {
-                    taskListRecordsArrayList.add( taskListRecords1 );
+                if (taskListRecords.getDue_date()!=null) {
+
+
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    System.out.println("formattedDate" + formattedDate);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
+                    System.out.println("date3" + date3);
+                    if (date3.equals(formattedDate) && taskListRecords.getStatus().equals("1")) {
+                        taskListRecordsArrayList.add(taskListRecords1);
+                    }
                 }
 
             }

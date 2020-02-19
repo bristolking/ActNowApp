@@ -59,6 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.view.View.GONE;
+import static com.activeandroid.Cache.getContext;
 
 public class ViewIndividualsActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
@@ -408,17 +409,16 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         }
     }
 
-
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
     }
-
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();

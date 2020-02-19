@@ -167,16 +167,18 @@ public class WeekNameThreeFragment extends Fragment {
                 taskListRecords.setProject_name( taskListRecords1.getProject_name() );
                 taskListRecords.setRepeat_type( taskListRecords1.getRepeat_type() );
                 dbHelper.insertTaskDetails( taskListRecords );
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_YEAR, 4);
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                Date tomorrow = calendar.getTime();
-                String tomorrowDate = df.format(tomorrow);
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
+                if (taskListRecords.getDue_date()!=null) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_YEAR, 4);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date tomorrow = calendar.getTime();
+                    String tomorrowDate = df.format(tomorrow);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
 
-                if (taskListRecords.getStatus().equals( "1" )&& date3.equals(tomorrowDate)) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                    if (taskListRecords.getStatus().equals("1") && date3.equals(tomorrowDate)) {
+                        taskListRecordsArrayList.add(taskListRecords);
+                    }
                 }
             }
             mWeekThreeRecylcerView.setAdapter( mTaskListAdapter );

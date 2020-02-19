@@ -766,15 +766,9 @@ public class ViewTasksActivity extends AppCompatActivity {
         String individuvalName = String.valueOf( individuvalArray );
         //individuvalArray.remove(0);
         String oldprojectsName = String.valueOf( projectArray );
-        mDueDateTask.setError( null );
         boolean cancel = false;
         View focusView = null;
-        if (TextUtils.isEmpty( due_date )) {
-            mDueDateTask.setError( getString( R.string.error_required ) );
-            focusView = mDueDateTask;
-            cancel = true;
-
-        } if (TextUtils.isEmpty( taskName )){
+         if (TextUtils.isEmpty( taskName )){
             mTaskProjectName.setError( getString( R.string.error_required ) );
             focusView = mTaskProjectName;
             cancel = true;
@@ -855,6 +849,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();

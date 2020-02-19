@@ -158,6 +158,7 @@ public class DailyFragment extends Fragment {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -180,6 +181,7 @@ public class DailyFragment extends Fragment {
     }
 
     private void attemptTaskList() {
+        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
@@ -190,6 +192,7 @@ public class DailyFragment extends Fragment {
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
+                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -221,9 +224,10 @@ public class DailyFragment extends Fragment {
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals( "Daily" )) {
-                    taskListRecordsArrayList.add( taskListRecords1 );
-                }
+                    if (taskListRecords.getStatus().equals("1") && taskListRecords.getRepeat_type().equals("Daily")) {
+                        taskListRecordsArrayList.add(taskListRecords1);
+                    }
+
             }
         }
 

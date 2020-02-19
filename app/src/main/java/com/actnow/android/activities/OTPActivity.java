@@ -1,5 +1,6 @@
 package com.actnow.android.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ public class OTPActivity extends AppCompatActivity {
     Button mOtpSubmit;
     UserPrefUtils session;
     View mProgressView,mContentLayout;
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class OTPActivity extends AppCompatActivity {
 
     }
     private  void requestCheckOTP(final String mobile_number, String otp ){
+        showProgressDialog();
         Call<CheckOtpResponse> call= ANApplications.getANApi().checkOTP(mobile_number,otp);
         call.enqueue(new Callback<CheckOtpResponse>() {
             @Override
@@ -72,6 +75,7 @@ public class OTPActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     //System.out.println("response"+response.raw());
                     if (response.body().getSuccess().equals("true")){
+                        hideProgressDialog();
                        Intent i = new Intent(OTPActivity.this, ChangePasswordActivity.class);
                         i.putExtra("mobileNumber",mobile_number);
                         startActivity(i);
@@ -90,5 +94,22 @@ public class OTPActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 }

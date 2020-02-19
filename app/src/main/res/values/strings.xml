@@ -118,4 +118,8 @@
     <string name="string_some_thing_wrong">Something went wrong.</string>
     <string name="internal_storage">Internal storage</string>
     <string name="chooser_title">Choose Files</string>
+
+
+    <string name="permission_rationale">"Storage permission is needed for fetching images from Gallery."</string>
+
 </resources>

@@ -74,12 +74,12 @@ public class ProjectCommentListAdapter extends RecyclerView.Adapter<ProjectComme
                 }
             }
         }
-
+/*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewHolder.mProjectComment.setText( Html.fromHtml( projectCommentRecordsList.getComment(), Html.FROM_HTML_MODE_COMPACT ) );
         } else {
             viewHolder.mProjectComment.setText( Html.fromHtml( projectCommentRecordsList.getComment() ) );
-        }
+        }*/
     }
 
     @Override

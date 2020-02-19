@@ -1,5 +1,6 @@
 package com.actnow.android.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     Button mForgotSubmit;
     UserPrefUtils session;
     View mProgressView,mContentLayout;
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
     }
     private  void requstSendOtp(final String mobileNumber){
+        showProgressDialog();
         Call<SendOtpResponse> call = ANApplications.getANApi().sendOtp(mobileNumber);
         call.enqueue(new Callback<SendOtpResponse>() {
             @Override
@@ -68,6 +71,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
+                        hideProgressDialog();
                         Intent otp =new Intent(getApplicationContext(),OTPActivity.class);
                         otp.putExtra("mobileNumber",mobileNumber);
                         startActivity(otp);
@@ -83,6 +87,22 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 Log.d("ForgotPasswordActivity",t.toString());
             }
         });
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
 }

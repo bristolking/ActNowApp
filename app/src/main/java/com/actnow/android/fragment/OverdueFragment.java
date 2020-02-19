@@ -113,6 +113,7 @@ public class OverdueFragment extends Fragment {
 
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptTaskList();
+            showProgressDialog();
         } else {
            overDueNoConnection();
         }
@@ -168,9 +169,10 @@ public class OverdueFragment extends Fragment {
     }
     private void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog = new ProgressDialog(getContext());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -203,6 +205,7 @@ public class OverdueFragment extends Fragment {
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
+                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -240,25 +243,30 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-                Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                String formattedDate = df.format( date1 );
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
 
-                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
-                String dateYes = dateFormat.format( yesterday() );
-                Date dat6 = new Date( dateYes );
-                System.out.println( "dateys" + dat6 );
+                if ( taskListRecords.getDue_date()!=null) {
 
-                try {
-                    Date date4 = new SimpleDateFormat( "yyyy-MM-dd" ).parse( date3 );
-                    System.out.println( "date3" + date4 );
-                    if (date4.before( dat6 ) && taskListRecords.getStatus().equals( "1" )) {
-                        taskListRecordsArrayList.add( taskListRecords1 );
+
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
+
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    String dateYes = dateFormat.format(yesterday());
+                    Date dat6 = new Date(dateYes);
+                    System.out.println("dateys" + dat6);
+
+                    try {
+                        Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse(date3);
+                        System.out.println("date3" + date4);
+                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")) {
+                            taskListRecordsArrayList.add(taskListRecords1);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
 
             }

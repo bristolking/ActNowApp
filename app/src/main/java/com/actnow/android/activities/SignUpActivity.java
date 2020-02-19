@@ -1,5 +1,6 @@
 package com.actnow.android.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
     UserPrefUtils session;
     View mProgressView,mContentLayout;
     CheckBox mDisclaimer;
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
     private void requestSignUp(String userName,String userEmail,String provider_id,String provider_name,String mobileNumber,String userPassword ){
+        showProgressDialog();
         System.out.println( "logindata"+ userEmail+userName+ mobileNumber+userPassword);
         Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,provider_id,provider_name,mobileNumber,userPassword);
         call.enqueue(new Callback<SignUpResponse>() {
@@ -105,6 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
                         SignUpResponse response2= response.body();
+                        hideProgressDialog();
                         session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name(),response2.getImage_path());
                         activityLogin();
                         AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
@@ -141,6 +145,24 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             Snackbar.make(mContentLayout, "Press once again to exit", Snackbar.LENGTH_SHORT).show();
             back_pressed = System.currentTimeMillis();
+        }
+    }
+
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 }

@@ -122,6 +122,7 @@ public class WeekNameFourFragment extends Fragment {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -174,16 +175,18 @@ public class WeekNameFourFragment extends Fragment {
                 taskListRecords.setProject_name( taskListRecords1.getProject_name() );
                 taskListRecords.setRepeat_type( taskListRecords1.getRepeat_type() );
                 dbHelper.insertTaskDetails( taskListRecords );
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_YEAR, 5);
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                Date tomorrow = calendar.getTime();
-                String tomorrowDate = df.format(tomorrow);
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
+                if (taskListRecords.getDue_date()!=null) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_YEAR, 5);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date tomorrow = calendar.getTime();
+                    String tomorrowDate = df.format(tomorrow);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
 
-                if (taskListRecords.getStatus().equals( "1" )&& date3.equals(tomorrowDate)) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                    if (taskListRecords.getStatus().equals("1") && date3.equals(tomorrowDate)) {
+                        taskListRecordsArrayList.add(taskListRecords);
+                    }
                 }
             }
             mWeekFourRecylcerView.setAdapter( mTaskListAdapter );

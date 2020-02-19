@@ -607,6 +607,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -617,6 +618,7 @@ public class ApprovalsActivity extends AppCompatActivity {
             mProgressDialog.hide();
         }
     }
+
 
     private void appFooter() {
         View btnMe = findViewById( R.id.btn_me );

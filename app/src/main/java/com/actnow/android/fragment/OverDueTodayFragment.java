@@ -89,6 +89,7 @@ public class OverDueTodayFragment extends Fragment {
         session = new UserPrefUtils( getContext() );
 
         View view = inflater.inflate( R.layout.fragment_over_due_today, container, false );
+        showProgressDialog();
         taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
 
@@ -106,7 +107,6 @@ public class OverDueTodayFragment extends Fragment {
         mtodayOverDueRecylcerView.setAdapter( mTaskOfflineAdapter );
 
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
-            showProgressDialog();
             attemptTaskList();
 
         } else {
@@ -126,16 +126,6 @@ public class OverDueTodayFragment extends Fragment {
         mTaskListAdapter.filterList( taskListRecordsFilter );
     }
 
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getContext());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-        }
-
-        mProgressDialog.show();
-    }
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -165,6 +155,18 @@ public class OverDueTodayFragment extends Fragment {
             }
         } );
     }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
@@ -192,25 +194,28 @@ public class OverDueTodayFragment extends Fragment {
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
 
-                Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                String formattedDate = df.format( date1 );
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
+                if(taskListRecords.getDue_date() != null) {
 
-                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
-                String dateYes = dateFormat.format( yesterday() );
-                Date dat6 = new Date( dateYes );
-                System.out.println( "dateys" + dat6 );
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
 
-                try {
-                    Date date4 = new SimpleDateFormat( "yyyy-MM-dd" ).parse( date3 );
-                    System.out.println( "date3" + date4 );
-                    if (date4.before( dat6 ) && taskListRecords.getStatus().equals( "1" )) {
-                        taskListRecordsArrayList.add( taskListRecords1 );
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    String dateYes = dateFormat.format(yesterday());
+                    Date dat6 = new Date(dateYes);
+                    System.out.println("dateys" + dat6);
+
+                    try {
+                        Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse(date3);
+                        System.out.println("date3" + date4);
+                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")) {
+                            taskListRecordsArrayList.add(taskListRecords1);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
 
             }

@@ -1,5 +1,6 @@
 package com.actnow.android.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     View mProgressView, mContentLayout;
     EditText mNewPassword, mConfromPassword;
     Button mChangeSubmit;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassWrodRequst(String mobile_number, String password) {
+        showProgressDialog();
         Call<CheckOtpResponse> call = ANApplications.getANApi().changePassword(mobile_number, password);
         call.enqueue(new Callback<CheckOtpResponse>() {
             @Override
@@ -85,6 +88,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
+                        hideProgressDialog();
                         Intent i = new Intent(ChangePasswordActivity.this, SignInActivity.class);
                         startActivity(i);
                     } else {
@@ -101,5 +105,21 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 }

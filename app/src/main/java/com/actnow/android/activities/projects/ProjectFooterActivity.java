@@ -365,6 +365,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                     View view1 = (View) findViewById( R.id.liner_projectList );
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById( R.id.radioGroupProject );
                     mRadioGroup.clearCheck();
+                    mRadioButtonProjectName = (RadioButton)findViewById( R.id.projectNameFooter );
                     final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_projectCode );
                     final TextView mProjectId = (TextView) view.findViewById( R.id.tv_projectId );
                     final TextView mProjectColor =(TextView)view.findViewById(R.id.tv_projectColor );
@@ -372,7 +373,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                          mRadioButtonProjectName = (RadioButton)findViewById( R.id.projectNameFooter );
                             if (null != mRadioButtonProjectName && checkedId > -1) {
                                 if (checkedId == R.id.projectNameFooter) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
@@ -509,6 +509,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();

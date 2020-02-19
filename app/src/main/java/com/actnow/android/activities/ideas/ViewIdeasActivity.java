@@ -350,9 +350,10 @@ public class ViewIdeasActivity extends AppCompatActivity {
                 taskListRecords1.setPriority(taskListRecords.getPriority());
                 taskListRecords1.setProject_code( taskListRecords.getProject_code());
                 taskListRecords1.setTask_code( taskListRecords.getTask_code());
+                taskListRecords1.setDue_date(taskListRecords.getDue_date());
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
                 taskListRecords1.setProject_name(taskListRecords.getProject_name());
-                if (taskListRecords.getStatus().equals("1")) {
+                if (taskListRecords.getStatus().equals("1") && taskListRecords.getDue_date() == null) {
                     taskListRecordsArrayList.add(taskListRecords1);
                 }
             }
@@ -637,18 +638,16 @@ public class ViewIdeasActivity extends AppCompatActivity {
                     });
         }
     }
-
-
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
     }
-
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();

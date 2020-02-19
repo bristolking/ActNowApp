@@ -364,6 +364,7 @@ public class EditProjectActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
         }
 
         mProgressDialog.show();
@@ -374,7 +375,6 @@ public class EditProjectActivity extends AppCompatActivity {
             mProgressDialog.hide();
         }
     }
-
     public void onBackPressed() {
         super.onBackPressed();
     }
