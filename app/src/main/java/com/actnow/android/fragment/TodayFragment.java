@@ -120,7 +120,7 @@ public class TodayFragment extends Fragment {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
                 System.out.println( "ress" + response.raw() );
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
@@ -406,7 +406,7 @@ public class TodayFragment extends Fragment {
     }
 
     private void todyFrgmentNoConnection() {
-        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+       // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {

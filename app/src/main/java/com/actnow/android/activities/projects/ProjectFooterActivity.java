@@ -100,7 +100,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
 
         initializeViews();
         appHeaderTwo();
-        appFooter();
+
+
     }
 
     private void appHeaderTwo() {
@@ -323,7 +324,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
             public void onResponse(Call<ProjectListResponse> call, Response<ProjectListResponse> response) {
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+               // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
@@ -521,7 +522,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
         }
     }
     private void attemptOfflineProjects() {
-        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+       // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         ProjectDBHelper projectDBHelper = new ProjectDBHelper(getApplicationContext());
         Cursor cursor = projectDBHelper.getProjectAllData();
         if (cursor.getCount() != 0) {

@@ -6,8 +6,7 @@ public class ProjectInsightsReponse {
     private  String  success;
     private  String  message;
     private  String  no_of_records;
-
-    private List<ProjectInsightsRecords> projectInsightsRecords;
+    private  List<ProjectsInsights> projects;
 
     public String getSuccess() {
         return success;
@@ -33,12 +32,12 @@ public class ProjectInsightsReponse {
         this.no_of_records = no_of_records;
     }
 
-    public List<ProjectInsightsRecords> getProjectInsightsRecords() {
-        return projectInsightsRecords;
+    public List<ProjectsInsights> getProjects() {
+        return projects;
     }
 
-    public void setProjectInsightsRecords(List<ProjectInsightsRecords> projectInsightsRecords) {
-        this.projectInsightsRecords = projectInsightsRecords;
+    public void setProjects(List<ProjectsInsights> projects) {
+        this.projects = projects;
     }
 
     @Override
@@ -47,7 +46,7 @@ public class ProjectInsightsReponse {
                 "success='" + success + '\'' +
                 ", message='" + message + '\'' +
                 ", no_of_records='" + no_of_records + '\'' +
-                ", projectInsightsRecords=" + projectInsightsRecords +
+                ", projects=" + projects +
                 '}';
     }
 }

@@ -64,7 +64,6 @@
         <activity android:name=".activities.settings.ThemeActivity" />
         <activity android:name=".activities.settings.PremiumActivity" />
         <activity android:name=".activities.insights.TeamActivity" />
-        <activity android:name=".activities.insights.ProjectActivity" />
         <activity android:name=".activities.insights.PersonalActivity" />
         <activity android:name=".activities.ideas.ViewIdeasActivity" />
         <activity android:name=".activities.individuals.ViewIndividualsActivity" />

@@ -141,7 +141,7 @@ public class TomorrowFragment extends Fragment {
         call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+               // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
@@ -443,7 +443,7 @@ public class TomorrowFragment extends Fragment {
 
 
     private void tomorrowFrgmentNoConnection() {
-        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {

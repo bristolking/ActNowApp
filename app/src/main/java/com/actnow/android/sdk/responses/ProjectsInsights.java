@@ -1,23 +1,23 @@
 package com.actnow.android.sdk.responses;
 
-public class ProjectInsightsRecords {
-    private String  project_id;
-    private String  name;
-    private String  project_code;
-    private String  color;
-    private String  priority;
-    private String  due_date;
-    private String  project_members;
-    private String  created_by;
-    private String  created_date;
-    private String  updated_by;
-    private String  updated_date;
-    private String  orgn_code;
-    private String  parent_project_code;
-    private String  completed;
-    private String  approval;
-    private String  ongoing;
-    private String  pending;
+public class ProjectsInsights {
+    private String project_id;
+    private String name;
+    private String project_code;
+    private String color;
+    private String priority;
+    private String due_date;
+    private String project_members  ;
+    private String created_by;
+    private String created_date;
+    private String updated_by;
+    private String updated_date;
+    private String orgn_code;
+    private String parent_project_code;
+    private String completed;
+    private String approval ;
+    private String ongoing;
+    private String pending;
 
     public String getProject_id() {
         return project_id;
@@ -157,7 +157,7 @@ public class ProjectInsightsRecords {
 
     @Override
     public String toString() {
-        return "ProjectInsightsRecords{" +
+        return "ProjectsInsights{" +
                 "project_id='" + project_id + '\'' +
                 ", name='" + name + '\'' +
                 ", project_code='" + project_code + '\'' +

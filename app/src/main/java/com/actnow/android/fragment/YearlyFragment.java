@@ -185,7 +185,7 @@ public class YearlyFragment extends Fragment {
         call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+               // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
@@ -470,7 +470,7 @@ public class YearlyFragment extends Fragment {
     // offlineData
 
     private void yearlyTypeNoConnection() {
-        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {

@@ -1,7 +1,6 @@
 package com.actnow.android.adapter;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,20 +10,19 @@ import android.widget.TextView;
 
 
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.ProjectInsightsRecords;
+import com.actnow.android.sdk.responses.ProjectsInsights;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectInsightsAdapter extends RecyclerView.Adapter<ProjectInsightsAdapter.ViewHolder> {
-    List<ProjectInsightsRecords> projectInsightsRecordsList;
     private Context context;
 
-    public ProjectInsightsAdapter(ArrayList<ProjectInsightsRecords> projectInsightsRecordsArrayList, int custom_project_insights, Context applicationContext) {
-        this.projectInsightsRecordsList = projectInsightsRecordsArrayList;
+    List<ProjectsInsights> projectsInsights;
 
+    public ProjectInsightsAdapter(ArrayList<ProjectsInsights> projectsInsightsArrayList) {
+        this.projectsInsights = projectsInsightsArrayList;
     }
-
 
     @NonNull
     @Override
@@ -36,23 +34,24 @@ public class ProjectInsightsAdapter extends RecyclerView.Adapter<ProjectInsights
 
     @Override
     public void onBindViewHolder(@NonNull ProjectInsightsAdapter.ViewHolder viewHolder, int i) {
-        ProjectInsightsRecords projectInsightsRecords = projectInsightsRecordsList.get(i);
-        viewHolder.mInsightsProjectName.setText( projectInsightsRecords.getName());
-        viewHolder.mProjectsInsightsApproval.setText( projectInsightsRecords.getApproval());
-        viewHolder.mProjectInsightscompleted.setText(projectInsightsRecords.getCompleted());
-        viewHolder.mProjectsInsightsOngoing.setText(projectInsightsRecords.getOngoing());
-        viewHolder.mProjectsInsightsPeniding.setText(projectInsightsRecords.getPending());
-        viewHolder.mProjectInsightsColor.setText(projectInsightsRecords.getColor());
+        ProjectsInsights projectsInsights1 = projectsInsights.get(i);
+        viewHolder.mInsightsProjectName.setText( projectsInsights1.getName());
+        viewHolder.mProjectsInsightsApproval.setText( projectsInsights1.getApproval());
+        viewHolder.mProjectInsightscompleted.setText(projectsInsights1.getCompleted());
+        viewHolder.mProjectsInsightsOngoing.setText(projectsInsights1.getOngoing());
+        viewHolder.mProjectsInsightsPeniding.setText(projectsInsights1.getPending());
+        //viewHolder.mProjectInsightsDueDate.setText(projectsInsights1.getDue_date());
+        viewHolder.mProjectInsightsColor.setText(projectsInsights1.getColor());
 
     }
 
     @Override
     public int getItemCount() {
-        return  projectInsightsRecordsList.size();
+        return projectsInsights.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mInsightsProjectName,mProjectInsightsColor,mProjectsInsightsApproval,mProjectsInsightsPeniding,mProjectsInsightsOngoing,mProjectInsightscompleted;
+        TextView mInsightsProjectName,mProjectInsightsColor,mProjectsInsightsApproval,mProjectsInsightsPeniding,mProjectsInsightsOngoing,mProjectInsightscompleted,mProjectInsightsDueDate;
 
         public ViewHolder(@NonNull View itemView) {
             super( itemView );
@@ -62,6 +61,7 @@ public class ProjectInsightsAdapter extends RecyclerView.Adapter<ProjectInsights
             mProjectsInsightsPeniding = itemView.findViewById(R.id.tv_projectInsightsPendingTasks);
             mProjectsInsightsOngoing = itemView.findViewById(R.id.tv_projectInsightsOngoingTasks);
             mProjectInsightscompleted = itemView.findViewById(R.id.tv_projectInsightsCompleteTasks);
+            //mProjectInsightsDueDate =itemView.findViewById(R.id.tv_project_insgihts_duedate);
 
         }
     }
