@@ -254,21 +254,21 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
 
     private ArrayList<String> setXAxisValues() {
         ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("10");
-        xVals.add("20");
-        xVals.add("30");
-        xVals.add("30.5");
-        xVals.add("40");
+        xVals.add("2020-02-20");
+        xVals.add("2020-02-20");
+        xVals.add("2020-02-20");
+        xVals.add("2020-02-20");
+        xVals.add("2020-02-20");
         return xVals;
     }
 
     private ArrayList<Entry> setYAxisValues() {
         ArrayList<Entry> yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(60, 0));
-        yVals.add(new Entry(48, 1));
-        yVals.add(new Entry(70.5f, 2));
-        yVals.add(new Entry(100, 3));
-        yVals.add(new Entry(180.9f, 4));
+        yVals.add(new Entry(0, 0));
+        yVals.add(new Entry(5, 1));
+        yVals.add(new Entry(10, 2));
+        yVals.add(new Entry(15, 3));
+        yVals.add(new Entry(24, 4));
         return yVals;
     }
 

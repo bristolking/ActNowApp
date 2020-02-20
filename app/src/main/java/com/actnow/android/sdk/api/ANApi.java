@@ -3,6 +3,7 @@ package com.actnow.android.sdk.api;
 import com.actnow.android.sdk.responses.AdavancedSearch;
 import com.actnow.android.sdk.responses.CheckOtpResponse;
 import com.actnow.android.sdk.responses.CommentAdd;
+import com.actnow.android.sdk.responses.IndividualInsightReponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
@@ -232,6 +233,10 @@ public interface ANApi {
 
     @GET("app/proinsights/{id}")
     Call<ProjectInsightsReponse> projectInsightsReponse(@Path("id")String id);
+    @GET("app/tinsights/{id}")
+    Call<IndividualInsightReponse> individualInsights(@Path("id")String id);
+
+
 
     /*
     @GET("app/project/get/{id}/{projectCode}")

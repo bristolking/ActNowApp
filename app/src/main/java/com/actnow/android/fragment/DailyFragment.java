@@ -151,7 +151,7 @@ public class DailyFragment extends Fragment {
         return view;
     }
 
-    private ProgressDialog mProgressDialog;
+    /*private ProgressDialog mProgressDialog;
 
     private void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -169,7 +169,7 @@ public class DailyFragment extends Fragment {
             mProgressDialog.hide();
         }
     }
-
+*/
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
@@ -181,18 +181,16 @@ public class DailyFragment extends Fragment {
     }
 
     private void attemptTaskList() {
-        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
         call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-               // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+               AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -429,7 +427,7 @@ public class DailyFragment extends Fragment {
     }
 // offfline Data
     private void dailyTypeNoConnection() {
-        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+       // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {

@@ -100,6 +100,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
 
         initializeViews();
         appHeaderTwo();
+        appFooter();
 
 
     }

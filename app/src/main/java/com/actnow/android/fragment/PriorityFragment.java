@@ -96,7 +96,6 @@ public class PriorityFragment extends Fragment {
         mPriorityTaskRecylcerView.setAdapter( mPriorityOfflineAdapter );
 
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
-            showProgressDialog();
             attemptTaskList();
         } else {
             priorotyNoConnection();
@@ -152,22 +151,6 @@ public class PriorityFragment extends Fragment {
 
         return view;
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getContext());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
     /*  private void filter(String toString) {
           ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
           for (TaskListRecords name  :taskListRecordsArrayList){
@@ -185,11 +168,10 @@ public class PriorityFragment extends Fragment {
         call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();

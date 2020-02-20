@@ -168,17 +168,15 @@ public class AllTaskFragment extends Fragment {
     }
 
     private void attemptTaskList() {
-        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
         call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -455,22 +453,6 @@ public class AllTaskFragment extends Fragment {
         }
     }
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
 
     // Offline Code
 

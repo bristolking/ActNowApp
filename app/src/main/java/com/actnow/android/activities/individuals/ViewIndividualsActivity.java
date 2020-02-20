@@ -301,6 +301,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals("true")) {
                         System.out.println("data" + response.body().getSuccess());
                         setLoadCheckBox(response.body().getOrgn_users_records());
+                        //System.out.println("repons" + response.body().getNo_of_records());
                         hideProgressDialog();
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();

@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.GalleryActivity"></activity>
+        <activity android:name=".activities.insights.IndividualInsighsGrapghActivity"></activity>
+        <activity android:name=".activities.insights.ProjectsInsightsGraphActivity" />
+        <activity android:name=".activities.GalleryActivity" />
         <activity android:name=".activities.insights.IndividualsInsightsActivity" />
         <activity android:name=".activities.insights.ProjectInsightsActivity" />
         <activity android:name=".activities.TodayFragmentActivity" />

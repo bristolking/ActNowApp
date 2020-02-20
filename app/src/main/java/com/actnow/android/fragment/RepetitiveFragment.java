@@ -67,7 +67,7 @@ public class RepetitiveFragment extends Fragment {
     RecyclerView mRepetTaskRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
 
-  ArrayList<TaskListRecords> taskListRecordsArrayList;
+    ArrayList<TaskListRecords> taskListRecordsArrayList;
     TaskListAdapter mTaskListAdapter;
     TaskOfflineAdapter mTaskOfflineAdapter;
     UserPrefUtils session;
@@ -165,25 +165,9 @@ public class RepetitiveFragment extends Fragment {
         }
         mTaskListAdapter.filterList( taskListRecordsFilter );
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getContext());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
 
     private void attemptTaskList() {
-        showProgressDialog();
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call;
@@ -191,11 +175,10 @@ public class RepetitiveFragment extends Fragment {
         call.enqueue( new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     System.out.println( "url" + response.raw() );
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();

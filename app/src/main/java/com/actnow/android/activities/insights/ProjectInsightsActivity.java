@@ -61,6 +61,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     EditText mEditText;
     TextView mTextProjectCount, mProjectTotalTask;
     private ProgressDialog mProgressDialog;
+    TextView tv_numProjectInsightsValue;
 
     ArrayList<ProjectsInsights> projectsInsightsArrayList = new ArrayList<ProjectsInsights>();
 
@@ -158,7 +159,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                                 startActivity(iTaskfilter);
                                 break;
                             case R.id.nav_project:
-                                Toast.makeText(getApplicationContext(), "Selected The Projects", Toast.LENGTH_SHORT).show();
+                                Intent iprojects = new Intent(getApplicationContext(),ProjectFooterActivity.class);
                                 break;
                             case R.id.nav_individuals:
                                 Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
@@ -211,6 +212,8 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     private void initializeViews() {
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
+        tv_numProjectInsightsValue = (TextView)findViewById(R.id.tv_nuberProjectIisightsValue);
+
 
 /*
         mEditText = (EditText)findViewById(R.id.edit_ProjectsInsightssearchTask);
@@ -228,9 +231,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         apiCallProjectInsights();
         showProgressDialog();
 
-
     }
-
 
     private void apiCallProjectInsights() {
         HashMap<String, String> user = session.getUserDetails();
@@ -244,9 +245,12 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     System.out.println("severReponse1" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
+                        System.out.println("severReponse3" +  response.body().getNo_of_records());
                         System.out.println("severReponse2" + response.body().getProjects());
                         hideProgressDialog();
                         setProjectInsight(response.body().getProjects());
+
+
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -284,17 +288,31 @@ public class ProjectInsightsActivity extends AppCompatActivity {
             mRecyclerViewProjectInsights.addOnItemTouchListener(new ProjectInsightsActivity.RecyclerTouchListener(this, mRecyclerViewProjectInsights, new ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
-                    TextView mInsightsProjectName = view.findViewById(R.id.tv_projects_InsgihtsName);
-                    TextView mProjectInsightsColor = view.findViewById(R.id.tv_projects_InsgihtsColor);
-                    TextView mProjectsInsightsApproval = view.findViewById(R.id.tv_projectInsightsApprovalTasks);
-                    TextView mProjectsInsightsPeniding = view.findViewById(R.id.tv_projectInsightsPendingTasks);
-                    TextView mProjectsInsightsOngoing = view.findViewById(R.id.tv_projectInsightsOngoingTasks);
-                    TextView mProjectInsightscompleted = view.findViewById(R.id.tv_projectInsightsCompleteTasks);
+                    final TextView mInsightsProjectName = view.findViewById(R.id.tv_projects_InsgihtsName);
+                    final TextView mProjectInsightsColor = view.findViewById(R.id.tv_projects_InsgihtsColor);
+                    final TextView mProjectsInsightsApproval = view.findViewById(R.id.tv_projectInsightsApprovalTasks);
+                    final TextView mProjectsInsightsPeniding = view.findViewById(R.id.tv_projectInsightsPendingTasks);
+                    final TextView mProjectsInsightsOngoing = view.findViewById(R.id.tv_projectInsightsOngoingTasks);
+                    final TextView mProjectInsightscompleted = view.findViewById(R.id.tv_projectInsightsCompleteTasks);
                     ImageView imageViewProjectInsights = (ImageView) view.findViewById(R.id.image_insightsProjects);
                     imageViewProjectInsights.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(getApplicationContext(),"Work IN PROGRESS!",Toast.LENGTH_LONG).show();
+                            String nameInsights = mInsightsProjectName.getText().toString();
+                            String colorInsights = mProjectInsightsColor.getText().toString();
+                            String approvalInsights = mProjectsInsightsApproval.getText().toString();
+                            String pendingInsights = mProjectsInsightsPeniding.getText().toString();
+                            String ongoingInsights = mProjectsInsightsOngoing.getText().toString();
+                            String compltedInsights = mProjectInsightscompleted.getText().toString();
+
+                            Intent  i= new Intent(getApplicationContext(),ProjectsInsightsGraphActivity.class);
+                            i.putExtra("nameInsights",nameInsights);
+                            i.putExtra("colorInsights",colorInsights);
+                            i.putExtra("approvalInsights",approvalInsights);
+                            i.putExtra("pendingInsights",pendingInsights);
+                            i.putExtra("ongoingInsights",ongoingInsights);
+                            i.putExtra("compltedInsights",compltedInsights);
+                            startActivity(i);
                         }
                     });
 
@@ -425,7 +443,6 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
         startActivity(i);
-        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityProject() {
