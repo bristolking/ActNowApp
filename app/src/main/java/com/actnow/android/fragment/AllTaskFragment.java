@@ -83,7 +83,6 @@ public class AllTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
         View view = inflater.inflate( R.layout.fragment_all_task, container, false );
-
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
         taskListRecordsArrayList = new ArrayList<TaskListRecords>();
@@ -219,7 +218,7 @@ public class AllTaskFragment extends Fragment {
             mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
             mAllTaskRecylcerView.addOnItemTouchListener( new AllTaskFragment.RecyclerTouchListener( this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -240,11 +239,11 @@ public class AllTaskFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                         /*   AllTaskFragment allTaskFragment = new AllTaskFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                            fragmentTransaction.commit();
+                                            fragmentTransaction.commit();*/
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -254,6 +253,7 @@ public class AllTaskFragment extends Fragment {
                                     textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            mTaskListAdapter.removeItem(position);
                                             view1.setVisibility( View.GONE );
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
@@ -269,11 +269,11 @@ public class AllTaskFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                                      /*      AllTaskFragment allTaskFragment = new AllTaskFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                             fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                                            fragmentTransaction.commit();
+                                                            fragmentTransaction.commit();*/
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -357,23 +357,21 @@ public class AllTaskFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                             String task_code = tv_taskcode.getText().toString();
                             Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
-                            System.out.println( "deleteFields" + id + task_code + orgn_code );
                             taskDeleteCall.enqueue( new Callback<TaskDelete>() {
                                 @Override
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                    System.out.println( "reponsedelete" + response.raw() );
                                     if (response.isSuccessful()) {
+                                        System.out.println( "deleteResponse1" + response.raw() );
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            System.out.println( "deleteResponse2" + response.raw() );
-                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                            fragmentTransaction.commit();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -390,11 +388,8 @@ public class AllTaskFragment extends Fragment {
 
                                 }
                             } );
-
                         }
                     } );
-
-
                 }
 
                 @Override
@@ -454,6 +449,23 @@ public class AllTaskFragment extends Fragment {
     }
 
 
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
+
     // Offline Code
 
     private void   allFrgmentNoConnection() {
@@ -510,11 +522,11 @@ public class AllTaskFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                   /*     AllTaskFragment allTaskFragment = new AllTaskFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -539,11 +551,11 @@ public class AllTaskFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                                  /*      AllTaskFragment allTaskFragment = new AllTaskFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }

@@ -256,7 +256,7 @@ public class OverdueFragment extends Fragment {
             mTaskRecylcerView.setAdapter( mTaskListAdapter );
             mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -277,11 +277,11 @@ public class OverdueFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                            OverdueFragment fragment2 = new OverdueFragment();
+                                          /*  OverdueFragment fragment2 = new OverdueFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
-                                            fragmentTransaction.commit();
+                                            fragmentTransaction.commit();*/
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -306,11 +306,11 @@ public class OverdueFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            OverdueFragment fragment2 = new OverdueFragment();
+                                                         /*   OverdueFragment fragment2 = new OverdueFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                             fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
-                                                            fragmentTransaction.commit();
+                                                            fragmentTransaction.commit();*/
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -397,6 +397,7 @@ public class OverdueFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -409,11 +410,13 @@ public class OverdueFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         System.out.println( "deleteResponse1" + response.raw() );
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            OverdueFragment fragment2 = new OverdueFragment();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
+                                           /* OverdueFragment fragment2 = new OverdueFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
-                                            fragmentTransaction.commit();
+                                            fragmentTransaction.commit();*/
                                             Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -493,6 +496,22 @@ public class OverdueFragment extends Fragment {
         }
     }
 
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
 
 
 // offfline Data

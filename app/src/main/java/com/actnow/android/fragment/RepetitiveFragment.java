@@ -217,7 +217,7 @@ public class RepetitiveFragment extends Fragment {
             mRepetTaskRecylcerView.setAdapter( mTaskListAdapter );
             mRepetTaskRecylcerView.addOnItemTouchListener( new RepetitiveFragment.RecyclerTouchListener( this, mRepetTaskRecylcerView, new RepetitiveFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -238,11 +238,12 @@ public class RepetitiveFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                            RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
+                                            mTaskListAdapter.removeItem(position);
+                                        /*    RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.repetitive_fragment, repetitiveFragment );
-                                            fragmentTransaction.commit();
+                                            fragmentTransaction.commit();*/
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -267,11 +268,11 @@ public class RepetitiveFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
+                                                        /*    RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                             fragmentTransaction.replace( R.id.repetitive_fragment, repetitiveFragment );
-                                                            fragmentTransaction.commit();
+                                                            fragmentTransaction.commit();*/
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -355,6 +356,7 @@ public class RepetitiveFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -365,11 +367,14 @@ public class RepetitiveFragment extends Fragment {
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
+
+                                            /*RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.repetitive_fragment, repetitiveFragment );
-                                            fragmentTransaction.commit();
+                                            fragmentTransaction.commit();*/
                                             Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -449,6 +454,23 @@ public class RepetitiveFragment extends Fragment {
         }
     }
 
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
+
   /* offfline Data*/
 
     private void repetitiveTypeNoConnection() {
@@ -505,11 +527,11 @@ public class RepetitiveFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
+                                    /*    RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.repetitive_fragment, repetitiveFragment );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -534,11 +556,11 @@ public class RepetitiveFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
+                                                    /*    RepetitiveTabedFragment repetitiveFragment = new RepetitiveTabedFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.repetitive_fragment, repetitiveFragment );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }

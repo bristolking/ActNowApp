@@ -37,6 +37,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -293,7 +294,8 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
 
         // create a data object with the datasets
         LineData data = new LineData(xVals1, dataSets);
-
+        XAxis xAxis = mlineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         // set data
         mlineChart.setData(data);
 

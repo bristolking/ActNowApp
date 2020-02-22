@@ -2,6 +2,7 @@ package com.actnow.android.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
+import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
@@ -61,7 +63,7 @@ public class TodayFragment extends Fragment {
     RecyclerView mTodayRecylcerView;
     RecyclerView.LayoutManager mTodayLayoutManager;
     FloatingActionButton fabTodayTask;
-    TaskListAdapter mTodayTaskListAdapter;
+    TaskListAdapter mTaskListAdapter;
     TaskOfflineAdapter mTaskOfflineAdapter;
 
     UserPrefUtils session;
@@ -74,6 +76,7 @@ public class TodayFragment extends Fragment {
     String id;
     TextView mTaskName;
     TextView mWeeKNameToday;
+     private ProgressDialog mProgressDialog;
 
     public TodayFragment() {
 
@@ -93,8 +96,8 @@ public class TodayFragment extends Fragment {
         mTodayLayoutManager = new LinearLayoutManager( getContext() );
         mTodayRecylcerView.setLayoutManager( mTodayLayoutManager );
         mTodayRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTodayTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList, task_list_cutsom, getContext() );
-        mTodayRecylcerView.setAdapter( mTodayTaskListAdapter );
+        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList);
+        mTodayRecylcerView.setAdapter( mTaskListAdapter );
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mTodayRecylcerView.setAdapter( mTaskOfflineAdapter );
@@ -167,10 +170,10 @@ public class TodayFragment extends Fragment {
                 }
 
             }
-            mTodayRecylcerView.setAdapter( new TaskListAdapter( taskListRecordsArrayList, R.layout.task_list_cutsom, getActivity() ) );
+            mTodayRecylcerView.setAdapter(mTaskListAdapter);
             mTodayRecylcerView.addOnItemTouchListener( new TodayFragment.RecyclerTouchListener( this, mTodayRecylcerView, new TodayFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -184,8 +187,6 @@ public class TodayFragment extends Fragment {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
-/*
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -193,11 +194,6 @@ public class TodayFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                            TodayFragment mTodayFragment = new TodayFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_today, mTodayFragment );
-                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -207,6 +203,7 @@ public class TodayFragment extends Fragment {
                                     textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            mTaskListAdapter.removeItem(position);
                                             view1.setVisibility( View.GONE );
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
@@ -222,11 +219,7 @@ public class TodayFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            TodayFragment mTodayFragment = new TodayFragment();
-                                                            FragmentManager fragmentManager = getFragmentManager();
-                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_today, mTodayFragment );
-                                                            fragmentTransaction.commit();
+
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -240,7 +233,7 @@ public class TodayFragment extends Fragment {
                                                     Log.d( "CallBack", " Throwable is " + t );
                                                 }
                                             } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
                                             snackbar2.show();
                                         }
                                     } );
@@ -249,7 +242,7 @@ public class TodayFragment extends Fragment {
                                     selectedType = radioButtonTaskName.getText().toString();
 
                                 }
-                            }*/
+                            }
                         }
                     } );
                     mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
@@ -309,7 +302,8 @@ public class TodayFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            /*HashMap<String, String> userId = session.getUserDetails();
+                            showProgressDialog();
+                            HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                             String task_code = tv_taskcode.getText().toString();
@@ -319,11 +313,9 @@ public class TodayFragment extends Fragment {
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            TodayFragment mTodayFragment = new TodayFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_today, mTodayFragment );
-                                            fragmentTransaction.commit();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
+
                                             Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -339,14 +331,10 @@ public class TodayFragment extends Fragment {
                                     Log.d( "CallBack", " Throwable is " + t );
 
                                 }
-                            } );*/
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
-
+                            } );
 
                         }
                     } );
-
-
                 }
 
                 @Override
@@ -402,6 +390,23 @@ public class TodayFragment extends Fragment {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 

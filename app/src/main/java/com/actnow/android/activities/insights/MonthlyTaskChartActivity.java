@@ -35,6 +35,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -246,11 +247,37 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
 
     private ArrayList<String> setXAxisValues() {
         ArrayList<String> xVals = new ArrayList<String>();
+        xVals.add("01");
+        xVals.add("02");
+        xVals.add("03");
+        xVals.add("04");
+        xVals.add("05");
+        xVals.add("06");
+        xVals.add("07");
+        xVals.add("08");
+        xVals.add("09");
         xVals.add("10");
+        xVals.add("11");
+        xVals.add("12");
+        xVals.add("13");
+        xVals.add("14");
+        xVals.add("15");
+        xVals.add("16");
+        xVals.add("17");
+        xVals.add("18");
+        xVals.add("19");
         xVals.add("20");
+        xVals.add("21");
+        xVals.add("22");
+        xVals.add("23");
+        xVals.add("24");
+        xVals.add("25");
+        xVals.add("26");
+        xVals.add("27");
+        xVals.add("28");
+        xVals.add("29");
         xVals.add("30");
-        xVals.add("30.5");
-        xVals.add("40");
+        xVals.add("31");
         return xVals;
     }
 
@@ -261,6 +288,12 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
         yVals.add(new Entry(70.5f, 2));
         yVals.add(new Entry(100, 3));
         yVals.add(new Entry(180.9f, 4));
+
+        yVals.add(new Entry(60, 5));
+        yVals.add(new Entry(48, 6));
+        yVals.add(new Entry(70.5f, 7));
+        yVals.add(new Entry(100, 8));
+        yVals.add(new Entry(180.9f, 9));
         return yVals;
     }
 
@@ -285,7 +318,8 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
 
         // create a data object with the datasets
         LineData data = new LineData(xVals, dataSets);
-
+        XAxis xAxis = mlineChartMonthly.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         // set data
         mlineChartMonthly.setData(data);
 

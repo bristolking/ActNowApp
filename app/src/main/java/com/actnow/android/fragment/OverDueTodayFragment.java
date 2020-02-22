@@ -35,6 +35,7 @@ import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
+import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
@@ -222,7 +223,7 @@ public class OverDueTodayFragment extends Fragment {
             mtodayOverDueRecylcerView.setAdapter( mTaskListAdapter );
             mtodayOverDueRecylcerView.addOnItemTouchListener( new OverDueTodayFragment.RecyclerTouchListener( this, mtodayOverDueRecylcerView, new OverDueTodayFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -236,7 +237,6 @@ public class OverDueTodayFragment extends Fragment {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            //Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -244,11 +244,6 @@ public class OverDueTodayFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                           /* OverDueTodayFragment fragment2 = new OverDueTodayFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_overdue_today, fragment2 );
-                                            fragmentTransaction.commit();*/
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -258,8 +253,8 @@ public class OverDueTodayFragment extends Fragment {
                                     textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            //Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
                                             view1.setVisibility( View.GONE );
+                                            mTaskListAdapter.removeItem(position);
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
                                             final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -274,11 +269,6 @@ public class OverDueTodayFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                          /*  OverDueTodayFragment fragment2 = new OverDueTodayFragment();
-                                                            FragmentManager fragmentManager = getFragmentManager();
-                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_overdue_today, fragment2 );
-                                                            fragmentTransaction.commit();*/
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -365,9 +355,8 @@ public class OverDueTodayFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
-
-                            /*HashMap<String, String> userId = session.getUserDetails();
+                            showProgressDialog();
+                            HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                             String task_code = tv_taskcode.getText().toString();
@@ -379,12 +368,9 @@ public class OverDueTodayFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         System.out.println( "deleteResponse1" + response.raw() );
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            OverDueTodayFragment fragment2 = new OverDueTodayFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_overdue_today, fragment2 );
-                                            fragmentTransaction.commit();
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }
@@ -400,7 +386,6 @@ public class OverDueTodayFragment extends Fragment {
 
                                 }
                             } );
-*/
                         }
                     } );
 
@@ -530,18 +515,18 @@ public class OverDueTodayFragment extends Fragment {
                     @SuppressLint("ResourceType")
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                      /*  if (checkedId == R.id.radio_buttonAction) {
+                        if (checkedId == R.id.radio_buttonAction) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 selectedType = radioButtonTaskName.getText().toString();
                                 Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        OverDueTodayFragment fragment2 = new OverDueTodayFragment();
+                                    /*    OverDueTodayFragment fragment2 = new OverDueTodayFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.fragment_overdue_today, fragment2 );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -566,11 +551,11 @@ public class OverDueTodayFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        OverDueTodayFragment fragment2 = new OverDueTodayFragment();
+                                                  /*      OverDueTodayFragment fragment2 = new OverDueTodayFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.fragment_overdue_today, fragment2 );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -593,8 +578,7 @@ public class OverDueTodayFragment extends Fragment {
                                 selectedType = radioButtonTaskName.getText().toString();
 
                             }
-                        }*/
-                        Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
+                        }
 
                     }
                 } );

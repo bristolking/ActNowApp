@@ -76,8 +76,7 @@
                             android:id="@+id/img_projectattachamentComment"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_alignParentLeft="true"
-                            android:src="@drawable/img_actnow"/>
+                            android:layout_alignParentLeft="true" />
 
                        <!-- <ImageView
                             android:id="@+id/img_projectattachamentCommentTwo"

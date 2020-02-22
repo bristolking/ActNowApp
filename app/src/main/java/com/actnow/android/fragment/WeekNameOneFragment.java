@@ -31,6 +31,7 @@ import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
+import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
@@ -196,7 +197,7 @@ public class WeekNameOneFragment extends Fragment {
             mWeekOneRecylcerView.setAdapter( mTaskListAdapter );
             mWeekOneRecylcerView.addOnItemTouchListener( new WeekNameOneFragment.RecyclerTouchListener( this, mWeekOneRecylcerView, new WeekNameOneFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -210,18 +211,14 @@ public class WeekNameOneFragment extends Fragment {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                           /* if (checkedId == R.id.radio_buttonAction) {
+                            if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
                                     Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                            WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                            fragmentTransaction.commit();
+
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -231,6 +228,7 @@ public class WeekNameOneFragment extends Fragment {
                                     textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            mTaskListAdapter.removeItem(position);
                                             view1.setVisibility( View.GONE );
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
@@ -246,11 +244,6 @@ public class WeekNameOneFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
-                                                            FragmentManager fragmentManager = getFragmentManager();
-                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                                            fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -273,8 +266,7 @@ public class WeekNameOneFragment extends Fragment {
                                     selectedType = radioButtonTaskName.getText().toString();
 
                                 }
-                            }*/
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
+                            }
 
                         }
                     } );
@@ -336,9 +328,8 @@ public class WeekNameOneFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
-
-                           /* HashMap<String, String> userId = session.getUserDetails();
+                            showProgressDialog();
+                            HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                             String task_code = tv_taskcode.getText().toString();
@@ -350,11 +341,8 @@ public class WeekNameOneFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
                                             System.out.println( "deleteResponse2" + response.raw() );
-                                            WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                            fragmentTransaction.commit();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -371,7 +359,6 @@ public class WeekNameOneFragment extends Fragment {
 
                                 }
                             } );
-*/
                         }
                     } );
 
@@ -488,11 +475,11 @@ public class WeekNameOneFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
+                                    /*    WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -517,11 +504,11 @@ public class WeekNameOneFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
+                                                      /*  WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }

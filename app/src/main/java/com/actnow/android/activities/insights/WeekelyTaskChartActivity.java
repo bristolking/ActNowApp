@@ -35,6 +35,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -245,11 +246,13 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
     }
     private ArrayList<String> setXAxisValues(){
         ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("10");
-        xVals.add("20");
-        xVals.add("30");
-        xVals.add("30.5");
-        xVals.add("40");
+        xVals.add("MON");
+        xVals.add("TUE");
+        xVals.add("WED");
+        xVals.add("THU");
+        xVals.add("FRI");
+        xVals.add("SAT");
+        xVals.add("SUN");
         return xVals;
     }
     private ArrayList<Entry> setYAxisValues(){
@@ -259,6 +262,8 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
         yVals.add(new Entry(70.5f, 2));
         yVals.add(new Entry(100, 3));
         yVals.add(new Entry(180.9f, 4));
+        yVals.add(new Entry(70.5f, 5));
+        yVals.add(new Entry(100, 6));
         return yVals;
     }
     private void setData() {
@@ -282,7 +287,8 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
 
         // create a data object with the datasets
         LineData data = new LineData(xVals, dataSets);
-
+        XAxis xAxis = mlineChartWeekely.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         // set data
         mlineChartWeekely.setData(data);
 

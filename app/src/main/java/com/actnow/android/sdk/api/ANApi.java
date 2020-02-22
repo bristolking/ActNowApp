@@ -20,6 +20,7 @@ import com.actnow.android.sdk.responses.TaskAddResponse;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskEditResponse;
+import com.actnow.android.sdk.responses.TaskInsightYearly;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.TimeLineList;
 import com.actnow.android.sdk.responses.TimeLineTaskList;
@@ -138,15 +139,16 @@ public interface ANApi {
     @POST("app/comment/add/2")
     Call<TaskComplete> callCommentAdd(@Part("id")RequestBody id,@Part("orgn_code") RequestBody orgn_code,@Part("comment") RequestBody comment,@Part("task_code") RequestBody task_code,@Part("project_code") RequestBody project_code,@Part MultipartBody.Part[] files);*/
 
+
     @Multipart
     @POST("app/comment/add/2")
     Call<ResponseBody> checkTheCommentAdd(
-            @Part("id") RequestBody id,
+            @Part("id") RequestBody userid,
             @Part("orgn_code") RequestBody orgn_code,
             @Part("comment") RequestBody comment,
             @Part("task_code") RequestBody task_code,
             @Part("project_code") RequestBody project_code,
-            @Part("size") RequestBody size,
+            @Part("image_path") RequestBody path,
             @Part MultipartBody.Part files);
 
     @FormUrlEncoded
@@ -235,6 +237,9 @@ public interface ANApi {
     Call<ProjectInsightsReponse> projectInsightsReponse(@Path("id")String id);
     @GET("app/tinsights/{id}")
     Call<IndividualInsightReponse> individualInsights(@Path("id")String id);
+
+    @GET("app/yearlyinsights/{id}")
+    Call<TaskInsightYearly> taskInsightsYearly(@Path("id")String id);
 
 
 

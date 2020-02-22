@@ -98,12 +98,11 @@ public class ApprovalsActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate( savedInstanceState );
-        session = new UserPrefUtils( getApplicationContext() );
-        setContentView( R.layout.activity_approvals );
+        super.onCreate(savedInstanceState);
+        session = new UserPrefUtils(getApplicationContext());
+        setContentView(R.layout.activity_approvals);
         appHeaderTwo();
         initializeViews();
         appFooter();
@@ -112,112 +111,112 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
     private void appHeaderTwo() {
-        ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
-        imgeBack.setOnClickListener( new View.OnClickListener() {
+        ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
+        imgeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
-        } );
-        TextView btnLink1 = (TextView) findViewById( R.id.btn_link_1_two );
-        TextView btnLink2 = (TextView) findViewById( R.id.btn_link_2_two );
-        btnLink2.setVisibility( View.GONE );
-        btnLink1.setText( "Approvals" );
-        btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
-        btnCalendar.setVisibility( View.GONE );
-        ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
-        btnNotifications.setOnClickListener( new View.OnClickListener() {
+        });
+        TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
+        TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
+        btnLink2.setVisibility(View.GONE);
+        btnLink1.setText("Approvals");
+        btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
+        btnCalendar.setVisibility(View.GONE);
+        ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
+        btnNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText( getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT).show();
             }
-        } );
-        ImageView btnSettings = (ImageView) findViewById( R.id.btn_settingsAppHeaderTwo );
-        btnSettings.setOnClickListener( new View.OnClickListener() {
+        });
+        ImageView btnSettings = (ImageView) findViewById(R.id.btn_settingsAppHeaderTwo);
+        btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String accountEmail = userId.get( UserPrefUtils.EMAIL );
-                Intent i = new Intent( getApplicationContext(), SettingsActivity.class );
-                i.putExtra( "email", accountEmail );
-                startActivity( i );
+                String accountEmail = userId.get(UserPrefUtils.EMAIL);
+                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                i.putExtra("email", accountEmail);
+                startActivity(i);
                 finish();
             }
-        } );
-        ImageView btnMenu = (ImageView) findViewById( R.id.img_menuTopTwo );
-        btnMenu.setOnClickListener( new View.OnClickListener() {
+        });
+        ImageView btnMenu = (ImageView) findViewById(R.id.img_menuTopTwo);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final NavigationView navigationView = (NavigationView) findViewById( R.id.nav_view );
+                final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID );
-                String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get( UserPrefUtils.EMAIL );
-                ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH );
-                System.out.println( "img" + img );
-                Glide.with( getApplicationContext() )
-                        .load( img )
+                String id = userId.get(UserPrefUtils.ID);
+                String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                String email = userId.get(UserPrefUtils.EMAIL);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                String img = userId.get(UserPrefUtils.IMAGEPATH);
+                System.out.println("img" + img);
+                Glide.with(getApplicationContext())
+                        .load(img)
                         .centerCrop()
-                        .placeholder( R.drawable.placeholder )
-                        .error( R.drawable.placeholder )
-                        .into( mImageProfile );
-                mImageProfile.setOnClickListener( new View.OnClickListener() {
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(mImageProfile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent( getApplicationContext(), EditAccountActivity.class );
-                        startActivity( i );
+                        Intent i = new Intent(getApplicationContext(), EditAccountActivity.class);
+                        startActivity(i);
                     }
-                } );
+                });
 
-                TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
-                mTextName.setText( taskOwnerName );
-                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
-                mTextEmail.setText( email );
-                navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
+                TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
+                mTextName.setText(taskOwnerName);
+                TextView mTextEmail = (TextView) findViewById(R.id.tv_emailProfile);
+                mTextEmail.setText(email);
+                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
-                                startActivity( iToday );
+                                Intent iToday = new Intent(getApplicationContext(), TodayTaskActivity.class);
+                                startActivity(iToday);
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
-                                startActivity( iIdea );
+                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
+                                startActivity(iIdea);
                                 break;
                             case R.id.nav_thisweek:
-                                Intent ithisweek = new Intent( getApplicationContext(), ThisWeekActivity.class );
-                                startActivity( ithisweek );
+                                Intent ithisweek = new Intent(getApplicationContext(), ThisWeekActivity.class);
+                                startActivity(ithisweek);
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
-                                startActivity( iTaskfilter );
+                                Intent iTaskfilter = new Intent(getApplicationContext(), TaskAddListActivity.class);
+                                startActivity(iTaskfilter);
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
-                                startActivity( iProjects );
+                                Intent iProjects = new Intent(getApplicationContext(), ProjectFooterActivity.class);
+                                startActivity(iProjects);
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
-                                startActivity( iIndividuals );
+                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
+                                startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
-                                startActivity( iInsights );
+                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                                startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
-                                startActivity( iTimeLine );
+                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
-                                Intent iprofile = new Intent( getApplicationContext(), AccountSettingActivity.class );
-                                startActivity( iprofile );
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
+                                startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
-                                startActivity( ipremium );
+                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
+                                startActivity(ipremium);
                                 break;
                             case R.id.nav_logout:
                                 session.logoutUser();
@@ -226,42 +225,42 @@ public class ApprovalsActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                } );
-                final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_approval );
-                if (drawer.isDrawerOpen( GravityCompat.START )) {
+                });
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_approval);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
-                    drawer.openDrawer( GravityCompat.START );
+                    drawer.openDrawer(GravityCompat.START);
                 }
-                ImageView imgeClose = (ImageView) findViewById( R.id.nav_close );
-                imgeClose.setOnClickListener( new View.OnClickListener() {
+                ImageView imgeClose = (ImageView) findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (drawer.isDrawerOpen( GravityCompat.START )) {
-                            drawer.closeDrawer( GravityCompat.START );
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
                         } else {
-                            drawer.openDrawer( GravityCompat.START );
+                            drawer.openDrawer(GravityCompat.START);
                         }
                     }
-                } );
+                });
             }
-        } );
+        });
 
     }
 
     private void initializeViews() {
 
-        mProgressView = findViewById( R.id.progress_bar );
-        mContentLayout = findViewById( R.id.content_layout );
-        mImageBulbTaskApproval = findViewById( R.id.image_approvalbuldProject );
-        mImageBulbTaskApproval.setOnClickListener( new View.OnClickListener() {
+        mProgressView = findViewById(R.id.progress_bar);
+        mContentLayout = findViewById(R.id.content_layout);
+        mImageBulbTaskApproval = findViewById(R.id.image_approvalbuldProject);
+        mImageBulbTaskApproval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent( getApplicationContext(), ViewIdeasActivity.class );
-                startActivity( i );
+                Intent i = new Intent(getApplicationContext(), ViewIdeasActivity.class);
+                startActivity(i);
             }
-        } );
-        mApprovalQucikSearch = findViewById( R.id.edit_searchApproval );
-        mApprovalQucikSearch.addTextChangedListener( new TextWatcher() {
+        });
+        mApprovalQucikSearch = findViewById(R.id.edit_searchApproval);
+        mApprovalQucikSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -274,27 +273,27 @@ public class ApprovalsActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter( editable.toString() );
+                filter(editable.toString());
 
             }
-        } );
-        mButtonAdavancedSearchApproval = findViewById( R.id.button_searchApproval );
-        mButtonAdavancedSearchApproval.setOnClickListener( new View.OnClickListener() {
+        });
+        mButtonAdavancedSearchApproval = findViewById(R.id.button_searchApproval);
+        mButtonAdavancedSearchApproval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent( getApplicationContext(), AdvancedSearchActivity.class );
-                startActivity( i );
+                Intent i = new Intent(getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);
             }
-        } );
+        });
 
-        mRecyclerViewApproval = (RecyclerView) findViewById( R.id.approval_recyclerView );
-        mLayoutManager = new LinearLayoutManager( getApplicationContext() );
-        mRecyclerViewApproval.setLayoutManager( mLayoutManager );
-        mRecyclerViewApproval.setItemAnimator( new DefaultItemAnimator() );
-        mApprovalAdapter = new ApprovalAdapter( taskListRecordsArrayList );
-        mRecyclerViewApproval.setAdapter( mApprovalAdapter );
+        mRecyclerViewApproval = (RecyclerView) findViewById(R.id.approval_recyclerView);
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mRecyclerViewApproval.setLayoutManager(mLayoutManager);
+        mRecyclerViewApproval.setItemAnimator(new DefaultItemAnimator());
+        mApprovalAdapter = new ApprovalAdapter(taskListRecordsArrayList);
+        mRecyclerViewApproval.setAdapter(mApprovalAdapter);
         mApprovalAdapter.notifyDataSetChanged();
-        view = getLayoutInflater().inflate( R.layout.custom_approval_tasklist, null );
+        view = getLayoutInflater().inflate(R.layout.custom_approval_tasklist, null);
 
         apiCall();
         showProgressDialog();
@@ -303,33 +302,33 @@ public class ApprovalsActivity extends AppCompatActivity {
 
     private void apiCall() {
         HashMap<String, String> userId = session.getUserDetails();
-        String id = userId.get( UserPrefUtils.ID );
-        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
-        call.enqueue( new Callback<TaskListResponse>() {
+        String id = userId.get(UserPrefUtils.ID);
+        String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
+        call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                System.out.println( "res" + response.raw() );
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                System.out.println("res" + response.raw());
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    System.out.println( "url" + response.raw() );
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setProjectFooterList( response.body().getTask_records() );
+                    System.out.println("url" + response.raw());
+                    if (response.body().getSuccess().equals("true")) {
+                        setProjectFooterList(response.body().getTask_records());
                         hideProgressDialog();
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
-                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                 }
             }
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
+                Log.d("CallBack", " Throwable is " + t);
 
             }
-        } );
+        });
 
     }
 
@@ -337,100 +336,98 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>();
         for (TaskListRecords name : taskListRecordsArrayList) {
-            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
-                taskListRecordsFilter.add( name );
+            if (name.getName().toLowerCase().contains(toString.toLowerCase())) {
+                taskListRecordsFilter.add(name);
 
             }
         }
-        mApprovalAdapter.filterList( taskListRecordsFilter );
+        mApprovalAdapter.filterList(taskListRecordsFilter);
     }
 
     private void setProjectFooterList(List<TaskListRecords> taskListRecordsList) {
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
-                TaskListRecords taskListRecords = taskListRecordsList.get( i );
+                TaskListRecords taskListRecords = taskListRecordsList.get(i);
                 TaskListRecords taskListRecords1 = new TaskListRecords();
-                taskListRecords1.setName( taskListRecords.getName() );
-                taskListRecords1.setDue_date( taskListRecords.getDue_date() );
-                taskListRecords1.setPriority( taskListRecords.getPriority() );
-                taskListRecords1.setTask_code( taskListRecords.getTask_code() );
-                taskListRecords1.setProject_name( taskListRecords.getProject_name() );
-                taskListRecords1.setProject_code( taskListRecords.getProject_code() );
-                if (taskListRecords.getStatus().equals( "2" )) {
-                    taskListRecordsArrayList.add( taskListRecords1 );
+                taskListRecords1.setName(taskListRecords.getName());
+                taskListRecords1.setDue_date(taskListRecords.getDue_date());
+                taskListRecords1.setPriority(taskListRecords.getPriority());
+                taskListRecords1.setTask_code(taskListRecords.getTask_code());
+                taskListRecords1.setProject_name(taskListRecords.getProject_name());
+                taskListRecords1.setProject_code(taskListRecords.getProject_code());
+                if (taskListRecords.getStatus().equals("2")) {
+                    taskListRecordsArrayList.add(taskListRecords1);
                 }
 
             }
-            mRecyclerViewApproval.setAdapter( mApprovalAdapter );
-            mRecyclerViewApproval.addOnItemTouchListener( new ApprovalsActivity.RecyclerTouchListener( this, mRecyclerViewApproval, new ApprovalsActivity.ClickListener() {
+            mRecyclerViewApproval.setAdapter(mApprovalAdapter);
+            mRecyclerViewApproval.addOnItemTouchListener(new ApprovalsActivity.RecyclerTouchListener(this, mRecyclerViewApproval, new ApprovalsActivity.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
-                    mTaskApprovalName = (TextView) view.findViewById( R.id.approvalTaskName );
-                    mTaskApprovalDate = (TextView) view.findViewById( R.id.approvalTaskDate );
-                    mTaskApprovalPriority = (TextView) view.findViewById( R.id.tv_approvalTaskPriority );
-                    mTaskCode = (TextView) view.findViewById( R.id.tv_taskCodeApproval );
+                public void onClick(final View view, final int position) {
+                    mTaskApprovalName = (TextView) view.findViewById(R.id.approvalTaskName);
+                    mTaskApprovalDate = (TextView) view.findViewById(R.id.approvalTaskDate);
+                    mTaskApprovalPriority = (TextView) view.findViewById(R.id.tv_approvalTaskPriority);
+                    mTaskCode = (TextView) view.findViewById(R.id.tv_taskCodeApproval);
                     initSwipe();
-                    final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_approvalProjectCode );
+                    final TextView mProjectCode = (TextView) view.findViewById(R.id.tv_approvalProjectCode);
 
-                    ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_approvaluseraddTaskList );
-                    mImageUserAdd.setOnClickListener( new View.OnClickListener() {
+                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_approvaluseraddTaskList);
+                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String task_code = mTaskCode.getText().toString();
                             String projectCode = mProjectCode.getText().toString();
-                            Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
-                            i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "SenIvitaionprojectCode", projectCode );
-                            startActivity( i );
+                            Intent i = new Intent(getApplicationContext(), InvitationActivity.class);
+                            i.putExtra("TaskCode", task_code);
+                            i.putExtra("SenIvitaionprojectCode", projectCode);
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImageComment = (ImageView) view.findViewById( R.id.img_approvalcommentTaskList );
-                    mImageComment.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_approvalcommentTaskList);
+                    mImageComment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
-                            startActivity( i );
+                            Intent i = new Intent(getApplicationContext(), CommentsActivity.class);
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImgeDelete = (ImageView) view.findViewById( R.id.img_approvalTaskDelete );
-                    mImgeDelete.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImgeDelete = (ImageView) view.findViewById(R.id.img_approvalTaskDelete);
+                    mImgeDelete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
-                            String id = userId.get( UserPrefUtils.ID );
-                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String id = userId.get(UserPrefUtils.ID);
+                            String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
                             String task_code = mTaskCode.getText().toString();
-                            Call<TaskDelete> callTaskDelete = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
-                            System.out.println( "deleteFields" + id + task_code + orgn_code );
-                            callTaskDelete.enqueue( new Callback<TaskDelete>() {
+                            Call<TaskDelete> callTaskDelete = ANApplications.getANApi().checkTheDelete(id, task_code, orgn_code);
+                            System.out.println("deleteFields" + id + task_code + orgn_code);
+                            callTaskDelete.enqueue(new Callback<TaskDelete>() {
                                 @Override
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
-                                    System.out.println( "deleteResponse" + response.raw() );
                                     if (response.isSuccessful()) {
-                                        System.out.println( "deleteResponse1" + response.raw() );
-                                        if (response.body().getSuccess().equals( "true" )) {
-                                            System.out.println( "deleteResponse2" + response.raw() );
-                                            Intent i = new Intent( getApplicationContext(), ApprovalsActivity.class );
-                                            startActivity( i );
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        if (response.body().getSuccess().equals("true")) {
+                                            hideProgressDialog();
+                                            mApprovalAdapter.removeItem(position);
+                                            Snackbar.make(mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT).show();
                                         } else {
-                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                            Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                        AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                                     }
 
                                 }
 
                                 @Override
                                 public void onFailure(Call<TaskDelete> call, Throwable t) {
-                                    Log.d( "CallBack", " Throwable is " + t );
+                                    Log.d("CallBack", " Throwable is " + t);
 
                                 }
-                            } );
+                            });
 
                         }
-                    } );
+                    });
 
                 }
 
@@ -439,7 +436,7 @@ public class ApprovalsActivity extends AppCompatActivity {
 
                 }
 
-            } ) );
+            }));
         }
     }
 
@@ -456,26 +453,26 @@ public class ApprovalsActivity extends AppCompatActivity {
 
         public RecyclerTouchListener(ApprovalsActivity context, final RecyclerView mRecylerViewSingleSub, ApprovalsActivity.ClickListener clickListener) {
             this.clicklistener = clickListener;
-            gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
+                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
+                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
                     }
                 }
-            } );
+            });
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder( e.getX(), e.getY() );
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
-                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
             }
 
             return false;
@@ -491,7 +488,7 @@ public class ApprovalsActivity extends AppCompatActivity {
     }
 
 
-    private void initSwipe(){
+    private void initSwipe() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -503,64 +500,63 @@ public class ApprovalsActivity extends AppCompatActivity {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
 
-                if (direction == ItemTouchHelper.LEFT){
+                if (direction == ItemTouchHelper.LEFT) {
                     mApprovalAdapter.removeItem(position);
                     HashMap<String, String> userId = session.getUserDetails();
-                    String id = userId.get( UserPrefUtils.ID );
-                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                    String id = userId.get(UserPrefUtils.ID);
+                    String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
                     task_code = mTaskCode.getText().toString();
-                    Call<TaskComplete> callDelete = ANApplications.getANApi().checkTheTaskApprove( id, task_code, orgn_code );
-                    callDelete.enqueue( new Callback<TaskComplete>() {
+                    Call<TaskComplete> callDelete = ANApplications.getANApi().checkTheTaskApprove(id, task_code, orgn_code);
+                    callDelete.enqueue(new Callback<TaskComplete>() {
                         @Override
                         public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                             if (response.isSuccessful()) {
-                                if (response.body().getSuccess().equals( "true" )) {
-                                    Toast.makeText(getApplicationContext(),"TASK APPROVE",Toast.LENGTH_SHORT ).show();
+                                if (response.body().getSuccess().equals("true")) {
+                                    //Toast.makeText(getApplicationContext(),"TASK APPROVE",Toast.LENGTH_SHORT ).show();
 
                                 } else {
-                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                                 }
                             } else {
-                                AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<TaskComplete> call, Throwable t) {
-                            Log.d( "CallBack", " Throwable is " + t );
+                            Log.d("CallBack", " Throwable is " + t);
 
                         }
-                    } );
+                    });
 
                 } else {
                     removeView();
                     edit_position = position;
                     mApprovalAdapter.removeItem(position);
                     HashMap<String, String> userId = session.getUserDetails();
-                    String id = userId.get( UserPrefUtils.ID );
-                    String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                    String id = userId.get(UserPrefUtils.ID);
+                    String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
                     task_code = mTaskCode.getText().toString();
-                    Call<TaskComplete> callEdit = ANApplications.getANApi().checkTheDisApprove( id, task_code, orgn_code );
-                    callEdit.enqueue( new Callback<TaskComplete>() {
+                    Call<TaskComplete> callEdit = ANApplications.getANApi().checkTheDisApprove(id, task_code, orgn_code);
+                    callEdit.enqueue(new Callback<TaskComplete>() {
                         @Override
                         public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                             if (response.isSuccessful()) {
-                                if (response.body().getSuccess().equals( "true" )) {
-                                    Toast.makeText(getApplicationContext(),"TASK DISAPPROVE",Toast.LENGTH_SHORT ).show();
+                                if (response.body().getSuccess().equals("true")) {
                                 } else {
-                                    Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                                 }
                             } else {
-                                AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<TaskComplete> call, Throwable t) {
-                            Log.d( "CallBack", " Throwable is " + t );
+                            Log.d("CallBack", " Throwable is " + t);
 
                         }
-                    } );
+                    });
 
                 }
             }
@@ -569,26 +565,26 @@ public class ApprovalsActivity extends AppCompatActivity {
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
                 Bitmap icon;
-                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
 
                     View itemView = viewHolder.itemView;
                     float height = (float) itemView.getBottom() - (float) itemView.getTop();
                     float width = height / 3;
 
-                    if(dX > 0){
+                    if (dX > 0) {
                         p.setColor(Color.parseColor("#388E3C"));
-                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
-                        c.drawRect(background,p);
+                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+                        c.drawRect(background, p);
                         icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit_white);
-                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
-                        c.drawBitmap(icon,null,icon_dest,p);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
+                        c.drawBitmap(icon, null, icon_dest, p);
                     } else {
                         p.setColor(Color.parseColor("#D32F2F"));
-                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
-                        c.drawRect(background,p);
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                        c.drawRect(background, p);
                         icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white);
-                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
-                        c.drawBitmap(icon,null,icon_dest,p);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                        c.drawBitmap(icon, null, icon_dest, p);
                     }
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -597,11 +593,13 @@ public class ApprovalsActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerViewApproval);
     }
-    private void removeView(){
-        if(view.getParent()!=null) {
+
+    private void removeView() {
+        if (view.getParent() != null) {
             ((ViewGroup) view.getParent()).removeView(view);
         }
     }
+
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
@@ -621,72 +619,72 @@ public class ApprovalsActivity extends AppCompatActivity {
 
 
     private void appFooter() {
-        View btnMe = findViewById( R.id.btn_me );
-        btnMe.setOnClickListener( new View.OnClickListener() {
+        View btnMe = findViewById(R.id.btn_me);
+        btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityToady();
             }
-        } );
-        View btnProject = findViewById( R.id.btn_projects );
-        btnProject.setOnClickListener( new View.OnClickListener() {
+        });
+        View btnProject = findViewById(R.id.btn_projects);
+        btnProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityProject();
             }
-        } );
-        View btnTask = findViewById( R.id.btn_task );
-        btnTask.setOnClickListener( new View.OnClickListener() {
+        });
+        View btnTask = findViewById(R.id.btn_task);
+        btnTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityTasks();
             }
-        } );
-        View btnIndividuals = findViewById( R.id.btn_individuals );
-        btnIndividuals.setOnClickListener( new View.OnClickListener() {
+        });
+        View btnIndividuals = findViewById(R.id.btn_individuals);
+        btnIndividuals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityIndividuals();
             }
-        } );
-        View btnInsights = findViewById( R.id.btn_insights );
-        btnInsights.setOnClickListener( new View.OnClickListener() {
+        });
+        View btnInsights = findViewById(R.id.btn_insights);
+        btnInsights.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        } );
+        });
 
     }
 
     private void activityToady() {
-        Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityProject() {
-        Intent i = new Intent( getApplicationContext(), ProjectFooterActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityTasks() {
-        Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityIndividuals() {
-        Intent i = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityInsights() {
-        Intent i = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     @Override

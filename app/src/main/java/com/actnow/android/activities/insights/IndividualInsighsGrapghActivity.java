@@ -29,6 +29,7 @@ import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -237,6 +238,8 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
 
         BarData data = new BarData(year, bardataset);
         barChart.setData(data);
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         bardataset.setColors( ColorTemplate.COLORFUL_COLORS);
         barChart.animateY(5000);
     }

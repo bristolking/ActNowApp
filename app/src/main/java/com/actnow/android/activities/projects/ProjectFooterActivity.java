@@ -98,6 +98,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
         mProjectOfflineAdapter = new ProjectOfflineAdapter(projectListResponseRecordsArrayList);
         mRecyclerViewProjectFooter.setAdapter( mProjectOfflineAdapter );
 
+
+
         initializeViews();
         appHeaderTwo();
         appFooter();
@@ -384,6 +386,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     String projectOwnerName = userId.get( UserPrefUtils.NAME );
                                     String s = mRadioButtonProjectName.getText().toString();
                                     Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
+                                    i.putExtra("id",id);
                                     i.putExtra( "projectName", s );
                                     i.putExtra( "id", id );
                                     i.putExtra( "projectOwnerName", projectOwnerName );
@@ -399,10 +402,13 @@ public class ProjectFooterActivity extends AppCompatActivity {
                     mImageComment.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            HashMap<String, String> userId = session.getUserDetails();
+                            String id = userId.get( UserPrefUtils.ID );
                             String s = mRadioButtonProjectName.getText().toString();
                             String project_code = mProjectCode.getText().toString();
                             String projectId = mProjectId.getText().toString();
                             Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                            i.putExtra("id",id);
                             i.putExtra( "projectName", s );
                             i.putExtra( "projectcode", project_code );
                             i.putExtra( "projectid", projectId );

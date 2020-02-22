@@ -31,6 +31,7 @@ import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
+import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
@@ -119,7 +120,7 @@ public class TomorrowFragment extends Fragment {
 
         return view;
     }
-  /*  private void showProgressDialog() {
+    private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -133,7 +134,7 @@ public class TomorrowFragment extends Fragment {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }*/
+    }
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
@@ -203,7 +204,7 @@ public class TomorrowFragment extends Fragment {
             mTomorrowRecylcerView.setAdapter( mTaskListAdapter );
             mTomorrowRecylcerView.addOnItemTouchListener( new TomorrowFragment.RecyclerTouchListener( this, mTomorrowRecylcerView, new TomorrowFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -217,9 +218,7 @@ public class TomorrowFragment extends Fragment {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
-
-                           /* if (checkedId == R.id.radio_buttonAction) {
+                            if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
                                     Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
@@ -240,6 +239,7 @@ public class TomorrowFragment extends Fragment {
                                     textView.setOnClickListener( new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            mTaskListAdapter.removeItem(position);
                                             view1.setVisibility( View.GONE );
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
@@ -255,11 +255,7 @@ public class TomorrowFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            TomorrowFragment tomorrowFragment = new TomorrowFragment();
-                                                            FragmentManager fragmentManager = getFragmentManager();
-                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_tomorrow, tomorrowFragment );
-                                                            fragmentTransaction.commit();
+
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -282,7 +278,7 @@ public class TomorrowFragment extends Fragment {
                                     selectedType = radioButtonTaskName.getText().toString();
 
                                 }
-                            }*/
+                            }
                         }
                     } );
                     mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
@@ -343,7 +339,8 @@ public class TomorrowFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                           /* HashMap<String, String> userId = session.getUserDetails();
+                            showProgressDialog();
+                            HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
                             String task_code = tv_taskcode.getText().toString();
@@ -355,11 +352,8 @@ public class TomorrowFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
                                             System.out.println( "deleteResponse2" + response.raw() );
-                                            TomorrowFragment tomorrowFragment = new TomorrowFragment();
-                                            FragmentManager fragmentManager = getFragmentManager();
-                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_tomorrow, tomorrowFragment );
-                                            fragmentTransaction.commit();
+                                            hideProgressDialog();
+                                            mTaskListAdapter.removeItem(position);
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -375,8 +369,7 @@ public class TomorrowFragment extends Fragment {
                                     Log.d( "CallBack", " Throwable is " + t );
 
                                 }
-                            } );*/
-                            Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
+                            } );
 
 
                         }
@@ -553,7 +546,6 @@ public class TomorrowFragment extends Fragment {
 
                             }
                         }*/
-                        Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
 
                     }
                 } );

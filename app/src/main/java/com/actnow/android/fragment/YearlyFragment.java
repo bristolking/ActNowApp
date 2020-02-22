@@ -213,7 +213,7 @@ public class YearlyFragment extends Fragment {
         mYearlyRepetTask.setAdapter( mTaskListAdapter );
         mYearlyRepetTask.addOnItemTouchListener( new YearlyFragment.RecyclerTouchListener( this, mYearlyRepetTask, new YearlyFragment.ClickListener() {
             @Override
-            public void onClick(final View view, int position) {
+            public void onClick(final View view, final int position) {
                 final View view1 = view.findViewById( R.id.taskList_liner );
                 RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                 final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -234,11 +234,11 @@ public class YearlyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        YearlyFragment yearlyFragment = new YearlyFragment();
+                                     /*   YearlyFragment yearlyFragment = new YearlyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.yearly_fragment, yearlyFragment );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -248,6 +248,7 @@ public class YearlyFragment extends Fragment {
                                 textView.setOnClickListener( new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        mTaskListAdapter.removeItem(position);
                                         view1.setVisibility( View.GONE );
                                         HashMap<String, String> userId = session.getUserDetails();
                                         String id = userId.get( UserPrefUtils.ID );
@@ -264,11 +265,11 @@ public class YearlyFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        YearlyFragment yearlyFragment = new YearlyFragment();
+                                                      /*  YearlyFragment yearlyFragment = new YearlyFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.yearly_fragment, yearlyFragment );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -355,6 +356,7 @@ public class YearlyFragment extends Fragment {
                 mImageDelete.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        showProgressDialog();
                         HashMap<String, String> userId = session.getUserDetails();
                         String id = userId.get( UserPrefUtils.ID );
                         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -365,12 +367,9 @@ public class YearlyFragment extends Fragment {
                             public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body().getSuccess().equals( "true" )) {
-                                        YearlyFragment yearlyFragment = new YearlyFragment();
-                                        FragmentManager fragmentManager = getFragmentManager();
-                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                        fragmentTransaction.replace( R.id.yearly_fragment, yearlyFragment );
-                                        fragmentTransaction.commit();
-                                        Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        mTaskListAdapter.removeItem(position);
+                                        hideProgressDialog();
+                                        Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                     } else {
                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                     }
@@ -445,6 +444,24 @@ public class YearlyFragment extends Fragment {
 
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        }
+    }
+
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 

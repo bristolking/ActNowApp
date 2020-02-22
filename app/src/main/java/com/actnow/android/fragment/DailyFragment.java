@@ -43,6 +43,7 @@ import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
+import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.utils.AndroidUtils;
@@ -76,6 +77,8 @@ public class DailyFragment extends Fragment {
     EditText mTaskQucikSearch;
     Button mButtonAdavancedSearch;
     ImageView mImageBulbTask;
+    private ProgressDialog mProgressDialog;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -151,7 +154,6 @@ public class DailyFragment extends Fragment {
         return view;
     }
 
-    /*private ProgressDialog mProgressDialog;
 
     private void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -169,7 +171,8 @@ public class DailyFragment extends Fragment {
             mProgressDialog.hide();
         }
     }
-*/
+
+
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
@@ -232,7 +235,7 @@ public class DailyFragment extends Fragment {
         mDailyRepetTask.setAdapter( mTaskListAdapter );
         mDailyRepetTask.addOnItemTouchListener( new DailyFragment.RecyclerTouchListener( this, mDailyRepetTask, new DailyFragment.ClickListener() {
             @Override
-            public void onClick(final View view, int position) {
+            public void onClick(final View view, final int position) {
                 final View view1 = view.findViewById( R.id.taskList_liner );
                 RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                 final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -253,11 +256,11 @@ public class DailyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        DailyFragment dailyFragment = new DailyFragment();
+                                       /* DailyFragment dailyFragment = new DailyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.daily_fragment, dailyFragment );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -267,6 +270,7 @@ public class DailyFragment extends Fragment {
                                 textView.setOnClickListener( new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        mTaskListAdapter.removeItem(position);
                                         view1.setVisibility( View.GONE );
                                         HashMap<String, String> userId = session.getUserDetails();
                                         String id = userId.get( UserPrefUtils.ID );
@@ -282,11 +286,11 @@ public class DailyFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        DailyFragment dailyFragment = new DailyFragment();
+                                                       /* DailyFragment dailyFragment = new DailyFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.daily_fragment, dailyFragment );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -366,6 +370,43 @@ public class DailyFragment extends Fragment {
                         Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
                         i.putExtra( "TaskCode", task_code );
                         startActivity( i );
+                    }
+                } );
+                ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+                mImageDelete.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showProgressDialog();
+                        HashMap<String, String> userId = session.getUserDetails();
+                        String id = userId.get( UserPrefUtils.ID );
+                        String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                        String task_code = tv_taskcode.getText().toString();
+                        Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
+                        taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                            @Override
+                            public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
+                                System.out.println( "reponsedelete" + response.raw() );
+                                if (response.isSuccessful()) {
+                                    System.out.println( "deleteResponse1" + response.raw() );
+                                    if (response.body().getSuccess().equals( "true" )) {
+                                        hideProgressDialog();
+                                        mTaskListAdapter.removeItem(position);
+                                        Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                    } else {
+                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                    }
+                                } else {
+                                    AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<TaskDelete> call, Throwable t) {
+                                Log.d( "CallBack", " Throwable is " + t );
+
+                            }
+                        } );
                     }
                 } );
 
@@ -480,11 +521,11 @@ public class DailyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                        DailyFragment dailyFragment = new DailyFragment();
+                                /*        DailyFragment dailyFragment = new DailyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.daily_fragment, dailyFragment );
-                                        fragmentTransaction.commit();
+                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -509,11 +550,11 @@ public class DailyFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                        DailyFragment dailyFragment = new DailyFragment();
+                                                  /*      DailyFragment dailyFragment = new DailyFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.daily_fragment, dailyFragment );
-                                                        fragmentTransaction.commit();
+                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }

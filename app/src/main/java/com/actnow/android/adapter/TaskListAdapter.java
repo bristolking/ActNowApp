@@ -85,5 +85,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         }
     }
+    public void addItem(TaskListRecords taskListRecords) {
+        taskListRecordsList.add(taskListRecords);
+        notifyItemInserted(taskListRecordsList.size());
+    }
+
+    public void removeItem(int position) {
+        taskListRecordsList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, taskListRecordsList.size());
+    }
 
 }

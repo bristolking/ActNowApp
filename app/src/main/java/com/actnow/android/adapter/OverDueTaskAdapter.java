@@ -1,15 +1,16 @@
 package com.actnow.android.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.actnow.android.R;
-import com.actnow.android.sdk.responses.OverDueTaskRecords;
 import com.actnow.android.sdk.responses.TaskListRecords;
 
 import java.util.ArrayList;
@@ -17,10 +18,6 @@ import java.util.List;
 
 public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.ViewHolder> {
     private List<TaskListRecords> taskListRecordsList;
-/* public OverDueTaskAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList, int task_list_cutsom, Context applicationContext) {
-//        this.taskListRecordsList =  taskListRecordsArrayList;
-//    }*/
-//
 
     public OverDueTaskAdapter(ArrayList<TaskListRecords> taskListRecordsArrayList) {
         this.taskListRecordsList = taskListRecordsArrayList;
@@ -64,6 +61,9 @@ public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            RadioGroup groupTask = (RadioGroup)itemView.findViewById( R.id.taskradioGroupTask );
+            final RadioButton radioButtonTaskName = (RadioButton) itemView.findViewById( R.id.radio_buttonAction );
+            radioButtonTaskName.setVisibility(View.GONE);
             mOverDueTaskListTaskName = itemView.findViewById(R.id.tv_taskListName);
             mOverDueDudate = itemView.findViewById(R.id.tv_taskListDate);
             mOverDueTaskProjectName = itemView.findViewById(R.id.tv_projectNameTaskList);
@@ -73,7 +73,8 @@ public class OverDueTaskAdapter extends RecyclerView.Adapter<OverDueTaskAdapter.
             mOverDueTaskStatus = itemView.findViewById(R.id.tv_taskstatus);
             mOverDueProjectCode = itemView.findViewById(R.id.tv_projectCodeTaskList);
             mOverDueRepeat_type = itemView.findViewById(R.id.tv_taskRepeatType);
-
+            ImageView mImageDelete = (ImageView) itemView.findViewById( R.id.img_delete );
+            mImageDelete.setVisibility(View.GONE);
 
         }
 

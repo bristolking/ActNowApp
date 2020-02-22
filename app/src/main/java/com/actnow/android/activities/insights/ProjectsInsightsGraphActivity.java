@@ -37,14 +37,18 @@ import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -240,6 +244,9 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
         NoOfEmp.add(new BarEntry(1040f, 1));
         NoOfEmp.add(new BarEntry(1133f, 2));
         NoOfEmp.add(new BarEntry(1240f, 3));
+       /* YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setDrawGridLines(true);*/
 
 
         BarDataSet bardataset = new BarDataSet(NoOfEmp, "Data Set");
@@ -252,8 +259,12 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
 
         BarData data = new BarData(year, bardataset);
         barChart.setData(data);
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         bardataset.setColors( ColorTemplate.COLORFUL_COLORS);
         barChart.animateY(5000);
+
+        //data.setValueFormatter(new MyValueFormatter());
     }
 
     private void appFooter() {
@@ -322,4 +333,19 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
 
     }
 
+    /*public class MyValueFormatter implements ValueFormatter {
+
+        private DecimalFormat mFormat;
+
+        public MyValueFormatter() {
+            mFormat = new DecimalFormat("###,###,##0"); // use one decimal if needed
+        }
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            // write your logic here
+
+            return mFormat.format(value) + ""; // e.g. append a dollar-sign
+        }
+    }*/
 }
