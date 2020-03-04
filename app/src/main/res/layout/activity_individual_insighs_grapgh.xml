@@ -36,7 +36,7 @@
             android:orientation="vertical">
 
             <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barchart"
+                android:id="@+id/individualinsightsbarchart"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:padding="10dp" />
@@ -107,7 +107,7 @@
                         <ImageView
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:background="@color/colorYellow"
+                            android:background="@color/buleMilk"
                             app:srcCompat="@drawable/ic_empty" />
 
                         <TextView

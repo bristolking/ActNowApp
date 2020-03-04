@@ -96,11 +96,12 @@ public class MonthlyFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mMonthlyRepetTask.setAdapter( mTaskOfflineAdapter );
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+        /*if (AndroidUtils.isNetworkAvailable(getActivity() )) {
             attemptTaskList();
         } else {
             monthlyTypeNoConnection();
-        }
+        }*/
         fabMonthlyrepetTask = view.findViewById( R.id.fab_monthlytask );
         fabMonthlyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override

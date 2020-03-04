@@ -96,12 +96,12 @@ public class DailyFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mDailyRepetTask.setAdapter( mTaskOfflineAdapter );
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+       /* if (AndroidUtils.isNetworkAvailable( getActivity() )) {
             attemptTaskList();
         } else {
             dailyTypeNoConnection();
-        }
+        }*/
         fabDailyrepetTask = view.findViewById( R.id.fab_dailyrepettask );
         fabDailyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override

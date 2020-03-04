@@ -213,7 +213,7 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
     private void initializeViews() {
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
-        barChart = (BarChart) findViewById(R.id.barchart);
+        barChart = (BarChart) findViewById(R.id.individualinsightsbarchart);
 
         barChart.setDrawBarShadow( false );
         barChart.setDrawValueAboveBar( true );
@@ -228,20 +228,22 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
         NoOfEmp.add(new BarEntry(1240f, 3));
 
 
-        BarDataSet bardataset = new BarDataSet(NoOfEmp, "Data Set");
-        bardataset.setColors(ColorTemplate.COLORFUL_COLORS );
+
         ArrayList<String> year = new ArrayList<String>();
         year.add("COMPLETED");
         year.add("APPROVAL");
         year.add("ONGOING");
         year.add("PENDING");
-
+        BarDataSet bardataset = new BarDataSet(NoOfEmp, "Data Set");
+        bardataset.setColors(ColorTemplate.COLORFUL_COLORS );
         BarData data = new BarData(year, bardataset);
         barChart.setData(data);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         bardataset.setColors( ColorTemplate.COLORFUL_COLORS);
         barChart.animateY(5000);
+        ArrayList<BarDataSet> dataSets = new ArrayList<>();  // combined all dataset into an arraylist
+        dataSets.add(bardataset);
     }
 
     private void appFooter() {

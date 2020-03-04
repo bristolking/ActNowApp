@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
@@ -32,6 +33,7 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.sdk.responses.TaskWeeklyInsightsData;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
@@ -45,8 +47,20 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 
@@ -56,6 +70,13 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
     String[] arrayItems = { "Weekly","Monthly","Yearly","Daily",};
     LineChart mlineChartWeekely;
 
+    TextView mWeekly_no_of_tasks,mWeekly_no_of_tasks_cricle;
+    TextView mWeekly_no_of_ctasks;
+    TextView mMonthlyDayTask;
+    TextView mCompltedMonthlyTask;
+    ArrayList<Entry> x;
+    ArrayList<String> y;
+    ArrayList<TaskWeeklyInsightsData> taskWeeklyInsightsDataArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +85,7 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
         appHeaderTwo();
         initializeViews();
         appFooter();
-        setData();
+
     }
     private void appHeaderTwo() {
         ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
@@ -204,6 +225,13 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mlineChartWeekely =(LineChart) findViewById(R.id.line_chartGraphWeeekely);
+        x = new ArrayList<Entry>();
+        y = new ArrayList<String>();
+
+        mWeekly_no_of_tasks  = (TextView) findViewById(R.id.tv_numberTotalTaks);
+        mWeekly_no_of_ctasks = (TextView) findViewById(R.id.tv_numberOfComleteTaks);
+        mWeekly_no_of_tasks_cricle =(TextView)findViewById(R.id.tv_totalTaksInCricle);
+
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_chart);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, arrayItems);
         //arrayAdapter.setDropDownViewResource(R.remider_footer_layout.spinner_text_color);
@@ -242,57 +270,90 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
             }
         });
 
+        apiCallInsightWeekly();
+    }
+
+    private void apiCallInsightWeekly() {
+        HashMap<String,String > userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        Call<ResponseBody> responseBodyCall = ANApplications.getANApi().taskInsightsWeekly(id);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")){
+                                String no_of_tasks =  jsonObject.getString("no_of_tasks");
+                                String  no_of_ctasks = jsonObject.getString("no_of_ctasks");
+                                System.out.println("no_of_tasks" + no_of_tasks);
+                                System.out.println("no_of_ctasks" + no_of_ctasks);
+                                mWeekly_no_of_tasks.setText(no_of_tasks);
+                                mWeekly_no_of_ctasks.setText(no_of_ctasks);
+                                mWeekly_no_of_tasks_cricle.setText(no_of_tasks);
+
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                System.out.println( "SeverReponse3" + jsonArray);
+                                setWeeklyInsightsData(jsonArray);
+
+                            }
+
+                            }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
 
     }
-    private ArrayList<String> setXAxisValues(){
-        ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("MON");
-        xVals.add("TUE");
-        xVals.add("WED");
-        xVals.add("THU");
-        xVals.add("FRI");
-        xVals.add("SAT");
-        xVals.add("SUN");
-        return xVals;
+
+    private void setWeeklyInsightsData(JSONArray jsonArray) {
+        for (int i=0;jsonArray.length() >i;i++){
+            TaskWeeklyInsightsData taskWeeklyInsightsData = new TaskWeeklyInsightsData();
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String day = jsonObject.getString("day");
+                String[] date = day.split("-");
+                String day_name = jsonObject.getString("day_name");
+                String ctasks = jsonObject.getString("ctasks");
+                x.add(new Entry(Integer.parseInt(date[2]),i));
+                y.add(day_name);
+                taskWeeklyInsightsData.setDay(day);
+                taskWeeklyInsightsData.setDay_name(day_name);
+                taskWeeklyInsightsData.setCtasks(ctasks);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            LineDataSet set1 = new LineDataSet(x, "NAV Data Value");
+            set1.setFillAlpha(110);
+            set1.setColor(Color.BLACK);
+            set1.setCircleColor(Color.BLACK);
+            set1.setLineWidth(1f);
+            set1.setCircleRadius(3f);
+            set1.setDrawCircleHole(false);
+            set1.setValueTextSize(9f);
+            set1.setDrawFilled(true);
+            LineData data = new LineData(y, set1);
+            XAxis xAxis = mlineChartWeekely.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            mlineChartWeekely.setData(data);
+            mlineChartWeekely.invalidate();
+            taskWeeklyInsightsDataArrayList.add(taskWeeklyInsightsData);
+
+        }
     }
-    private ArrayList<Entry> setYAxisValues(){
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(60, 0));
-        yVals.add(new Entry(48, 1));
-        yVals.add(new Entry(70.5f, 2));
-        yVals.add(new Entry(100, 3));
-        yVals.add(new Entry(180.9f, 4));
-        yVals.add(new Entry(70.5f, 5));
-        yVals.add(new Entry(100, 6));
-        return yVals;
-    }
-    private void setData() {
-        ArrayList<String> xVals = setXAxisValues();
-        ArrayList<Entry> yVals = setYAxisValues();
 
-        LineDataSet set1;
-
-        // create a dataset and give it a type
-        set1 = new LineDataSet(yVals, "DataSet 1");
-        set1.setFillAlpha(110);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setLineWidth(1f);
-        set1.setCircleRadius(3f);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setDrawFilled(true);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(set1); // add the datasets
-
-        // create a data object with the datasets
-        LineData data = new LineData(xVals, dataSets);
-        XAxis xAxis = mlineChartWeekely.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // set data
-        mlineChartWeekely.setData(data);
-
-    }
 
 
     @Override

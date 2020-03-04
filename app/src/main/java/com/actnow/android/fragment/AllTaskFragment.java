@@ -96,12 +96,12 @@ public class AllTaskFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mAllTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
+        attemptTaskList();
+      /*  if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
 
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
-            attemptTaskList();
         } else {
             allFrgmentNoConnection();
-        }
+        }*/
 
         fabAllTask = view.findViewById( R.id.fab_alltask );
         fabAllTask.setOnClickListener( new View.OnClickListener() {

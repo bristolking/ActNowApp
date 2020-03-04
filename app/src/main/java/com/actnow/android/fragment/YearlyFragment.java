@@ -94,12 +94,12 @@ public class YearlyFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mYearlyRepetTask.setAdapter( mTaskOfflineAdapter );
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+       /* if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
             yearlyTypeNoConnection();
-        }
+        }*/
         fabYearlyrepetTask = view.findViewById( R.id.fab_yearlytask );
         fabYearlyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override

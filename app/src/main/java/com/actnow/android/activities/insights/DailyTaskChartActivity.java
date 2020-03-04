@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
@@ -34,6 +35,7 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.sdk.responses.TaskDailyInsightsData;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
@@ -47,8 +49,18 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 
@@ -58,11 +70,16 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
     String[] arrayItems = {"Daily", "Weekly", "Monthly", "Yearly"};
     LineChart mlineChart;
 
-    TextView mHoursDaily,mMinutesDaily,mSecondsDaily;
-    TextView mHoursCount,mMintuesCount,mSecondsCount;
+
+    TextView mDaily_no_of_tasks,mDaily_no_of_tasks_cricle;
+    TextView mDaily_no_of_ctasks;
+    TextView mMonthlyDayTask;
+    TextView mCompltedMonthlyTask;
+    ArrayList<Entry> x;
+    ArrayList<String> y;
+    ArrayList<TaskDailyInsightsData> taskDailyInsightsDataArrayList = new ArrayList<>();
 
     final Context context = this;
-    Typeface typeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +89,7 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
         appHeaderTwo();
         initializeViews();
         appFooter();
-        setData();
+
     }
 
     private void appHeaderTwo() {
@@ -212,7 +229,12 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mlineChart = (LineChart) findViewById(R.id.line_chartGraph);
-        setData();
+        x = new ArrayList<Entry>();
+        y = new ArrayList<String>();
+
+        mDaily_no_of_tasks  = (TextView) findViewById(R.id.tv_numberTotalTaks);
+        mDaily_no_of_ctasks = (TextView) findViewById(R.id.tv_numberOfComleteTaks);
+        mDaily_no_of_tasks_cricle =(TextView)findViewById(R.id.tv_totalTaksInCricle);
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_chart);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, arrayItems);
         //arrayAdapter.setDropDownViewResource(R.remider_footer_layout.spinner_text_color);
@@ -250,55 +272,87 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
             }
         });
 
-
+        apiCallDailyInsights();
     }
 
-    private ArrayList<String> setXAxisValues() {
-        ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("2020-02-20");
-        xVals.add("2020-02-20");
-        xVals.add("2020-02-20");
-        xVals.add("2020-02-20");
-        xVals.add("2020-02-20");
-        return xVals;
+    private void apiCallDailyInsights() {
+        HashMap<String,String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+
+        Call<ResponseBody> responseBodyCall = ANApplications.getANApi().taskInsightsDaily(id);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")){
+                                String no_of_tasks =  jsonObject.getString("no_of_tasks");
+                                String  no_of_ctasks = jsonObject.getString("no_of_ctasks");
+                                System.out.println("no_of_tasks" + no_of_tasks);
+                                System.out.println("no_of_ctasks" + no_of_ctasks);
+                                mDaily_no_of_tasks.setText(no_of_tasks);
+                                mDaily_no_of_ctasks.setText(no_of_ctasks);
+                                mDaily_no_of_tasks_cricle.setText(no_of_tasks);
+
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                System.out.println( "SeverReponse3" + jsonArray);
+                                setDailyInsightsData(jsonArray);
+
+                            }
+
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
-    private ArrayList<Entry> setYAxisValues() {
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(0, 0));
-        yVals.add(new Entry(5, 1));
-        yVals.add(new Entry(10, 2));
-        yVals.add(new Entry(15, 3));
-        yVals.add(new Entry(24, 4));
-        return yVals;
-    }
+    private void setDailyInsightsData(JSONArray jsonArray) {
+        for (int i= 0;jsonArray.length() > i; i++){
+            TaskDailyInsightsData taskDailyInsightsData = new TaskDailyInsightsData();
+            try{
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String time = jsonObject.getString("time");
+                String[] date = time.split("-");
+                String ctasks = jsonObject.getString("ctasks");
+                x.add(new Entry(Integer.parseInt(date[2]),i));
+                y.add(ctasks);
+                taskDailyInsightsData.setTime(time);
+                taskDailyInsightsData.setCtasks(ctasks);
 
-    private void setData() {
-        ArrayList<String> xVals1 = setXAxisValues();
-        ArrayList<Entry> yVals1 = setYAxisValues();
-
-        LineDataSet set1;
-
-        // create a dataset and give it a type
-        set1 = new LineDataSet(yVals1, "DataSet 1");
-        set1.setFillAlpha(110);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setLineWidth(1f);
-        set1.setCircleRadius(3f);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setDrawFilled(true);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(set1); // add the datasets
-
-        // create a data object with the datasets
-        LineData data = new LineData(xVals1, dataSets);
-        XAxis xAxis = mlineChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // set data
-        mlineChart.setData(data);
-
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            LineDataSet set1 = new LineDataSet(x, "NAV Data Value");
+            set1.setFillAlpha(110);
+            set1.setColor(Color.BLACK);
+            set1.setCircleColor(Color.BLACK);
+            set1.setLineWidth(1f);
+            set1.setCircleRadius(3f);
+            set1.setDrawCircleHole(false);
+            set1.setValueTextSize(9f);
+            set1.setDrawFilled(true);
+            LineData data = new LineData(y, set1);
+            XAxis xAxis = mlineChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            mlineChart.setData(data);
+            mlineChart.invalidate();
+            taskDailyInsightsDataArrayList.add(taskDailyInsightsData);
+        }
     }
 
     @Override
@@ -361,6 +415,8 @@ public class DailyTaskChartActivity extends AppCompatActivity implements OnChart
                 + ", ymax: " + mlineChart.getYChartMax());
 
     }
+
+
 
     @Override
     public void onNothingSelected() {

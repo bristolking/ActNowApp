@@ -110,12 +110,12 @@ public class OverdueFragment extends Fragment {
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
 
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+       /* if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
            overDueNoConnection();
-        }
+        }*/
         fabTask = view.findViewById( R.id.fab_task );
         fabTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -417,7 +417,7 @@ public class OverdueFragment extends Fragment {
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
                                             fragmentTransaction.commit();*/
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }

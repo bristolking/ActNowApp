@@ -40,7 +40,6 @@ public class ProjectInsightsAdapter extends RecyclerView.Adapter<ProjectInsights
         viewHolder.mProjectInsightscompleted.setText(projectsInsights1.getCompleted());
         viewHolder.mProjectsInsightsOngoing.setText(projectsInsights1.getOngoing());
         viewHolder.mProjectsInsightsPeniding.setText(projectsInsights1.getPending());
-        //viewHolder.mProjectInsightsDueDate.setText(projectsInsights1.getDue_date());
         viewHolder.mProjectInsightsColor.setText(projectsInsights1.getColor());
 
     }
@@ -61,8 +60,6 @@ public class ProjectInsightsAdapter extends RecyclerView.Adapter<ProjectInsights
             mProjectsInsightsPeniding = itemView.findViewById(R.id.tv_projectInsightsPendingTasks);
             mProjectsInsightsOngoing = itemView.findViewById(R.id.tv_projectInsightsOngoingTasks);
             mProjectInsightscompleted = itemView.findViewById(R.id.tv_projectInsightsCompleteTasks);
-            //mProjectInsightsDueDate =itemView.findViewById(R.id.tv_project_insgihts_duedate);
-
         }
     }
 }

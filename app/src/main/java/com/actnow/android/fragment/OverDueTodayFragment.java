@@ -106,13 +106,14 @@ public class OverDueTodayFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mtodayOverDueRecylcerView.setAdapter( mTaskOfflineAdapter );
+        attemptTaskList();
 
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+       /* if (AndroidUtils.isNetworkAvailable( getActivity() )) {
             attemptTaskList();
 
         } else {
             overDueTodayFragmentNoConnection();
-        }
+        }*/
 
         return view;
     }

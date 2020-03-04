@@ -2,9 +2,7 @@ package com.actnow.android.sdk.api;
 
 import com.actnow.android.sdk.responses.AdavancedSearch;
 import com.actnow.android.sdk.responses.CheckOtpResponse;
-import com.actnow.android.sdk.responses.CommentAdd;
 import com.actnow.android.sdk.responses.IndividualInsightReponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.PriortyTaskListResponse;
 import com.actnow.android.sdk.responses.ProjectAddResponse;
 import com.actnow.android.sdk.responses.ProjectEditResponse;
@@ -22,12 +20,9 @@ import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskInsightYearly;
 import com.actnow.android.sdk.responses.TaskListResponse;
-import com.actnow.android.sdk.responses.TimeLineList;
 import com.actnow.android.sdk.responses.TimeLineTaskList;
 import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
-
-import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -234,12 +229,18 @@ public interface ANApi {
     /*INSIGHTS API CALL*/
 
     @GET("app/proinsights/{id}")
-    Call<ProjectInsightsReponse> projectInsightsReponse(@Path("id")String id);
+    Call<ResponseBody> projectInsightsReponse(@Path("id")String id);
     @GET("app/tinsights/{id}")
     Call<IndividualInsightReponse> individualInsights(@Path("id")String id);
 
     @GET("app/yearlyinsights/{id}")
-    Call<TaskInsightYearly> taskInsightsYearly(@Path("id")String id);
+    Call<ResponseBody> taskInsightsYearly(@Path("id") String id);
+    @GET("app/monthlyinsights/{id}")
+    Call<ResponseBody> taskInsightsMonthly(@Path("id") String id);
+    @GET("app/weeklyinsights/{id}")
+    Call<ResponseBody> taskInsightsWeekly(@Path("id") String id);
+    @GET("app/dailyinsights/{id}")
+    Call<ResponseBody> taskInsightsDaily(@Path("id") String id);
 
 
 

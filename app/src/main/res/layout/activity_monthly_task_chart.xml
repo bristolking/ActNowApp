@@ -51,8 +51,23 @@
                     android:id="@+id/line_chartGraphMonthly"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"/>
-
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/monthlyData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="40dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/monthlyComlData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <include layout="@layout/app_header_two" />

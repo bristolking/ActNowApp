@@ -41,11 +41,19 @@ import com.actnow.android.sdk.responses.ProjectsInsights;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,6 +70,9 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     TextView mTextProjectCount, mProjectTotalTask;
     private ProgressDialog mProgressDialog;
     TextView tv_numProjectInsightsValue;
+
+    ArrayList<Entry> x;
+    ArrayList<String> y;
 
     ArrayList<ProjectsInsights> projectsInsightsArrayList = new ArrayList<ProjectsInsights>();
 
@@ -159,7 +170,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                                 startActivity(iTaskfilter);
                                 break;
                             case R.id.nav_project:
-                                Intent iprojects = new Intent(getApplicationContext(),ProjectFooterActivity.class);
+                                Intent iprojects = new Intent(getApplicationContext(), ProjectFooterActivity.class);
                                 break;
                             case R.id.nav_individuals:
                                 Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
@@ -210,9 +221,11 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        x = new ArrayList<Entry>();
+        y = new ArrayList<String>();
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
-        tv_numProjectInsightsValue = (TextView)findViewById(R.id.tv_nuberProjectIisightsValue);
+        tv_numProjectInsightsValue = (TextView) findViewById(R.id.tv_nuberProjectIisightsValue);
 
 
 /*
@@ -229,61 +242,100 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         mRecyclerViewProjectInsights.setAdapter(mProjectInsightsAdapter);
 
         apiCallProjectInsights();
-        showProgressDialog();
+        //showProgressDialog();
 
     }
 
     private void apiCallProjectInsights() {
+        showProgressDialog();
         HashMap<String, String> user = session.getUserDetails();
         String id = user.get(UserPrefUtils.ID);
         String orngcode = user.get(UserPrefUtils.ORGANIZATIONNAME);
-        Call<ProjectInsightsReponse> callprojects = ANApplications.getANApi().projectInsightsReponse(id);
-        callprojects.enqueue(new Callback<ProjectInsightsReponse>() {
+        Call<ResponseBody> responseBodyCall = ANApplications.getANApi().projectInsightsReponse(id);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ProjectInsightsReponse> call, Response<ProjectInsightsReponse> response) {
-                System.out.println("severReponse" + response.raw());
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println("SeverReponse" + response.raw());
                 if (response.isSuccessful()) {
-                    System.out.println("severReponse1" + response.raw());
-                    if (response.body().getSuccess().equals("true")) {
-                        System.out.println("severReponse3" +  response.body().getNo_of_records());
-                        System.out.println("severReponse2" + response.body().getProjects());
-                        hideProgressDialog();
-                        setProjectInsight(response.body().getProjects());
-
-
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                    System.out.println("SeverReponse1" + response.raw());
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")) {
+                                System.out.println("SeverReponse2" + response.body().toString());
+                                JSONArray jsonArray = jsonObject.getJSONArray("projects");
+                                setProjectInsightsList(jsonArray);
+                                hideProgressDialog();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
                 }
-
             }
 
             @Override
-            public void onFailure(Call<ProjectInsightsReponse> call, Throwable t) {
-                Log.d("CallBack", " Throwable is " + t);
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
             }
         });
 
     }
+    private void setProjectInsightsList(JSONArray jsonArray) {
+        for (int i = 0; jsonArray.length() > i; i++) {
+            ProjectsInsights projectsInsights = new ProjectsInsights();
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String project_id = jsonObject.getString("project_id");
+                String name = jsonObject.getString("name");
+                String project_code = jsonObject.getString("project_code");
+                String color = jsonObject.getString("color");
+                String priority = jsonObject.getString("priority");
+                String due_date = jsonObject.getString("due_date");
+                String project_members = jsonObject.getString("project_members");
+                String created_by = jsonObject.getString("created_by");
+                String created_date = jsonObject.getString("created_date");
+                String updated_by = jsonObject.getString("updated_by");
+                String updated_date = jsonObject.getString("updated_date");
 
-    private void setProjectInsight(List<ProjectsInsights> projects) {
-        if (projects.size() > 0) {
-            for (int i = 0; projects.size() > i; i++) {
-                ProjectsInsights projectsInsights = projects.get(i);
-                ProjectsInsights projectsInsights1 = new ProjectsInsights();
-                projectsInsights1.setName(projectsInsights.getName());
-                projectsInsights1.setApproval(projectsInsights.getApproval());
-                projectsInsights1.setCompleted(projectsInsights.getCompleted());
-                projectsInsights1.setPending(projectsInsights.getPending());
-                projectsInsights1.setOngoing(projectsInsights.getOngoing());
-                projectsInsights1.setColor(projectsInsights.getColor());
-                projectsInsights1.setDue_date(projectsInsights.getDue_date());
-                projectsInsightsArrayList.add(projectsInsights1);
+                String orgn_code = jsonObject.getString("orgn_code");
+                String parent_project_code = jsonObject.getString("parent_project_code");
+                String completed = jsonObject.getString("completed");
+                String approval = jsonObject.getString("approval");
+                String ongoing = jsonObject.getString("ongoing");
+                String pending = jsonObject.getString("pending");
+               // String[] pendingspilt = completed.split(" ");
 
+                projectsInsights.setProject_id(project_id);
+                projectsInsights.setName(name);
+                projectsInsights.setProject_code(project_code);
+                projectsInsights.setColor(color);
+                projectsInsights.setPriority(priority);
+                projectsInsights.setDue_date(due_date);
+                projectsInsights.setProject_members(project_members);
+                projectsInsights.setCreated_by(created_by);
+                projectsInsights.setCreated_date(created_date);
+                projectsInsights.setUpdated_by(updated_by);
+                projectsInsights.setUpdated_date(updated_date);
+                projectsInsights.setOrgn_code(orgn_code);
+                projectsInsights.setParent_project_code(parent_project_code);
+                projectsInsights.setCompleted(completed);
+                projectsInsights.setApproval(approval);
+                projectsInsights.setOngoing(ongoing);
+                projectsInsights.setPending(pending);
+
+              /*  x.add(new BarEntry(Integer.parseInt(completed),i));
+                x.add(new BarEntry(Integer.parseInt(approval),i));
+                x.add(new BarEntry(Integer.parseInt(ongoing),i));
+                x.add(new BarEntry(Integer.parseInt(pending),i));*/
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            projectsInsightsArrayList.add(projectsInsights);
             mRecyclerViewProjectInsights.setAdapter(mProjectInsightsAdapter);
             mRecyclerViewProjectInsights.addOnItemTouchListener(new ProjectInsightsActivity.RecyclerTouchListener(this, mRecyclerViewProjectInsights, new ClickListener() {
                 @Override
@@ -305,13 +357,13 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                             String ongoingInsights = mProjectsInsightsOngoing.getText().toString();
                             String compltedInsights = mProjectInsightscompleted.getText().toString();
 
-                            Intent  i= new Intent(getApplicationContext(),ProjectsInsightsGraphActivity.class);
-                            i.putExtra("nameInsights",nameInsights);
-                            i.putExtra("colorInsights",colorInsights);
-                            i.putExtra("approvalInsights",approvalInsights);
-                            i.putExtra("pendingInsights",pendingInsights);
-                            i.putExtra("ongoingInsights",ongoingInsights);
-                            i.putExtra("compltedInsights",compltedInsights);
+                            Intent i = new Intent(getApplicationContext(), ProjectsInsightsGraphActivity.class);
+                            i.putExtra("nameInsights", nameInsights);
+                            i.putExtra("colorInsights", colorInsights);
+                            i.putExtra("approvalInsights", approvalInsights);
+                            i.putExtra("pendingInsights", pendingInsights);
+                            i.putExtra("ongoingInsights", ongoingInsights);
+                            i.putExtra("compltedInsights", compltedInsights);
                             startActivity(i);
                         }
                     });
@@ -332,12 +384,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         void onLongClick(View view, int position);
     }
 
-    /**
-     * RecyclerView: Implementing single item click and long press (Part-II)
-     * <p>
-     * - creating an innerclass implementing RevyvlerView.OnItemTouchListener
-     * - Pass clickListener interface as parameter
-     */
+
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private ClickListener clicklistener;
@@ -380,6 +427,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
 
     private void showProgressDialog() {
         if (mProgressDialog == null) {

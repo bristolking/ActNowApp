@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
@@ -32,6 +33,7 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.sdk.responses.MontnlyInsighsRepnseData;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
@@ -40,13 +42,22 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 
@@ -56,6 +67,16 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
     String[] arrayItems = {"Monthly", "Yearly", "Daily", "Weekly",};
     LineChart mlineChartMonthly;
 
+    TextView mMonthly_no_of_tasks, mMonthly_no_of_tasks_cricle;
+    TextView mMonthly_no_of_ctasks;
+    TextView mMonthlyDayTask;
+    TextView mCompltedMonthlyTask;
+
+    ArrayList<Entry> y;
+    ArrayList<String> x;
+
+    ArrayList<MontnlyInsighsRepnseData> montnlyInsighsRepnseDataArrayList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +85,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
         appHeaderTwo();
         initializeViews();
         appFooter();
-        setData();
+
     }
 
     private void appHeaderTwo() {
@@ -110,10 +131,10 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
                 String taskOwnerName = userId.get(UserPrefUtils.NAME);
-                String email = userId.get( UserPrefUtils.EMAIL);
+                String email = userId.get(UserPrefUtils.EMAIL);
                 ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
-                String img = userId.get( UserPrefUtils.IMAGEPATH);
-                System.out.println( "img"+ img );
+                String img = userId.get(UserPrefUtils.IMAGEPATH);
+                System.out.println("img" + img);
                 Glide.with(getApplicationContext())
                         .load(img)
                         .centerCrop()
@@ -123,19 +144,19 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
                 mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(getApplicationContext(),EditAccountActivity.class);
+                        Intent i = new Intent(getApplicationContext(), EditAccountActivity.class);
                         startActivity(i);
                     }
                 });
-                TextView mTextName =(TextView)findViewById(R.id.tv_nameProfile);
+                TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
                 mTextName.setText(taskOwnerName);
-                TextView mTextEmail =(TextView)findViewById(R.id.tv_emailProfile);
-                mTextEmail.setText( email );
+                TextView mTextEmail = (TextView) findViewById(R.id.tv_emailProfile);
+                mTextEmail.setText(email);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent(getApplicationContext(),TodayTaskActivity.class);
+                                Intent iToday = new Intent(getApplicationContext(), TodayTaskActivity.class);
                                 startActivity(iToday);
                                 break;
                             case R.id.nav_idea:
@@ -147,22 +168,22 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
                                 startActivity(ithisweek);
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent(getApplicationContext(),TaskAddListActivity.class);
+                                Intent iTaskfilter = new Intent(getApplicationContext(), TaskAddListActivity.class);
                                 startActivity(iTaskfilter);
                                 break;
                             case R.id.nav_project:
-                                Intent iProject = new Intent(getApplicationContext(),ProjectFooterActivity.class);
+                                Intent iProject = new Intent(getApplicationContext(), ProjectFooterActivity.class);
                                 startActivity(iProject);
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent(getApplicationContext(),ViewIndividualsActivity.class);
+                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
                                 Toast.makeText(getApplicationContext(), "Selected Insights", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent(getApplicationContext(),TimeLineActivity.class);
+                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
                                 startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
@@ -186,7 +207,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
                 } else {
                     drawer.openDrawer(GravityCompat.START);
                 }
-                ImageView imgeClose =(ImageView)findViewById(R.id.nav_close);
+                ImageView imgeClose = (ImageView) findViewById(R.id.nav_close);
                 imgeClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -202,9 +223,20 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
     }
 
     private void initializeViews() {
+
+        y = new ArrayList<Entry>();
+        x = new ArrayList<String>();
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mlineChartMonthly = (LineChart) findViewById(R.id.line_chartGraphMonthly);
+
+        mMonthly_no_of_tasks = (TextView) findViewById(R.id.tv_numberTotalTaks);
+        mMonthly_no_of_ctasks = (TextView) findViewById(R.id.tv_numberOfComleteTaks);
+        mMonthly_no_of_tasks_cricle = (TextView) findViewById(R.id.tv_totalTaksInCricle);
+
+        mMonthlyDayTask = (TextView) findViewById(R.id.monthlyData);
+        mCompltedMonthlyTask = (TextView) findViewById(R.id.monthlyComlData);
+
 
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_chart);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, arrayItems);
@@ -242,88 +274,90 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        apiCallMonthlyInsights();
 
     }
 
-    private ArrayList<String> setXAxisValues() {
-        ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("01");
-        xVals.add("02");
-        xVals.add("03");
-        xVals.add("04");
-        xVals.add("05");
-        xVals.add("06");
-        xVals.add("07");
-        xVals.add("08");
-        xVals.add("09");
-        xVals.add("10");
-        xVals.add("11");
-        xVals.add("12");
-        xVals.add("13");
-        xVals.add("14");
-        xVals.add("15");
-        xVals.add("16");
-        xVals.add("17");
-        xVals.add("18");
-        xVals.add("19");
-        xVals.add("20");
-        xVals.add("21");
-        xVals.add("22");
-        xVals.add("23");
-        xVals.add("24");
-        xVals.add("25");
-        xVals.add("26");
-        xVals.add("27");
-        xVals.add("28");
-        xVals.add("29");
-        xVals.add("30");
-        xVals.add("31");
-        return xVals;
-    }
+    private void apiCallMonthlyInsights() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        Call<ResponseBody> insightMonthlyDataCall = ANApplications.getANApi().taskInsightsMonthly(id);
+        insightMonthlyDataCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println("SeverReponse" + response.raw());
+                if (response.isSuccessful()) {
+                    System.out.println("SeverReponse1" + response.raw());
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")) {
+                                System.out.println("SeverReponse2" + response.body().toString());
+                                String no_of_tasks = jsonObject.getString("no_of_tasks");
+                                String no_of_ctasks = jsonObject.getString("no_of_ctasks");
+                                System.out.println("no_of_tasks" + no_of_tasks);
+                                System.out.println("no_of_ctasks" + no_of_ctasks);
+                                mMonthly_no_of_tasks.setText(no_of_tasks);
+                                mMonthly_no_of_ctasks.setText(no_of_ctasks);
+                                mMonthly_no_of_tasks_cricle.setText(no_of_tasks);
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                setLineData(jsonArray);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-    private ArrayList<Entry> setYAxisValues() {
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(60, 0));
-        yVals.add(new Entry(48, 1));
-        yVals.add(new Entry(70.5f, 2));
-        yVals.add(new Entry(100, 3));
-        yVals.add(new Entry(180.9f, 4));
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-        yVals.add(new Entry(60, 5));
-        yVals.add(new Entry(48, 6));
-        yVals.add(new Entry(70.5f, 7));
-        yVals.add(new Entry(100, 8));
-        yVals.add(new Entry(180.9f, 9));
-        return yVals;
-    }
+            }
+        });
 
-    private void setData() {
-        ArrayList<String> xVals = setXAxisValues();
-        ArrayList<Entry> yVals = setYAxisValues();
-
-        LineDataSet set1;
-
-        // create a dataset and give it a type
-        set1 = new LineDataSet(yVals, "DataSet 1");
-        set1.setFillAlpha(110);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setLineWidth(1f);
-        set1.setCircleRadius(3f);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setDrawFilled(true);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(set1); // add the datasets
-
-        // create a data object with the datasets
-        LineData data = new LineData(xVals, dataSets);
-        XAxis xAxis = mlineChartMonthly.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // set data
-        mlineChartMonthly.setData(data);
 
     }
+
+    private void setLineData(JSONArray jsonArray) {
+        for (int i = 0; jsonArray.length() > i; i++) {
+            MontnlyInsighsRepnseData montnlyInsighsRepnseData = new MontnlyInsighsRepnseData();
+            try {
+                JSONObject jsonObjectValues = jsonArray.getJSONObject(i);
+                String day = jsonObjectValues.getString("day");
+                String ctaks = jsonObjectValues.getString("ctasks");
+                montnlyInsighsRepnseData.setDay(day);
+                montnlyInsighsRepnseData.setCtasks(ctaks);
+                y.add(new Entry(Integer.parseInt(day), i));
+                x.add(ctaks);
+                System.out.println("SeverReponse4" + day);
+                System.out.println("SeverReponse5" + ctaks);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            LineDataSet set1 = new LineDataSet(y, "NAV Data Value");
+            set1.setFillAlpha(110);
+            set1.setColor(Color.BLACK);
+            set1.setCircleColor(Color.BLACK);
+            set1.setLineWidth(1f);
+            set1.setCircleRadius(3f);
+            set1.setDrawCircleHole(false);
+            set1.setValueTextSize(9f);
+            set1.setDrawFilled(true);
+            LineData data = new LineData(x, set1);
+            XAxis xAxis = mlineChartMonthly.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            mlineChartMonthly.setData(data);
+            mlineChartMonthly.invalidate();
+            montnlyInsighsRepnseDataArrayList.add(montnlyInsighsRepnseData);
+
+        }
+
+    }
+
 
     @Override
     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {

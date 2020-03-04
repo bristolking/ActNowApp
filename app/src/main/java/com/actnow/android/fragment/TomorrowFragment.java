@@ -111,12 +111,13 @@ public class TomorrowFragment extends Fragment {
         SimpleDateFormat dfWeek = new SimpleDateFormat( "E MMM dd" );
         String dateWeekMonth =dfWeek.format( tomorrow);
         mWeekNameTomorrow.setText( " " + dateWeekMonth );
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+/*
+        if (AndroidUtils.isNetworkAvailable( getActivity() )) {
             attemptTaskList();
         } else {
             tomorrowFrgmentNoConnection();
-        }
+        }*/
 
         return view;
     }

@@ -23,9 +23,11 @@
     <color name ="contact_number">#8c8c8c</color>
 
     <color name ="green_color">#8BC61D</color>
-    <color name ="pink">#C71585</color>
+    <color name ="pink">#F667DE</color>
 
-    <color name="greenmilk">#4b8b3b</color>
-    <color name="orngeccolr">#FF6B00</color>
+    <color name="greenmilk">#469f35</color>
+    <color name="orngeccolr">#e9761b</color>
+    <color name="buleMilk">#1773c6</color>
+
 
 </resources>

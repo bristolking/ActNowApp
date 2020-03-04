@@ -94,12 +94,12 @@ public class PriorityFragment extends Fragment {
 
         mPriorityOfflineAdapter = new PriorityOfflineAdapter();
         mPriorityTaskRecylcerView.setAdapter( mPriorityOfflineAdapter );
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+        /*if (AndroidUtils.isNetworkAvailable( getActivity() )) {
             attemptTaskList();
         } else {
             priorotyNoConnection();
-        }
+        }*/
         fabPriorityTask = view.findViewById( R.id.fab_prioritytask );
         fabPriorityTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -369,7 +369,7 @@ public class PriorityFragment extends Fragment {
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
                                             fragmentTransaction.commit();
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }

@@ -106,12 +106,12 @@ public class TodayFragment extends Fragment {
         SimpleDateFormat df = new SimpleDateFormat( "E MMM dd" );
         String formattedDate = df.format( date1 );
         mWeeKNameToday.setText( " " + formattedDate );
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+        /*if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
             todyFrgmentNoConnection();
-        }
+        }*/
         return view;
     }
 
@@ -316,7 +316,7 @@ public class TodayFragment extends Fragment {
                                             hideProgressDialog();
                                             mTaskListAdapter.removeItem(position);
 
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }

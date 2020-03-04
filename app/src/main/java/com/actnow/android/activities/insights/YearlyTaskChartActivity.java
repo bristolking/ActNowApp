@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
@@ -32,6 +33,7 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.sdk.responses.TaskInsightDataYear;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.LineChart;
@@ -44,8 +46,19 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.view.View.GONE;
 
@@ -55,6 +68,14 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
     String[] arrayItems = {"Yearly", "Daily", "Weekly", "Monthly"};
     LineChart mlineChartYearly;
 
+    TextView mYearly_no_of_tasks,mYearly_no_of_tasks_cricle;
+    TextView mYearly_no_of_ctasks;
+    TextView mMonthlyDayTask;
+    TextView mCompltedMonthlyTask;
+    ArrayList<Entry> x;
+    ArrayList<String> y;
+    ArrayList<TaskInsightDataYear> taskInsightDataYearArrayList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +84,7 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
         appHeaderTwo();
         initializeViews();
         appFooter();
-        setData();
+
     }
 
     private void appHeaderTwo() {
@@ -201,9 +222,15 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
     }
 
     private void initializeViews() {
+        x = new ArrayList<Entry>();
+        y = new ArrayList<String>();
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
         mlineChartYearly = (LineChart) findViewById(R.id.line_chartGraphYearly);
+
+        mYearly_no_of_tasks  = (TextView) findViewById(R.id.tv_numberTotalTaks);
+        mYearly_no_of_ctasks = (TextView) findViewById(R.id.tv_numberOfComleteTaks);
+        mYearly_no_of_tasks_cricle =(TextView)findViewById(R.id.tv_totalTaksInCricle);
         final Spinner spinner = (Spinner) findViewById(R.id.spinner_chart);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, arrayItems);
         //arrayAdapter.setDropDownViewResource(R.remider_footer_layout.spinner_text_color);
@@ -239,68 +266,89 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
-    private ArrayList<String> setXAxisValues() {
-        ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("JAN");
-        xVals.add("FEB");
-        xVals.add("MAR");
-        xVals.add("APR");
-        xVals.add("MAY");
-        xVals.add("JUN");
-        xVals.add("JULY");
-        xVals.add("AUG");
-        xVals.add("SEP");
-        xVals.add("OCT");
-        xVals.add("NOV");
-        xVals.add("DEC");
 
-        return xVals;
-    }
-    private ArrayList<Entry> setYAxisValues() {
-        ArrayList<Entry> yVals = new ArrayList<Entry>();
-        yVals.add(new Entry(60, 0));
-        yVals.add(new Entry(48, 1));
-        yVals.add(new Entry(70.5f, 2));
-        yVals.add(new Entry(100, 3));
-        yVals.add(new Entry(250f, 4));
-        yVals.add(new Entry(60, 5));
-        yVals.add(new Entry(48, 6));
-        yVals.add(new Entry(70.5f, 7));
-        yVals.add(new Entry(100, 8));
-        yVals.add(new Entry(250f, 9));
-        yVals.add(new Entry(100, 10));
-        yVals.add(new Entry(250f, 11));
-        return yVals;
+        apiCallYearlyInsights();
     }
 
-    private void setData() {
-        ArrayList<String> xVals1 = setXAxisValues();
-        ArrayList<Entry> yVals1 = setYAxisValues();
+    private void apiCallYearlyInsights() {
+        HashMap<String,String> userId = session.getUserDetails();
+        String id = userId.get(UserPrefUtils.ID);
+        Call<ResponseBody>  responseBodyCall = ANApplications.getANApi().taskInsightsYearly(id);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println( "SeverReponse" + response.raw() );
+                if (response.isSuccessful()) {
+                    System.out.println( "SeverReponse1" + response.raw() );
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject( response.body().string() );
+                            if (jsonObject.getString( "success" ).equals( "true" )) {
+                                System.out.println( "SeverReponse2" + response.body().toString());
+                                String no_of_tasks =  jsonObject.getString("no_of_tasks");
+                                String  no_of_ctasks = jsonObject.getString("no_of_ctasks");
+                                System.out.println("no_of_tasks" + no_of_tasks);
+                                System.out.println("no_of_ctasks" + no_of_ctasks);
+                                mYearly_no_of_tasks.setText(no_of_tasks);
+                                mYearly_no_of_ctasks.setText(no_of_ctasks);
+                                mYearly_no_of_tasks_cricle.setText(no_of_tasks);
+                                JSONArray jsonArray = jsonObject.getJSONArray( "data" );
+                                System.out.println( "SeverReponse3" + jsonArray);
+                                setDataYearly(jsonArray);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
-        LineDataSet set1;
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-        // create a dataset and give it a type
-        set1 = new LineDataSet(yVals1, "DataSet 1");
-        set1.setFillAlpha(110);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setLineWidth(1f);
-        set1.setCircleRadius(3f);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setDrawFilled(true);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        dataSets.add(set1); // add the datasets
-
-        // create a data object with the datasets
-        LineData data = new LineData(xVals1, dataSets);
-        XAxis xAxis = mlineChartYearly.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // set data
-        mlineChartYearly.setData(data);
+            }
+        });
 
     }
+
+    private void setDataYearly(JSONArray jsonArray) {
+        for (int i=0; jsonArray.length() > i; i++) {
+            TaskInsightDataYear taskInsightDataYear = new TaskInsightDataYear();
+            try {
+                JSONObject jsonObject =  jsonArray.getJSONObject(i);
+                String month = jsonObject.getString("month");
+                String month_name = jsonObject.getString("month_name");
+                String ctasks = jsonObject.getString("ctasks");
+                x.add(new Entry(Integer.parseInt(month),i));
+                y.add(month_name);
+                System.out.println("SeverReponse4" + month_name);
+                System.out.println("SeverReponse5" + ctasks);
+                taskInsightDataYear.setMonth(month);
+                taskInsightDataYear.setMonth_name(month_name);
+                taskInsightDataYear.setCtasks(ctasks);
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            LineDataSet set1 = new LineDataSet(x, "NAV Data Value");
+            set1.setFillAlpha(110);
+            set1.setColor(Color.BLACK);
+            set1.setCircleColor(Color.BLACK);
+            set1.setLineWidth(1f);
+            set1.setCircleRadius(3f);
+            set1.setDrawCircleHole(false);
+            set1.setValueTextSize(9f);
+            set1.setDrawFilled(true);
+            LineData data = new LineData(y, set1);
+            XAxis xAxis = mlineChartYearly.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            mlineChartYearly.setData(data);
+            mlineChartYearly.invalidate();
+            taskInsightDataYearArrayList.add(taskInsightDataYear);
+        }
+    }
+
 
     @Override
     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
@@ -370,6 +418,9 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
         Log.i("Nothing selected", "Nothing selected.");
 
     }
+
+
+
 
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);

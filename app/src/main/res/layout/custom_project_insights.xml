@@ -105,19 +105,19 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/image_insightsProjects"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_bar_graph"
-                android:gravity="right"/>
+                android:layout_alignParentRight="true"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
     <View

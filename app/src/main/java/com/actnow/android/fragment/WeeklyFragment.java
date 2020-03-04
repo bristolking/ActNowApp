@@ -95,12 +95,12 @@ public class WeeklyFragment extends Fragment {
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mWeeklyRepetTask.setAdapter( mTaskOfflineAdapter );
 
-
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+       /* if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
             weeklyTypeNoConnection();
-        }
+        }*/
         fabWeeklyrepetTask = view.findViewById( R.id.fab_weeklytask );
         fabWeeklyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -375,7 +375,7 @@ public class WeeklyFragment extends Fragment {
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
                                         fragmentTransaction.commit();*/
-                                        Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                     } else {
                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                     }

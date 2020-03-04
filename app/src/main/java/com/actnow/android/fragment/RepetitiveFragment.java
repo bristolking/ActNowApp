@@ -98,11 +98,12 @@ public class RepetitiveFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mRepetTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
-        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+        attemptTaskList();
+      /*  if (AndroidUtils.isNetworkAvailable(getActivity())) {
             attemptTaskList();
         } else {
             repetitiveTypeNoConnection();
-        }
+        }*/
         fabRepetitiveTask = view.findViewById( R.id.fab_repetitivetask );
         fabRepetitiveTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -375,7 +376,7 @@ public class RepetitiveFragment extends Fragment {
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.repetitive_fragment, repetitiveFragment );
                                             fragmentTransaction.commit();*/
-                                            Snackbar.make( mContentLayout, "TaskOffline Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                         }
