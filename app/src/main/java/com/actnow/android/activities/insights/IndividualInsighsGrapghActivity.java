@@ -1,5 +1,6 @@
 package com.actnow.android.activities.insights;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
@@ -26,6 +28,7 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
+import com.actnow.android.sdk.responses.IndividualMembersReponse;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
@@ -35,10 +38,21 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static android.view.View.GONE;
+import static com.activeandroid.Cache.getContext;
 
 public class IndividualInsighsGrapghActivity extends AppCompatActivity {
     View mProgressView, mContentLayout;
@@ -46,12 +60,13 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
     BarChart barChart;
 
     TextView btnLink1;
-    String name;
+    String nameOne;
     String color ;
-    String approval ;
-    String pending;
-    String ongoing;
-    String compled;
+
+    ArrayList<IndividualMembersReponse> individualMembersReponseArrayList = new ArrayList<>();
+    ArrayList<BarEntry> x;
+    ArrayList<String> y;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +79,9 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
-            name =(String)b.get("nameInsights");
-            btnLink1.setText(name);
+            nameOne =(String)b.get("nameInsights");
+            btnLink1.setText(nameOne);
             color =(String)b.get("colorInsights");
-            approval =(String)b.get("approvalInsights");
-            pending =(String)b.get("pendingInsights");
-            ongoing =(String)b.get("ongoingInsights");
-            compled =(String)b.get("compltedInsights");
-
-            System.out.println( "passsed" +    name  + color + approval + pending + ongoing + compled );
         }
 
     }
@@ -220,32 +229,138 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
         barChart.setMaxVisibleValueCount( 50 );
         barChart.setPinchZoom(false);
         barChart.setDrawGridBackground( true );
+        apiCallIndividual();
+        showProgressDialog();
+    }
+    private void apiCallIndividual() {
+        HashMap<String, String> user = session.getUserDetails();
+        String id = user.get(UserPrefUtils.ID);
+        Call<ResponseBody> responseBodyCall = ANApplications.getANApi().individualInsights(id);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println("SeverReponse" + response.raw());
+                if (response.isSuccessful()) {
+                    System.out.println("SeverReponse1" + response.raw());
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("members");
+                                System.out.println("SeverReponse2" + jsonArray);
+                                setIndividualInsightsList(jsonArray);
+                                hideProgressDialog();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-        ArrayList<BarEntry> NoOfEmp = new ArrayList<>();
-        NoOfEmp.add(new BarEntry(945f, 0));
-        NoOfEmp.add(new BarEntry(1040f, 1));
-        NoOfEmp.add(new BarEntry(1133f, 2));
-        NoOfEmp.add(new BarEntry(1240f, 3));
+            }
+        });
+    }
+    private void setIndividualInsightsList(JSONArray jsonArray) {
+        for (int i = 0; jsonArray.length() > i; i++) {
+            IndividualMembersReponse individualMembersReponse = new IndividualMembersReponse();
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String id = jsonObject.getString("id");
+                String name = jsonObject.getString("name");
+                String email = jsonObject.getString("email");
+                String mobile_number = jsonObject.getString("mobile_number");
+                String provider_id = jsonObject.getString("provider_id");
+                String provider_name = jsonObject.getString("provider_name");
+                String orgn_code = jsonObject.getString("orgn_code");
+                String password = jsonObject.getString("password");
+                String image_path = jsonObject.getString("image_path");
+                String user_type = jsonObject.getString("user_type");
+                String otp = jsonObject.getString("otp");
+                String status = jsonObject.getString("status");
+                String email_verified_at = jsonObject.getString("email_verified_at");
+                String verified = jsonObject.getString("verified");
+                String remember_token = jsonObject.getString("remember_token");
+                String refresh_token = jsonObject.getString("refresh_token");
+                String created_at = jsonObject.getString("created_at");
+                String updated_at = jsonObject.getString("updated_at");
+                String other_orgns = jsonObject.getString("other_orgns");
+                String timezone = jsonObject.getString("timezone");
+                String completed = jsonObject.getString("completed");
+                String approval = jsonObject.getString("approval");
+                String ongoing = jsonObject.getString("ongoing");
+                String pending = jsonObject.getString("pending");
 
+                individualMembersReponse.setId(id);
+                individualMembersReponse.setName(name);
+                individualMembersReponse.setEmail(email);
+                individualMembersReponse.setMobile_number(mobile_number);
+                individualMembersReponse.setProvider_id(provider_id);
+                individualMembersReponse.setProvider_name(provider_name);
+                individualMembersReponse.setOrgn_code(orgn_code);
+                individualMembersReponse.setPassword(password);
+                individualMembersReponse.setImage_path(image_path);
+                individualMembersReponse.setUser_type(user_type);
+                individualMembersReponse.setOtp(otp);
+                individualMembersReponse.setStatus(status);
+                individualMembersReponse.setEmail_verified_at(email_verified_at);
+                individualMembersReponse.setVerified(verified);
+                individualMembersReponse.setRemember_token(remember_token);
+                individualMembersReponse.setRefresh_token(refresh_token);
+                individualMembersReponse.setCreated_at(created_at);
+                individualMembersReponse.setUpdated_at(updated_at);
+                individualMembersReponse.setOther_orgns(other_orgns);
+                individualMembersReponse.setTimezone(timezone);
+                individualMembersReponse.setCompleted(completed);
+                individualMembersReponse.setApproval(approval);
+                individualMembersReponse.setOngoing(ongoing);
+                individualMembersReponse.setPending(pending);
+                if (name.equals(nameOne)) {
+                    x = new ArrayList<BarEntry>();
+                    x.add(new BarEntry(Integer.parseInt(completed), 0));
+                    x.add(new BarEntry(Integer.parseInt(approval), 1));
+                    x.add(new BarEntry(Integer.parseInt(ongoing), 2));
+                    x.add(new BarEntry(Integer.parseInt(pending), 3));
+                    y = new ArrayList<String>();
+                    y.add("completed");
+                    y.add("approval");
+                    y.add("ongoing");
+                    y.add("pending");
+                    BarDataSet bardataset = new BarDataSet(x, "Data Set");
+                    bardataset.setColors(new int[]{R.color.greenmilk, R.color.orngeccolr, R.color.buleMilk, R.color.colorAccent}, getContext());
+                    BarData data = new BarData(y, bardataset);
+                    barChart.setData(data);
+                    XAxis xAxis = barChart.getXAxis();
+                    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                    barChart.animateY(5000);
+                    individualMembersReponseArrayList.add(individualMembersReponse);
+                    System.out.println("SeverGraphValues" +  name + completed + pending + ongoing + approval);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
 
-
-        ArrayList<String> year = new ArrayList<String>();
-        year.add("COMPLETED");
-        year.add("APPROVAL");
-        year.add("ONGOING");
-        year.add("PENDING");
-        BarDataSet bardataset = new BarDataSet(NoOfEmp, "Data Set");
-        bardataset.setColors(ColorTemplate.COLORFUL_COLORS );
-        BarData data = new BarData(year, bardataset);
-        barChart.setData(data);
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        bardataset.setColors( ColorTemplate.COLORFUL_COLORS);
-        barChart.animateY(5000);
-        ArrayList<BarDataSet> dataSets = new ArrayList<>();  // combined all dataset into an arraylist
-        dataSets.add(bardataset);
+        mProgressDialog.show();
     }
 
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {

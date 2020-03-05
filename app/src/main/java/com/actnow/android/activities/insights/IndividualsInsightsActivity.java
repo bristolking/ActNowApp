@@ -47,10 +47,16 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -223,84 +229,117 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         mRecyclerViewIndividualInsights.setItemAnimator(new DefaultItemAnimator());
         mIndividualInsightsAdapter = new IndividualInsightsAdapter(individualMembersReponseArrayList);
         mRecyclerViewIndividualInsights.setAdapter(mIndividualInsightsAdapter);
-
         apiCallIndividual();
         showProgressDialog();
 
-
     }
-
     private void apiCallIndividual() {
         HashMap<String, String> user = session.getUserDetails();
         String id = user.get(UserPrefUtils.ID);
-        Call<IndividualInsightReponse> individualInsightReponseCall = ANApplications.getANApi().individualInsights(id);
-        individualInsightReponseCall.enqueue(new Callback<IndividualInsightReponse>() {
+        Call<ResponseBody> responseBodyCall = ANApplications.getANApi().individualInsights(id);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<IndividualInsightReponse> call, Response<IndividualInsightReponse> response) {
-                System.out.println("severReponse" + response.raw());
-
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println("SeverReponse" + response.raw());
                 if (response.isSuccessful()) {
-                    System.out.println("severReponse" + response.raw());
-
-                    if (response.body().getSuccess().equals("true")) {
-                        System.out.println("severReponse3" +  response.body().getNo_of_tasks());
-                        hideProgressDialog();
-                        setIndviduvalUser(response.body().getMembers());
-                    } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                    System.out.println("SeverReponse1" + response.raw());
+                    try {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body().string());
+                            if (jsonObject.getString("success").equals("true")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("members");
+                                System.out.println("SeverReponse2" + jsonArray);
+                                setIndividualInsightsList(jsonArray);
+                                hideProgressDialog();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } else {
-                    AndroidUtils.displayToast(getApplicationContext(), "Something Went Wrong!!");
-
                 }
-
             }
-
             @Override
-            public void onFailure(Call<IndividualInsightReponse> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
             }
         });
-
     }
+    private void setIndividualInsightsList(JSONArray jsonArray) {
+        for (int i = 0; jsonArray.length() > i; i++) {
+            IndividualMembersReponse individualMembersReponse = new IndividualMembersReponse();
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String id = jsonObject.getString("id");
+                String name = jsonObject.getString("name");
+                String email = jsonObject.getString("email");
+                String mobile_number = jsonObject.getString("mobile_number");
+                String provider_id = jsonObject.getString("provider_id");
+                String provider_name = jsonObject.getString("provider_name");
+                String orgn_code = jsonObject.getString("orgn_code");
+                String password = jsonObject.getString("password");
+                String image_path = jsonObject.getString("image_path");
+                String user_type = jsonObject.getString("user_type");
+                String otp = jsonObject.getString("otp");
+                String status = jsonObject.getString("status");
+                String email_verified_at = jsonObject.getString("email_verified_at");
+                String verified = jsonObject.getString("verified");
+                String remember_token = jsonObject.getString("remember_token");
+                String refresh_token = jsonObject.getString("refresh_token");
+                String created_at = jsonObject.getString("created_at");
+                String updated_at = jsonObject.getString("updated_at");
+                String other_orgns = jsonObject.getString("other_orgns");
+                String timezone = jsonObject.getString("timezone");
+                String completed = jsonObject.getString("completed");
+                String approval = jsonObject.getString("approval");
+                String ongoing = jsonObject.getString("ongoing");
+                String pending = jsonObject.getString("pending");
 
-    private void setIndviduvalUser(List<IndividualMembersReponse> members) {
-        if (members.size()>0){
-            for (int i =0; members.size() > i; i++){
-                IndividualMembersReponse individualMembersReponse = members.get(i);
-                IndividualMembersReponse individualMembersReponse1 = new IndividualMembersReponse();
-                individualMembersReponse1.setName(individualMembersReponse.getName());
-                individualMembersReponse1.setApproval(individualMembersReponse.getApproval());
-                individualMembersReponse1.setCompleted(individualMembersReponse.getCompleted());
-                individualMembersReponse1.setOngoing(individualMembersReponse.getOngoing());
-                individualMembersReponse1.setPending(individualMembersReponse.getPending());
-                individualMembersReponseArrayList.add(individualMembersReponse1);
+                individualMembersReponse.setId(id);
+                individualMembersReponse.setName(name);
+                individualMembersReponse.setEmail(email);
+                individualMembersReponse.setMobile_number(mobile_number);
+                individualMembersReponse.setProvider_id(provider_id);
+                individualMembersReponse.setProvider_name(provider_name);
+                individualMembersReponse.setOrgn_code(orgn_code);
+                individualMembersReponse.setPassword(password);
+                individualMembersReponse.setImage_path(image_path);
+                individualMembersReponse.setUser_type(user_type);
+                individualMembersReponse.setOtp(otp);
+                individualMembersReponse.setStatus(status);
+                individualMembersReponse.setEmail_verified_at(email_verified_at);
+                individualMembersReponse.setVerified(verified);
+                individualMembersReponse.setRemember_token(remember_token);
+                individualMembersReponse.setRefresh_token(refresh_token);
+                individualMembersReponse.setCreated_at(created_at);
+                individualMembersReponse.setUpdated_at(updated_at);
+                individualMembersReponse.setOther_orgns(other_orgns);
+                individualMembersReponse.setTimezone(timezone);
+                individualMembersReponse.setCompleted(completed);
+                individualMembersReponse.setApproval(approval);
+                individualMembersReponse.setOngoing(ongoing);
+                individualMembersReponse.setPending(pending);
+            }catch (JSONException e){
+                e.printStackTrace();
             }
+            individualMembersReponseArrayList.add(individualMembersReponse);
             mRecyclerViewIndividualInsights.setAdapter(mIndividualInsightsAdapter);
-            mRecyclerViewIndividualInsights.addOnItemTouchListener(new IndividualsInsightsActivity.RecyclerTouchListener(this, mRecyclerViewIndividualInsights, new ProjectInsightsActivity.ClickListener() {
+            mRecyclerViewIndividualInsights.addOnItemTouchListener(new IndividualsInsightsActivity.RecyclerTouchListener(this, mRecyclerViewIndividualInsights, new ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
+                    View viewLiner = view.findViewById(R.id.view_liner);
                     final TextView mInsightsIndividualName = view.findViewById(R.id.tv_individual_InsgihtsName);
-                    final TextView mIndividualInsightsApproval = view.findViewById(R.id.tv_individualInsightsApprovalTasks);
-                    final TextView mIndividualInsightsPeniding = view.findViewById(R.id.tv_individualInsightsPendingTasks);
-                    final TextView mIndividualInsightsOngoing = view.findViewById(R.id.tv_individualInsightsOngoingTasks);
-                    final TextView mIndividualInsightscompleted = view.findViewById(R.id.tv_individualInsightsCompleteTasks);
+                    final TextView mIndividualInsightsColor = view.findViewById(R.id.tv_individual_InsgihtsColor);
                     ImageView imageViewIndividualInsights = (ImageView) view.findViewById(R.id.image_insightsIndividual);
-                    imageViewIndividualInsights.setOnClickListener(new View.OnClickListener() {
+                    viewLiner.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             String nameInsights = mInsightsIndividualName.getText().toString();
-                            String approvalInsights = mIndividualInsightsApproval.getText().toString();
-                            String pendingInsights = mIndividualInsightsPeniding.getText().toString();
-                            String ongoingInsights = mIndividualInsightsOngoing.getText().toString();
-                            String compltedInsights = mIndividualInsightscompleted.getText().toString();
-
-                            Intent  i= new Intent(getApplicationContext(),IndividualInsighsGrapghActivity.class);
-                            i.putExtra("nameInsights",nameInsights);
-                            i.putExtra("approvalInsights",approvalInsights);
-                            i.putExtra("pendingInsights",pendingInsights);
-                            i.putExtra("ongoingInsights",ongoingInsights);
-                            i.putExtra("compltedInsights",compltedInsights);
+                            String colorInsights = mIndividualInsightsColor.getText().toString();
+                            Intent i = new Intent(getApplicationContext(), IndividualInsighsGrapghActivity.class);
+                            i.putExtra("nameInsights", nameInsights);
+                            i.putExtra("colorInsights", colorInsights);
                             startActivity(i);
                         }
                     });
@@ -321,18 +360,13 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         void onLongClick(View view, int position);
     }
 
-    /**
-     * RecyclerView: Implementing single item click and long press (Part-II)
-     * <p>
-     * - creating an innerclass implementing RevyvlerView.OnItemTouchListener
-     * - Pass clickListener interface as parameter
-     */
+
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
-        private ProjectInsightsActivity.ClickListener clicklistener;
+        private ClickListener clicklistener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListener(IndividualsInsightsActivity context, final RecyclerView mRecylerViewSingleSub, ProjectInsightsActivity.ClickListener clickListener) {
+        public RecyclerTouchListener(IndividualsInsightsActivity context, final RecyclerView mRecylerViewSingleSub, ClickListener clickListener) {
             this.clicklistener = clickListener;
 
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -369,6 +403,9 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
+
+
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);

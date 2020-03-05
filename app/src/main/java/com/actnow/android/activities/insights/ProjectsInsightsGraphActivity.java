@@ -1,7 +1,7 @@
 package com.actnow.android.activities.insights;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -34,11 +34,10 @@ import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,22 +62,15 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
 
     String nameOne;
     String color;
-    String approval;
-    String pending;
-    String ongoing;
-    String completed;
     TextView btnLink1;
-
-    String name;
 
     ArrayList<ProjectsInsights> projectsInsightsArrayList = new ArrayList<ProjectsInsights>();
     ArrayList<BarEntry> x;
     ArrayList<String> y;
+    private ProgressDialog mProgressDialog;
 
-    int intApproval;
-    int pendingInsights;
-    int ongoingInsights;
-    int compltedInsights;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,16 +84,6 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
         if (b != null) {
             nameOne = (String) b.get("nameInsights");
             btnLink1.setText(nameOne);
-         /*   color = (String) b.get("colorInsights");
-            approval = (String) b.get("approvalInsights");
-             intApproval = Integer.parseInt(approval);
-            pending = (String) b.get("pendingInsights");
-             pendingInsights = Integer.parseInt(pending);
-            ongoing = (String) b.get("ongoingInsights");
-             ongoingInsights = Integer.parseInt(ongoing);
-            compled = (String) b.get("compltedInsights");
-            compltedInsights = Integer.parseInt(compled);*/
-            System.out.println("passsed" + nameOne + color + compltedInsights + ongoingInsights + pendingInsights + intApproval);
         }
 
     }
@@ -252,6 +234,7 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
         barChart.setPinchZoom(false);
         barChart.setDrawGridBackground(true);
         apiCallProjectInsights();
+        showProgressDialog();
     }
     private void apiCallProjectInsights() {
         HashMap<String, String> user = session.getUserDetails();
@@ -270,7 +253,7 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                                 System.out.println("SeverReponse2" + response.body().toString());
                                 JSONArray jsonArray = jsonObject.getJSONArray("projects");
                                 setProjectInsightsList(jsonArray);
-                               // hideProgressDialog();
+                                hideProgressDialog();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -339,13 +322,8 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                     y.add("approval");
                     y.add("ongoing");
                     y.add("pending");
-
                     BarDataSet bardataset = new BarDataSet(x, "Data Set");
                     bardataset.setColors(new int[]{R.color.greenmilk, R.color.orngeccolr, R.color.buleMilk, R.color.colorAccent}, getContext());
-               /*     bardataset.setColors(new int[]{R.color.greenmilk});
-                    bardataset.setColors(new int[]{R.color.orngeccolr});
-                    bardataset.setColors(new int[]{R.color.buleMilk});
-                    bardataset.setColors(new int[]{R.color.colorAccent});*/
                     BarData data = new BarData(y, bardataset);
                     barChart.setData(data);
                     XAxis xAxis = barChart.getXAxis();
@@ -353,15 +331,29 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                     barChart.animateY(5000);
                     projectsInsightsArrayList.add(projectsInsights);
                     System.out.println("SeverGraphValues" +  name + completed + pending + ongoing + approval);
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-
         }
 
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 
     private void appFooter() {

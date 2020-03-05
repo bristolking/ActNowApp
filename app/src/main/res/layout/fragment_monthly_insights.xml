@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_monthlyChart"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="right"
-    android:background="@color/colorWhite"
-
-    tools:context=".activities.insights.MonthlyTaskChartActivity">
+    tools:context=".fragment.MonthlyInsightsFragment">
     <RelativeLayout
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
+
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/content_layout"
@@ -30,20 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="50dp"
             android:padding="8dp">
             <include layout="@layout/taskchatinsights"/>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <Spinner
-                    android:id="@+id/spinner_chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
-            </RelativeLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,18 +52,6 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black" />
         </LinearLayout>
-
-        <include layout="@layout/app_header_two" />
-        <include layout="@layout/app_footer" />
     </RelativeLayout>
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_side_menu"
-        app:menu="@menu/activity_side_menu_drawer" />
 
-
-</android.support.v4.widget.DrawerLayout>
+</FrameLayout>

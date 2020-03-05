@@ -227,13 +227,6 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         mContentLayout = findViewById(R.id.content_layout);
         tv_numProjectInsightsValue = (TextView) findViewById(R.id.tv_nuberProjectIisightsValue);
 
-
-/*
-        mEditText = (EditText)findViewById(R.id.edit_ProjectsInsightssearchTask);
-        mTextProjectCount =(TextView)findViewById(R.id.tv_projectCount);
-        mProjectTotalTask= (TextView)findViewById(R.id.tv_projectTotalTasks);
-*/
-
         mRecyclerViewProjectInsights = (RecyclerView) findViewById(R.id.projectInsights_recyclerView);
         mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerViewProjectInsights.setLayoutManager(mLayoutManager);
@@ -283,6 +276,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         });
 
     }
+
     private void setProjectInsightsList(JSONArray jsonArray) {
         for (int i = 0; jsonArray.length() > i; i++) {
             ProjectsInsights projectsInsights = new ProjectsInsights();
@@ -306,7 +300,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                 String approval = jsonObject.getString("approval");
                 String ongoing = jsonObject.getString("ongoing");
                 String pending = jsonObject.getString("pending");
-               // String[] pendingspilt = completed.split(" ");
+                // String[] pendingspilt = completed.split(" ");
 
                 projectsInsights.setProject_id(project_id);
                 projectsInsights.setName(name);
@@ -325,13 +319,6 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                 projectsInsights.setApproval(approval);
                 projectsInsights.setOngoing(ongoing);
                 projectsInsights.setPending(pending);
-
-              /*  x.add(new BarEntry(Integer.parseInt(completed),i));
-                x.add(new BarEntry(Integer.parseInt(approval),i));
-                x.add(new BarEntry(Integer.parseInt(ongoing),i));
-                x.add(new BarEntry(Integer.parseInt(pending),i));*/
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -340,30 +327,26 @@ public class ProjectInsightsActivity extends AppCompatActivity {
             mRecyclerViewProjectInsights.addOnItemTouchListener(new ProjectInsightsActivity.RecyclerTouchListener(this, mRecyclerViewProjectInsights, new ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
+                    View viewLinerProject =(View)view.findViewById(R.id.view_linerProject);
                     final TextView mInsightsProjectName = view.findViewById(R.id.tv_projects_InsgihtsName);
                     final TextView mProjectInsightsColor = view.findViewById(R.id.tv_projects_InsgihtsColor);
-                    final TextView mProjectsInsightsApproval = view.findViewById(R.id.tv_projectInsightsApprovalTasks);
+                /*    final TextView mProjectsInsightsApproval = view.findViewById(R.id.tv_projectInsightsApprovalTasks);
                     final TextView mProjectsInsightsPeniding = view.findViewById(R.id.tv_projectInsightsPendingTasks);
                     final TextView mProjectsInsightsOngoing = view.findViewById(R.id.tv_projectInsightsOngoingTasks);
-                    final TextView mProjectInsightscompleted = view.findViewById(R.id.tv_projectInsightsCompleteTasks);
+                    final TextView mProjectInsightscompleted = view.findViewById(R.id.tv_projectInsightsCompleteTasks);*/
                     ImageView imageViewProjectInsights = (ImageView) view.findViewById(R.id.image_insightsProjects);
-                    imageViewProjectInsights.setOnClickListener(new View.OnClickListener() {
+                    viewLinerProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             String nameInsights = mInsightsProjectName.getText().toString();
                             String colorInsights = mProjectInsightsColor.getText().toString();
-                            String approvalInsights = mProjectsInsightsApproval.getText().toString();
-                            String pendingInsights = mProjectsInsightsPeniding.getText().toString();
-                            String ongoingInsights = mProjectsInsightsOngoing.getText().toString();
-                            String compltedInsights = mProjectInsightscompleted.getText().toString();
-
                             Intent i = new Intent(getApplicationContext(), ProjectsInsightsGraphActivity.class);
                             i.putExtra("nameInsights", nameInsights);
                             i.putExtra("colorInsights", colorInsights);
-                            i.putExtra("approvalInsights", approvalInsights);
+                           /* i.putExtra("approvalInsights", approvalInsights);
                             i.putExtra("pendingInsights", pendingInsights);
                             i.putExtra("ongoingInsights", ongoingInsights);
-                            i.putExtra("compltedInsights", compltedInsights);
+                            i.putExtra("compltedInsights", compltedInsights);*/
                             startActivity(i);
                         }
                     });

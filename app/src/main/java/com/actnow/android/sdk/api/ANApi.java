@@ -231,7 +231,7 @@ public interface ANApi {
     @GET("app/proinsights/{id}")
     Call<ResponseBody> projectInsightsReponse(@Path("id")String id);
     @GET("app/tinsights/{id}")
-    Call<IndividualInsightReponse> individualInsights(@Path("id")String id);
+    Call<ResponseBody> individualInsights(@Path("id")String id);
 
     @GET("app/yearlyinsights/{id}")
     Call<ResponseBody> taskInsightsYearly(@Path("id") String id);

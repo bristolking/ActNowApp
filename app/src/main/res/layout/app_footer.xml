@@ -94,6 +94,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
+        android:visibility="gone"
         android:layout_weight="0.25">
         <ImageView
             android:id="@+id/img_insights"
