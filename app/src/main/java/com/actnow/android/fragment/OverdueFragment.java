@@ -109,13 +109,11 @@ public class OverdueFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
-
-        attemptTaskList();
-       /* if (AndroidUtils.isNetworkAvailable( getActivity())) {
+        if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
            overDueNoConnection();
-        }*/
+        }
         fabTask = view.findViewById( R.id.fab_task );
         fabTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -151,7 +149,7 @@ public class OverdueFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter( editable.toString() );
+                //filter( editable.toString() );
 
             }
         } );
@@ -168,7 +166,7 @@ public class OverdueFragment extends Fragment {
     }
 
 
-    private void filter(String toString) {
+ /*   private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
             if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
@@ -176,7 +174,7 @@ public class OverdueFragment extends Fragment {
             }
         }
         mTaskListAdapter.filterList( taskListRecordsFilter );
-    }
+    }*/
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -191,8 +189,7 @@ public class OverdueFragment extends Fragment {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
                 } else {
                     AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                 }
@@ -213,6 +210,7 @@ public class OverdueFragment extends Fragment {
     }
 
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
+        TaskDBHelper dbHelper = new TaskDBHelper(getContext());
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
                 TaskListRecords taskListRecords = taskListRecordsList.get( i );
@@ -226,10 +224,8 @@ public class OverdueFragment extends Fragment {
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
-
+                dbHelper.insertTaskDetails(taskListRecords);
                 if ( taskListRecords.getDue_date()!=null) {
-
-
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     String formattedDate = df.format(date1);
@@ -277,11 +273,11 @@ public class OverdueFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-                                          /*  OverdueFragment fragment2 = new OverdueFragment();
+                                            OverdueFragment overdueFragment = new OverdueFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
-                                            fragmentTransaction.commit();*/
+                                            fragmentTransaction.replace( R.id.fragment_overDue, overdueFragment );
+                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -306,14 +302,13 @@ public class OverdueFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                         /*   OverdueFragment fragment2 = new OverdueFragment();
+                                                            OverdueFragment overdueFragment = new OverdueFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
-                                                            fragmentTransaction.commit();*/
+                                                            fragmentTransaction.replace( R.id.fragment_overDue, overdueFragment );
+                                                            fragmentTransaction.commit();
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                                        }
+                                                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                                                        }
                                                     } else {
                                                         AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                                                     }
@@ -397,7 +392,7 @@ public class OverdueFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showProgressDialog();
+                            //showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -410,13 +405,13 @@ public class OverdueFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         System.out.println( "deleteResponse1" + response.raw() );
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            hideProgressDialog();
-                                            mTaskListAdapter.removeItem(position);
-                                           /* OverdueFragment fragment2 = new OverdueFragment();
+                                           // hideProgressDialog();
+                                            //mTaskListAdapter.removeItem(position);
+                                            OverdueFragment overdueFragment = new OverdueFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                            fragmentTransaction.replace( R.id.fragment_overDue, fragment2 );
-                                            fragmentTransaction.commit();*/
+                                            fragmentTransaction.replace( R.id.fragment_overDue, overdueFragment );
+                                            fragmentTransaction.commit();
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -495,75 +490,55 @@ public class OverdueFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
-
-
 // offfline Data
     private void overDueNoConnection() {
-        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper(getContext());
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount()!=0) {
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 TaskListRecords taskListRecords = new TaskListRecords();
                 String name = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_NAME));
-                String date  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_DUEDATE));
+                String date = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_DUEDATE));
                 String priority = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PRIORITY));
-                String projectcode  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_CODE));
+                String projectcode = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_CODE));
                 String taskcode = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_TASK_CODE));
-                String remindarscount  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REMINDARS_COUNT));
+                String remindarscount = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REMINDARS_COUNT));
                 String status = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_STATUS));
-                String projectName  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_NAME));
-                String type  = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REPEAT_TYPE));
+                String projectName = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_NAME));
+                String type = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REPEAT_TYPE));
                 taskListRecords.setName(name);
                 taskListRecords.setDue_date(date);
                 taskListRecords.setPriority(priority);
-                taskListRecords.setProject_code( projectcode );
-                taskListRecords.setTask_code( taskcode );
+                taskListRecords.setProject_code(projectcode);
+                taskListRecords.setTask_code(taskcode);
                 taskListRecords.setRemindars_count(remindarscount);
-                taskListRecords.setStatus( status );
-                taskListRecords.setProject_name( projectName );
-                taskListRecords.setRepeat_type( type );
-                Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                String formattedDate = df.format( date1 );
-                String date2[] =date.split( " " );
-                String date3 = date2[0];
+                taskListRecords.setStatus(status);
+                taskListRecords.setProject_name(projectName);
+                taskListRecords.setRepeat_type(type);
+                if (taskListRecords.getDue_date() != null) {
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
 
-                DateFormat dateFormat = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
-                String dateYes = dateFormat.format( yesterday() );
-                Date dat6 = new Date( dateYes );
-                System.out.println( "dateys" + dat6 );
-
-                try {
-                    Date date4 = new SimpleDateFormat( "yyyy-MM-dd" ).parse( date3 );
-                    System.out.println( "date3" + date4 );
-                    if (date4.before( dat6 ) && taskListRecords.getStatus().equals( "1" )) {
-                        taskListRecordsArrayList.add( taskListRecords );
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    String dateYes = dateFormat.format(yesterday());
+                    Date dat6 = new Date(dateYes);
+                    System.out.println("dateys" + dat6);
+                    try {
+                        Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse(date3);
+                        System.out.println("date3" + date4);
+                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")) {
+                            taskListRecordsArrayList.add(taskListRecords);
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
-
-
             }
-        }
+            }
         mTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
         mTaskRecylcerView.addOnItemTouchListener( new RecyclerTouchListener( this, mTaskRecylcerView, new ClickListener() {
             @Override
@@ -704,17 +679,15 @@ public class OverdueFragment extends Fragment {
 
                     }
                 } );
-                ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
+             /*   ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
                 mImageDelete.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
                     }
-                } );
-
+                } );*/
 
             }
-
             @Override
             public void onLongClick(View view, int position) {
 

@@ -94,12 +94,11 @@ public class PriorityFragment extends Fragment {
 
         mPriorityOfflineAdapter = new PriorityOfflineAdapter();
         mPriorityTaskRecylcerView.setAdapter( mPriorityOfflineAdapter );
-        attemptTaskList();
-        /*if (AndroidUtils.isNetworkAvailable( getActivity() )) {
+        if (AndroidUtils.isNetworkAvailable( getActivity() )) {
             attemptTaskList();
         } else {
             priorotyNoConnection();
-        }*/
+        }
         fabPriorityTask = view.findViewById( R.id.fab_prioritytask );
         fabPriorityTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -161,7 +160,6 @@ public class PriorityFragment extends Fragment {
           mPriortyTaskAdapter.filterList(taskListRecordsFilter);
       }*/
     private void attemptTaskList() {
-
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
@@ -174,8 +172,7 @@ public class PriorityFragment extends Fragment {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
                 } else {
                     AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                 }
@@ -267,8 +264,7 @@ public class PriorityFragment extends Fragment {
                                                             fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
                                                             fragmentTransaction.commit();
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                                        }
+                                                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                                                        }
                                                     } else {
                                                         AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                                                     }
@@ -352,7 +348,7 @@ public class PriorityFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showProgressDialog();
+                            //showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -363,15 +359,14 @@ public class PriorityFragment extends Fragment {
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            hideProgressDialog();
+                                           // hideProgressDialog();
                                             PriorityFragment priorityFragment = new PriorityFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
                                             fragmentTransaction.commit();
-                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
-                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                            Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();
                                         }
                                     } else {
                                         AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
@@ -448,6 +443,7 @@ public class PriorityFragment extends Fragment {
         }
     }
 
+/*
 
     private void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -465,11 +461,12 @@ public class PriorityFragment extends Fragment {
             mProgressDialog.hide();
         }
     }
+*/
 
     //OFFLINE Data
 
     private void  priorotyNoConnection() {
-        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
@@ -524,11 +521,11 @@ public class PriorityFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                   /*     PriorityFragment priorityFragment = new PriorityFragment();
+                                        PriorityFragment priorityFragment = new PriorityFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
-                                        fragmentTransaction.commit();*/
+                                        fragmentTransaction.commit();
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -554,11 +551,11 @@ public class PriorityFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                   /*     PriorityFragment priorityFragment = new PriorityFragment();
+                                                        PriorityFragment priorityFragment = new PriorityFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.fragment_priority, priorityFragment );
-                                                        fragmentTransaction.commit();*/
+                                                        fragmentTransaction.commit();
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -626,14 +623,6 @@ public class PriorityFragment extends Fragment {
                         Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
                         i.putExtra( "TaskCode", task_code );
                         startActivity( i );
-
-                    }
-                } );
-                ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
-                mImageDelete.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
 
                     }
                 } );

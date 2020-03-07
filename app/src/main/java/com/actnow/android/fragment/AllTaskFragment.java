@@ -81,52 +81,50 @@ public class AllTaskFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        session = new UserPrefUtils( getContext() );
-        View view = inflater.inflate( R.layout.fragment_all_task, container, false );
-        mProgressView = view.findViewById( R.id.progress_bar );
-        mContentLayout = view.findViewById( R.id.content_layout );
+        session = new UserPrefUtils(getContext());
+        View view = inflater.inflate(R.layout.fragment_all_task, container, false);
+        mProgressView = view.findViewById(R.id.progress_bar);
+        mContentLayout = view.findViewById(R.id.content_layout);
         taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-        mAllTaskRecylcerView = (RecyclerView) view.findViewById( R.id.alltask_recyclerView );
-        mLayoutManager = new LinearLayoutManager( getContext() );
-        mAllTaskRecylcerView.setLayoutManager( mLayoutManager );
-        mAllTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
-        mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
-        mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
+        mAllTaskRecylcerView = (RecyclerView) view.findViewById(R.id.alltask_recyclerView);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mAllTaskRecylcerView.setLayoutManager(mLayoutManager);
+        mAllTaskRecylcerView.setItemAnimator(new DefaultItemAnimator());
+        mTaskListAdapter = new TaskListAdapter(taskListRecordsArrayList);
+        mAllTaskRecylcerView.setAdapter(mTaskListAdapter);
 
-        mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
-        mAllTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
-        attemptTaskList();
-      /*  if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
-
+        mTaskOfflineAdapter = new TaskOfflineAdapter(taskListRecordsArrayList);
+        mAllTaskRecylcerView.setAdapter(mTaskOfflineAdapter);
+          if (AndroidUtils.isNetworkAvailable( getActivity() )) {
+            attemptTaskList();
         } else {
-            allFrgmentNoConnection();
-        }*/
-
-        fabAllTask = view.findViewById( R.id.fab_alltask );
-        fabAllTask.setOnClickListener( new View.OnClickListener() {
+              allFrgmentNoConnection();
+        }
+        fabAllTask = view.findViewById(R.id.fab_alltask);
+        fabAllTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID );
-                String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                Intent i = new Intent( getActivity(), ViewTasksActivity.class );
-                i.putExtra( "id", id );
-                i.putExtra( "taskOwnerName", taskOwnerName );
-                startActivity( i );
+                String id = userId.get(UserPrefUtils.ID);
+                String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                Intent i = new Intent(getActivity(), ViewTasksActivity.class);
+                i.putExtra("id", id);
+                i.putExtra("taskOwnerName", taskOwnerName);
+                startActivity(i);
             }
-        } );
+        });
 
-        mImageBulbTask = view.findViewById( R.id.image_bulbTask );
-        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+        mImageBulbTask = view.findViewById(R.id.image_bulbTask);
+        mImageBulbTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent( getActivity(), ViewIdeasActivity.class );
-                startActivity( i );
+                Intent i = new Intent(getActivity(), ViewIdeasActivity.class);
+                startActivity(i);
             }
-        } );
-        mTaskQucikSearch = view.findViewById( R.id.edit_searchTask );
-        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+        });
+        mTaskQucikSearch = view.findViewById(R.id.edit_searchTask);
+        mTaskQucikSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -139,158 +137,155 @@ public class AllTaskFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter( editable.toString() );
+               // filter(editable.toString());
 
             }
-        } );
-        mButtonAdavancedSearch = view.findViewById( R.id.button_searchTask );
-        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
+        });
+        mButtonAdavancedSearch = view.findViewById(R.id.button_searchTask);
+        mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent( getActivity(), AdvancedSearchActivity.class );
-                startActivity( i );
+                Intent i = new Intent(getActivity(), AdvancedSearchActivity.class);
+                startActivity(i);
             }
-        } );
+        });
         return view;
 
 
     }
 
-    private void filter(String toString) {
+  /*  private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
-            if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
-                taskListRecordsFilter.add( name );
+            if (name.getName().toLowerCase().contains(toString.toLowerCase())) {
+                taskListRecordsFilter.add(name);
             }
         }
-        mTaskListAdapter.filterList( taskListRecordsFilter );
+        mTaskListAdapter.filterList(taskListRecordsFilter);
     }
-
+*/
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
-        id = userId.get( UserPrefUtils.ID );
-        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
-        call.enqueue( new Callback<TaskListResponse>() {
+        id = userId.get(UserPrefUtils.ID);
+        Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse(id);
+        call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
-                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
-                    if (response.body().getSuccess().equals( "true" )) {
-                        setTaskList( response.body().getTask_records() );
+                    if (response.body().getSuccess().equals("true")) {
+                        setTaskList(response.body().getTask_records());
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
                 } else {
                 }
             }
 
             @Override
             public void onFailure(Call<TaskListResponse> call, Throwable t) {
-                Log.d( "CallBack", " Throwable is " + t );
+                Log.d("CallBack", " Throwable is " + t);
 
             }
-        } );
+        });
     }
 
-
     private void setTaskList(List<TaskListRecords> taskListRecordsList) {
-        TaskDBHelper dbHelper = new TaskDBHelper( getContext() );
+        TaskDBHelper dbHelper = new TaskDBHelper(getContext());
         if (taskListRecordsList.size() > 0) {
             for (int i = 0; taskListRecordsList.size() > i; i++) {
-                TaskListRecords taskListRecords1 = taskListRecordsList.get( i );
+                TaskListRecords taskListRecords1 = taskListRecordsList.get(i);
                 TaskListRecords taskListRecords = new TaskListRecords();
-                taskListRecords.setTask_id( taskListRecords1.getTask_id() );
-                taskListRecords.setName( taskListRecords1.getName() );
-                taskListRecords.setDue_date( taskListRecords1.getDue_date() );
-                taskListRecords.setPriority( taskListRecords1.getPriority() );
-                taskListRecords.setProject_code( taskListRecords1.getProject_code() );
-                taskListRecords.setTask_code( taskListRecords1.getTask_code() );
-                taskListRecords.setRemindars_count( taskListRecords1.getRemindars_count() );
-                taskListRecords.setStatus( taskListRecords1.getStatus() );
-                taskListRecords.setProject_name( taskListRecords1.getProject_name() );
-                taskListRecords.setRepeat_type( taskListRecords1.getRepeat_type() );
-                dbHelper.insertTaskDetails( taskListRecords );
-                System.out.println( "data: " + i + " taskData: " + id );
-                if (taskListRecords.getStatus().equals( "1" )) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                taskListRecords.setTask_id(taskListRecords1.getTask_id());
+                taskListRecords.setName(taskListRecords1.getName());
+                taskListRecords.setDue_date(taskListRecords1.getDue_date());
+                taskListRecords.setPriority(taskListRecords1.getPriority());
+                taskListRecords.setProject_code(taskListRecords1.getProject_code());
+                taskListRecords.setTask_code(taskListRecords1.getTask_code());
+                taskListRecords.setRemindars_count(taskListRecords1.getRemindars_count());
+                taskListRecords.setStatus(taskListRecords1.getStatus());
+                taskListRecords.setProject_name(taskListRecords1.getProject_name());
+                taskListRecords.setRepeat_type(taskListRecords1.getRepeat_type());
+                dbHelper.insertTaskDetails(taskListRecords);
+                System.out.println("data: " + i + " taskData: " + id);
+                if (taskListRecords.getStatus().equals("1")) {
+                    taskListRecordsArrayList.add(taskListRecords);
                 }
             }
-            mAllTaskRecylcerView.setAdapter( mTaskListAdapter );
-            mAllTaskRecylcerView.addOnItemTouchListener( new AllTaskFragment.RecyclerTouchListener( this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
+            mAllTaskRecylcerView.setAdapter(mTaskListAdapter);
+            mAllTaskRecylcerView.addOnItemTouchListener(new AllTaskFragment.RecyclerTouchListener(this, mAllTaskRecylcerView, new AllTaskFragment.ClickListener() {
                 @Override
                 public void onClick(final View view, final int position) {
-                    final View view1 = view.findViewById( R.id.taskList_liner );
-                    RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
-                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
-                    final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
-                    final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
-                    final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
-                    final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
-                    final TextView tv_projectName = (TextView) view.findViewById( R.id.tv_projectNameTaskList );
-                    final TextView tv_projectCode = (TextView) view.findViewById( R.id.tv_projectCodeTaskList );
-                    groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
+                    final View view1 = view.findViewById(R.id.taskList_liner);
+                    RadioGroup groupTask = (RadioGroup) view.findViewById(R.id.taskradioGroupTask);
+                    final RadioButton radioButtonTaskName = (RadioButton) view.findViewById(R.id.radio_buttonAction);
+                    final TextView tv_dueDate = (TextView) view.findViewById(R.id.tv_taskListDate);
+                    final TextView tv_taskcode = (TextView) view.findViewById(R.id.tv_taskCode);
+                    final TextView tv_priority = (TextView) view.findViewById(R.id.tv_taskListPriority);
+                    final TextView tv_status = (TextView) view.findViewById(R.id.tv_taskstatus);
+                    final TextView tv_projectName = (TextView) view.findViewById(R.id.tv_projectNameTaskList);
+                    final TextView tv_projectCode = (TextView) view.findViewById(R.id.tv_projectCodeTaskList);
+                    groupTask.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            view1.setVisibility( View.VISIBLE );
-                                         /*   AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                            view1.setVisibility(View.VISIBLE);
+                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                            fragmentTransaction.commit();*/
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
+                                            fragmentTransaction.commit();
+                                            Snackbar snackbar1 = Snackbar.make(mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }
-                                    } );
+                                    });
                                     View sbView = snackbar.getView();
-                                    TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
-                                    textView.setOnClickListener( new View.OnClickListener() {
+                                    TextView textView = (TextView) sbView.findViewById(R.id.snackbar_text);
+                                    textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            mTaskListAdapter.removeItem(position);
-                                            view1.setVisibility( View.GONE );
+                                           // mTaskListAdapter.removeItem(position);
+                                            view1.setVisibility(View.GONE);
                                             HashMap<String, String> userId = session.getUserDetails();
-                                            String id = userId.get( UserPrefUtils.ID );
-                                            final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                            String id = userId.get(UserPrefUtils.ID);
+                                            final String taskOwnerName = userId.get(UserPrefUtils.NAME);
                                             final String name = mTaskName.getText().toString();
                                             final String date = tv_dueDate.getText().toString();
                                             String task_code = tv_taskcode.getText().toString();
                                             String task_prioroty = tv_priority.getText().toString();
-                                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
-                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
-                                            callComplete.enqueue( new Callback<TaskComplete>() {
+                                            String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
+                                            Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete(id, task_code, orgn_code);
+                                            callComplete.enqueue(new Callback<TaskComplete>() {
                                                 @Override
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
-                                                        if (response.body().getSuccess().equals( "true" )) {
-                                                      /*      AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                                        if (response.body().getSuccess().equals("true")) {
+                                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                             fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                                            fragmentTransaction.commit();*/
+                                                            fragmentTransaction.commit();
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                                        }
+                                                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                                                        }
                                                     } else {
-                                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                                        AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                                                     }
                                                 }
 
                                                 @Override
                                                 public void onFailure(Call<TaskComplete> call, Throwable t) {
-                                                    Log.d( "CallBack", " Throwable is " + t );
+                                                    Log.d("CallBack", " Throwable is " + t);
                                                 }
-                                            } );
-                                            Snackbar snackbar2 = Snackbar.make( mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT );
+                                            });
+                                            Snackbar snackbar2 = Snackbar.make(mContentLayout, "Task is completed!", Snackbar.LENGTH_SHORT);
                                             snackbar2.show();
                                         }
-                                    } );
+                                    });
                                     snackbar.show();
                                 } else if (checkedId == 0) {
                                     selectedType = radioButtonTaskName.getText().toString();
@@ -298,98 +293,103 @@ public class AllTaskFragment extends Fragment {
                                 }
                             }
                         }
-                    } );
-                    mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
-                    mTaskName.setOnClickListener( new View.OnClickListener() {
+                    });
+                    mTaskName = (TextView) view.findViewById(R.id.tv_taskListName);
+                    mTaskName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
-                            String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent( getActivity(), EditTaskActivity.class );
-                            i.putExtra( "TaskName", name );
-                            i.putExtra( "TaskDate", date );
-                            i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "taskOwnerName", taskOwnerName );
-                            startActivity( i );
-                            System.out.println( "user" + task_code );
+                            Intent i = new Intent(getActivity(), EditTaskActivity.class);
+                            i.putExtra("TaskName", name);
+                            i.putExtra("TaskDate", date);
+                            i.putExtra("TaskCode", task_code);
+                            i.putExtra("taskOwnerName", taskOwnerName);
+                            startActivity(i);
+                            System.out.println("user" + task_code);
                         }
-                    } );
-                    ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
-                    mImageUserAdd.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);
+                    mImageUserAdd.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
                             String projectCode = tv_projectCode.getText().toString();
-                            Intent i = new Intent( getActivity(), InvitationActivity.class );
-                            i.putExtra( "TaskCode", task_code );
-                            i.putExtra( "SenIvitaionprojectCode", projectCode );
-                            startActivity( i );
+                            Intent i = new Intent(getActivity(), InvitationActivity.class);
+                            i.putExtra("TaskCode", task_code);
+                            i.putExtra("SenIvitaionprojectCode", projectCode);
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
-                    mImageComment.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageComment = (ImageView) view.findViewById(R.id.img_commentTaskList);
+                    mImageComment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent i = new Intent( getActivity(), CommentsActivity.class );
+                            Intent i = new Intent(getActivity(), CommentsActivity.class);
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
-                            i.putExtra( "TaskName", name );
-                            i.putExtra( "TaskDate", date );
-                            i.putExtra( "TaskCode", task_code );
-                            startActivity( i );
+                            i.putExtra("TaskName", name);
+                            i.putExtra("TaskDate", date);
+                            i.putExtra("TaskCode", task_code);
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
-                    mImageRaminder.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageRaminder = (ImageView) view.findViewById(R.id.img_raminderTaskList);
+                    mImageRaminder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String task_code = tv_taskcode.getText().toString();
-                            Intent i = new Intent( getActivity(), ReaminderScreenActivity.class );
-                            i.putExtra( "TaskCode", task_code );
-                            startActivity( i );
+                            Intent i = new Intent(getActivity(), ReaminderScreenActivity.class);
+                            i.putExtra("TaskCode", task_code);
+                            startActivity(i);
                         }
-                    } );
-                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
-                    mImageDelete.setOnClickListener( new View.OnClickListener() {
+                    });
+                    ImageView mImageDelete = (ImageView) view.findViewById(R.id.img_delete);
+                    mImageDelete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showProgressDialog();
+                           // showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
-                            String id = userId.get( UserPrefUtils.ID );
-                            String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                            String id = userId.get(UserPrefUtils.ID);
+                            String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
                             String task_code = tv_taskcode.getText().toString();
-                            Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete( id, task_code, orgn_code );
-                            taskDeleteCall.enqueue( new Callback<TaskDelete>() {
+                            Call<TaskDelete> taskDeleteCall = ANApplications.getANApi().checkTheDelete(id, task_code, orgn_code);
+                            taskDeleteCall.enqueue(new Callback<TaskDelete>() {
                                 @Override
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
-                                    System.out.println( "reponsedelete" + response.raw() );
+                                    System.out.println("reponsedelete" + response.raw());
                                     if (response.isSuccessful()) {
-                                        System.out.println( "deleteResponse1" + response.raw() );
-                                        if (response.body().getSuccess().equals( "true" )) {
-                                            hideProgressDialog();
-                                            mTaskListAdapter.removeItem(position);
-                                            Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        System.out.println("deleteResponse1" + response.raw());
+                                        if (response.body().getSuccess().equals("true")) {
+                                            //hideProgressDialog();
+                                            //mTaskListAdapter.removeItem(position);
+                                            AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
+                                            fragmentTransaction.commit();
+                                            Snackbar.make(mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT).show();
                                         } else {
-                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                            Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();
                                         }
                                     } else {
-                                        AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
+                                        AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
                                     }
 
                                 }
 
                                 @Override
                                 public void onFailure(Call<TaskDelete> call, Throwable t) {
-                                    Log.d( "CallBack", " Throwable is " + t );
+                                    Log.d("CallBack", " Throwable is " + t);
 
                                 }
-                            } );
+                            });
                         }
-                    } );
+                    });
                 }
 
                 @Override
@@ -397,7 +397,7 @@ public class AllTaskFragment extends Fragment {
 
                 }
 
-            } ) );
+            }));
         }
     }
 
@@ -414,26 +414,26 @@ public class AllTaskFragment extends Fragment {
 
         public RecyclerTouchListener(AllTaskFragment context, final RecyclerView mRecylerViewSingleSub, AllTaskFragment.ClickListener clickListener) {
             this.clicklistener = clickListener;
-            gestureDetector = new GestureDetector( getContext(), new GestureDetector.SimpleOnGestureListener() {
+            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 public void onLongPress(MotionEvent e) {
-                    View child = mRecylerViewSingleSub.findChildViewUnder( e.getX(), e.getY() );
+                    View child = mRecylerViewSingleSub.findChildViewUnder(e.getX(), e.getY());
                     if (child != null && clicklistener != null) {
-                        clicklistener.onLongClick( child, mRecylerViewSingleSub.getChildAdapterPosition( child ) );
+                        clicklistener.onLongClick(child, mRecylerViewSingleSub.getChildAdapterPosition(child));
                     }
                 }
-            } );
+            });
         }
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = rv.findChildViewUnder( e.getX(), e.getY() );
-            if (child != null && clicklistener != null && gestureDetector.onTouchEvent( e )) {
-                clicklistener.onClick( child, rv.getChildAdapterPosition( child ) );
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clicklistener != null && gestureDetector.onTouchEvent(e)) {
+                clicklistener.onClick(child, rv.getChildAdapterPosition(child));
             }
 
             return false;
@@ -449,27 +449,9 @@ public class AllTaskFragment extends Fragment {
     }
 
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getContext());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
-
-    // Offline Code
-
+//OFFLINE DATA
     private void   allFrgmentNoConnection() {
-       // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+         AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
@@ -522,11 +504,11 @@ public class AllTaskFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                   /*     AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                        AllTaskFragment allTaskFragment = new AllTaskFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                        fragmentTransaction.commit();*/
+                                        fragmentTransaction.commit();
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -551,11 +533,11 @@ public class AllTaskFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                  /*      AllTaskFragment allTaskFragment = new AllTaskFragment();
+                                                        AllTaskFragment allTaskFragment = new AllTaskFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.fragment_allTask, allTaskFragment );
-                                                        fragmentTransaction.commit();*/
+                                                        fragmentTransaction.commit();
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -643,8 +625,3 @@ public class AllTaskFragment extends Fragment {
     }
 
 }
-
-
-
-
-

@@ -93,22 +93,7 @@ public class ViewProjectsActivity extends AppCompatActivity {
         }
     }
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
 
     private void header() {
         ImageView imgeBack = (ImageView) findViewById( R.id.image_back );
@@ -323,7 +308,6 @@ public class ViewProjectsActivity extends AppCompatActivity {
 
     private void requestCrateTask(String a, String b, String c) {
         System.out.println( "values" + a + b + c );
-        showProgressDialog();
         Call<ProjectAddResponse> call = ANApplications.getANApi().checkProjectAddReponse( a, b, c );
         call.enqueue( new Callback<ProjectAddResponse>() {
             @Override
@@ -331,7 +315,6 @@ public class ViewProjectsActivity extends AppCompatActivity {
                 System.out.println( "arjun" + response.raw() );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         Intent i = new Intent( ViewProjectsActivity.this, ProjectFooterActivity.class );
                         startActivity( i );
                     } else {

@@ -1,6 +1,8 @@
 package com.actnow.android.activities;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -9,9 +11,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.actnow.android.ANApplications;
@@ -68,14 +72,14 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     String providerId;
     String providerName = "actNowapp";
     ImageView imgLogo;
-
+    Dialog dialog;
 
     public LoginButton loginButton;
     public Button fb, google;
     public CallbackManager callbackManager;
     public String id, name, emailFacebook, gender, birthday;
 
-
+    final Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,11 +219,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                GoogleSignInResult result = opr.get();
                handleSignInResult(result);
            } else {
-               showProgressDialog();
+              // showProgressDialog();
                opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                    @Override
                    public void onResult(GoogleSignInResult googleSignInResult) {
-                       hideProgressDialog();
+                      // hideProgressDialog();
                        handleSignInResult(googleSignInResult);
                    }
                });
@@ -273,22 +277,26 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             updateUI(false);
         }
     }
-    private void showProgressDialog() {
+  /*  private void showProgressDialog() {
+      *//*  dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
+        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
+        dialog.setCancelable( true );
+        dialog.setContentView( R.layout.custom_dialog_progress );
+        ProgressBar llProgressBar = (ProgressBar)dialog.findViewById(R.id.progressBar);
+        dialog.show();*//*
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
         }
-
         mProgressDialog.show();
     }
-
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }
+    }*/
     private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(fullName,email,providerId,providerName," "," " );
@@ -303,7 +311,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         if (response.body().getSuccess().equals("true")){
                             SignUpResponse response2= response.body();
                             session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name(),response2.getImage_path());
-
                             System.out.println( "imge" + response2.getImage_path());
                             activityMe();
                             AndroidUtils.displayToast(getApplicationContext(),"Your account has been Login");
@@ -363,13 +370,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
                 System.out.println( "reponse"+ response.raw());
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
+               /// showProgressDialog();
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
                         SignInResponse response1 = response.body();
                         session.createLoginSession(response1.getId(),response1.getName(),response1.getEmail(),response1.getMobile_number(),response1.getOrgn_code(),response1.getUser_type(),response1.getProvider_id(),response1.getProvider_name(),response1.getImage_path());
+                        //hideProgressDialog();
                         System.out.println("response1"+getTaskId());
                        activityMe();
-                        showProgressDialog();
+
                     } else {
                         Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();
                     }

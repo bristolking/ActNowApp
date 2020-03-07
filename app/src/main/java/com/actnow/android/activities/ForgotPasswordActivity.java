@@ -42,6 +42,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         mForgotSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               // showProgressDialog();
                 attemptSendOtp();
             }
         });
@@ -63,7 +64,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
     }
     private  void requstSendOtp(final String mobileNumber){
-        showProgressDialog();
         Call<SendOtpResponse> call = ANApplications.getANApi().sendOtp(mobileNumber);
         call.enqueue(new Callback<SendOtpResponse>() {
             @Override
@@ -71,7 +71,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
-                        hideProgressDialog();
+                        //hideProgressDialog();
                         Intent otp =new Intent(getApplicationContext(),OTPActivity.class);
                         otp.putExtra("mobileNumber",mobileNumber);
                         startActivity(otp);
@@ -88,14 +88,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
     }
-    private void showProgressDialog() {
+   /* private void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog = new ProgressDialog(getApplicationContext());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
         }
-
         mProgressDialog.show();
     }
 
@@ -104,5 +103,5 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             mProgressDialog.hide();
         }
     }
-
+*/
 }

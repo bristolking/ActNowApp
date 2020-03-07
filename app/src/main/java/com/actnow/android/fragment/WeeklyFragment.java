@@ -94,13 +94,11 @@ public class WeeklyFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mWeeklyRepetTask.setAdapter( mTaskOfflineAdapter );
-
-        attemptTaskList();
-       /* if (AndroidUtils.isNetworkAvailable( getActivity())) {
+         if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
             weeklyTypeNoConnection();
-        }*/
+        }
         fabWeeklyrepetTask = view.findViewById( R.id.fab_weeklytask );
         fabWeeklyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -137,7 +135,7 @@ public class WeeklyFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter( editable.toString() );
+                //filter( editable.toString() );
 
             }
         } );
@@ -152,7 +150,7 @@ public class WeeklyFragment extends Fragment {
         return view;
     }
 
-    private void filter(String toString) {
+   /* private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
             if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
@@ -160,7 +158,7 @@ public class WeeklyFragment extends Fragment {
             }
         }
         mTaskListAdapter.filterList( taskListRecordsFilter );
-    }
+    }*/
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -234,12 +232,11 @@ public class WeeklyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-
-                                      /*  WeeklyFragment weeklyFragment = new WeeklyFragment();
+                                        WeeklyFragment weeklyFragment = new WeeklyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
-                                        fragmentTransaction.commit();*/
+                                        fragmentTransaction.commit();
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -250,7 +247,7 @@ public class WeeklyFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
                                         view1.setVisibility( View.GONE );
-                                        mTaskListAdapter.removeItem(position);
+                                       // mTaskListAdapter.removeItem(position);
                                         HashMap<String, String> userId = session.getUserDetails();
                                         String id = userId.get( UserPrefUtils.ID );
                                         System.out.println( "id" + id );
@@ -266,11 +263,11 @@ public class WeeklyFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                      /*  WeeklyFragment weeklyFragment = new WeeklyFragment();
+                                                        WeeklyFragment weeklyFragment = new WeeklyFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
-                                                        fragmentTransaction.commit();*/
+                                                        fragmentTransaction.commit();
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -357,7 +354,7 @@ public class WeeklyFragment extends Fragment {
                 mImageDelete.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showProgressDialog();
+                       // showProgressDialog();
                         HashMap<String, String> userId = session.getUserDetails();
                         String id = userId.get( UserPrefUtils.ID );
                         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -368,16 +365,16 @@ public class WeeklyFragment extends Fragment {
                             public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body().getSuccess().equals( "true" )) {
-                                        hideProgressDialog();
-                                        mTaskListAdapter.removeItem(position);
-                                      /*  WeeklyFragment weeklyFragment = new WeeklyFragment();
+                                        //hideProgressDialog();
+                                        //mTaskListAdapter.removeItem(position);
+                                        WeeklyFragment weeklyFragment = new WeeklyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
-                                        fragmentTransaction.commit();*/
-                                        Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
+                                        fragmentTransaction.commit();
+                                        Toast.makeText( getActivity(), "Task Deleted Sucessfully",Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                        Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();
                                     }
                                 } else {
                                     AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
@@ -453,25 +450,9 @@ public class WeeklyFragment extends Fragment {
         }
     }
 
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
+    //OFFLINE DATA
     private void weeklyTypeNoConnection() {
-        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
@@ -524,11 +505,11 @@ public class WeeklyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                    /*    WeeklyFragment weeklyFragment = new WeeklyFragment();
+                                        WeeklyFragment weeklyFragment = new WeeklyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
-                                        fragmentTransaction.commit();*/
+                                        fragmentTransaction.commit();
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -553,12 +534,11 @@ public class WeeklyFragment extends Fragment {
                                             @Override
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
-                                                    if (response.body().getSuccess().equals( "true" )) {
-//                                                        WeeklyFragment weeklyFragment = new WeeklyFragment();
-//                                                        FragmentManager fragmentManager = getFragmentManager();
-//                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                                                        fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
-//                                                        fragmentTransaction.commit();
+                                                    if (response.body().getSuccess().equals( "true" )) { WeeklyFragment weeklyFragment = new WeeklyFragment();
+                                                       FragmentManager fragmentManager = getFragmentManager();
+                                                       FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                      fragmentTransaction.replace( R.id.weekly_fragment, weeklyFragment );
+                                                       fragmentTransaction.commit();
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }

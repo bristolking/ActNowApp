@@ -45,6 +45,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         mChangeSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //showProgressDialog();
                 attemptChangepasswordLogin();
             }
         });
@@ -80,7 +81,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassWrodRequst(String mobile_number, String password) {
-        showProgressDialog();
         Call<CheckOtpResponse> call = ANApplications.getANApi().changePassword(mobile_number, password);
         call.enqueue(new Callback<CheckOtpResponse>() {
             @Override
@@ -88,7 +88,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals("true")) {
-                        hideProgressDialog();
+                      //  hideProgressDialog();
                         Intent i = new Intent(ChangePasswordActivity.this, SignInActivity.class);
                         startActivity(i);
                     } else {
@@ -106,20 +106,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         });
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
+//    private void showProgressDialog() {
+//        if (mProgressDialog == null) {
+//            mProgressDialog = new ProgressDialog(getApplicationContext());
+//            mProgressDialog.setMessage(getString(R.string.loading));
+//            mProgressDialog.setIndeterminate(true);
+//            mProgressDialog.setCancelable(false);
+//        }
+//        mProgressDialog.show();
+//    }
+//
+//    private void hideProgressDialog() {
+//        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+//            mProgressDialog.hide();
+//        }
+//    }
 }

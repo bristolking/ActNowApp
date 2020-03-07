@@ -77,7 +77,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
     ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList;
 
     RadioButton mRadioButtonProjectName;
-    private ProgressDialog mProgressDialog;
 
 
     int textlength = 0;
@@ -97,9 +96,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
         mRecyclerViewProjectFooter.setAdapter( mProjectFooterAdapter );
         mProjectOfflineAdapter = new ProjectOfflineAdapter(projectListResponseRecordsArrayList);
         mRecyclerViewProjectFooter.setAdapter( mProjectOfflineAdapter );
-
-
-
         initializeViews();
         appHeaderTwo();
         appFooter();
@@ -252,7 +248,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
         mContentLayout = findViewById( R.id.content_layout );
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptProjectList();
-            showProgressDialog();
         } else {
             attemptOfflineProjects();
         }
@@ -327,11 +322,10 @@ public class ProjectFooterActivity extends AppCompatActivity {
         call.enqueue( new Callback<ProjectListResponse>() {
             @Override
             public void onResponse(Call<ProjectListResponse> call, Response<ProjectListResponse> response) {
-               // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+                AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
                         setProjectFooterList( response.body().getProject_records() );
-                        hideProgressDialog();
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                     }
@@ -368,7 +362,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 public void onClick(View view, int position) {
                     View view1 = (View) findViewById( R.id.liner_projectList );
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById( R.id.radioGroupProject );
-                    mRadioGroup.clearCheck();
                     mRadioButtonProjectName = (RadioButton)findViewById( R.id.projectNameFooter );
                     final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_projectCode );
                     final TextView mProjectId = (TextView) view.findViewById( R.id.tv_projectId );
@@ -377,7 +370,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            if (null != mRadioButtonProjectName && checkedId > -1) {
+                            if (checkedId == R.id.projectNameFooter) {
                                 if (checkedId == R.id.projectNameFooter) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
                                     String projectcode = mProjectCode.getText().toString();
@@ -386,13 +379,13 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     String projectOwnerName = userId.get( UserPrefUtils.NAME );
                                     String s = mRadioButtonProjectName.getText().toString();
                                     Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
-                                    i.putExtra("id",id);
                                     i.putExtra( "projectName", s );
                                     i.putExtra( "id", id );
                                     i.putExtra( "projectOwnerName", projectOwnerName );
                                     i.putExtra( "projectcode", projectcode );
+                                    System.out.println("Project TaskValues" + s + id + projectOwnerName + projectcode );
                                     startActivity( i );
-                                } else if (checkedId != 0) {
+                                } else if (checkedId != -1) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
                                 }
                             }
@@ -512,24 +505,10 @@ public class ProjectFooterActivity extends AppCompatActivity {
         }
     }
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
 
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
     private void attemptOfflineProjects() {
-       // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         ProjectDBHelper projectDBHelper = new ProjectDBHelper(getApplicationContext());
         Cursor cursor = projectDBHelper.getProjectAllData();
         if (cursor.getCount() != 0) {

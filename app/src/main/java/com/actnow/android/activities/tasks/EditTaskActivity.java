@@ -599,22 +599,7 @@ public class EditTaskActivity extends AppCompatActivity {
             }
         } );
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
 
     private void requestDynamicProjectList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -774,7 +759,6 @@ public class EditTaskActivity extends AppCompatActivity {
                 if (week_days.contains( "Sunday" )) {
                     list.add( "7" );
                 }
-                showProgressDialog();
             requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( list ), days, months );
         }else {
                 requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( week_days ), days, months );
@@ -784,16 +768,16 @@ public class EditTaskActivity extends AppCompatActivity {
 
     private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
         System.out.println( "values" + id + taskName + duedate  + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
-        showProgressDialog();
         Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
         call.enqueue( new Callback<TaskEditResponse>() {
 
             @Override
             public void onResponse(Call<TaskEditResponse> call, Response<TaskEditResponse> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+
                 System.out.println( "arjun" + response.raw() );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         Intent i = new Intent( EditTaskActivity.this, TaskAddListActivity.class );
                         startActivity( i );
                     } else {

@@ -68,7 +68,6 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     EditText mEditText;
     TextView mTextProjectCount, mProjectTotalTask;
-    private ProgressDialog mProgressDialog;
     TextView tv_numProjectInsightsValue;
 
     ArrayList<Entry> x;
@@ -235,12 +234,11 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         mRecyclerViewProjectInsights.setAdapter(mProjectInsightsAdapter);
 
         apiCallProjectInsights();
-        //showProgressDialog();
+
 
     }
 
     private void apiCallProjectInsights() {
-        showProgressDialog();
         HashMap<String, String> user = session.getUserDetails();
         String id = user.get(UserPrefUtils.ID);
         String orngcode = user.get(UserPrefUtils.ORGANIZATIONNAME);
@@ -248,6 +246,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 System.out.println("SeverReponse" + response.raw());
                 if (response.isSuccessful()) {
                     System.out.println("SeverReponse1" + response.raw());
@@ -258,7 +257,6 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                                 System.out.println("SeverReponse2" + response.body().toString());
                                 JSONArray jsonArray = jsonObject.getJSONArray("projects");
                                 setProjectInsightsList(jsonArray);
-                                hideProgressDialog();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -412,22 +410,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
     }
 
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
 
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);

@@ -95,8 +95,6 @@ public class ApprovalsActivity extends AppCompatActivity {
     private boolean add = false;
     private Paint p = new Paint();
     String task_code;
-    private ProgressDialog mProgressDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,7 +294,6 @@ public class ApprovalsActivity extends AppCompatActivity {
         view = getLayoutInflater().inflate(R.layout.custom_approval_tasklist, null);
 
         apiCall();
-        showProgressDialog();
 
     }
 
@@ -314,7 +311,6 @@ public class ApprovalsActivity extends AppCompatActivity {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setProjectFooterList(response.body().getTask_records());
-                        hideProgressDialog();
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -395,7 +391,6 @@ public class ApprovalsActivity extends AppCompatActivity {
                     mImgeDelete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get(UserPrefUtils.ID);
                             String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
@@ -407,7 +402,6 @@ public class ApprovalsActivity extends AppCompatActivity {
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals("true")) {
-                                            hideProgressDialog();
                                             mApprovalAdapter.removeItem(position);
                                             Snackbar.make(mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT).show();
                                         } else {
@@ -597,23 +591,6 @@ public class ApprovalsActivity extends AppCompatActivity {
     private void removeView() {
         if (view.getParent() != null) {
             ((ViewGroup) view.getParent()).removeView(view);
-        }
-    }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
         }
     }
 

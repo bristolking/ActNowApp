@@ -70,7 +70,6 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
     IndividualInsightsAdapter mIndividualInsightsAdapter;
     RecyclerView mRecyclerViewIndividualInsights;
     RecyclerView.LayoutManager mLayoutManager;
-    private ProgressDialog mProgressDialog;
 
 
     ArrayList<IndividualMembersReponse> individualMembersReponseArrayList = new ArrayList<IndividualMembersReponse>();
@@ -230,7 +229,6 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         mIndividualInsightsAdapter = new IndividualInsightsAdapter(individualMembersReponseArrayList);
         mRecyclerViewIndividualInsights.setAdapter(mIndividualInsightsAdapter);
         apiCallIndividual();
-        showProgressDialog();
 
     }
     private void apiCallIndividual() {
@@ -240,6 +238,7 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 System.out.println("SeverReponse" + response.raw());
                 if (response.isSuccessful()) {
                     System.out.println("SeverReponse1" + response.raw());
@@ -250,7 +249,6 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
                                 JSONArray jsonArray = jsonObject.getJSONArray("members");
                                 System.out.println("SeverReponse2" + jsonArray);
                                 setIndividualInsightsList(jsonArray);
-                                hideProgressDialog();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -403,26 +401,6 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
-
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
-
 
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);

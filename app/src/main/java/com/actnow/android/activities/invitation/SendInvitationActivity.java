@@ -173,6 +173,7 @@ public class SendInvitationActivity extends AppCompatActivity {
         userSendInvitationsCall.enqueue( new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 System.out.println( "severReponse5" + response.raw() );
                 if (response.isSuccessful()){
                 try {

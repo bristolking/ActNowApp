@@ -55,20 +55,11 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/tv_taskListDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="25/01/2019"
-                    android:textColor="@color/colorAccent" />
-                <TextView
                     android:id="@+id/tv_taskRaminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="0"
-                    android:paddingRight="15dp"
+                    android:layout_weight="1"
                     android:text="0"
                     android:textColor="@color/colorAccent" />
 
@@ -115,6 +106,13 @@
                     android:text="0"
                     android:textColor="@color/colorAccent"
                     android:visibility="gone" />
+                <TextView
+                    android:id="@+id/tv_taskListDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="25/01/2019"
+                    android:textColor="@color/colorAccent" />
             </LinearLayout>
 
         </LinearLayout>

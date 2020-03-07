@@ -504,13 +504,13 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+
     private void footer() {
         ImageView mUserIntivationReminder = (ImageView) findViewById( R.id.img_individualReminder );
         mUserIntivationReminder.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
-
             }
         } );
         ImageView mImageSend = (ImageView) findViewById( R.id.sendImg_reminder );
@@ -535,7 +535,6 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
 
             }
         } );
-
 
     }
     @Override
@@ -657,10 +656,7 @@ public class ReaminderScreenActivity extends AppCompatActivity implements
 
         } ) );
 
-
-
     }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     private void showPopupOffline(View view) {
         PopupMenu popupMenu = new PopupMenu( this, view, Gravity.RIGHT | NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0 );

@@ -28,7 +28,7 @@ public class RepetitiveTabedFragment extends Fragment {
         View  view= inflater.inflate(R.layout.fragment_tabed_repetitive, container, false);
         //Toolbar toolbar = view.findViewById(R.id.repetitive_toolbar);
         viewPager = (ViewPager)view.findViewById(R.id.repetitive_viewpager);
-        viewPagerAdapter = new RepetitiveTabedFragment.ViewPagerAdapter(getFragmentManager());
+        viewPagerAdapter = new RepetitiveTabedFragment.ViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout = (TabLayout)view.findViewById(R.id.retitve_tabs);
         tabLayout.setupWithViewPager(viewPager);

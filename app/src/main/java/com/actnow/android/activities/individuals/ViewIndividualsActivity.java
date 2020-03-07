@@ -3,6 +3,7 @@ package com.actnow.android.activities.individuals;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -43,6 +44,7 @@ import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.DailyTaskChartActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.CheckBoxAdapter;
+import com.actnow.android.databse.IndividualDBHelper;
 import com.actnow.android.sdk.responses.CheckBoxResponse;
 import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.utils.AndroidUtils;
@@ -71,10 +73,6 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     EditText mIndividualQucikSearch;
     Button mIndividualButtonAdavancedSearch;
     ImageView mIndividualImageBulbTask;
-
-    private ProgressDialog mProgressDialog;
-
-
 
     String id;
     String taskOwnerName;
@@ -287,7 +285,13 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         checkBoxAdapter = new CheckBoxAdapter(orgnUserRecordsCheckBoxList);
         mRecyclerView.setAdapter(checkBoxAdapter);
-        showProgressDialog();
+        if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
+            attemptOrngUserList();
+        } else {
+            attemptOfflineOrnguser();
+        }
+    }
+    private void attemptOrngUserList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
         System.out.println("id" + id);
@@ -302,7 +306,6 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                         System.out.println("data" + response.body().getSuccess());
                         setLoadCheckBox(response.body().getOrgn_users_records());
                         //System.out.println("repons" + response.body().getNo_of_records());
-                        hideProgressDialog();
                     } else {
                         Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                     }
@@ -317,6 +320,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
             }
         });
     }
+
     private void filter(String text) {
         ArrayList<OrgnUserRecordsCheckBox> exampleItemfilteredList = new ArrayList<>();
         for (OrgnUserRecordsCheckBox item : orgnUserRecordsCheckBoxList) {
@@ -328,7 +332,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     }
 
     private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
-        System.out.println("output" + orgn_users_records);
+        IndividualDBHelper individualDBHelper = new IndividualDBHelper(ViewIndividualsActivity.this);
         if (orgn_users_records.size() > 0) {
             for (int i = 0; orgn_users_records.size() > i; i++) {
                 OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
@@ -337,6 +341,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 orgnUserRecordsCheckBox1.setName( orgnUserRecordsCheckBox.getName());
                 orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
                 orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox1);
+                individualDBHelper.insertOrngDetails(orgnUserRecordsCheckBox1);
             }
             mRecyclerView.setAdapter(checkBoxAdapter);
             mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
@@ -409,21 +414,35 @@ public class ViewIndividualsActivity extends AppCompatActivity {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
+// OFFLINE DATA
+    private void attemptOfflineOrnguser() {
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        IndividualDBHelper individualDBHelper = new IndividualDBHelper(getApplicationContext());
+        Cursor cursor =  individualDBHelper.getAllData();
+        if (cursor.getCount()!= 0){
+            while (cursor.moveToNext()){
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = new OrgnUserRecordsCheckBox();
+                String name = cursor.getString(cursor.getColumnIndex(individualDBHelper.KEY_NAME));
+                String email = cursor.getString(cursor.getColumnIndex(individualDBHelper.KEY_EMAIL));
+                String mobileNumber = cursor.getString(cursor.getColumnIndex(individualDBHelper.KEY_MOBILE_NUMBER));
+                orgnUserRecordsCheckBox.setName(name);
+                orgnUserRecordsCheckBox.setEmail(email);
+                orgnUserRecordsCheckBox.setMobile_number(mobileNumber);
+                orgnUserRecordsCheckBoxList.add(orgnUserRecordsCheckBox);
+            }
         }
+        mRecyclerView.setAdapter(checkBoxAdapter);
+        mRecyclerView.addOnItemTouchListener(new ViewIndividualsActivity.RecyclerTouchListener(this, mRecyclerView, new ProjectFooterActivity.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                View view1 = (View) findViewById(R.id.liner_projectList);
+                TextView mTextUserName =(TextView) view.findViewById(R.id.tv_individualName );
+            }
+            @Override
+            public void onLongClick(View view, int position) {
 
-        mProgressDialog.show();
-    }
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
+            }
+        }));
     }
 
     private void appFooter() {

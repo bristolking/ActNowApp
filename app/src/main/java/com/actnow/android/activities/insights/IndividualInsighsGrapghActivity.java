@@ -29,6 +29,7 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.sdk.responses.IndividualMembersReponse;
+import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
@@ -66,8 +67,6 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
     ArrayList<IndividualMembersReponse> individualMembersReponseArrayList = new ArrayList<>();
     ArrayList<BarEntry> x;
     ArrayList<String> y;
-    private ProgressDialog mProgressDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -230,7 +229,6 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
         barChart.setPinchZoom(false);
         barChart.setDrawGridBackground( true );
         apiCallIndividual();
-        showProgressDialog();
     }
     private void apiCallIndividual() {
         HashMap<String, String> user = session.getUserDetails();
@@ -239,6 +237,7 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 System.out.println("SeverReponse" + response.raw());
                 if (response.isSuccessful()) {
                     System.out.println("SeverReponse1" + response.raw());
@@ -249,7 +248,6 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
                                 JSONArray jsonArray = jsonObject.getJSONArray("members");
                                 System.out.println("SeverReponse2" + jsonArray);
                                 setIndividualInsightsList(jsonArray);
-                                hideProgressDialog();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -345,22 +343,7 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
             }
         }
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
     private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {

@@ -78,10 +78,6 @@ public class TodayFragment extends Fragment {
     TextView mWeeKNameToday;
      private ProgressDialog mProgressDialog;
 
-    public TodayFragment() {
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         session = new UserPrefUtils( getContext() );
@@ -106,12 +102,11 @@ public class TodayFragment extends Fragment {
         SimpleDateFormat df = new SimpleDateFormat( "E MMM dd" );
         String formattedDate = df.format( date1 );
         mWeeKNameToday.setText( " " + formattedDate );
-        attemptTaskList();
-        /*if (AndroidUtils.isNetworkAvailable( getActivity())) {
+        if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
             todyFrgmentNoConnection();
-        }*/
+        }
         return view;
     }
 
@@ -128,8 +123,7 @@ public class TodayFragment extends Fragment {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
                 } else {
                     AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                 }
@@ -155,8 +149,6 @@ public class TodayFragment extends Fragment {
                 taskListRecords1.setProject_name( taskListRecords.getProject_name() );
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type() );
                 if (taskListRecords.getDue_date()!=null) {
-
-
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     String formattedDate = df.format(date1);
@@ -168,7 +160,6 @@ public class TodayFragment extends Fragment {
                         taskListRecordsArrayList.add(taskListRecords1);
                     }
                 }
-
             }
             mTodayRecylcerView.setAdapter(mTaskListAdapter);
             mTodayRecylcerView.addOnItemTouchListener( new TodayFragment.RecyclerTouchListener( this, mTodayRecylcerView, new TodayFragment.ClickListener() {
@@ -221,8 +212,7 @@ public class TodayFragment extends Fragment {
                                                         if (response.body().getSuccess().equals( "true" )) {
 
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                                        }
+                                                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                                                        }
                                                     } else {
                                                         AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                                                     }
@@ -409,47 +399,50 @@ public class TodayFragment extends Fragment {
             mProgressDialog.hide();
         }
     }
-
+// OFFLINE DATA
     private void todyFrgmentNoConnection() {
+        hideProgressDialog();
        // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 TaskListRecords taskListRecords = new TaskListRecords();
-                String name = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_NAME ) );
-                String date = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_DUEDATE ) );
-                String priority = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PRIORITY ) );
-                String projectcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_CODE ) );
-                String taskcode = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_TASK_CODE ) );
-                String remindarscount = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REMINDARS_COUNT ) );
-                String status = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_STATUS ) );
-                String projectName = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_PROJECT_NAME ) );
-                String type = cursor.getString( cursor.getColumnIndex( taskDBHelper.KEY_REPEAT_TYPE ) );
-                taskListRecords.setName( name );
-                taskListRecords.setDue_date( date );
-                taskListRecords.setPriority( priority );
-                taskListRecords.setProject_code( projectcode );
-                taskListRecords.setTask_code( taskcode );
-                taskListRecords.setRemindars_count( remindarscount );
-                taskListRecords.setStatus( status );
-                taskListRecords.setProject_name( projectName );
-                taskListRecords.setRepeat_type( type );
-                Date date1 = new Date();
-                SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd" );
-                String formattedDate = df.format( date1 );
-                System.out.println( "formattedDate" + formattedDate );
-                String date2[] = taskListRecords.getDue_date().split( " " );
-                String date3 = date2[0];
-                System.out.println( "date3" + date3 );
-                if (status.equals( "1" ) && date.equals( formattedDate )) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                String name = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_NAME));
+                String date = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_DUEDATE));
+                String priority = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PRIORITY));
+                String projectcode = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_CODE));
+                String taskcode = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_TASK_CODE));
+                String remindarscount = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REMINDARS_COUNT));
+                String status = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_STATUS));
+                String projectName = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_PROJECT_NAME));
+                String type = cursor.getString(cursor.getColumnIndex(taskDBHelper.KEY_REPEAT_TYPE));
+                taskListRecords.setName(name);
+                taskListRecords.setDue_date(date);
+                taskListRecords.setPriority(priority);
+                taskListRecords.setProject_code(projectcode);
+                taskListRecords.setTask_code(taskcode);
+                taskListRecords.setRemindars_count(remindarscount);
+                taskListRecords.setStatus(status);
+                taskListRecords.setProject_name(projectName);
+                taskListRecords.setRepeat_type(type);
+                if (taskListRecords.getDue_date() != null) {
+                    Date date1 = new Date();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String formattedDate = df.format(date1);
+                    System.out.println("formattedDate" + formattedDate);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
+                    System.out.println("date3" + date3);
+                    if (date3.equals(formattedDate) && taskListRecords.getStatus().equals("1")) {
+                        taskListRecordsArrayList.add(taskListRecords);
+                    }
                 }
             }
             mTodayRecylcerView.setAdapter( mTaskOfflineAdapter );
             mTodayRecylcerView.addOnItemTouchListener( new TodayFragment.RecyclerTouchListener( this, mTodayRecylcerView, new TodayFragment.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -463,7 +456,7 @@ public class TodayFragment extends Fragment {
                         @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            /*if (checkedId == R.id.radio_buttonAction) {
+                            if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
                                     Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
@@ -485,6 +478,7 @@ public class TodayFragment extends Fragment {
                                         @Override
                                         public void onClick(View v) {
                                             view1.setVisibility( View.GONE );
+                                            mTaskOfflineAdapter.removeItem(position);
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
                                             final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -499,11 +493,6 @@ public class TodayFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            TodayFragment todayFragment = new TodayFragment();
-                                                            FragmentManager fragmentManager = getFragmentManager();
-                                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                            fragmentTransaction.replace( R.id.fragment_today, todayFragment );
-                                                            fragmentTransaction.commit();
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                         }
@@ -526,7 +515,7 @@ public class TodayFragment extends Fragment {
                                     selectedType = radioButtonTaskName.getText().toString();
 
                                 }
-                            }*/
+                            }
                             Toast.makeText(getApplicationContext(),"WORK IN PROGRESS!",Toast.LENGTH_LONG ).show();
 
                         }
@@ -546,7 +535,6 @@ public class TodayFragment extends Fragment {
                             i.putExtra( "TaskCode", task_code );
                             i.putExtra( "taskOwnerName", taskOwnerName );
                             startActivity( i );
-                            System.out.println( "user" + task_code );
                         }
                     } );
                     ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
@@ -573,14 +561,6 @@ public class TodayFragment extends Fragment {
                             startActivity( i );
                         }
                     } );
-                    ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
-                    mImageDelete.setOnClickListener( new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText( getApplicationContext(), "WORK IN PROGRESS!", Toast.LENGTH_LONG ).show();
-                        }
-                    } );
-
 
                 }
 

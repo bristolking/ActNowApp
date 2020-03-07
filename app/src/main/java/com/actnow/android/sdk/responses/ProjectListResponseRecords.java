@@ -2,8 +2,6 @@ package com.actnow.android.sdk.responses;
 
 public class ProjectListResponseRecords {
 
-
-
     private  String project_id;
     private  String name;
     private  String project_code;
@@ -16,8 +14,6 @@ public class ProjectListResponseRecords {
     private  String updated_by;
     private  String updated_date;
     private  String orgn_code;
-
-
 
 
     public String getProject_id() {

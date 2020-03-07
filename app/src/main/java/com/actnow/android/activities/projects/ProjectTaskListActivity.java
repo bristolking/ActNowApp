@@ -1,5 +1,6 @@
 package com.actnow.android.activities.projects;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,6 +52,7 @@ import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 
+import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskDelete;
@@ -93,7 +96,8 @@ public class ProjectTaskListActivity extends AppCompatActivity {
     TextView mTaskName;
     String task_code;
     String offlineProject;
-    private ProgressDialog mProgressDialog;
+
+    TaskOfflineAdapter mTaskOfflineAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +120,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             System.out.println( "passsed" + project_code + projectName );
         }
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
-            attemptProjectOfflineList();
+            attemptProjectTaskList();
         } else {
             projectTaskListOfflineNoConnection();
         }
@@ -305,25 +309,12 @@ public class ProjectTaskListActivity extends AppCompatActivity {
         mProjectTaskRecylcerView.setItemAnimator( new DefaultItemAnimator() );
         mTaskListAdapter = new TaskListAdapter( taskListRecordsArrayList );
         mProjectTaskRecylcerView.setAdapter( mTaskListAdapter );
+        mTaskOfflineAdapter = new TaskOfflineAdapter(taskListRecordsArrayList);
+        mProjectTaskRecylcerView.setAdapter(mTaskOfflineAdapter);
 
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
 
-        mProgressDialog.show();
-    }
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
-    private void attemptProjectOfflineList() {
-        showProgressDialog();
+    private void  attemptProjectTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get( UserPrefUtils.ID );
         Call<TaskListResponse> call = ANApplications.getANApi().checkTheTaskListResponse( id );
@@ -333,7 +324,6 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                 AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         setTaskList( response.body().getTask_records() );
                     } else {
                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -350,7 +340,6 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             }
         } );
     }
-
 
     private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<>();
@@ -383,7 +372,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             mProjectTaskRecylcerView.setAdapter( mTaskListAdapter );
             mProjectTaskRecylcerView.addOnItemTouchListener( new ProjectTaskListActivity.RecyclerTouchListener( this, mProjectTaskRecylcerView, new ProjectTaskListActivity.ClickListener() {
                 @Override
-                public void onClick(final View view, int position) {
+                public void onClick(final View view, final int position) {
                     final View view1 = view.findViewById( R.id.taskList_liner );
                     RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                     final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -415,6 +404,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View v) {
                                             view1.setVisibility( View.GONE );
+                                            mTaskListAdapter.removeItem(position);
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
                                             final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -428,8 +418,6 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
-                                                            startActivity( i );
                                                         } else {
                                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
                                                         }
@@ -600,9 +588,10 @@ public class ProjectTaskListActivity extends AppCompatActivity {
         }
     }
 
+    //OFFLINE DATA
     private void projectTaskListOfflineNoConnection() {
         AndroidUtils.showProgress( false, mProgressView, mContentLayout );
-        TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
+        TaskDBHelper taskDBHelper = new TaskDBHelper(getApplicationContext());
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
@@ -625,20 +614,144 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                 taskListRecords1.setStatus( status );
                 taskListRecords1.setProject_name( projectname1 );
                 taskListRecords1.setRepeat_type( type );
-                System.out.println( " Nagarjuna "  +  projectname1  + " "  + offlineProject );
-                //taskListRecordsArrayList.add( taskListRecords );
-               /* if (status.equals( "1" )) {
-                    taskListRecordsArrayList.add( taskListRecords1 );
-                    System.out.println( "projectiTaskList" + taskListRecords1 );
-
-                }*/
-
-                if (projectname1.equals( projectName )) {
-                    System.out.println("dddddd" + projectName );
-                    if (status.equals( "1" )) {
+                if (taskListRecords1.getProject_name().equals( projectName )) {
+                    if (taskListRecords1.getStatus().equals( "1" )) {
                         taskListRecordsArrayList.add( taskListRecords1 );
                     }
                 }
+                mProjectTaskRecylcerView.setAdapter( mTaskOfflineAdapter );
+                mProjectTaskRecylcerView.addOnItemTouchListener( new ProjectTaskListActivity.RecyclerTouchListener( this, mProjectTaskRecylcerView, new ProjectTaskListActivity.ClickListener() {
+                    @Override
+                    public void onClick(final View view, final int position) {
+                        final View view1 = view.findViewById( R.id.taskList_liner );
+                        RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
+                        final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
+                        final TextView tv_dueDate = (TextView) view.findViewById( R.id.tv_taskListDate );
+                        final TextView tv_taskcode = (TextView) view.findViewById( R.id.tv_taskCode );
+                        final TextView tv_priority = (TextView) view.findViewById( R.id.tv_taskListPriority );
+                        final TextView tv_status = (TextView) view.findViewById( R.id.tv_taskstatus );
+                        task_code = tv_taskcode.getText().toString();
+                        groupTask.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                if (checkedId == R.id.radio_buttonAction) {
+                                    if (checkedId == R.id.radio_buttonAction) {
+                                        selectedType = radioButtonTaskName.getText().toString();
+                                        Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                view1.setVisibility( View.VISIBLE );
+                                                Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
+                                                i.putExtra( "projectcode", project_code );
+                                                startActivity( i );
+                                                Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
+                                                snackbar1.show();
+                                            }
+                                        } );
+                                        View sbView = snackbar.getView();
+                                        TextView textView = (TextView) sbView.findViewById( R.id.snackbar_text );
+                                        textView.setOnClickListener( new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                view1.setVisibility( View.GONE );
+                                                mTaskListAdapter.removeItem(position);
+                                                HashMap<String, String> userId = session.getUserDetails();
+                                                String id = userId.get( UserPrefUtils.ID );
+                                                final String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                                final String name = mTaskName.getText().toString();
+                                                final String date = tv_dueDate.getText().toString();
+                                                String task_prioroty = tv_priority.getText().toString();
+                                                String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
+                                                Call<TaskComplete> callComplete = ANApplications.getANApi().checkTheTaskComplete( id, task_code, orgn_code );
+                                                callComplete.enqueue( new Callback<TaskComplete>() {
+                                                    @Override
+                                                    public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
+                                                        if (response.isSuccessful()) {
+                                                            if (response.body().getSuccess().equals( "true" )) {
+                                                            } else {
+                                                                Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
+                                                            }
+                                                        } else {
+                                                            AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<TaskComplete> call, Throwable t) {
+                                                        Log.d( "CallBack", " Throwable is " + t );
+                                                    }
+                                                } );
+                                                Snackbar snackbar2 = Snackbar.make( mContentLayout, "TaskOffline is completed!", Snackbar.LENGTH_SHORT );
+                                                snackbar2.show();
+
+                                            }
+                                        } );
+                                        snackbar.show();
+                                    } else if (checkedId == 0) {
+                                        selectedType = radioButtonTaskName.getText().toString();
+
+                                    }
+                                }
+                            }
+                        } );
+                        mTaskName = (TextView) view.findViewById( R.id.tv_taskListName );
+                        mTaskName.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                HashMap<String, String> userId = session.getUserDetails();
+                                String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                                String name = mTaskName.getText().toString();
+                                String date = tv_dueDate.getText().toString();
+                                String task_code = tv_taskcode.getText().toString();
+                                Intent i = new Intent( getApplicationContext(), EditTaskActivity.class );
+                                i.putExtra( "TaskName", name );
+                                i.putExtra( "TaskDate", date );
+                                i.putExtra( "TaskCode", task_code );
+                                i.putExtra( "taskOwnerName", taskOwnerName );
+                                startActivity( i );
+                            }
+                        } );
+                        ImageView mImageUserAdd = (ImageView) view.findViewById( R.id.img_useraddTaskList );
+                        mImageUserAdd.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String task_code = tv_taskcode.getText().toString();
+                                Intent i = new Intent( getApplicationContext(), InvitationActivity.class );
+                                i.putExtra( "TaskCode", task_code );
+                                startActivity( i );
+                            }
+                        } );
+                        ImageView mImageComment = (ImageView) view.findViewById( R.id.img_commentTaskList );
+                        mImageComment.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent( getApplicationContext(), CommentsActivity.class );
+                                String name = mTaskName.getText().toString();
+                                String date = tv_dueDate.getText().toString();
+                                String task_code = tv_taskcode.getText().toString();
+                                i.putExtra( "TaskName", name );
+                                i.putExtra( "TaskDate", date );
+                                i.putExtra( "TaskCode", task_code );
+                                startActivity( i );
+                            }
+                        } );
+                        ImageView mImageRaminder = (ImageView) view.findViewById( R.id.img_raminderTaskList );
+                        mImageRaminder.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent( getApplicationContext(), ReaminderScreenActivity.class );
+                                i.putExtra( "TaskCode", task_code );
+                                startActivity( i );
+                            }
+                        } );
+
+                    }
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+
+                } ) );
             }
         }
 

@@ -105,7 +105,6 @@ public class WeekNameOneFragment extends Fragment {
         SimpleDateFormat dfWeek = new SimpleDateFormat( "EEEE MMM dd" );
         String dateWeekMonth =dfWeek.format( tomorrow);
         mWeekNameOne.setText( " " + dateWeekMonth );
-
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptTaskList();
         } else {
@@ -143,8 +142,7 @@ public class WeekNameOneFragment extends Fragment {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
                 } else {
                 }
             }
@@ -218,7 +216,6 @@ public class WeekNameOneFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
-
                                             Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
@@ -245,13 +242,11 @@ public class WeekNameOneFragment extends Fragment {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                                        }
+                                                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                                                        }
                                                     } else {
                                                         AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                                                     }
                                                 }
-
                                                 @Override
                                                 public void onFailure(Call<TaskComplete> call, Throwable t) {
                                                     Log.d( "CallBack", " Throwable is " + t );
@@ -422,7 +417,7 @@ public class WeekNameOneFragment extends Fragment {
     }
 
     private void  weeKOneFrgmentNoConnection() {
-        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
@@ -446,15 +441,25 @@ public class WeekNameOneFragment extends Fragment {
                 taskListRecords.setStatus( status );
                 taskListRecords.setProject_name( projectName );
                 taskListRecords.setRepeat_type( type );
-                if (status.equals( "1" )) {
-                    taskListRecordsArrayList.add( taskListRecords );
+                if (taskListRecords.getDue_date()!=null) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_YEAR, 2);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    Date tomorrow = calendar.getTime();
+                    String tomorrowDate = df.format(tomorrow);
+                    String date2[] = taskListRecords.getDue_date().split(" ");
+                    String date3 = date2[0];
+                    if (taskListRecords.getStatus().equals("1") && date3.equals(tomorrowDate)) {
+                        taskListRecordsArrayList.add(taskListRecords);
+                    }
                 }
+
             }
         }
         mWeekOneRecylcerView.setAdapter( mTaskOfflineAdapter );
         mWeekOneRecylcerView.addOnItemTouchListener( new WeekNameOneFragment.RecyclerTouchListener( this, mWeekOneRecylcerView, new WeekNameOneFragment.ClickListener() {
             @Override
-            public void onClick(final View view, int position) {
+            public void onClick(final View view, final int position) {
                 final View view1 = view.findViewById( R.id.taskList_liner );
                 RadioGroup groupTask = (RadioGroup) view.findViewById( R.id.taskradioGroupTask );
                 final RadioButton radioButtonTaskName = (RadioButton) view.findViewById( R.id.radio_buttonAction );
@@ -475,11 +480,6 @@ public class WeekNameOneFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                    /*    WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
-                                        FragmentManager fragmentManager = getFragmentManager();
-                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                        fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                        fragmentTransaction.commit();*/
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -490,6 +490,7 @@ public class WeekNameOneFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
                                         view1.setVisibility( View.GONE );
+                                        mTaskOfflineAdapter.removeItem(position);
                                         HashMap<String, String> userId = session.getUserDetails();
                                         String id = userId.get( UserPrefUtils.ID );
                                         final String taskOwnerName = userId.get( UserPrefUtils.NAME );
@@ -504,11 +505,6 @@ public class WeekNameOneFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                      /*  WeekNameOneFragment weekNameOneFragment = new WeekNameOneFragment();
-                                                        FragmentManager fragmentManager = getFragmentManager();
-                                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                        fragmentTransaction.replace( R.id.fragment_weekOne, weekNameOneFragment );
-                                                        fragmentTransaction.commit();*/
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
@@ -588,13 +584,7 @@ public class WeekNameOneFragment extends Fragment {
                         startActivity( i );
                     }
                 } );
-                ImageView mImageDelete = (ImageView) view.findViewById( R.id.img_delete );
-                mImageDelete.setOnClickListener( new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText( getApplicationContext(), "WORK IN PROGRESS!", Toast.LENGTH_LONG ).show();
-                    }
-                } );
+
             }
 
             @Override

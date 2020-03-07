@@ -309,7 +309,6 @@ public class ViewTasksActivity extends AppCompatActivity {
                 } else {
                     attemptOfflineProjects();
                 }
-
                 final Dialog dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
                 dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
                 dialog.setCancelable( true );
@@ -696,9 +695,8 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
 
-
-
     private void attemptOfflineProjects() {
+        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         ProjectDBHelper projectDBHelper = new ProjectDBHelper( getApplicationContext() );
         Cursor cursor = projectDBHelper.getProjectAllData();
         if (cursor.getCount() != 0) {
@@ -819,7 +817,6 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
     private void requestCreateTask(String id, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
-        showProgressDialog();
         Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse( id, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
         System.out.println( "taskfelids" + id  +  taskName + duedate  +  priorty +  project_code  +  orgn_code  +  repeat_type +  week_days  +  days  +  months );
         call.enqueue( new Callback<TaskAddResponse>() {
@@ -827,7 +824,6 @@ public class ViewTasksActivity extends AppCompatActivity {
             public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body().getSuccess().equals( "true" )) {
-                        hideProgressDialog();
                         Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
                         startActivity( i );
                     } else {
@@ -844,23 +840,6 @@ public class ViewTasksActivity extends AppCompatActivity {
             }
         } );
     }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
-
 
 
    /*/ OFFLINE TASK CREATE*/

@@ -60,7 +60,6 @@ import static com.actnow.android.R.layout.task_list_cutsom;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class YearlyFragment extends Fragment {
-
     RecyclerView mYearlyRepetTask;
     RecyclerView.LayoutManager mLayoutManager;
     FloatingActionButton fabYearlyrepetTask;
@@ -94,12 +93,11 @@ public class YearlyFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mYearlyRepetTask.setAdapter( mTaskOfflineAdapter );
-        attemptTaskList();
-       /* if (AndroidUtils.isNetworkAvailable( getActivity())) {
+        if (AndroidUtils.isNetworkAvailable( getActivity())) {
             attemptTaskList();
         } else {
             yearlyTypeNoConnection();
-        }*/
+        }
         fabYearlyrepetTask = view.findViewById( R.id.fab_yearlytask );
         fabYearlyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -136,7 +134,7 @@ public class YearlyFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter( editable.toString() );
+                //filter( editable.toString() );
 
             }
         } );
@@ -152,7 +150,7 @@ public class YearlyFragment extends Fragment {
 
     }
 
-    private void filter(String toString) {
+    /*private void filter(String toString) {
         ArrayList<TaskListRecords> taskListRecordsFilter = new ArrayList<TaskListRecords>();
         for (TaskListRecords name : taskListRecordsArrayList) {
             if (name.getName().toLowerCase().contains( toString.toLowerCase() )) {
@@ -160,7 +158,7 @@ public class YearlyFragment extends Fragment {
             }
         }
         mTaskListAdapter.filterList( taskListRecordsFilter );
-    }
+    }*/
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -175,7 +173,7 @@ public class YearlyFragment extends Fragment {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                        Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
@@ -234,11 +232,11 @@ public class YearlyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility( View.VISIBLE );
-                                     /*   YearlyFragment yearlyFragment = new YearlyFragment();
+                                        YearlyFragment yearlyFragment = new YearlyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace( R.id.yearly_fragment, yearlyFragment );
-                                        fragmentTransaction.commit();*/
+                                        fragmentTransaction.commit();
                                         Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
                                         snackbar1.show();
                                     }
@@ -248,7 +246,7 @@ public class YearlyFragment extends Fragment {
                                 textView.setOnClickListener( new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        mTaskListAdapter.removeItem(position);
+                                        //mTaskListAdapter.removeItem(position);
                                         view1.setVisibility( View.GONE );
                                         HashMap<String, String> userId = session.getUserDetails();
                                         String id = userId.get( UserPrefUtils.ID );
@@ -265,13 +263,13 @@ public class YearlyFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                      /*  YearlyFragment yearlyFragment = new YearlyFragment();
+                                                        YearlyFragment yearlyFragment = new YearlyFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace( R.id.yearly_fragment, yearlyFragment );
-                                                        fragmentTransaction.commit();*/
+                                                        fragmentTransaction.commit();
                                                     } else {
-                                                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                                                        Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } else {
                                                     AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
@@ -356,7 +354,7 @@ public class YearlyFragment extends Fragment {
                 mImageDelete.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showProgressDialog();
+                      //  showProgressDialog();
                         HashMap<String, String> userId = session.getUserDetails();
                         String id = userId.get( UserPrefUtils.ID );
                         String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -367,8 +365,13 @@ public class YearlyFragment extends Fragment {
                             public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body().getSuccess().equals( "true" )) {
-                                        mTaskListAdapter.removeItem(position);
-                                        hideProgressDialog();
+                                        //mTaskListAdapter.removeItem(position);
+                                        //hideProgressDialog();
+                                        YearlyFragment yearlyFragment = new YearlyFragment();
+                                        FragmentManager fragmentManager = getFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace( R.id.yearly_fragment, yearlyFragment );
+                                        fragmentTransaction.commit();
                                         Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                     } else {
                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -447,28 +450,10 @@ public class YearlyFragment extends Fragment {
         }
     }
 
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
-
     // offlineData
 
     private void yearlyTypeNoConnection() {
-        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {

@@ -90,6 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
             focusView.requestFocus();
         }else{
               if (mDisclaimer.isChecked()) {
+                  //showProgressDialog();
                   AndroidUtils.showProgress(true,mProgressView,mContentLayout);
                   requestSignUp(name,email,"provider_id","provider_name",mobile,password);
               } else {
@@ -98,7 +99,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
     private void requestSignUp(String userName,String userEmail,String provider_id,String provider_name,String mobileNumber,String userPassword ){
-        showProgressDialog();
         System.out.println( "logindata"+ userEmail+userName+ mobileNumber+userPassword);
         Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(userName,userEmail,provider_id,provider_name,mobileNumber,userPassword);
         call.enqueue(new Callback<SignUpResponse>() {
@@ -108,9 +108,9 @@ public class SignUpActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
                         SignUpResponse response2= response.body();
-                        hideProgressDialog();
                         session.createLoginSession(response2.getId(),response2.getName(),response2.getEmail(),response2.getMobile_number(),response2.getOrgn_code(),response2.getUser_type(),response2.getProvider_id(),response2.getProvider_name(),response2.getImage_path());
                         activityLogin();
+                       // hideProgressDialog();
                         AndroidUtils.displayToast(getApplicationContext(),"Your account has been successfully created.");
 
                     } else {
@@ -148,15 +148,13 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-
-    private void showProgressDialog() {
+    /*private void showProgressDialog() {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog = new ProgressDialog(getApplicationContext());
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
         }
-
         mProgressDialog.show();
     }
 
@@ -164,5 +162,6 @@ public class SignUpActivity extends AppCompatActivity {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }
+    }*/
+
 }

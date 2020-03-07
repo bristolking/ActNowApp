@@ -78,8 +78,11 @@ public class TaskOfflineAdapter extends RecyclerView.Adapter<TaskOfflineAdapter.
             ImageView mImageUserAdd = (ImageView)itemView.findViewById( R.id.img_useraddTaskList );
             mImageUserAdd.setVisibility( View.GONE );
 
-
-
         }
+    }
+    public void removeItem(int position) {
+        taskListRecordsList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, taskListRecordsList.size());
     }
 }

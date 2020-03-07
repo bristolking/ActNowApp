@@ -13,7 +13,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "taskListdb";
-    private static final String TABLE_Users = "tasklistoffline";
+    private static final String TABLE_TASK = "tasklistoffline";
     public static final String KEY_ID = "task_id";
     public static final String KEY_NAME = "name";
     public static final String KEY_DUEDATE = "due_date";
@@ -34,7 +34,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_Users + "("
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_TASK + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_DUEDATE + " TEXT," + KEY_PRIORITY + " TEXT,"
                 + KEY_PROJECT_CODE + " TEXT," + KEY_TASK_CODE + " TEXT," + KEY_REMINDARS_COUNT + " TEXT," + KEY_STATUS + " TEXT," + KEY_PROJECT_NAME + " TEXT," + KEY_REPEAT_TYPE + " TEXT" + ")";
         db.execSQL( CREATE_TABLE );
@@ -43,7 +43,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_Users);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASK + ";");
         onCreate(db);
     }
 
@@ -59,7 +59,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         cValues.put( KEY_STATUS, listRecords.getStatus() );
         cValues.put( KEY_PROJECT_NAME, listRecords.getProject_name() );
         cValues.put( KEY_REPEAT_TYPE, listRecords.getRepeat_type() );
-        long newRowId = db.insert( TABLE_Users, null, cValues );
+        long newRowId = db.insert( TABLE_TASK, null, cValues );
         db.close();
     }
 
@@ -88,7 +88,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
     }*/
     public Cursor getAllData( ){
         SQLiteDatabase db = getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM "+TABLE_Users,null);
+        Cursor res = db.rawQuery("SELECT * FROM "+TABLE_TASK,null);
         return res;
     }
 }

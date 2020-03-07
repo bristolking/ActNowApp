@@ -30,6 +30,7 @@ import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 
 import com.actnow.android.sdk.responses.ProjectsInsights;
+import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.BarChart;
@@ -67,8 +68,6 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
     ArrayList<ProjectsInsights> projectsInsightsArrayList = new ArrayList<ProjectsInsights>();
     ArrayList<BarEntry> x;
     ArrayList<String> y;
-    private ProgressDialog mProgressDialog;
-
 
 
     @Override
@@ -234,7 +233,6 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
         barChart.setPinchZoom(false);
         barChart.setDrawGridBackground(true);
         apiCallProjectInsights();
-        showProgressDialog();
     }
     private void apiCallProjectInsights() {
         HashMap<String, String> user = session.getUserDetails();
@@ -243,6 +241,7 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
                 System.out.println("SeverReponse" + response.raw());
                 if (response.isSuccessful()) {
                     System.out.println("SeverReponse1" + response.raw());
@@ -253,7 +252,6 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                                 System.out.println("SeverReponse2" + response.body().toString());
                                 JSONArray jsonArray = jsonObject.getJSONArray("projects");
                                 setProjectInsightsList(jsonArray);
-                                hideProgressDialog();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -338,22 +336,6 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
 
         }
 
-    }
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
     }
 
     private void appFooter() {

@@ -96,12 +96,11 @@ public class MonthlyFragment extends Fragment {
 
         mTaskOfflineAdapter = new TaskOfflineAdapter( taskListRecordsArrayList );
         mMonthlyRepetTask.setAdapter( mTaskOfflineAdapter );
-        attemptTaskList();
-        /*if (AndroidUtils.isNetworkAvailable(getActivity() )) {
+        if (AndroidUtils.isNetworkAvailable(getActivity() )) {
             attemptTaskList();
         } else {
             monthlyTypeNoConnection();
-        }*/
+        }
         fabMonthlyrepetTask = view.findViewById( R.id.fab_monthlytask );
         fabMonthlyrepetTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -136,7 +135,7 @@ public class MonthlyFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+                //filter(editable.toString());
 
             }
         } );
@@ -151,7 +150,7 @@ public class MonthlyFragment extends Fragment {
         return  view;
     }
 
-    private void filter(String toString) {
+   /* private void filter(String toString) {
         ArrayList<TaskListRecords>  taskListRecordsFilter = new ArrayList<TaskListRecords>( );
         for (TaskListRecords name  :taskListRecordsArrayList){
             if (name.getName().toLowerCase().contains( toString.toLowerCase() )){
@@ -159,7 +158,7 @@ public class MonthlyFragment extends Fragment {
             }
         }
         mTaskListAdapter.filterList(taskListRecordsFilter);
-    }
+    }*/
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -174,7 +173,7 @@ public class MonthlyFragment extends Fragment {
                     if (response.body().getSuccess().equals("true")) {
                         setTaskList(response.body().getTask_records());
                     } else {
-                        Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();
                     }
                 } else {
                     //   AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!");
@@ -230,11 +229,11 @@ public class MonthlyFragment extends Fragment {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);
-                                         /*   MonthlyFragment monthlyFragment = new MonthlyFragment();
+                                            MonthlyFragment monthlyFragment = new MonthlyFragment();
                                             FragmentManager fragmentManager = getFragmentManager();
                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                             fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
-                                            fragmentTransaction.commit();*/
+                                            fragmentTransaction.commit();
                                             Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
                                             snackbar1.show();
                                         }
@@ -244,7 +243,7 @@ public class MonthlyFragment extends Fragment {
                                     textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            mTaskListAdapter.removeItem(position);
+                                           // mTaskListAdapter.removeItem(position);
                                             view1.setVisibility(View.GONE);
                                             HashMap<String, String> userId = session.getUserDetails();
                                             String id = userId.get( UserPrefUtils.ID );
@@ -260,14 +259,13 @@ public class MonthlyFragment extends Fragment {
                                                 public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
-                                                            /*MonthlyFragment monthlyFragment = new MonthlyFragment();
+                                                            MonthlyFragment monthlyFragment = new MonthlyFragment();
                                                             FragmentManager fragmentManager = getFragmentManager();
                                                             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                             fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
-                                                            fragmentTransaction.commit();*/
+                                                            fragmentTransaction.commit();
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                                                        }
+                                                            Toast.makeText(getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();                                                        }
                                                     } else {
                                                         AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!" );
                                                     }
@@ -348,7 +346,7 @@ public class MonthlyFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showProgressDialog();
+                            //showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -361,8 +359,13 @@ public class MonthlyFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         System.out.println( "deleteResponse1" + response.raw() );
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            hideProgressDialog();
-                                            mTaskListAdapter.removeItem(position);
+                                           // hideProgressDialog();
+                                            //mTaskListAdapter.removeItem(position);
+                                            MonthlyFragment monthlyFragment = new MonthlyFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                            fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
+                                            fragmentTransaction.commit();
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {
                                             Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
@@ -439,26 +442,9 @@ public class MonthlyFragment extends Fragment {
         }
     }
 
-
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-        }
-
-        mProgressDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
-        }
-    }
 // OFFLINE
     private void monthlyTypeNoConnection() {
-        //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
+        AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();
         if (cursor.getCount() != 0) {
@@ -512,11 +498,11 @@ public class MonthlyFragment extends Fragment {
                                     @Override
                                     public void onClick(View view) {
                                         view1.setVisibility(View.VISIBLE);
-                                      /*  MonthlyFragment monthlyFragment = new MonthlyFragment();
+                                        MonthlyFragment monthlyFragment = new MonthlyFragment();
                                         FragmentManager fragmentManager = getFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                         fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
-                                        fragmentTransaction.commit();*/
+                                        fragmentTransaction.commit();
                                         Snackbar snackbar1 = Snackbar.make(mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT);
                                         snackbar1.show();
                                     }
@@ -541,11 +527,11 @@ public class MonthlyFragment extends Fragment {
                                             public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                                                 if (response.isSuccessful()) {
                                                     if (response.body().getSuccess().equals( "true" )) {
-                                                    /*    MonthlyFragment monthlyFragment = new MonthlyFragment();
+                                                        MonthlyFragment monthlyFragment = new MonthlyFragment();
                                                         FragmentManager fragmentManager = getFragmentManager();
                                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                         fragmentTransaction.replace(R.id.monthly_fragment, monthlyFragment);
-                                                        fragmentTransaction.commit()*/;
+                                                        fragmentTransaction.commit();
                                                     } else {
                                                         Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
                                                     }
