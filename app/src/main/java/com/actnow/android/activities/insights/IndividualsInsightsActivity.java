@@ -1,6 +1,5 @@
 package com.actnow.android.activities.insights;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -34,18 +33,10 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.IndividualInsightsAdapter;
-import com.actnow.android.adapter.ProjectInsightsAdapter;
-import com.actnow.android.sdk.responses.IndividualInsightReponse;
 import com.actnow.android.sdk.responses.IndividualMembersReponse;
-import com.actnow.android.sdk.responses.ProjectsInsights;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +45,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -176,7 +166,7 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:

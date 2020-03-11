@@ -1,16 +1,12 @@
 package com.actnow.android.activities;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +17,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,14 +26,13 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
-import com.actnow.android.adapter.PreviewImageAdapter;
 import com.actnow.android.adapter.ProjectCommentListAdapter;
 import com.actnow.android.adapter.TaskCommentListAdapter;
 import com.actnow.android.sdk.responses.ProjectCommentRecordsList;
@@ -205,7 +197,7 @@ public class CommentsActivity extends AppCompatActivity {
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:

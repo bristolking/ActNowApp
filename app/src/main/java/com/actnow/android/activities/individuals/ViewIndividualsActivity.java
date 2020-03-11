@@ -1,6 +1,5 @@
 package com.actnow.android.activities.individuals;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -41,7 +40,7 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.CheckBoxAdapter;
 import com.actnow.android.databse.IndividualDBHelper;
@@ -59,9 +58,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.view.View.GONE;
-import static com.activeandroid.Cache.getContext;
 
 public class ViewIndividualsActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
@@ -195,7 +191,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Selected Individuals", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
@@ -506,7 +502,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     }
 
     private void activityInsights() {
-        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+        Intent i = new Intent(getApplicationContext(), InsightsChart.class);
         startActivity(i);
     }
 

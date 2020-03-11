@@ -4,85 +4,65 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actnow.android.ANApplications;
 import com.actnow.android.R;
+import com.actnow.android.activities.ideas.ViewIdeasActivity;
+import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
-import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
-import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
-
+import com.actnow.android.fragment.AllTaskFragment;
+import com.actnow.android.fragment.IndividualInsightsFragment;
+import com.actnow.android.fragment.PriorityFragment;
+import com.actnow.android.fragment.ProjectInsightsFragment;
+import com.actnow.android.fragment.RepetitiveTabedFragment;
+import com.actnow.android.fragment.TaskInsightFragment;
 import com.actnow.android.sdk.responses.ProjectsInsights;
-import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.view.View.GONE;
-import static com.activeandroid.Cache.getContext;
 
-public class ProjectsInsightsGraphActivity extends AppCompatActivity {
+public class InsightsChart extends AppCompatActivity  {
     View mProgressView, mContentLayout;
     UserPrefUtils session;
-    BarChart barChart;
-
-    String nameOne;
-    String color;
-    TextView btnLink1;
-
-    ArrayList<ProjectsInsights> projectsInsightsArrayList = new ArrayList<ProjectsInsights>();
-    ArrayList<BarEntry> x;
-    ArrayList<String> y;
-
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         session = new UserPrefUtils(getApplicationContext());
-        setContentView(R.layout.activity_projects_insights_graph);
+        setContentView(R.layout.activity_insights_chart);
         appHeaderTwo();
         initializeViews();
+        tabView();
         appFooter();
-        Intent iin = getIntent();
-        Bundle b = iin.getExtras();
-        if (b != null) {
-            nameOne = (String) b.get("nameInsights");
-            btnLink1.setText(nameOne);
-        }
 
     }
 
@@ -94,10 +74,10 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
+        TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
         TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
         btnLink2.setVisibility(GONE);
-        //btnLink1.setText(name );
+        btnLink1.setText("Today");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
         ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         btnCalendar.setVisibility(GONE);
@@ -169,16 +149,15 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                                 startActivity(iTaskfilter);
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent(getApplicationContext(), ProjectFooterActivity.class);
-                                startActivity(iProjects);
+                                Intent iProject = new Intent(getApplicationContext(), ProjectFooterActivity.class);
+                                startActivity(iProject);
                                 break;
                             case R.id.nav_individuals:
                                 Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
-                                startActivity(iInsights);
+                                Toast.makeText(getApplicationContext(), "Selected Insights", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.nav_timeLine:
                                 Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
@@ -200,7 +179,7 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
                         return false;
                     }
                 });
-                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_ProjectsInsightsBarGraph);
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_dailyChart);
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
                     drawer.openDrawer(GravityCompat.START);
@@ -221,118 +200,54 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-
         mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);
-        barChart = (BarChart) findViewById(R.id.projectInsightsbarchart);
-
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawValueAboveBar(true);
-        barChart.setMaxVisibleValueCount(50);
-        barChart.setPinchZoom(false);
-        barChart.setDrawGridBackground(true);
-        apiCallProjectInsights();
     }
-    private void apiCallProjectInsights() {
-        HashMap<String, String> user = session.getUserDetails();
-        String id = user.get(UserPrefUtils.ID);
-        Call<ResponseBody> responseBodyCall = ANApplications.getANApi().projectInsightsReponse(id);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
-                System.out.println("SeverReponse" + response.raw());
-                if (response.isSuccessful()) {
-                    System.out.println("SeverReponse1" + response.raw());
-                    try {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response.body().string());
-                            if (jsonObject.getString("success").equals("true")) {
-                                System.out.println("SeverReponse2" + response.body().toString());
-                                JSONArray jsonArray = jsonObject.getJSONArray("projects");
-                                setProjectInsightsList(jsonArray);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+    private void tabView() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setFocusable(true);
+        tabLayout.setMinimumWidth(10);
+        tabLayout.setupWithViewPager(viewPager);
 
     }
-    private void setProjectInsightsList(JSONArray jsonArray) {
-        for (int i = 0; jsonArray.length() > i; i++) {
-            ProjectsInsights projectsInsights = new ProjectsInsights();
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String project_id = jsonObject.getString("project_id");
-                String name = jsonObject.getString("name");
-                String project_code = jsonObject.getString("project_code");
-                String color = jsonObject.getString("color");
-                String priority = jsonObject.getString("priority");
-                String due_date = jsonObject.getString("due_date");
-                String project_members = jsonObject.getString("project_members");
-                String created_by = jsonObject.getString("created_by");
-                String created_date = jsonObject.getString("created_date");
-                String updated_by = jsonObject.getString("updated_by");
-                String updated_date = jsonObject.getString("updated_date");
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-                String orgn_code = jsonObject.getString("orgn_code");
-                String parent_project_code = jsonObject.getString("parent_project_code");
-                String completed = jsonObject.getString("completed");
-                String approval = jsonObject.getString("approval");
-                String ongoing = jsonObject.getString("ongoing");
-                String pending = jsonObject.getString("pending");
-                projectsInsights.setProject_id(project_id);
-                projectsInsights.setName(name);
-                projectsInsights.setProject_code(project_code);
-                projectsInsights.setColor(color);
-                projectsInsights.setPriority(priority);
-                projectsInsights.setDue_date(due_date);
-                projectsInsights.setProject_members(project_members);
-                projectsInsights.setCreated_by(created_by);
-                projectsInsights.setCreated_date(created_date);
-                projectsInsights.setUpdated_by(updated_by);
-                projectsInsights.setUpdated_date(updated_date);
-                projectsInsights.setOrgn_code(orgn_code);
-                projectsInsights.setParent_project_code(parent_project_code);
-                projectsInsights.setCompleted(completed);
-                projectsInsights.setApproval(approval);
-                projectsInsights.setOngoing(ongoing);
-                projectsInsights.setPending(pending);
-                if (name.equals(nameOne)) {
-                    x = new ArrayList<BarEntry>();
-                    x.add(new BarEntry(Integer.parseInt(completed), 0));
-                    x.add(new BarEntry(Integer.parseInt(approval), 1));
-                    x.add(new BarEntry(Integer.parseInt(ongoing), 2));
-                    x.add(new BarEntry(Integer.parseInt(pending), 3));
-                    y = new ArrayList<String>();
-                    y.add("completed");
-                    y.add("approval");
-                    y.add("ongoing");
-                    y.add("pending");
-                    BarDataSet bardataset = new BarDataSet(x, "Data Set");
-                    bardataset.setColors(new int[]{R.color.greenmilk, R.color.orngeccolr, R.color.buleMilk, R.color.colorAccent}, getContext());
-                    BarData data = new BarData(y, bardataset);
-                    barChart.setData(data);
-                    XAxis xAxis = barChart.getXAxis();
-                    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                    barChart.animateY(5000);
-                    projectsInsightsArrayList.add(projectsInsights);
-                    System.out.println("SeverGraphValues" +  name + completed + pending + ongoing + approval);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            if (position == 0) {
+                fragment = new ProjectInsightsFragment();
+            } else if (position == 1) {
+                fragment = new TaskInsightFragment();
+            } else if (position == 2) {
+                fragment = new IndividualInsightsFragment();
+            }
+            return fragment;
+        }
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        public CharSequence getPageTitle(int position) {
+            String title = null;
+            if (position == 0) {
+                title = "PROJECTS";
+            } else if (position == 1) {
+                title = "TASK";
+            }else if (position == 2) {
+                title = "INDIVIDUAlS";
             }
 
+            return title;
         }
 
     }
@@ -374,17 +289,15 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
             }
         });
         ImageView imgProject = (ImageView) findViewById(R.id.img_insights);
-        imgProject.setImageResource(R.drawable.ic_insight_red);
+        imgProject.setImageResource(R.drawable.ic_insight_white);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_insights);
-        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));
+        txtIndividual.setTextColor(getResources().getColor(R.color.colorWhite));
     }
-
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
-
     private void activityProject() {
         Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
         startActivity(i);
@@ -399,8 +312,15 @@ public class ProjectsInsightsGraphActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
         startActivity(i);
     }
+
     private void activityInsights() {
         Toast.makeText(getApplicationContext(), "selected Insights", Toast.LENGTH_SHORT).show();
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }
+

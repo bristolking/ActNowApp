@@ -1,6 +1,5 @@
 package com.actnow.android.activities.insights;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,12 +34,10 @@ import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectInsightsAdapter;
-import com.actnow.android.sdk.responses.ProjectInsightsReponse;
 import com.actnow.android.sdk.responses.ProjectsInsights;
 import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 
 import org.json.JSONArray;
@@ -51,7 +47,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -176,7 +171,7 @@ public class ProjectInsightsActivity extends AppCompatActivity {
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:

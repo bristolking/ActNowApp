@@ -113,7 +113,7 @@ public class WeekNameOneFragment extends Fragment {
 
         return view;
     }
-    private void showProgressDialog() {
+   /* private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -128,7 +128,7 @@ public class WeekNameOneFragment extends Fragment {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }
+    }*/
 
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -323,7 +323,7 @@ public class WeekNameOneFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showProgressDialog();
+                           // showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -336,7 +336,7 @@ public class WeekNameOneFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
                                             System.out.println( "deleteResponse2" + response.raw() );
-                                            hideProgressDialog();
+                                           // hideProgressDialog();
                                             mTaskListAdapter.removeItem(position);
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
                                         } else {

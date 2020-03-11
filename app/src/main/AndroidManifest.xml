@@ -45,7 +45,7 @@
         <activity android:name=".activities.insights.WeekelyTaskChartActivity" />
         <activity android:name=".activities.insights.YearlyTaskChartActivity" />
         <activity android:name=".activities.insights.MonthlyTaskChartActivity" />
-        <activity android:name=".activities.insights.DailyTaskChartActivity" />
+        <activity android:name=".activities.insights.InsightsChart" />
         <activity
             android:name=".activities.ThisWeekActivity"
             android:label="THISWEEK" />

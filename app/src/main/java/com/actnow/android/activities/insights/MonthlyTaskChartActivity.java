@@ -256,7 +256,7 @@ public class MonthlyTaskChartActivity extends AppCompatActivity implements OnCha
                         finish();
                         break;
                     case 2:
-                        Intent iToady = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                        Intent iToady = new Intent(getApplicationContext(), InsightsChart.class);
                         startActivity(iToady);
                         finish();
                         break;

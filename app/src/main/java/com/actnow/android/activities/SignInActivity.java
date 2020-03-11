@@ -189,15 +189,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private void initializeControls() {
         google = (Button) findViewById(R.id.google);
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
-
         google.setOnClickListener(this);
 
     }
     private void initializeGPlusSettings() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi( Auth.GOOGLE_SIGN_IN_API, gso)
@@ -205,7 +201,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setScopes(gso.getScopeArray());
-
     }
     public void onClick(View v) {
         if (v == fb) {
@@ -213,21 +208,22 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             loginButton.performClick();
         }else if(v == google) {
             providerName = "Google";
+            btnSignIn.performClick();
             signIn();
-           OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-           if (opr.isDone()) {
-               GoogleSignInResult result = opr.get();
-               handleSignInResult(result);
-           } else {
-              // showProgressDialog();
-               opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                   @Override
-                   public void onResult(GoogleSignInResult googleSignInResult) {
-                      // hideProgressDialog();
-                       handleSignInResult(googleSignInResult);
-                   }
-               });
-           }
+            OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+            if (opr.isDone()) {
+                GoogleSignInResult result = opr.get();
+                handleSignInResult(result);
+            } else {
+                showProgressDialog();
+                opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                    @Override
+                    public void onResult(GoogleSignInResult googleSignInResult) {
+                        hideProgressDialog();
+                        handleSignInResult(googleSignInResult);
+                    }
+                });
+            }
         }
 
     }
@@ -243,7 +239,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             handleSignInResult(result);
         }
     }
-  /*  @Override
+    @Override
     public void onStart() {
         super.onStart();
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
@@ -260,7 +256,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 }
             });
         }
-    }*/
+    }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
@@ -277,13 +273,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             updateUI(false);
         }
     }
-  /*  private void showProgressDialog() {
-      *//*  dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
+    private void showProgressDialog() {
+       /* dialog = new Dialog( context, android.R.style.Theme_DeviceDefault_Dialog_Alert );
         dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
         dialog.setCancelable( true );
         dialog.setContentView( R.layout.custom_dialog_progress );
         ProgressBar llProgressBar = (ProgressBar)dialog.findViewById(R.id.progressBar);
-        dialog.show();*//*
+        dialog.show();*/
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -296,7 +292,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }*/
+    }
     private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             Call<SignUpResponse> call = ANApplications.getANApi().userSignUp(fullName,email,providerId,providerName," "," " );
@@ -357,27 +353,27 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if(cancel){
             focusView.requestFocus();
         } else {
+            AndroidUtils.showProgress(true,mProgressView,mContentLayout);
             requestLogin(email, pass);
             System.out.println( "logindata"+email+pass);
         }
     }
     private void requestLogin(String username, String password){
         System.out.println( "userDeatails"+username+password);
-
         Call<SignInResponse> call = ANApplications.getANApi().userSignIn(username,password);
         call.enqueue(new Callback<SignInResponse>() {
             @Override
             public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
                 System.out.println( "reponse"+ response.raw());
                 AndroidUtils.showProgress(false,mProgressView,mContentLayout);
-               /// showProgressDialog();
+                /// showProgressDialog();
                 if (response.isSuccessful()){
                     if (response.body().getSuccess().equals("true")){
                         SignInResponse response1 = response.body();
                         session.createLoginSession(response1.getId(),response1.getName(),response1.getEmail(),response1.getMobile_number(),response1.getOrgn_code(),response1.getUser_type(),response1.getProvider_id(),response1.getProvider_name(),response1.getImage_path());
                         //hideProgressDialog();
                         System.out.println("response1"+getTaskId());
-                       activityMe();
+                        activityMe();
 
                     } else {
                         Snackbar.make(mContentLayout, "Invalid credentials", Snackbar.LENGTH_SHORT).show();

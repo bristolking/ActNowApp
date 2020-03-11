@@ -31,8 +31,13 @@ public class ProjectDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS + ";");
-        onCreate(db);
+       // db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
+        if (oldVersion != newVersion) {
+            // Simplest implementation is to drop all old tables and recreate them
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
+            onCreate(db);
+        }
+        //onCreate(db);
     }
 
     public void insertUserDetails(ProjectListResponseRecords projectListRecords) {

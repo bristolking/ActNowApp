@@ -1,6 +1,5 @@
 package com.actnow.android.activities.insights;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -37,7 +36,6 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -175,7 +173,7 @@ public class IndividualInsighsGrapghActivity extends AppCompatActivity {
                                 startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                Intent iInsights = new Intent( getApplicationContext(), InsightsChart.class );
                                 startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:

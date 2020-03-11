@@ -47,14 +47,12 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.databse.TaskDBHelper;
-import com.actnow.android.sdk.responses.CheckBoxResponse;
-import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.TaskComplete;
 import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
@@ -201,7 +199,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
@@ -308,10 +306,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
         } else {
             ideaNoConnection();
         }
-        attemptTaskList();
-
     }
-
     private void attemptTaskList() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -862,7 +857,7 @@ public class ViewIdeasActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
     private void activityInsights() {
-        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+        Intent i = new Intent(getApplicationContext(), InsightsChart.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }

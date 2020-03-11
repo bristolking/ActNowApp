@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.actnow.android.R;
 import com.actnow.android.sdk.responses.TaskListRecords;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         viewHolder.mTaskStatus.setText( taskListResponse.getStatus() );
         viewHolder.mProjectCode.setText( taskListResponse.getProject_code() );
         viewHolder.mRepeat_type.setText( taskListResponse.getRepeat_type() );
-        System.out.println( "name" + taskListRecordsList );
+
     }
 
     @Override

@@ -28,7 +28,7 @@ import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectFooterAdapter;
 import com.actnow.android.sdk.responses.ProjectListResponse;
@@ -165,7 +165,7 @@ public class ProjectMonthlyActivity extends AppCompatActivity {
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
@@ -368,7 +368,7 @@ public class ProjectMonthlyActivity extends AppCompatActivity {
     private void activityInsights() {
        /* Intent i = new Intent(getApplicationContext(), PersonalActivity.class);
         startActivity(i);*/
-        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+        Intent i = new Intent(getApplicationContext(), InsightsChart.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }

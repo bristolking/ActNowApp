@@ -1,7 +1,5 @@
 package com.actnow.android.activities.projects;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,7 +21,6 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,7 +44,7 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.tasks.EditTaskActivity;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.TaskListAdapter;
@@ -219,7 +216,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                 startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                Intent iInsights = new Intent( getApplicationContext(), InsightsChart.class );
                                 startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
@@ -326,8 +323,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
-                    }
+                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_LONG ).show();                    }
                 } else {
                     AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
                 }
@@ -394,7 +390,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                             Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
                                             i.putExtra( "projectcode", project_code );
                                             startActivity( i );
-                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "TaskOffline is restored!", Snackbar.LENGTH_SHORT );
+                                            Snackbar snackbar1 = Snackbar.make( mContentLayout, "Task is restored!", Snackbar.LENGTH_SHORT );
                                             snackbar1.show();
                                         }
                                     } );
@@ -419,7 +415,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
                                                     if (response.isSuccessful()) {
                                                         if (response.body().getSuccess().equals( "true" )) {
                                                         } else {
-                                                            Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_LONG ).show();
+                                                            Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_LONG ).show();
                                                         }
                                                     } else {
                                                         AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
@@ -822,7 +818,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
     }
 
     private void activityInsights() {
-        Intent i = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+        Intent i = new Intent( getApplicationContext(), InsightsChart.class );
         startActivity( i );
         overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }

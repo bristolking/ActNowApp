@@ -1,7 +1,6 @@
 package com.actnow.android.activities.projects;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -45,7 +44,7 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.adapter.ProjectFooterAdapter;
 import com.actnow.android.adapter.ProjectOfflineAdapter;
@@ -200,7 +199,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                 startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                Intent iInsights = new Intent( getApplicationContext(), InsightsChart.class );
                                 startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
@@ -362,12 +361,11 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 public void onClick(View view, int position) {
                     View view1 = (View) findViewById( R.id.liner_projectList );
                     RadioGroup mRadioGroup = (RadioGroup) view.findViewById( R.id.radioGroupProject );
-                    mRadioButtonProjectName = (RadioButton)findViewById( R.id.projectNameFooter );
+                    final RadioButton mRadioButtonProjectName = (RadioButton) view.findViewById( R.id.projectNameFooter );
                     final TextView mProjectCode = (TextView) view.findViewById( R.id.tv_projectCode );
                     final TextView mProjectId = (TextView) view.findViewById( R.id.tv_projectId );
                     final TextView mProjectColor =(TextView)view.findViewById(R.id.tv_projectColor );
                     mRadioGroup.setOnCheckedChangeListener( new RadioGroup.OnCheckedChangeListener() {
-                        @SuppressLint("ResourceType")
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
                             if (checkedId == R.id.projectNameFooter) {
@@ -383,7 +381,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     i.putExtra( "id", id );
                                     i.putExtra( "projectOwnerName", projectOwnerName );
                                     i.putExtra( "projectcode", projectcode );
-                                    System.out.println("Project TaskValues" + s + id + projectOwnerName + projectcode );
+                                    System.out.println("ProjectofflineTaskValues" + s + id + projectOwnerName + projectcode );
                                     startActivity( i );
                                 } else if (checkedId != -1) {
                                     selectedType = mRadioButtonProjectName.getText().toString();
@@ -506,7 +504,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
     }
 
 
-
+// OFFLINE Data
     private void attemptOfflineProjects() {
         AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         ProjectDBHelper projectDBHelper = new ProjectDBHelper(getApplicationContext());
@@ -656,7 +654,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
     }
 
     private void activityInsights() {
-        Intent i = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+        Intent i = new Intent( getApplicationContext(), InsightsChart.class );
         startActivity( i );
         overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }

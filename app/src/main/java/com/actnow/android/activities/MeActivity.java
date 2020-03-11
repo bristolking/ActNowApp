@@ -12,7 +12,7 @@ import com.actnow.android.R;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
 import com.actnow.android.activities.monthly.MonthlyTaskListActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.taskspinner.PriorityTaskActivity;
 import com.actnow.android.utils.UserPrefUtils;
 
@@ -134,7 +134,7 @@ public class MeActivity extends AppCompatActivity {
        /* Intent i = new Intent(getApplicationContext(), PersonalActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);*/
-        Intent i = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+        Intent i = new Intent(getApplicationContext(), InsightsChart.class);
         startActivity(i);
     }
 

@@ -42,7 +42,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -52,8 +51,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -256,7 +253,7 @@ public class WeekelyTaskChartActivity extends AppCompatActivity  implements OnCh
                         finish();
                         break;
                     case 3:
-                        Intent iToady = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                        Intent iToady = new Intent(getApplicationContext(), InsightsChart.class);
                         startActivity(iToady);
                         finish();
                         break;

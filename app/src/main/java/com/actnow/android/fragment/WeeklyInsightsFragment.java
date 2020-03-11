@@ -58,6 +58,7 @@ public class WeeklyInsightsFragment extends Fragment {
         y = new ArrayList<String>();
         mProgressView = view.findViewById( R.id.progress_bar );
         mContentLayout = view.findViewById( R.id.content_layout );
+        mlineChartWeekely = (LineChart)view.findViewById(R.id.line_chartGraphWeeekely);
         mWeekly_no_of_tasks  = (TextView)view.findViewById(R.id.tv_numberTotalTaks);
         mWeekly_no_of_ctasks = (TextView)view.findViewById(R.id.tv_numberOfComleteTaks);
         mWeekly_no_of_tasks_cricle =(TextView)view.findViewById(R.id.tv_totalTaksInCricle);

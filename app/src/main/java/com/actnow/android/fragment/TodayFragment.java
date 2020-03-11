@@ -292,7 +292,7 @@ public class TodayFragment extends Fragment {
                     mImageDelete.setOnClickListener( new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showProgressDialog();
+                            //showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get( UserPrefUtils.ID );
                             String orgn_code = userId.get( UserPrefUtils.ORGANIZATIONNAME );
@@ -303,7 +303,7 @@ public class TodayFragment extends Fragment {
                                 public void onResponse(Call<TaskDelete> call, Response<TaskDelete> response) {
                                     if (response.isSuccessful()) {
                                         if (response.body().getSuccess().equals( "true" )) {
-                                            hideProgressDialog();
+                                           // hideProgressDialog();
                                             mTaskListAdapter.removeItem(position);
 
                                             Snackbar.make( mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT ).show();
@@ -383,7 +383,7 @@ public class TodayFragment extends Fragment {
         }
     }
 
-    private void showProgressDialog() {
+   /* private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getContext());
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -398,10 +398,10 @@ public class TodayFragment extends Fragment {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }
+    }*/
 // OFFLINE DATA
     private void todyFrgmentNoConnection() {
-        hideProgressDialog();
+       // hideProgressDialog();
        // AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();

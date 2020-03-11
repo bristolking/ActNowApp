@@ -42,7 +42,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -244,7 +243,7 @@ public class YearlyTaskChartActivity extends AppCompatActivity implements OnChar
                         Toast.makeText(getApplicationContext(), "Seleted the Yearly Chart", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        Intent iDialy = new Intent(getApplicationContext(), DailyTaskChartActivity.class);
+                        Intent iDialy = new Intent(getApplicationContext(), InsightsChart.class);
                         startActivity(iDialy);
                         finish();
                         break;

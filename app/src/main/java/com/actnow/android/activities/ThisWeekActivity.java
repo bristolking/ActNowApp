@@ -5,66 +5,41 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
-import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
-import com.actnow.android.activities.tasks.EditTaskActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.activities.tasks.TaskAddListActivity;
 import com.actnow.android.activities.tasks.ViewTasksActivity;
 import com.actnow.android.adapter.ThisWeekAdapter;
-import com.actnow.android.fragment.OverDueTodayFragment;
-import com.actnow.android.sdk.responses.TaskComplete;
-import com.actnow.android.sdk.responses.TaskDelete;
 import com.actnow.android.sdk.responses.TaskListRecords;
-import com.actnow.android.sdk.responses.TaskListResponse;
-import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.view.View.GONE;
-import static com.activeandroid.Cache.getContext;
 
 
 public class ThisWeekActivity extends AppCompatActivity {
@@ -188,7 +163,7 @@ public class ThisWeekActivity extends AppCompatActivity {
                                 startActivity( iIndividuals );
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+                                Intent iInsights = new Intent( getApplicationContext(), InsightsChart.class );
                                 startActivity( iInsights );
                                 break;
                             case R.id.nav_timeLine:
@@ -636,7 +611,7 @@ public class ThisWeekActivity extends AppCompatActivity {
     }
 
     private void activityInsights() {
-        Intent i = new Intent( getApplicationContext(), DailyTaskChartActivity.class );
+        Intent i = new Intent( getApplicationContext(), InsightsChart.class );
         startActivity( i );
         overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }

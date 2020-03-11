@@ -15,12 +15,9 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,12 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actnow.android.R;
-import com.actnow.android.activities.AdvancedSearchActivity;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.insights.TaskInsightsActivity;
-import com.actnow.android.activities.monthly.MonthlyTaskListActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
@@ -46,13 +41,12 @@ import com.actnow.android.activities.settings.AccountSettingActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
-import com.actnow.android.activities.insights.DailyTaskChartActivity;
+import com.actnow.android.activities.insights.InsightsChart;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.fragment.AllTaskFragment;
 import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.fragment.PriorityFragment;
 import com.actnow.android.fragment.RepetitiveTabedFragment;
-import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
@@ -60,29 +54,16 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.actnow.android.R.layout.task_list_cutsom;
-
 public class TaskAddListActivity extends AppCompatActivity {
     UserPrefUtils session;
-    EditText mTaskQucikSearch;
-    Button mButtonAdavancedSearch;
-    ImageView mImageBulbTask;
-    private String selectedType = "";
+
     String id;
     String taskOwnerName;
-    Spinner mSpinnerReptOption;
-    ArrayAdapter<String> arrayAdapterReapt;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
-    private ArrayList<TaskListRecords> taskListRecordsArrayList = new ArrayList<TaskListRecords>();
 
-    TaskListAdapter mTaskListAdapter;
-    private FrameLayout mainlayout;
-    int someIndex;
-
-    String[] repetitive = {"","DAILY", "WEEKLY", "MONTHLY", "YEARLY"};
 
 
     @Override
@@ -199,7 +180,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                                 startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent(getApplicationContext(),DailyTaskChartActivity.class);
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
                                 startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:

@@ -487,18 +487,15 @@ public class OverDueTodayFragment extends Fragment {
                 taskListRecords.setProject_name(projectName);
                 taskListRecords.setRepeat_type(type);
                 if (taskListRecords.getDue_date() != null) {
-
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     String formattedDate = df.format(date1);
                     String date2[] = taskListRecords.getDue_date().split(" ");
                     String date3 = date2[0];
-
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     String dateYes = dateFormat.format(yesterday());
                     Date dat6 = new Date(dateYes);
                     System.out.println("dateys" + dat6);
-
                     try {
                         Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse(date3);
                         System.out.println("date3" + date4);
