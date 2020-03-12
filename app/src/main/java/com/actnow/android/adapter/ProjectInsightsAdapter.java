@@ -20,9 +20,11 @@ public class ProjectInsightsAdapter extends RecyclerView.Adapter<ProjectInsights
 
     List<ProjectsInsights> projectsInsights;
 
-    public ProjectInsightsAdapter(ArrayList<ProjectsInsights> projectsInsightsArrayList) {
+    public ProjectInsightsAdapter( ArrayList<ProjectsInsights> projectsInsightsArrayList) {
         this.projectsInsights = projectsInsightsArrayList;
     }
+
+
 
     @NonNull
     @Override

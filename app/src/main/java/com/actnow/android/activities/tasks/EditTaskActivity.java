@@ -139,7 +139,7 @@ public class EditTaskActivity extends AppCompatActivity {
 
     TextView mProjectNameDailog;
     TextView mProjectCodeDailog;
-
+    ImageView imageView;
     private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,7 +284,19 @@ public class EditTaskActivity extends AppCompatActivity {
         mContentLayout = findViewById( R.id.content_layout );
         mTaskEditName = findViewById( R.id.et_newEditTaskName );
         mEditTaskOwner = findViewById( R.id.et_newEdittaskOwner );
+        imageView = (ImageView)findViewById(R.id.dateClearImage);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDateTaskEdit.setText(" ");
+            }
+        });
         mDateTaskEdit = findViewById( R.id.et_duedateNewEditTaskName );
+        String due_date = mDateTaskEdit.getText().toString();
+        if (TextUtils.isEmpty(due_date)){
+            imageView.setVisibility(GONE);
+        }
+
         final Calendar myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -292,7 +304,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 myCalendar.set( Calendar.YEAR, year );
                 myCalendar.set( Calendar.MONTH, monthOfYear );
                 myCalendar.set( Calendar.DAY_OF_MONTH, dayOfMonth );
-                String myFormat = "yyyy-MM-dd HH:mm:ss";;
+                String myFormat = "yyyy-MM-dd HH:mm:ss";
                 SimpleDateFormat sdf = new SimpleDateFormat( myFormat, Locale.UK );
                 mDateTaskEdit.setText( sdf.format( myCalendar.getTime() ) );
             }
@@ -303,6 +315,7 @@ public class EditTaskActivity extends AppCompatActivity {
                 new DatePickerDialog( EditTaskActivity.this, datePickerListener, myCalendar
                         .get( Calendar.YEAR ), myCalendar.get( Calendar.MONTH ),
                         myCalendar.get( Calendar.DAY_OF_MONTH ) ).show();
+                imageView.setVisibility(View.VISIBLE);
             }
         } );
         mEditPriorityNewTask = findViewById( R.id.re_EditpriorityNewTask );

@@ -240,7 +240,7 @@ public class OverdueFragment extends Fragment {
                     try {
                         Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse(date3);
                         System.out.println("date3" + date4);
-                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")) {
+                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")&& taskListRecords.getDue_date() != null) {
                             taskListRecordsArrayList.add(taskListRecords1);
                         }
                     } catch (ParseException e) {
@@ -269,7 +269,7 @@ public class OverdueFragment extends Fragment {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Confirm.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );

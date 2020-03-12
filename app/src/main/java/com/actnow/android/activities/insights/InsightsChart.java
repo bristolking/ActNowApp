@@ -77,7 +77,7 @@ public class InsightsChart extends AppCompatActivity  {
         TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
         TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
         btnLink2.setVisibility(GONE);
-        btnLink1.setText("Today");
+        btnLink1.setText("Insights");
         btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
         ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
         btnCalendar.setVisibility(GONE);
@@ -289,9 +289,9 @@ public class InsightsChart extends AppCompatActivity  {
             }
         });
         ImageView imgProject = (ImageView) findViewById(R.id.img_insights);
-        imgProject.setImageResource(R.drawable.ic_insight_white);
+        imgProject.setImageResource(R.drawable.ic_insight_red);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_insights);
-        txtIndividual.setTextColor(getResources().getColor(R.color.colorWhite));
+        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));
     }
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
@@ -318,9 +318,5 @@ public class InsightsChart extends AppCompatActivity  {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 }
 

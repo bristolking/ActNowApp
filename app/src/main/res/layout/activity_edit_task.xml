@@ -61,8 +61,7 @@
                     android:id="@+id/name_text_in_newTaskTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
+                    android:layout_weight="0.5">
                     <EditText
                         android:id="@+id/et_newEdittaskOwner"
                         android:layout_width="match_parent"
@@ -79,7 +78,7 @@
                     android:id="@+id/name_text_in_taskdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="0.5">
 
                     <EditText
                         android:id="@+id/et_duedateNewEditTaskName"
@@ -95,6 +94,13 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorAccent" />
                 </android.support.design.widget.TextInputLayout>
+                <ImageView
+                    android:id="@+id/editdateClearImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_wrong_sign_red"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

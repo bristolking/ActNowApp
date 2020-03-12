@@ -201,7 +201,7 @@ public class MonthlyFragment extends Fragment {
                 taskListRecords1.setStatus( taskListRecords.getStatus() );
                 taskListRecords1.setProject_name( taskListRecords.getProject_name());
                 taskListRecords1.setRepeat_type( taskListRecords.getRepeat_type());
-                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals("Monthly")) {
+                if (taskListRecords.getStatus().equals( "1" ) && taskListRecords.getRepeat_type().equals("Monthly")&& taskListRecords.getDue_date() != null) {
                     taskListRecordsArrayList.add( taskListRecords1 );
                 }
             }
@@ -225,7 +225,7 @@ public class MonthlyFragment extends Fragment {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Confirm.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);

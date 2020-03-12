@@ -348,7 +348,7 @@ public class TaskAddListActivity extends AppCompatActivity {
     }
 
     private void activityInsights() {
-        Intent i = new Intent(getApplicationContext(), TaskInsightsActivity.class);
+        Intent i = new Intent(getApplicationContext(), InsightsChart.class);
         startActivity(i);
         overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }

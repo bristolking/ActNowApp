@@ -30,7 +30,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true" />
         </RelativeLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -63,7 +62,7 @@
                     android:id="@+id/name_text_in_newTaskTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="0.5">
 
                     <EditText
                         android:id="@+id/et_newtaskTitle"
@@ -74,7 +73,6 @@
                         android:editable="false"
                         android:hint="TaskOwner"
                         android:maxLines="1"
-                        android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -82,7 +80,7 @@
                     android:id="@+id/name_text_in_taskdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="0.5">
 
                     <EditText
                         android:id="@+id/et_duedateNewTaskName"
@@ -98,8 +96,14 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/colorAccent" />
                 </android.support.design.widget.TextInputLayout>
+                <ImageView
+                    android:id="@+id/dateClearImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_wrong_sign_red"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center"/>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,8 +190,7 @@
                         android:hint="Repat Option"
                         android:paddingLeft="25dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        app:fontFamily="@font/montserrat"
-                        app:met_floatingLabel="normal" />
+                        app:fontFamily="@font/montserrat" />
                 </RelativeLayout>
             </LinearLayout>
 

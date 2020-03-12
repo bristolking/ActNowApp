@@ -105,7 +105,7 @@ public class WeekNameFiveFragment extends Fragment {
         if (AndroidUtils.isNetworkAvailable( getApplicationContext() )) {
             attemptTaskList();
         } else {
-            // weeKFiveFrgmentNoConnection();
+            weeKFiveFragmentNoConnection();
         }
         return view;
     }
@@ -201,7 +201,7 @@ public class WeekNameFiveFragment extends Fragment {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Completed.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make( mContentLayout, "Confirm.", Snackbar.LENGTH_LONG ).setAction( "UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility( View.VISIBLE );
@@ -407,7 +407,7 @@ public class WeekNameFiveFragment extends Fragment {
         }
     }
 
-    private void   weeKFourFragmentNoConnection() {
+    private void   weeKFiveFragmentNoConnection() {
         //AndroidUtils.showProgress( false, mProgressView, mContentLayout );
         TaskDBHelper taskDBHelper = new TaskDBHelper( getContext() );
         Cursor cursor = taskDBHelper.getAllData();

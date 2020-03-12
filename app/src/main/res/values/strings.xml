@@ -82,6 +82,7 @@
         <item>29</item>
         <item>30</item>
         <item>31</item>
+        <item>LAST DAY OF THE MONTH</item>
     </string-array>
     <string-array name="weekdays">
         <item>Monday</item>

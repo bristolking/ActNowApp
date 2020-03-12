@@ -44,12 +44,15 @@ public class ProjectInsightsFragment extends Fragment {
     RecyclerView mRecyclerViewProjectInsights;
     RecyclerView.LayoutManager mLayoutManager;
     ArrayList<ProjectsInsights> projectsInsightsArrayList = new ArrayList<ProjectsInsights>();
+    final ProjectInsightsFragment context = this;
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        session = new UserPrefUtils(getActivity());
+        session = new UserPrefUtils(getContext());
         View view= inflater.inflate(R.layout.fragment_project_insights, container, false);
+        apiCallProjectInsights();
         mProgressView = view.findViewById(R.id.progress_bar);
         mContentLayout = view.findViewById(R.id.content_layout);
         mRecyclerViewProjectInsights = (RecyclerView) view.findViewById(R.id.projectInsights_recyclerView);
@@ -58,7 +61,6 @@ public class ProjectInsightsFragment extends Fragment {
         mRecyclerViewProjectInsights.setItemAnimator(new DefaultItemAnimator());
         mProjectInsightsAdapter = new ProjectInsightsAdapter(projectsInsightsArrayList);
         mRecyclerViewProjectInsights.setAdapter(mProjectInsightsAdapter);
-        apiCallProjectInsights();
         return view;
 
     }
@@ -152,10 +154,6 @@ public class ProjectInsightsFragment extends Fragment {
                     View viewLinerProject =(View)view.findViewById(R.id.view_linerProject);
                     final TextView mInsightsProjectName = view.findViewById(R.id.tv_projects_InsgihtsName);
                     final TextView mProjectInsightsColor = view.findViewById(R.id.tv_projects_InsgihtsColor);
-                /*    final TextView mProjectsInsightsApproval = view.findViewById(R.id.tv_projectInsightsApprovalTasks);
-                    final TextView mProjectsInsightsPeniding = view.findViewById(R.id.tv_projectInsightsPendingTasks);
-                    final TextView mProjectsInsightsOngoing = view.findViewById(R.id.tv_projectInsightsOngoingTasks);
-                    final TextView mProjectInsightscompleted = view.findViewById(R.id.tv_projectInsightsCompleteTasks);*/
                     ImageView imageViewProjectInsights = (ImageView) view.findViewById(R.id.image_insightsProjects);
                     viewLinerProject.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -165,10 +163,6 @@ public class ProjectInsightsFragment extends Fragment {
                             Intent i = new Intent(getActivity(), ProjectsInsightsGraphActivity.class);
                             i.putExtra("nameInsights", nameInsights);
                             i.putExtra("colorInsights", colorInsights);
-                           /* i.putExtra("approvalInsights", approvalInsights);
-                            i.putExtra("pendingInsights", pendingInsights);
-                            i.putExtra("ongoingInsights", ongoingInsights);
-                            i.putExtra("compltedInsights", compltedInsights);*/
                             startActivity(i);
                         }
                     });
@@ -229,6 +223,11 @@ public class ProjectInsightsFragment extends Fragment {
         @Override
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        projectsInsightsArrayList.clear();
     }
 
 }

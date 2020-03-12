@@ -110,6 +110,7 @@ public class OverDueTodayFragment extends Fragment {
         mtodayOverDueRecylcerView.setAdapter(mTaskOfflineAdapter);
         if (AndroidUtils.isNetworkAvailable(getActivity())) {
             attemptTaskList();
+            showProgressDialog();
         } else {
             overDueTodayFragmentNoConnection();
         }
@@ -140,7 +141,7 @@ public class OverDueTodayFragment extends Fragment {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setTaskList(response.body().getTask_records());
-                        //hideProgressDialog();
+                        hideProgressDialog();
                     } else {
                         Toast.makeText(getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();
                     }
@@ -170,7 +171,7 @@ public class OverDueTodayFragment extends Fragment {
     private void hideProgressDialog() {
         dialog.dismiss();
     }*/
-  /*  private void showProgressDialog() {
+    private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getContext());
             mProgressDialog.setMessage(getString(R.string.loading));
@@ -184,7 +185,7 @@ public class OverDueTodayFragment extends Fragment {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }*/
+    }
 
     private Date yesterday() {
         final Calendar cal = Calendar.getInstance();
@@ -219,11 +220,10 @@ public class OverDueTodayFragment extends Fragment {
                     String dateYes = dateFormat.format(yesterday());
                     Date dat6 = new Date(dateYes);
                     System.out.println("dateys" + dat6);
-
                     try {
                         Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse(date3);
                         System.out.println("date3" + date4);
-                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")) {
+                        if (date4.before(dat6) && taskListRecords.getStatus().equals("1")&& taskListRecords.getDue_date() != null) {
                             taskListRecordsArrayList.add(taskListRecords1);
                         }
                     } catch (ParseException e) {
@@ -252,7 +252,7 @@ public class OverDueTodayFragment extends Fragment {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Confirm.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);

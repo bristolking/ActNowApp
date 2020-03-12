@@ -208,7 +208,7 @@ public class AllTaskFragment extends Fragment {
                 taskListRecords.setRepeat_type(taskListRecords1.getRepeat_type());
                 dbHelper.insertTaskDetails(taskListRecords);
                 System.out.println("data: " + i + " taskData: " + id);
-                if (taskListRecords.getStatus().equals("1")) {
+                if (taskListRecords.getStatus().equals("1")&& taskListRecords.getDue_date() != null) {
                     taskListRecordsArrayList.add(taskListRecords);
                 }
             }
@@ -232,7 +232,7 @@ public class AllTaskFragment extends Fragment {
                             if (checkedId == R.id.radio_buttonAction) {
                                 if (checkedId == R.id.radio_buttonAction) {
                                     selectedType = radioButtonTaskName.getText().toString();
-                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Completed.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                    Snackbar snackbar = Snackbar.make(mContentLayout, "Confirm.", Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             view1.setVisibility(View.VISIBLE);

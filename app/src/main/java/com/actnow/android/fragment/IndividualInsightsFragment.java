@@ -228,5 +228,10 @@ public class IndividualInsightsFragment extends Fragment {
         public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
         }
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        individualMembersReponseArrayList.clear();
+    }
 
 }

@@ -122,6 +122,7 @@ public class ViewTasksActivity extends AppCompatActivity {
     String projectcode;
 
     String projectName;
+    ImageView imageView;
 
     RecyclerView mRecyclerViewDateTime;
     NewTaskProjectAdapter mNewTaskProjectAdapter;
@@ -280,7 +281,18 @@ public class ViewTasksActivity extends AppCompatActivity {
     private void initializeViews() {
         mTaskProjectName = findViewById(R.id.et_newTaskProjectName);
         mTaskTitle = findViewById(R.id.et_newtaskTitle);
+        imageView = (ImageView)findViewById(R.id.dateClearImage);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDueDateTask.setText(" ");
+            }
+        });
         mDueDateTask = findViewById(R.id.et_duedateNewTaskName);
+        String due_date = mDueDateTask.getText().toString();
+        if (TextUtils.isEmpty(due_date)){
+            imageView.setVisibility(GONE);
+        }
         mPriorty = findViewById(R.id.tv_taskPriorty);
         final Calendar myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
@@ -300,9 +312,10 @@ public class ViewTasksActivity extends AppCompatActivity {
                 new DatePickerDialog(ViewTasksActivity.this, datePickerListener, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                imageView.setVisibility(View.VISIBLE);
+
             }
         });
-
         mPriorityNewTask = findViewById(R.id.re_priorityNewTask);
         listItems = getResources().getStringArray(R.array.priorty);
         checkedItems = new boolean[listItems.length];
@@ -507,7 +520,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ViewTasksActivity.this);
-                mBuilder.setTitle("ADD TO DATES");
+                mBuilder.setTitle("SELECT THE DAY OF THE MONTH TO REPEAT");
                 mBuilder.setMultiChoiceItems(listItemsDates, checkedItemsDates, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position, boolean isChecked) {
@@ -911,4 +924,20 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
 
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getApplicationContext());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
 }
