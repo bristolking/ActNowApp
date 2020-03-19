@@ -7,24 +7,18 @@ import android.content.Intent;
 import android.database.Cursor;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -34,11 +28,8 @@ import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.CommentsActivity;
 import com.actnow.android.activities.ReaminderScreenActivity;
-import com.actnow.android.activities.ThisWeekActivity;
-import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.invitation.InvitationActivity;
 import com.actnow.android.activities.tasks.EditTaskActivity;
-import com.actnow.android.adapter.OverDueTaskAdapter;
 import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.adapter.TaskOfflineAdapter;
 import com.actnow.android.databse.TaskDBHelper;
@@ -136,12 +127,12 @@ public class OverDueTodayFragment extends Fragment {
         call.enqueue(new Callback<TaskListResponse>() {
             @Override
             public void onResponse(Call<TaskListResponse> call, Response<TaskListResponse> response) {
+                hideProgressDialog();
                 AndroidUtils.showProgress( false, mProgressView, mContentLayout );
                 if (response.isSuccessful()) {
                     System.out.println("url" + response.raw());
                     if (response.body().getSuccess().equals("true")) {
                         setTaskList(response.body().getTask_records());
-                        hideProgressDialog();
                     } else {
                         Toast.makeText(getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();
                     }
@@ -209,13 +200,11 @@ public class OverDueTodayFragment extends Fragment {
                 taskListRecords1.setRepeat_type(taskListRecords.getRepeat_type());
 
                 if (taskListRecords.getDue_date() != null) {
-
                     Date date1 = new Date();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     String formattedDate = df.format(date1);
                     String date2[] = taskListRecords.getDue_date().split(" ");
                     String date3 = date2[0];
-
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     String dateYes = dateFormat.format(yesterday());
                     Date dat6 = new Date(dateYes);
@@ -367,7 +356,7 @@ public class OverDueTodayFragment extends Fragment {
                     mImageDelete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //showProgressDialog();
+                            showProgressDialog();
                             HashMap<String, String> userId = session.getUserDetails();
                             String id = userId.get(UserPrefUtils.ID);
                             String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
@@ -380,7 +369,7 @@ public class OverDueTodayFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         System.out.println("deleteResponse1" + response.raw());
                                         if (response.body().getSuccess().equals("true")) {
-                                            //hideProgressDialog();
+                                            hideProgressDialog();
                                             mTaskListAdapter.removeItem(position);
                                             Snackbar.make(mContentLayout, "Task Deleted Sucessfully", Snackbar.LENGTH_SHORT).show();
                                         } else {
@@ -400,7 +389,6 @@ public class OverDueTodayFragment extends Fragment {
                             });
                         }
                     });
-
 
                 }
 

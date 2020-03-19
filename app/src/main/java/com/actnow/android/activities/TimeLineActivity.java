@@ -8,13 +8,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -590,41 +594,28 @@ public class TimeLineActivity extends AppCompatActivity {
         }
     }
     private void appFooter() {
-        View btnMe = findViewById( R.id.btn_me );
-        btnMe.setOnClickListener( new View.OnClickListener() {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                activityToady();
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomNavigationToday:
+                        activityToady();
+                        return true;
+                    case R.id.bottomNavigationProjects:
+                        activityProject();
+                        return true;
+                    case R.id.bottomNavigationTask:
+                        activityTasks();
+                        return true;
+                    case R.id.bottomNavigationIndividuals:
+                        activityIndividuals();
+                        return true;
+
+                }
+                return false;
             }
-        } );
-        View btnProject = findViewById( R.id.btn_projects );
-        btnProject.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityProject();
-            }
-        } );
-        View btnTask = findViewById( R.id.btn_task );
-        btnTask.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityTasks();
-            }
-        } );
-        View btnIndividuals = findViewById( R.id.btn_individuals );
-        btnIndividuals.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityIndividuals();
-            }
-        } );
-        View btnInsights = findViewById( R.id.btn_insights );
-        btnInsights.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityInsights();
-            }
-        } );
+        });
     }
 
     private void activityToady() {

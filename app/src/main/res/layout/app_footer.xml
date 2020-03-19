@@ -7,6 +7,7 @@
     android:background="@color/colorAppFooter"
     android:orientation="horizontal">
 
+
     <LinearLayout
         android:id="@+id/btn_me"
         android:layout_width="0dp"
@@ -62,11 +63,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
-        android:gravity="center"
-        android:paddingTop="@dimen/standard_8"
-        android:paddingBottom="@dimen/standard_8"
         android:background="@drawable/cricle"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/standard_8"
+        android:paddingBottom="@dimen/standard_8">
 
         <ImageView
             android:id="@+id/img_insights"

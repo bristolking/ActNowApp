@@ -3,17 +3,19 @@ package com.actnow.android.activities.projects;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -754,7 +756,7 @@ public class ProjectTaskListActivity extends AppCompatActivity {
     }
 
     private void appFooter() {
-        View btnMe = findViewById( R.id.btn_me );
+      /*  View btnMe = findViewById( R.id.btn_me );
         btnMe.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -789,7 +791,36 @@ public class ProjectTaskListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 activityInsights();
             }
-        } );
+        } );*/
+        FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activityInsights();
+            }
+        });
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomNavigationToday:
+                        activityToady();
+                        return true;
+                    case R.id.bottomNavigationProjects:
+                        activityProject();
+                        return true;
+                    case R.id.bottomNavigationTask:
+                        activityTasks();
+                        return true;
+                    case R.id.bottomNavigationIndividuals:
+                        activityIndividuals();
+                        return true;
+
+                }
+                return false;
+            }
+        });
 
     }
 

@@ -14,9 +14,10 @@
             android:layout_height="wrap_content"
             android:text="ProjectName"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:buttonTint="@color/textColor"
+            android:buttonTint="@color/colorAccent"
             android:layout_weight="1"
-            android:textColor="@color/black"/>
+            android:paddingLeft="15dp"
+            android:textColor="@color/textColor"/>
         <TextView
             android:id="@+id/tv_projectCodeDailog"
             android:layout_width="match_parent"

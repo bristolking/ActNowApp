@@ -4,12 +4,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -93,7 +93,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         initializeViews();
 
     }
-
     private void advancedSearch() {
         ImageView mImgBackSearchAdvanced = (ImageView) findViewById( R.id.img_backAdvnaced );
         mImgBackSearchAdvanced.setOnClickListener( new View.OnClickListener() {
@@ -102,7 +101,39 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 onBackPressed();
             }
         } );
-        mAdvancedSearchEditText = (EditText) findViewById( R.id.edit_advncedSearch );
+        ImageView imgProjects = (ImageView)findViewById(R.id.img_advancedfilterProject);
+        imgProjects.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                projectDailog();
+            }
+        });
+
+        ImageView imgIndividuals = (ImageView)findViewById(R.id.img_advancedbyEvent);
+        imgIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+            }
+        });
+        final ImageView imgDate = (ImageView)findViewById(R.id.img_advancedcalender);
+        imgDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get( Calendar.YEAR );
+                mMonth = c.get( Calendar.MONTH );
+                mDay = c.get( Calendar.DAY_OF_MONTH );
+                DatePickerDialog datePickerDialog = new DatePickerDialog( AdvancedSearchActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        mDateInVisible.setText( year + "-" + (monthOfYear + 1) + "-" + dayOfMonth );
+
+                    }
+                }, mYear, mMonth, mDay );
+                datePickerDialog.show();
+            }
+        });
 
     }
 
@@ -117,7 +148,9 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         individualCheckBox = new ArrayList<>();
         individualCheckBox.add( 0 );
         requestIndividualDynamicContent();
-        mDateAdvanced = (TextView) findViewById( R.id.tv_dateAdvanced );
+        mAdvancedSearchEditText = (EditText) findViewById( R.id.edit_advncedSearch );
+
+       /* mDateAdvanced = (TextView) findViewById( R.id.tv_dateAdvanced );
         mDateAdvanced.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +172,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         mProjectAdvanced.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                projectDailog();
+                //projectDailog();
             }
         } );
         mAdvancedIndividuals = (TextView) findViewById( R.id.tv_individualsAdvanced );
@@ -148,7 +181,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
             }
-        } );
+        } );*/
         mButtonInfo = (Button) findViewById( R.id.bt_getInfoAdvanced );
         mButtonInfo.setOnClickListener( new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

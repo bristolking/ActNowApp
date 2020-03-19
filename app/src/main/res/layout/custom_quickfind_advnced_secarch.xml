@@ -1,39 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal">
+        android:padding="8dp">
+
         <ImageView
             android:id="@+id/img_backAdvnaced"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_back"
-            tools:ignore="VectorDrawableCompat"
-            android:layout_weight="0.1"
-            android:layout_gravity="center"
-            android:padding="10dp"/>
-        <EditText
-            android:id="@+id/edit_advncedSearch"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_back" />
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_square"
-            android:hint="ENTER THE TASK_KEY"
-            android:padding="10dp"
-            android:layout_weight="1.5"
-            android:layout_gravity="center" />
-       <!-- <ImageView
-            android:id="@+id/img_advncedSearch"
+            android:text="Adavanced Search"
+            android:paddingLeft="50dp"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorAccent"
+            android:textAllCaps="true"/>
+
+        <ImageView
+            android:id="@+id/img_advancedcalender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_search_red"
-            android:layout_gravity="center"
-            android:layout_weight="0.1"
-            android:padding="10dp"/>-->
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="90dp"
+            app:srcCompat="@drawable/ic_calendar_red" />
+
+        <ImageView
+            android:id="@+id/img_advancedfilterProject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="50dp"
+            app:srcCompat="@drawable/ic_list_project" />
+
+        <ImageView
+            android:id="@+id/img_advancedbyEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="10dp"
+            app:srcCompat="@drawable/ic_menu_round" />
+    </RelativeLayout>
 </RelativeLayout>

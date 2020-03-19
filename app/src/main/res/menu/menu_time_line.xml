@@ -16,7 +16,7 @@
         android:title="By event type"/>
     <item
         android:id="@+id/by_collaborater"
-        android:title="By collaborater"/>
+        android:title="By collaborator"/>
 
 
 

@@ -8,15 +8,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -33,6 +36,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abdeveloper.library.MultiSelectDialog;
+import com.abdeveloper.library.MultiSelectModel;
 import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ThisWeekActivity;
@@ -49,6 +54,8 @@ import com.actnow.android.adapter.NewTaskProjectAdapter;
 import com.actnow.android.adapter.NewTaskProjectAdapterOffline;
 import com.actnow.android.databse.ProjectDBHelper;
 import com.actnow.android.databse.TaskDBHelper;
+import com.actnow.android.sdk.responses.CheckBoxResponse;
+import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskAddResponse;
@@ -60,6 +67,8 @@ import com.bumptech.glide.Glide;
 import org.json.JSONArray;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -71,19 +80,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.view.View.GONE;
+import static java.util.Calendar.MARCH;
 
 public class ViewTasksActivity extends AppCompatActivity {
     final Context context = this;
     EditText mTaskProjectName, mTaskTitle, mDueDateTask, mCommentTask;
     View mProjectNewTask, mRepeatType, mPriorityNewTask;
     TextView mProjectCheckBox;
-    TextView mRepeatTypeTextView;
+
     UserPrefUtils session;
     String id;
     String taskOwnerName;
     String[] reapt = {"RepeatType", "Daily", "Weekly", "Monthly", "Yearly"};
 
-    JSONArray individuvalArray;
+
     JSONArray projectArray;
     TextView mPriorty;
     // priority
@@ -103,6 +113,16 @@ public class ViewTasksActivity extends AppCompatActivity {
     String[] listItemsWeek;
     boolean[] checkedItemsWeek;
     ArrayList<Integer> mWeek = new ArrayList<>();
+
+    String[] listItemDates1;
+    boolean[] checkedItemsDates1;
+    ArrayList<Integer> mUserDates1 = new ArrayList<>();
+
+
+    String[] listItemDates2;
+    boolean[] checkedItemsDates2;
+    ArrayList<Integer> mUserDates2 = new ArrayList<>();
+
     // repeatTupe
     String[] listItemsRepeat;
     boolean[] checkedItemsRepeat;
@@ -135,11 +155,21 @@ public class ViewTasksActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
 
     View mProgressView, mContentLayout;
+    View mProgressViewNEWTask, mContentLayoutNewTask;
     TextView  mProjectNameDailogOffline;
     TextView mProjectCodeDailogOffline;
     String projectNameOffline;
     String projectCodeOffline;
 
+
+
+    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    MultiSelectDialog mIndividuvalDialog, mProjectDialog;
+    ArrayList<Integer> individualCheckBox;
+    TextView mTextShareIndividual;
+    JSONArray individuvalArray;
+    TextView mIndividualsCheckBox;
+    View mIndividuals;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,10 +186,8 @@ public class ViewTasksActivity extends AppCompatActivity {
             id = (String) b.get("id");
             taskOwnerName = (String) b.get("taskOwnerName");
             mTaskTitle.setText(" " + taskOwnerName);
-            /*projectName = (String) b.get( "projectName" );
-            projectcode = (String) b.get( "projectCode" );*/
-        }
 
+        }
 
     }
 
@@ -279,6 +307,8 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        mProgressViewNEWTask =findViewById( R.id.progress_bar );
+        mContentLayoutNewTask = findViewById( R.id.content_layout );
         mTaskProjectName = findViewById(R.id.et_newTaskProjectName);
         mTaskTitle = findViewById(R.id.et_newtaskTitle);
         imageView = (ImageView)findViewById(R.id.dateClearImage);
@@ -286,6 +316,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mDueDateTask.setText(" ");
+                imageView.setVisibility(GONE);
             }
         });
         mDueDateTask = findViewById(R.id.et_duedateNewTaskName);
@@ -408,6 +439,19 @@ public class ViewTasksActivity extends AppCompatActivity {
 
             }
         });
+        requestIndividualDynamicContent();
+        mIndividuvalDialog = new MultiSelectDialog();
+        individualCheckBox = new ArrayList<>();
+        individualCheckBox.add( 0 );
+        mIndividuals = (View)findViewById(R.id.re_individuals);
+        mIndividualsCheckBox =findViewById(R.id.tv_individuals);
+        mIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+
+            }
+        });
         spinnerData();
 
     }
@@ -428,6 +472,13 @@ public class ViewTasksActivity extends AppCompatActivity {
         mDates = (TextView) findViewById(R.id.tv_datesMonthly);
         listItemsDates = getResources().getStringArray(R.array.dates);
         checkedItemsDates = new boolean[listItemsDates.length];
+
+        listItemDates1 = getResources().getStringArray(R.array.dates1);
+        checkedItemsDates1 = new boolean[listItemDates1.length];
+
+
+        listItemDates2 = getResources().getStringArray(R.array.dates2);
+        checkedItemsDates2 = new boolean[listItemDates2.length];
 
         arrayAdapterReapt = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, reapt);
         mSpinnerReptOption.setAdapter(arrayAdapterReapt);
@@ -517,31 +568,37 @@ public class ViewTasksActivity extends AppCompatActivity {
         });
 
         reMonthly.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ViewTasksActivity.this);
-                mBuilder.setTitle("SELECT THE DAY OF THE MONTH TO REPEAT");
-                mBuilder.setMultiChoiceItems(listItemsDates, checkedItemsDates, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int position, boolean isChecked) {
-                        if (isChecked) {
-                            if (!mUserDates.contains(position)) {
-                                mUserDates.add(position);
-                            } else {
-                                mUserDates.remove(position);
+                LocalDate currentdate = LocalDate.now();
+                Month currentMonth = currentdate.getMonth();
+                System.out.println("Current month: "+currentMonth);
+                if (currentMonth.equals(MARCH)) {
+                    mBuilder.setTitle("SELECT THE DAY OF THE MONTH TO REPEAT");
+                    mBuilder.setMultiChoiceItems(listItemDates2, checkedItemsDates2, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int position, boolean isChecked) {
+                            if (isChecked) {
+                                if (!mUserDates2.contains(position)) {
+                                    mUserDates2.add(position);
+                                } else {
+                                    mUserDates2.remove(position);
+                                }
                             }
-                        }
 
-                    }
-                });
+                        }
+                    });
+                }
                 mBuilder.setCancelable(false);
                 mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String item = " ";
-                        for (int i = 0; i < mUserDates.size(); i++) {
-                            item = item + listItemsDates[mUserDates.get(i)];
-                            if (i != mUserDates.size() - 1) {
+                        for (int i = 0; i < mUserDates2.size(); i++) {
+                            item = item + listItemDates2[mUserDates2.get(i)];
+                            if (i != mUserDates2.size() - 1) {
                                 item = item + " ";
 
                             }
@@ -713,7 +770,65 @@ public class ViewTasksActivity extends AppCompatActivity {
         }
     }
 
+    private void requestIndividualDynamicContent() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
+        call.enqueue( new Callback<CheckBoxResponse>() {
+            @Override
+            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setLoadCheckBox( response.body().getOrgn_users_records() );
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
 
+            @Override
+            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+            }
+        } );
+
+    }
+
+    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
+        if (orgn_users_records.size() > 0) {
+            for (int i = 0; orgn_users_records.size() > i; i++) {
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
+                orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
+                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getEmail()));
+            }
+            mIndividuvalDialog = new MultiSelectDialog()
+                    .title("Individuval") //setting title for dialog
+                    .titleSize(25)
+                    .positiveText("Done")
+                    .negativeText("Cancel")
+                    .preSelectIDsList(individualCheckBox)
+                    .setMinSelectionLimit(0)
+                    .setMaxSelectionLimit(listOfIndividuval.size())
+                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
+                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                        @Override
+                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                            for (int i = 0; i < selectedIds.size(); i++) {
+                                mIndividualsCheckBox.setText(dataString);
+                            }
+                            //individuvalArray = new JSONArray( selectedIds );
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            Log.d("TAG", "Dialog cancelled");
+                        }
+                    });
+        }
+    }
     private void attemptOfflineProjects() {
         final Dialog dialog = new Dialog(context, android.R.style.Theme_DeviceDefault_Dialog_Alert);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -812,7 +927,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
         String individuvalName = String.valueOf(individuvalArray);
         //individuvalArray.remove(0);
-        String oldprojectsName = String.valueOf(projectArray);
+        //String oldprojectsName = String.valueOf(projectArray);
         boolean cancel = false;
         View focusView = null;
         if (TextUtils.isEmpty(taskName)) {
@@ -854,26 +969,31 @@ public class ViewTasksActivity extends AppCompatActivity {
                 if (week_days.contains("Sunday")) {
                     list.add("7");
                 }
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
+                AndroidUtils.showProgress(true,mProgressViewNEWTask, mContentLayoutNewTask);
+                if (repeat_type.equals("RepeatType")){
+                    repeat_type="";
+                }
                 //requestCrateTask( id, taskName, duedate, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), priorty );
-                requestCreateTask(id, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf(list), days, months);
-                System.out.println("taskcreateVlaues" + id + taskName + due_date + priorty + project_code + orgn_code + repeat_type + list + days + months);
+                requestCreateTask(id, taskName, due_date, priorty, project_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ),orgn_code, repeat_type, String.valueOf(list), days, months);
+                System.out.println("taskcreateVlaues" + id + taskName + due_date + priorty + String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" )+ project_code + orgn_code + repeat_type + list + days + months);
             } else {
-                requestCreateTask(id, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf(week_days), days, months);
+                requestCreateTask(id, taskName, due_date, priorty, project_code,String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), orgn_code, repeat_type, String.valueOf(week_days), days, months);
 
             }
 
         }
     }
-
-    private void requestCreateTask(String id, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
-        Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse(id, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months);
-        System.out.println("taskfelids" + id + taskName + duedate + priorty + project_code + orgn_code + repeat_type + week_days + days + months);
+    private void requestCreateTask(String id, String taskName, String duedate, String priorty, String project_code, String b, String orgn_code, String repeat_type, String list, String days, String months) {
+        Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse(id, taskName, duedate, priorty, project_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) ,orgn_code, repeat_type, list, days, months);
+        System.out.println("taskfelids" + id + taskName + duedate + priorty + project_code + b +orgn_code + repeat_type + week_days + days + months);
         call.enqueue(new Callback<TaskAddResponse>() {
             @Override
             public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
                 if (response.isSuccessful()) {
+                    System.out.println( "severReponse:" + response.raw() );
                     if (response.body().getSuccess().equals("true")) {
+                        System.out.println( "severReponse1:" + response.body().getSuccess());
+
                         Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
                         startActivity(i);
                     } else {

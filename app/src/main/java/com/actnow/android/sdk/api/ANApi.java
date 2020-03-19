@@ -104,7 +104,7 @@ public interface ANApi {
     /*All The TaskOffline APIs */
     @FormUrlEncoded
     @POST("app/task/add/{id}")
-    Call<TaskAddResponse> checkTaskAddResponse(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.DUE_DATE) String due_date,@Field("priority") String priority, @Field("project_code") String project_code, @Field("orgn_code")String orgn_code,@Field( "repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field( "months")String months);
+    Call<TaskAddResponse> checkTaskAddResponse(@Path("id") String id, @Field(Parameters.NAME) String name, @Field(Parameters.DUE_DATE) String due_date,@Field("priority") String priority, @Field("project_code") String project_code, @Field("orgn_code")String orgn_code,@Field("task_members")String task_members,@Field( "repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field( "months")String months);
     @FormUrlEncoded
     @POST("app/task/edit/{id}/{task_code}")
     Call<TaskEditResponse> checkTheTaskEditReponse(@Path("id")String id,@Path( "task_code")String task_code,@Field("name")String name,@Field("due_date")String due_date,@Field( "priority")String priority,@Field("project_code")String project_code,@Field("orgn_code")String orgn_code,@Field("repeat_type")String repeat_type,@Field( "week_days")String week_days,@Field("days")String days,@Field("months")String months);

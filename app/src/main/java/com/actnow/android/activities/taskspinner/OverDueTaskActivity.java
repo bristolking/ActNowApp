@@ -1,17 +1,17 @@
 package com.actnow.android.activities.taskspinner;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,25 +21,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actnow.android.ANApplications;
 import com.actnow.android.R;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TodayTaskActivity;
 import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
-import com.actnow.android.adapter.OverDueTaskAdapter;
-import com.actnow.android.sdk.responses.OverDueTaskListResponse;
 import com.actnow.android.sdk.responses.OverDueTaskRecords;
-import com.actnow.android.utils.AndroidUtils;
 import com.actnow.android.utils.UserPrefUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class OverDueTaskActivity extends AppCompatActivity {
     RecyclerView mRecyclerViewPriority;

@@ -1,7 +1,7 @@
 package com.actnow.android.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +40,7 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHo
         viewHolder.mApprovalDate.setText( taskListRecords.getDue_date() );
         viewHolder.mApprovalTaskPriority.setText( taskListRecords.getPriority() );
         viewHolder.mTaskCode.setText( taskListRecords.getTask_code() );
-
+        viewHolder.mProjectNameApproval.setText(taskListRecords.getProject_name());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout viewBackground,viewForeground,viewBackgroundRight;
-        TextView mApprovalDate, mApprovalTaskName, mApprovalTaskPriority, mTaskCode;
+        TextView mApprovalDate, mApprovalTaskName, mApprovalTaskPriority, mTaskCode,mProjectNameApproval;
 
         public ViewHolder(@NonNull View itemView) {
             super( itemView );
@@ -62,6 +62,7 @@ public class ApprovalAdapter extends RecyclerView.Adapter<ApprovalAdapter.ViewHo
             mApprovalDate = (TextView) itemView.findViewById( R.id.approvalTaskDate );
             mApprovalTaskPriority = (TextView) itemView.findViewById( R.id.tv_approvalTaskPriority );
             mTaskCode = (TextView) itemView.findViewById( R.id.tv_taskCodeApproval );
+            mProjectNameApproval =(TextView)itemView.findViewById(R.id.projectName_approval);
            /* viewBackground = itemView.findViewById( R.id.view_background );
             viewForeground = itemView.findViewById( R.id.view_foreground );*/
        /*     viewBackgroundRight = itemView.findViewById(R.id.view_background_left );*/

@@ -1,16 +1,19 @@
 package com.actnow.android.activities.insights;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -393,7 +396,7 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
     }
 
     private void appFooter() {
-        View btnMe = findViewById(R.id.btn_me);
+       /* View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -431,7 +434,37 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         ImageView imgProject = (ImageView) findViewById(R.id.img_insights);
         imgProject.setImageResource(R.drawable.ic_insight_red);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_insights);
-        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));
+        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));*/
+
+        FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activityInsights();
+            }
+        });
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomNavigationToday:
+                        activityToady();
+                        return true;
+                    case R.id.bottomNavigationProjects:
+                        activityProject();
+                        return true;
+                    case R.id.bottomNavigationTask:
+                        activityTasks();
+                        return true;
+                    case R.id.bottomNavigationIndividuals:
+                        activityIndividuals();
+                        return true;
+
+                }
+                return false;
+            }
+        });
     }
 
     private void activityToady() {

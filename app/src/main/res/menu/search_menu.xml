@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_search_red"
         android:orderInCategory="100"
         android:title="Search"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item
         android:id="@+id/menuAbout"
         android:title="About" />

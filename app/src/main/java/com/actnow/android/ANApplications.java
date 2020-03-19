@@ -1,7 +1,7 @@
 package com.actnow.android;
 
 import android.content.Context;
-import android.support.multidex.MultiDex;
+import androidx.multidex.MultiDex;
 
 import com.activeandroid.ActiveAndroid;
 import com.actnow.android.sdk.AN;

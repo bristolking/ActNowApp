@@ -1,7 +1,5 @@
 package com.actnow.android.offline;
 
-import android.support.v4.app.FragmentActivity;
-
 public class TaskOffline {
 
     private String task_id;

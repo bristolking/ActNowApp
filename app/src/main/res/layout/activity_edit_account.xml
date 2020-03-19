@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -74,7 +74,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="30dp"
                     android:orientation="vertical">
-                    <android.support.design.widget.TextInputLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/name_text_in_editName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -86,8 +86,8 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-                    </android.support.design.widget.TextInputLayout>
-                    <android.support.design.widget.TextInputLayout
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/name_text_in_editEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -100,8 +100,8 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-                    </android.support.design.widget.TextInputLayout>
-                    <android.support.design.widget.TextInputLayout
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/name_text_in_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -115,10 +115,10 @@
                             android:maxLines="1"
                             android:singleLine="true"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-                    </android.support.design.widget.TextInputLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

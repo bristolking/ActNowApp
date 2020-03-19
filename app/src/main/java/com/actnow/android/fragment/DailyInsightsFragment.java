@@ -2,7 +2,7 @@ package com.actnow.android.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -118,10 +118,12 @@ public class DailyInsightsFragment extends Fragment {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String time = jsonObject.getString("time");
+                System.out.println("time" + time);
                 String[] date = time.split("-");
+                System.out.println("date" + date);
                 String ctasks = jsonObject.getString("ctasks");
-                x.add(new Entry(Integer.parseInt(date[2]), i));
-                y.add(ctasks);
+                x.add(new Entry(Integer.parseInt(ctasks), i));
+                y.add(String.valueOf(date));
                 taskDailyInsightsData.setTime(time);
                 taskDailyInsightsData.setCtasks(ctasks);
 
@@ -146,8 +148,6 @@ public class DailyInsightsFragment extends Fragment {
         }
 
     }
-
-
     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
         Log.i("Gesture", "START, x: " + me.getX() + ", y: " + me.getY());
     }

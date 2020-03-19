@@ -7,16 +7,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -51,6 +51,8 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.adapter.NewTaskProjectAdapter;
 import com.actnow.android.databse.TaskDBHelper;
+import com.actnow.android.sdk.responses.CheckBoxResponse;
+import com.actnow.android.sdk.responses.OrgnUserRecordsCheckBox;
 import com.actnow.android.sdk.responses.ProjectListResponse;
 import com.actnow.android.sdk.responses.ProjectListResponseRecords;
 import com.actnow.android.sdk.responses.TaskEditResponse;
@@ -122,12 +124,11 @@ public class EditTaskActivity extends AppCompatActivity {
     String[] reapt = {"RepeatType", "Daily", "Weekly", "Monthly", "Yearly"};
 
 
-    TextView mEditProjectCheckBox, mEditIndividuvalCheckBox;
-    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    TextView mEditProjectCheckBox;
     ArrayList<MultiSelectModel> listOfProjectNames = new ArrayList<>();
     MultiSelectDialog mProjectDialog;
     ArrayList<Integer> projectListCheckBox;
-    JSONArray individuvalArray, projectArray;
+    JSONArray projectArray;
 
     TextView mPriortyEditTask;
     String projectName;
@@ -141,6 +142,14 @@ public class EditTaskActivity extends AppCompatActivity {
     TextView mProjectCodeDailog;
     ImageView imageView;
     private ProgressDialog mProgressDialog;
+
+    ArrayList<MultiSelectModel> listOfIndividuval = new ArrayList<MultiSelectModel>();
+    MultiSelectDialog mIndividuvalDialog;
+    ArrayList<Integer> individualCheckBox;
+    TextView mTextShareIndividual;
+    JSONArray individuvalArray;
+    TextView  mEditIndividuvalCheckBox;
+    View mEditIndividuals;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -284,11 +293,12 @@ public class EditTaskActivity extends AppCompatActivity {
         mContentLayout = findViewById( R.id.content_layout );
         mTaskEditName = findViewById( R.id.et_newEditTaskName );
         mEditTaskOwner = findViewById( R.id.et_newEdittaskOwner );
-        imageView = (ImageView)findViewById(R.id.dateClearImage);
+        imageView = (ImageView)findViewById(R.id.editdateClearImage);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mDateTaskEdit.setText(" ");
+                imageView.setVisibility(GONE);
             }
         });
         mDateTaskEdit = findViewById( R.id.et_duedateNewEditTaskName );
@@ -409,6 +419,19 @@ public class EditTaskActivity extends AppCompatActivity {
                 dialog.show();
             }
         } );
+        requestIndividualDynamicContent();
+        mIndividuvalDialog = new MultiSelectDialog();
+        individualCheckBox = new ArrayList<>();
+        individualCheckBox.add( 0 );
+        mEditIndividuals = (View)findViewById(R.id.re_editindividuals);
+        mEditIndividuvalCheckBox =findViewById(R.id.tv_editindividuals);
+        mEditIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mIndividuvalDialog.show( getSupportFragmentManager(), "mIndividuvalDialog" );
+
+            }
+        });
         spinnerData();
     }
 
@@ -612,7 +635,66 @@ public class EditTaskActivity extends AppCompatActivity {
             }
         } );
     }
+    private void requestIndividualDynamicContent() {
+        HashMap<String, String> userId = session.getUserDetails();
+        String id = userId.get( UserPrefUtils.ID );
+        Call<CheckBoxResponse> call = ANApplications.getANApi().checktheSpinnerResponse( id );
+        call.enqueue( new Callback<CheckBoxResponse>() {
+            @Override
+            public void onResponse(Call<CheckBoxResponse> call, Response<CheckBoxResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getSuccess().equals( "true" )) {
+                        setLoadCheckBox( response.body().getOrgn_users_records() );
+                    } else {
+                        Snackbar.make( mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT ).show();
+                    }
+                } else {
+                    AndroidUtils.displayToast( getApplicationContext(), "Something Went Wrong!!" );
+                }
+            }
 
+            @Override
+            public void onFailure(Call<CheckBoxResponse> call, Throwable t) {
+                Log.d( "CallBack", " Throwable is " + t );
+            }
+        } );
+
+    }
+
+    private void setLoadCheckBox(List<OrgnUserRecordsCheckBox> orgn_users_records) {
+        if (orgn_users_records.size() > 0) {
+            for (int i = 0; orgn_users_records.size() > i; i++) {
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox = orgn_users_records.get(i);
+                OrgnUserRecordsCheckBox orgnUserRecordsCheckBox1 = new OrgnUserRecordsCheckBox();
+                orgnUserRecordsCheckBox1.setEmail(orgnUserRecordsCheckBox.getEmail());
+                listOfIndividuval.add(new MultiSelectModel(Integer.parseInt(orgnUserRecordsCheckBox.getId()), orgnUserRecordsCheckBox.getEmail()));
+            }
+            mIndividuvalDialog = new MultiSelectDialog()
+                    .title("Individuval") //setting title for dialog
+                    .titleSize(25)
+                    .positiveText("Done")
+                    .negativeText("Cancel")
+                    .preSelectIDsList(individualCheckBox)
+                    .setMinSelectionLimit(0)
+                    .setMaxSelectionLimit(listOfIndividuval.size())
+                    .multiSelectList(listOfIndividuval) // the multi select model list with ids and name
+                    .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                        @Override
+                        public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+                            for (int i = 0; i < selectedIds.size(); i++) {
+                                //mTextShareIndividual.setText( dataString );
+                                mEditIndividuvalCheckBox.setText(dataString);
+                            }
+                            //individuvalArray = new JSONArray( selectedIds );
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            Log.d("TAG", "Dialog cancelled");
+                        }
+                    });
+        }
+    }
 
     private void requestDynamicProjectList() {
         HashMap<String, String> userId = session.getUserDetails();
@@ -676,12 +758,6 @@ public class EditTaskActivity extends AppCompatActivity {
         void onLongClick(View view, int position);
     }
 
-    /**
-     * RecyclerView: Implementing single item click and long press (Part-II)
-     * <p>
-     * - creating an innerclass implementing RevyvlerView.OnItemTouchListener
-     * - Pass clickListener interface as parameter
-     */
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private EditTaskActivity.ClickListener clicklistener;

@@ -3,17 +3,19 @@ package com.actnow.android.activities.projects;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -74,9 +76,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
     Button mButtonProjectAdvanced;
     String id;
     ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList;
-
-    RadioButton mRadioButtonProjectName;
-
 
     int textlength = 0;
     private String selectedType = "";
@@ -599,7 +598,41 @@ public class ProjectFooterActivity extends AppCompatActivity {
     }
 
     private void appFooter() {
-        View btnMe = findViewById( R.id.btn_me );
+        FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activityInsights();
+            }
+        });
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        ///bottomNavigationView.inflateMenu(R.menu.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomNavigationToday:
+                        activityToady();
+                        // Toast.makeText(getApplicationContext(),"Select the Today",Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.bottomNavigationProjects:
+                        activityProject();
+                        //Toast.makeText(getApplicationContext(),"Select the Projects",Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.bottomNavigationTask:
+                        activityTasks();
+                        // Toast.makeText(getApplicationContext(),"Select the Task",Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.bottomNavigationIndividuals:
+                        activityIndividuals();
+                        //Toast.makeText(getApplicationContext(),"Select the Individuals",Toast.LENGTH_LONG).show();
+                        return true;
+
+                }
+                return false;
+            }
+        });
+       /* View btnMe = findViewById( R.id.btn_me );
         btnMe.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -632,7 +665,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
         ImageView imgProject = (ImageView) findViewById( R.id.img_projects );
         imgProject.setImageResource( R.drawable.ic_projects_red );
         TextView txtProject = (TextView) findViewById( R.id.txt_projects );
-        txtProject.setTextColor( getResources().getColor( R.color.colorAccent ) );
+        txtProject.setTextColor( getResources().getColor( R.color.colorAccent ) );*/
     }
 
     private void activityToady() {
@@ -640,12 +673,16 @@ public class ProjectFooterActivity extends AppCompatActivity {
         startActivity( i );
         overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
+    private void activityProject() {
+        Toast.makeText(getApplicationContext(), "Selected the Projects", Toast.LENGTH_LONG).show();
 
+    }
     private void activityTasks() {
         Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
         startActivity( i );
         overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
     }
+
 
     private void activityIndividuals() {
         Intent i = new Intent( getApplicationContext(), ViewIndividualsActivity.class );

@@ -41,7 +41,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/task_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -49,7 +49,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

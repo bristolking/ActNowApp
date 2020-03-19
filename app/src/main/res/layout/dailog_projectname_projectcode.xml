@@ -14,10 +14,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="ADD TO PROJECT"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorAccent" />
+            android:text="PROJECT"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:textStyle="bold"/>
 
         <RelativeLayout
             android:id="@+id/progress_bar"
@@ -28,19 +30,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:visibility="gone" />
+                android:layout_centerVertical="true" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/content_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="500dp">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyleView_projectNameCode"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="500dp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -54,8 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:paddingRight="80dp"
-                android:text="dismiss"
+                android:paddingRight="110dp"
+                android:text="CANCEL"
                 android:textAllCaps="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorAccent" />
@@ -65,8 +66,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:paddingRight="20dp"
-                android:text="OK"
+                android:paddingRight="10dp"
+                android:text="DONE"
                 android:textAllCaps="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorAccent" />

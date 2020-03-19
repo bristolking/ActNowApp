@@ -4,14 +4,16 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -271,45 +273,35 @@ public class TodayTaskActivity extends AppCompatActivity {
         } );
     }
     private void appFooter() {
-        View btnMe = findViewById( R.id.btn_me );
-        btnMe.setOnClickListener( new View.OnClickListener() {
+        FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                activityToady();
-            }
-        } );
-        View btnProject = findViewById( R.id.btn_projects );
-        btnProject.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityProject();
-            }
-        } );
-        View btnTask = findViewById( R.id.btn_task );
-        btnTask.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityTasks();
-            }
-        } );
-        View btnIndividuals = findViewById( R.id.btn_individuals );
-        btnIndividuals.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activityIndividuals();
-            }
-        } );
-        View btnInsights = findViewById( R.id.btn_insights );
-        btnInsights.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 activityInsights();
             }
-        } );
-        ImageView imgProject = (ImageView) findViewById( R.id.img_today );
-        imgProject.setImageResource( R.drawable.ic_today_red );
-        TextView txtProject = (TextView) findViewById( R.id.txt_today );
-        txtProject.setTextColor( getResources().getColor( R.color.colorAccent ) );
+        });
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomNavigationToday:
+                        activityToady();
+                        return true;
+                    case R.id.bottomNavigationProjects:
+                        activityProject();
+                        return true;
+                    case R.id.bottomNavigationTask:
+                        activityTasks();
+                        return true;
+                    case R.id.bottomNavigationIndividuals:
+                        activityIndividuals();
+                        return true;
+
+                }
+                return false;
+            }
+        });
     }
 
     private void activityToady() {

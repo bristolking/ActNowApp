@@ -1,31 +1,27 @@
 package com.actnow.android.activities.tasks;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.view.GravityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +29,6 @@ import com.actnow.android.R;
 import com.actnow.android.activities.ThisWeekActivity;
 import com.actnow.android.activities.TimeLineActivity;
 import com.actnow.android.activities.TodayTaskActivity;
-import com.actnow.android.activities.insights.TaskInsightsActivity;
 import com.actnow.android.activities.projects.ProjectFooterActivity;
 import com.actnow.android.activities.ideas.ViewIdeasActivity;
 import com.actnow.android.activities.individuals.ViewIndividualsActivity;
@@ -42,16 +37,13 @@ import com.actnow.android.activities.settings.EditAccountActivity;
 import com.actnow.android.activities.settings.PremiumActivity;
 import com.actnow.android.activities.settings.SettingsActivity;
 import com.actnow.android.activities.insights.InsightsChart;
-import com.actnow.android.adapter.TaskListAdapter;
 import com.actnow.android.fragment.AllTaskFragment;
 import com.actnow.android.fragment.OverdueFragment;
 import com.actnow.android.fragment.PriorityFragment;
 import com.actnow.android.fragment.RepetitiveTabedFragment;
-import com.actnow.android.sdk.responses.TaskListRecords;
 import com.actnow.android.utils.UserPrefUtils;
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskAddListActivity extends AppCompatActivity {
@@ -74,7 +66,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         tabView();
         appHeaderTwo();
         initializeViews();
-        appFooter();
+        //appFooter();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
@@ -227,6 +219,33 @@ public class TaskAddListActivity extends AppCompatActivity {
     private void initializeViews() {
   /*      mProgressView = findViewById(R.id.progress_bar);
         mContentLayout = findViewById(R.id.content_layout);*/
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        ///bottomNavigationView.inflateMenu(R.menu.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.bottomNavigationToday:
+                        activityToady();
+                       // Toast.makeText(getApplicationContext(),"Select the Today",Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.bottomNavigationProjects:
+                        activityProject();
+                        //Toast.makeText(getApplicationContext(),"Select the Projects",Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.bottomNavigationTask:
+                        activityTasks();
+                       // Toast.makeText(getApplicationContext(),"Select the Task",Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.bottomNavigationIndividuals:
+                        activityIndividuals();
+                        //Toast.makeText(getApplicationContext(),"Select the Individuals",Toast.LENGTH_LONG).show();
+                        return true;
+
+                }
+                return false;
+            }
+        });
 
     }
     private void tabView() {
