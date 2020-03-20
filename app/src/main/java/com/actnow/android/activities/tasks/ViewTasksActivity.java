@@ -819,7 +819,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                             for (int i = 0; i < selectedIds.size(); i++) {
                                 mIndividualsCheckBox.setText(dataString);
                             }
-                            //individuvalArray = new JSONArray( selectedIds );
+                            individuvalArray = new JSONArray( selectedIds );
                         }
 
                         @Override
@@ -905,6 +905,7 @@ public class ViewTasksActivity extends AppCompatActivity {
         TextView tv_create = (TextView) findViewById(R.id.tv_create);
         tv_create.setText("Create");
         tv_create.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             public void onClick(View v) {
                 if (AndroidUtils.isNetworkAvailable(getApplicationContext())) {
                     attemptCreateTask();
@@ -917,6 +918,7 @@ public class ViewTasksActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void attemptCreateTask() {
         HashMap<String, String> userId = session.getUserDetails();
         String id = userId.get(UserPrefUtils.ID);
@@ -926,7 +928,10 @@ public class ViewTasksActivity extends AppCompatActivity {
         String project_code = mProjectCheckBox.getText().toString();
         String orgn_code = userId.get(UserPrefUtils.ORGANIZATIONNAME);
         String individuvalName = String.valueOf(individuvalArray);
-        //individuvalArray.remove(0);
+        individuvalArray.remove(0);
+      /*  if (repeat_type.equals("RepeatType")){
+            repeat_type= " ";
+        }*/
         //String oldprojectsName = String.valueOf(projectArray);
         boolean cancel = false;
         View focusView = null;
@@ -969,14 +974,12 @@ public class ViewTasksActivity extends AppCompatActivity {
                 if (week_days.contains("Sunday")) {
                     list.add("7");
                 }
-                AndroidUtils.showProgress(true,mProgressViewNEWTask, mContentLayoutNewTask);
-                if (repeat_type.equals("RepeatType")){
-                    repeat_type="";
-                }
+                showProgressDialog();
                 //requestCrateTask( id, taskName, duedate, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), priorty );
                 requestCreateTask(id, taskName, due_date, priorty, project_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ),orgn_code, repeat_type, String.valueOf(list), days, months);
                 System.out.println("taskcreateVlaues" + id + taskName + due_date + priorty + String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" )+ project_code + orgn_code + repeat_type + list + days + months);
             } else {
+
                 requestCreateTask(id, taskName, due_date, priorty, project_code,String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), orgn_code, repeat_type, String.valueOf(week_days), days, months);
 
             }
@@ -984,11 +987,12 @@ public class ViewTasksActivity extends AppCompatActivity {
         }
     }
     private void requestCreateTask(String id, String taskName, String duedate, String priorty, String project_code, String b, String orgn_code, String repeat_type, String list, String days, String months) {
-        Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse(id, taskName, duedate, priorty, project_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) ,orgn_code, repeat_type, list, days, months);
+        Call<TaskAddResponse> call = ANApplications.getANApi().checkTaskAddResponse(id, taskName, duedate, priorty, project_code ,orgn_code,String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ), repeat_type, list, days, months);
         System.out.println("taskfelids" + id + taskName + duedate + priorty + project_code + b +orgn_code + repeat_type + week_days + days + months);
         call.enqueue(new Callback<TaskAddResponse>() {
             @Override
             public void onResponse(Call<TaskAddResponse> call, Response<TaskAddResponse> response) {
+                hideProgressDialog();
                 if (response.isSuccessful()) {
                     System.out.println( "severReponse:" + response.raw() );
                     if (response.body().getSuccess().equals("true")) {

@@ -3,6 +3,7 @@ package com.actnow.android.activities.tasks;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
@@ -217,10 +218,14 @@ public class TaskAddListActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-  /*      mProgressView = findViewById(R.id.progress_bar);
-        mContentLayout = findViewById(R.id.content_layout);*/
+        FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activityInsights();
+            }
+        });
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
-        ///bottomNavigationView.inflateMenu(R.menu.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -302,7 +307,7 @@ public class TaskAddListActivity extends AppCompatActivity {
     }
 
 
-    private void appFooter() {
+   /* private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -342,7 +347,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         imgProject.setImageResource(R.drawable.ic_tasklistred);
         TextView txtProject = (TextView) findViewById(R.id.txt_task);
         txtProject.setTextColor(getResources().getColor(R.color.colorAccent));
-    }
+    }*/
 
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);

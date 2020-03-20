@@ -375,6 +375,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     String id = userId.get( UserPrefUtils.ID );
                                     String projectOwnerName = userId.get( UserPrefUtils.NAME );
                                     String s = mRadioButtonProjectName.getText().toString();
+                                    String  color = mProjectColor.getText().toString();
+                                    mRadioButtonProjectName.setTextColor(Integer.parseInt(color));
                                     Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
                                     i.putExtra( "projectName", s );
                                     i.putExtra( "id", id );

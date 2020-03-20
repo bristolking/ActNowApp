@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -13,22 +14,33 @@
             android:id="@+id/fab_marignBottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
+            android:background="@drawable/cricle"
+            android:backgroundTint="@color/colorWhite"
             android:clickable="true"
             android:focusable="true"
+            app:borderWidth="1dp"
             app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/ic_insight_white" />
+            app:srcCompat="@drawable/ic_insight_red" />
+
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomAppBar"
             android:layout_width="match_parent"
-            android:layout_height="58dp"
+            android:layout_height="62dp"
             android:layout_gravity="bottom"
+            android:backgroundTint="@color/colorAppFooter"
             app:fabAlignmentMode="center"
-            android:backgroundTint="@color/colorAppFooter" />
+            app:fabCradleMargin="0dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabCradleVerticalOffset="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"/>
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="66dp"
             android:layout_gravity="bottom"
             app:itemIconTint="@color/colorAccent"
             app:itemTextColor="@color/colorAccent"

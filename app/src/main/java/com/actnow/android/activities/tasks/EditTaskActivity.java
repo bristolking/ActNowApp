@@ -89,6 +89,8 @@ public class EditTaskActivity extends AppCompatActivity {
     String taskName;
     String taskDate;
     String task_code;
+    String projectCode;
+    String priorty;
     String name;
     String date;
 
@@ -170,6 +172,9 @@ public class EditTaskActivity extends AppCompatActivity {
             task_code = (String) b.get( "TaskCode" );
             projectName = (String) b.get( "projectName" );
             projectcode = (String) b.get( "projectCode" );
+            mEditProjectCheckBox.setText(projectcode);
+            priorty =(String)b.get("priority");
+            mPriortyEditTask.setText(priorty);
             System.out.println( "passsed" + taskOwnerName + id + taskName + taskDate );
         }
     }
@@ -685,7 +690,7 @@ public class EditTaskActivity extends AppCompatActivity {
                                 //mTextShareIndividual.setText( dataString );
                                 mEditIndividuvalCheckBox.setText(dataString);
                             }
-                            //individuvalArray = new JSONArray( selectedIds );
+                            individuvalArray = new JSONArray( selectedIds );
                         }
 
                         @Override
@@ -848,25 +853,28 @@ public class EditTaskActivity extends AppCompatActivity {
                 if (week_days.contains( "Sunday" )) {
                     list.add( "7" );
                 }
-            requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( list ), days, months );
+            requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ),repeat_type, String.valueOf( list ), days, months );
         }else {
-                requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, repeat_type, String.valueOf( week_days ), days, months );
+                requestUpdateTasks( id, task_code, taskName, due_date, priorty, project_code, orgn_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ),repeat_type, String.valueOf( week_days ), days, months );
+                System.out.println( "severValues" + id + taskName + due_date  + priorty + project_code + orgn_code + String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ) + repeat_type + week_days + days + months );
+
             }
         }
     }
 
-    private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code, String repeat_type, String list, String days, String months) {
-        System.out.println( "values" + id + taskName + duedate  + priorty + project_code + orgn_code + repeat_type + week_days + days + months );
-        Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, repeat_type, list, days, months );
+    private void requestUpdateTasks(String id, String task_code, String taskName, String duedate, String priorty, String project_code, String orgn_code,String b, String repeat_type, String list, String days, String months) {
+        System.out.println( "values" + id + taskName + duedate  + priorty + project_code + orgn_code + b+repeat_type + week_days + days + months );
+        Call<TaskEditResponse> call = ANApplications.getANApi().checkTheTaskEditReponse( id, task_code, taskName, duedate, priorty, project_code, orgn_code, String.valueOf( individuvalArray ).replace( "[", "" ).replace( "]", "" ),repeat_type, list, days, months );
         call.enqueue( new Callback<TaskEditResponse>() {
 
             @Override
             public void onResponse(Call<TaskEditResponse> call, Response<TaskEditResponse> response) {
-                AndroidUtils.showProgress(false, mProgressView, mContentLayout);
-
-                System.out.println( "arjun" + response.raw() );
+                System.out.println( "severReponse" + response.raw() );
                 if (response.isSuccessful()) {
+                    System.out.println( "SeverReponse1" + response.raw() );
+
                     if (response.body().getSuccess().equals( "true" )) {
+                        System.out.println( "SeverReponse2" + response.body().getSuccess());
                         Intent i = new Intent( EditTaskActivity.this, TaskAddListActivity.class );
                         startActivity( i );
                     } else {

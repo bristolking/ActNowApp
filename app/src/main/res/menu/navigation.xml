@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title="Today"
         android:id="@+id/bottomNavigationToday"
-        android:icon="@drawable/ic_today_red"/>
+        android:icon="@drawable/ic_today_red"
+        app:showAsAction="always"/>
     <item
         android:title="Projects"
         android:id="@+id/bottomNavigationProjects"
-        android:icon="@drawable/ic_projects_red"/>
+        android:icon="@drawable/ic_projects_red"
+        app:showAsAction="always"/>
     <item
         android:title="Task"
         android:id="@+id/bottomNavigationTask"
-        android:icon="@drawable/ic_tasklistred"/>
+        android:icon="@drawable/ic_tasklistred"
+        app:showAsAction="always" />
     <item
         android:title="Individuals"
         android:id="@+id/bottomNavigationIndividuals"
-        android:icon="@drawable/ic_individuals_red"/>
+        android:icon="@drawable/ic_individuals_red"
+        app:showAsAction="always"/>
 </menu>

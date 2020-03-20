@@ -294,15 +294,22 @@ public class MonthlyFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             HashMap<String, String> userId = session.getUserDetails();
-                            String taskOwnerName = userId.get( UserPrefUtils.NAME );
+                            String taskOwnerName = userId.get(UserPrefUtils.NAME);
                             String name = mTaskName.getText().toString();
                             String date = tv_dueDate.getText().toString();
                             String task_code = tv_taskcode.getText().toString();
+                            String task_prioroty = tv_priority.getText().toString();
+                            String projectcode = tv_projectCode.getText().toString();
+
                             Intent i = new Intent(getActivity(), EditTaskActivity.class);
                             i.putExtra("TaskName", name);
                             i.putExtra("TaskDate", date);
+                            i.putExtra("TaskCode", task_code);
                             i.putExtra("taskOwnerName", taskOwnerName);
+                            i.putExtra("projectCode",projectcode);
+                            i.putExtra("priority",task_prioroty);
                             startActivity(i);
+                            System.out.println("user" + task_code);
                         }
                     });
                     ImageView mImageUserAdd = (ImageView) view.findViewById(R.id.img_useraddTaskList);

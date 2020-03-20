@@ -44,7 +44,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="50dp"
-            app:srcCompat="@drawable/ic_list_project" />
+            app:srcCompat="@drawable/ic_project_list_red" />
 
         <ImageView
             android:id="@+id/img_advancedbyEvent"

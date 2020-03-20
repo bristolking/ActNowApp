@@ -34,38 +34,45 @@
             android:orientation="vertical"
             android:layout_marginTop="60dp"
             android:padding="8dp">
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/dash_board_background"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="6dp">
                 <TextView
                     android:id="@+id/dayOverdue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Overdue"
-                    android:paddingLeft="10dp"
-                    android:textColor="@color/colorPrimary" />
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_alignParentLeft="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
                 <TextView
-                    android:id="@+id/weekNameOverdue"
+                    android:id="@+id/tv_reschedule"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="6dp"
-                    android:textColor="@color/colorPrimary" />
-                <TextView
+                    android:text="Reschedule"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/colorAccent"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+              <!--  <TextView
                     android:id="@+id/monthOverdue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="6dp"
-
                     android:textColor="@color/colorPrimary" />
                 <TextView
                     android:id="@+id/dateOverdue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="6dp"
-                    android:textColor="@color/colorPrimary" />
-            </LinearLayout>
+                    android:textColor="@color/colorPrimary" />-->
+            </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/task_overdue_todayrecyclerView"
                 android:layout_width="match_parent"

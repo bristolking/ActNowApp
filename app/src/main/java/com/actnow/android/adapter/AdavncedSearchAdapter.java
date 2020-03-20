@@ -18,10 +18,6 @@ public class AdavncedSearchAdapter extends RecyclerView.Adapter<AdavncedSearchAd
     private List<AdavancedTaskRecords> adavancedTaskRecordsList;
      private  Context context;
 
-  /*  public AdavncedSearchAdapter(ArrayList<AdavancedTaskRecords> adavancedTaskRecordsArrayList) {
-        this.adavancedTaskRecordsList = adavancedTaskRecordsArrayList;
-    }
-*/
     public AdavncedSearchAdapter(ArrayList<AdavancedTaskRecords> adavancedTaskRecordsArrayList, int custom_advanced, Context applicationContext) {
         this.adavancedTaskRecordsList = adavancedTaskRecordsArrayList;
         this.context = applicationContext;
@@ -56,5 +52,10 @@ public class AdavncedSearchAdapter extends RecyclerView.Adapter<AdavncedSearchAd
             tv_taskCode =(TextView)itemView.findViewById(R.id.tv_taskCode);
 
         }
+    }
+    public void removeItem(int position) {
+        adavancedTaskRecordsList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, adavancedTaskRecordsList.size());
     }
 }

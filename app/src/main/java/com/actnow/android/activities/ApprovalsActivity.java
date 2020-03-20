@@ -91,11 +91,12 @@ public class ApprovalsActivity extends AppCompatActivity {
     TextView mTaskCode;
     TextView mProjectApproval;
 
-    private int edit_position;
     private View view;
     private boolean add = false;
     private Paint p = new Paint();
     String task_code;
+    private int edit_position;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
