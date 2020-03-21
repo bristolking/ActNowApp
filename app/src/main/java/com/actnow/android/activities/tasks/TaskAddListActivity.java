@@ -67,7 +67,7 @@ public class TaskAddListActivity extends AppCompatActivity {
         tabView();
         appHeaderTwo();
         initializeViews();
-        //appFooter();
+        appFooter();
         Intent iin = getIntent();
         Bundle b = iin.getExtras();
         if (b != null) {
@@ -225,7 +225,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+       /* BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -250,7 +250,7 @@ public class TaskAddListActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
 
     }
     private void tabView() {
@@ -307,7 +307,7 @@ public class TaskAddListActivity extends AppCompatActivity {
     }
 
 
-   /* private void appFooter() {
+    private void appFooter() {
         View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -336,18 +336,18 @@ public class TaskAddListActivity extends AppCompatActivity {
                 activityIndividuals();
             }
         });
-        View btnInsights = findViewById(R.id.btn_insights);
+     /*   View btnInsights = findViewById(R.id.btn_insights);
         btnInsights.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        });
+        });*/
         ImageView imgProject = (ImageView) findViewById(R.id.img_task);
-        imgProject.setImageResource(R.drawable.ic_tasklistred);
+        imgProject.setImageResource(R.drawable.ic_tasklist);
         TextView txtProject = (TextView) findViewById(R.id.txt_task);
-        txtProject.setTextColor(getResources().getColor(R.color.colorAccent));
-    }*/
+        txtProject.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+    }
 
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);

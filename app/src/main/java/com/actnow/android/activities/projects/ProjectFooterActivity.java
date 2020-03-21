@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import androidx.annotation.NonNull;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -76,10 +75,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
     Button mButtonProjectAdvanced;
     String id;
     ArrayList<ProjectListResponseRecords> projectListResponseRecordsArrayList;
-
     int textlength = 0;
     private String selectedType = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
@@ -98,9 +95,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
         appHeaderTwo();
         appFooter();
 
-
     }
-
     private void appHeaderTwo() {
         ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
         imgeBack.setOnClickListener( new View.OnClickListener() {
@@ -240,7 +235,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
             }
         } );
     }
-
     private void initializeViews() {
         mProgressView = findViewById( R.id.progress_bar );
         mContentLayout = findViewById( R.id.content_layout );
@@ -300,8 +294,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
     /*    mProjectFooterAdapter = new ProjectFooterAdapter( projectListResponseRecordsArrayList, R.layout.custom_project_footer, getApplicationContext() );
         mRecyclerViewProjectFooter.setAdapter( mProjectFooterAdapter );*/
     }
-
-
     private void filter(String toString) {
         ArrayList<ProjectListResponseRecords> projectListResponseRecordsFilter = new ArrayList<>();
         for (ProjectListResponseRecords name : projectListResponseRecordsArrayList) {
@@ -312,7 +304,6 @@ public class ProjectFooterActivity extends AppCompatActivity {
         }
         mProjectFooterAdapter.filterList( projectListResponseRecordsFilter );
     }
-
     private void attemptProjectList() {
         HashMap<String, String> userId = session.getUserDetails();
         id = userId.get( UserPrefUtils.ID );
@@ -376,7 +367,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                                     String projectOwnerName = userId.get( UserPrefUtils.NAME );
                                     String s = mRadioButtonProjectName.getText().toString();
                                     String  color = mProjectColor.getText().toString();
-                                    mRadioButtonProjectName.setTextColor(Integer.parseInt(color));
+                                   // mRadioButtonProjectName.setTextColor(Integer.parseInt(color));
                                     Intent i = new Intent( getApplicationContext(), ProjectTaskListActivity.class );
                                     i.putExtra( "projectName", s );
                                     i.putExtra( "id", id );
@@ -607,7 +598,7 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+       /* BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
         ///bottomNavigationView.inflateMenu(R.menu.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -633,8 +624,8 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
-       /* View btnMe = findViewById( R.id.btn_me );
+        });*/
+        View btnMe = findViewById( R.id.btn_me );
         btnMe.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -642,6 +633,12 @@ public class ProjectFooterActivity extends AppCompatActivity {
             }
         } );
         View btnProject = findViewById( R.id.btn_projects );
+        btnProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activityProject();
+            }
+        });
         View btnTask = findViewById( R.id.btn_task );
         btnTask.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -656,18 +653,17 @@ public class ProjectFooterActivity extends AppCompatActivity {
                 activityIndividuals();
             }
         } );
-        View btnInsights = findViewById( R.id.btn_insights );
+       /* View btnInsights = findViewById( R.id.btn_insights );
         btnInsights.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        } );
-
+        } );*/
         ImageView imgProject = (ImageView) findViewById( R.id.img_projects );
-        imgProject.setImageResource( R.drawable.ic_projects_red );
+        imgProject.setImageResource( R.drawable.ic_projects );
         TextView txtProject = (TextView) findViewById( R.id.txt_projects );
-        txtProject.setTextColor( getResources().getColor( R.color.colorAccent ) );*/
+        txtProject.setTextColor( getResources().getColor( R.color.colorPrimaryDark ) );
     }
 
     private void activityToady() {

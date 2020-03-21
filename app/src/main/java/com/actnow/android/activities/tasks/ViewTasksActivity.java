@@ -354,7 +354,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ViewTasksActivity.this);
-                mBuilder.setTitle("ADD TO PRIORITY");
+                mBuilder.setTitle("PRIORITY");
                 mBuilder.setMultiChoiceItems(listItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position, boolean isChecked) {
@@ -369,7 +369,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     }
                 });
                 mBuilder.setCancelable(false);
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String item = " ";
@@ -383,7 +383,7 @@ public class ViewTasksActivity extends AppCompatActivity {
 
                     }
                 });
-                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                mBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -523,7 +523,7 @@ public class ViewTasksActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(ViewTasksActivity.this);
-                mBuilder.setTitle("ADD TO WEEKS");
+                mBuilder.setTitle("WEEKS");
                 mBuilder.setMultiChoiceItems(listItemsWeek, checkedItemsWeek, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int position, boolean isChecked) {
@@ -538,7 +538,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     }
                 });
                 mBuilder.setCancelable(false);
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String item = " ";
@@ -554,7 +554,7 @@ public class ViewTasksActivity extends AppCompatActivity {
 
                     }
                 });
-                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                mBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -592,7 +592,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     });
                 }
                 mBuilder.setCancelable(false);
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String item = " ";
@@ -611,7 +611,7 @@ public class ViewTasksActivity extends AppCompatActivity {
 
                     }
                 });
-                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                mBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -641,7 +641,7 @@ public class ViewTasksActivity extends AppCompatActivity {
                     }
                 });
                 mBuilder.setCancelable(false);
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                mBuilder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String item = " ";
@@ -656,7 +656,7 @@ public class ViewTasksActivity extends AppCompatActivity {
 
                     }
                 });
-                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                mBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

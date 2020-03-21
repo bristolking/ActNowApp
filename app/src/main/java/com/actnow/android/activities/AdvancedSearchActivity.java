@@ -277,7 +277,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
             mRecyclerViewAdavanced.addOnItemTouchListener(new AdvancedSearchActivity.RecyclerTouchListener(this, mRecyclerViewAdavanced, new AdvancedSearchActivity.ClickListener() {
                 @Override
                 public void onClick(final View view, final int position) {
-                    initSwipe();
+                    //initSwipe();
                      tv_taskKeyName = (TextView) findViewById(R.id.tv_taskKeyName);
                      tv_taskadavncedId = (TextView) findViewById(R.id.tv_taskAdvancedID);
                      tv_taskCode = (TextView) findViewById(R.id.tv_taskCode);
@@ -315,8 +315,6 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                         public void onResponse(Call<TaskComplete> call, Response<TaskComplete> response) {
                             if (response.isSuccessful()) {
                                 if (response.body().getSuccess().equals("true")) {
-                                    //Toast.makeText(getApplicationContext(),"TASK APPROVE",Toast.LENGTH_SHORT ).show();
-
                                 } else {
                                     Snackbar.make(mContentLayout, "Data Not Found", Snackbar.LENGTH_SHORT).show();
                                 }
@@ -625,7 +623,42 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigation);
+        View btnMe = findViewById(R.id.btn_me);
+        btnMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityToady();
+            }
+        });
+        View btnProject = findViewById(R.id.btn_projects);
+        btnProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityProject();
+            }
+        });
+        View btnTask = findViewById(R.id.btn_task);
+        btnTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityTasks();
+            }
+        });
+        View btnIndividuals = findViewById(R.id.btn_individuals);
+        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityIndividuals();
+            }
+        });
+       /* View btnInsights = findViewById(R.id.btn_insights);
+        btnInsights.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityInsights();
+            }
+        });*/
+       /* BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -646,7 +679,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     private void activityToady() {

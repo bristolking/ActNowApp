@@ -602,7 +602,7 @@ public class TimeLineActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+       /* BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -623,7 +623,42 @@ public class TimeLineActivity extends AppCompatActivity {
                 }
                 return false;
             }
+        });*/
+         View btnMe = findViewById(R.id.btn_me);
+        btnMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityToady();
+            }
         });
+        View btnProject = findViewById(R.id.btn_projects);
+        btnProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityProject();
+            }
+        });
+        View btnTask = findViewById(R.id.btn_task);
+        btnTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityTasks();
+            }
+        });
+        View btnIndividuals = findViewById(R.id.btn_individuals);
+        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityIndividuals();
+            }
+        });
+      /*  View btnInsights = findViewById(R.id.btn_insights);
+        btnInsights.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityInsights();
+            }
+        });*/
     }
 
     private void activityToady() {

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.database.Cursor;
 
 import android.os.Bundle;
+
+import com.actnow.android.sdk.responses.UpadteTaskOverdue;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -57,7 +59,6 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class OverDueTodayFragment extends Fragment {
-
     RecyclerView mtodayOverDueRecylcerView;
     RecyclerView.LayoutManager mLayoutManager;
     TaskListAdapter mTaskListAdapter;
@@ -72,13 +73,6 @@ public class OverDueTodayFragment extends Fragment {
     String id;
     TextView mTaskName;
     Dialog dialog;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -105,12 +99,33 @@ public class OverDueTodayFragment extends Fragment {
         } else {
             overDueTodayFragmentNoConnection();
         }
-        TextView mReschedule =(TextView)view.findViewById(R.id.tv_reschedule);
-        mReschedule.setOnClickListener(new View.OnClickListener() {
+        ImageView mImagReschedule =(ImageView)view.findViewById(R.id.im_imagReschedule);
+        mImagReschedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 HashMap<String, String> userId = session.getUserDetails();
                 String id = userId.get(UserPrefUtils.ID);
+                Call<UpadteTaskOverdue> upadteTaskOverdueCall = ANApplications.getANApi().checktheReshuduleApi(id);
+                upadteTaskOverdueCall.enqueue(new Callback<UpadteTaskOverdue>() {
+                    @Override
+                    public void onResponse(Call<UpadteTaskOverdue> call, Response<UpadteTaskOverdue> response) {
+                        if (response.isSuccessful()){
+                            System.out.println( "severUrl" + response.raw() );
+                            if (response.body().getSuccess().equals("true")){
+                                System.out.println( "severUrl1" + response.body().getSuccess());
+                            }else {
+                                Toast.makeText( getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
+                        }else {
+                            AndroidUtils.displayToast(getActivity(), "Something Went Wrong!!" );
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UpadteTaskOverdue> call, Throwable t) {
+
+                    }
+                });
             }
         });
         return view;
@@ -169,6 +184,11 @@ public class OverDueTodayFragment extends Fragment {
     private void hideProgressDialog() {
         dialog.dismiss();
     }*/
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        taskListRecordsArrayList.clear();
+    }
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getContext());

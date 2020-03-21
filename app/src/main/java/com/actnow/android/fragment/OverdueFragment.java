@@ -189,7 +189,7 @@ public class OverdueFragment extends Fragment {
                     if (response.body().getSuccess().equals( "true" )) {
                         setTaskList( response.body().getTask_records() );
                     } else {
-                        Toast.makeText( getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
+                        Toast.makeText( getActivity(), "Data Not Found", Toast.LENGTH_SHORT ).show();                    }
                 } else {
                     AndroidUtils.displayToast( getActivity(), "Something Went Wrong!!" );
                 }

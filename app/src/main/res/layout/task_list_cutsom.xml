@@ -125,7 +125,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:orientation="horizontal"
                 android:padding="6dp">
 
@@ -137,9 +137,9 @@
 
                 <TextView
                     android:id="@+id/tv_projectNameTaskList"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancri"
+                    android:text="Cancrihhfbhbghnkjnkjnjdjgfnsbbbnnnkjnjnnjnnjdeodjfnjdk"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -154,7 +154,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.6"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -180,7 +180,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.1"
                 android:gravity="right"
                 android:orientation="horizontal">
 

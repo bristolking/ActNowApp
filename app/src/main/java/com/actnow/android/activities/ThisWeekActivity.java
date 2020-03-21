@@ -2,16 +2,21 @@ package com.actnow.android.activities;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -60,125 +65,124 @@ public class ThisWeekActivity extends AppCompatActivity {
     final Context context = this;
 
     TextView mTaskName;
-    FloatingActionButton  fabThisTask;
-
+    FloatingActionButton fabThisTask;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate( savedInstanceState );
-        session = new UserPrefUtils( getApplicationContext() );
-        setContentView( R.layout.activity_this_week );
+        super.onCreate(savedInstanceState);
+        session = new UserPrefUtils(getApplicationContext());
+        setContentView(R.layout.activity_this_week);
         appHeaderTwo();
         initializeViews();
         appFooter();
     }
 
     private void appHeaderTwo() {
-        ImageView imgeBack = (ImageView) findViewById( R.id.image_back_two );
-        imgeBack.setOnClickListener( new View.OnClickListener() {
+        ImageView imgeBack = (ImageView) findViewById(R.id.image_back_two);
+        imgeBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
-        } );
-        TextView btnLink1 = (TextView) findViewById( R.id.btn_link_1_two );
-        TextView btnLink2 = (TextView) findViewById( R.id.btn_link_2_two );
-        btnLink2.setVisibility( GONE );
-        btnLink1.setText( "Thisweek" );
-        btnLink1.setTextColor( getResources().getColor( R.color.colorAccent ) );
-        ImageView btnCalendar = (ImageView) findViewById( R.id.btn_insightsrAppHeaderTwo );
-        btnCalendar.setVisibility( GONE );
-        ImageView btnNotifications = (ImageView) findViewById( R.id.btn_notificationsAppHeaderTwo );
-        btnNotifications.setOnClickListener( new View.OnClickListener() {
+        });
+        TextView btnLink1 = (TextView) findViewById(R.id.btn_link_1_two);
+        TextView btnLink2 = (TextView) findViewById(R.id.btn_link_2_two);
+        btnLink2.setVisibility(GONE);
+        btnLink1.setText("Thisweek");
+        btnLink1.setTextColor(getResources().getColor(R.color.colorAccent));
+        ImageView btnCalendar = (ImageView) findViewById(R.id.btn_insightsrAppHeaderTwo);
+        btnCalendar.setVisibility(GONE);
+        ImageView btnNotifications = (ImageView) findViewById(R.id.btn_notificationsAppHeaderTwo);
+        btnNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText( getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT ).show();
+                Toast.makeText(getApplicationContext(), "Work in progress!", Toast.LENGTH_SHORT).show();
             }
-        } );
-        ImageView btnSettings = (ImageView) findViewById( R.id.btn_settingsAppHeaderTwo );
-        btnSettings.setOnClickListener( new View.OnClickListener() {
+        });
+        ImageView btnSettings = (ImageView) findViewById(R.id.btn_settingsAppHeaderTwo);
+        btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String accountEmail = userId.get( UserPrefUtils.EMAIL );
-                Intent i = new Intent( getApplicationContext(), SettingsActivity.class );
-                i.putExtra( "email", accountEmail );
-                startActivity( i );
+                String accountEmail = userId.get(UserPrefUtils.EMAIL);
+                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                i.putExtra("email", accountEmail);
+                startActivity(i);
                 finish();
             }
-        } );
-        ImageView btnMenu = (ImageView) findViewById( R.id.img_menuTopTwo );
-        btnMenu.setOnClickListener( new View.OnClickListener() {
+        });
+        ImageView btnMenu = (ImageView) findViewById(R.id.img_menuTopTwo);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final NavigationView navigationView = (NavigationView) findViewById( R.id.nav_view );
+                final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID );
-                String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                String email = userId.get( UserPrefUtils.EMAIL );
-                ImageView mImageProfile = (ImageView) findViewById( R.id.img_profile );
-                String img = userId.get( UserPrefUtils.IMAGEPATH );
-                Glide.with( getApplicationContext() )
-                        .load( img )
+                String id = userId.get(UserPrefUtils.ID);
+                String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                String email = userId.get(UserPrefUtils.EMAIL);
+                ImageView mImageProfile = (ImageView) findViewById(R.id.img_profile);
+                String img = userId.get(UserPrefUtils.IMAGEPATH);
+                Glide.with(getApplicationContext())
+                        .load(img)
                         .centerCrop()
-                        .placeholder( R.drawable.placeholder )
-                        .error( R.drawable.placeholder )
-                        .into( mImageProfile );
-                mImageProfile.setOnClickListener( new View.OnClickListener() {
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(mImageProfile);
+                mImageProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent( getApplicationContext(), EditAccountActivity.class );
-                        startActivity( i );
+                        Intent i = new Intent(getApplicationContext(), EditAccountActivity.class);
+                        startActivity(i);
                     }
-                } );
+                });
 
-                TextView mTextName = (TextView) findViewById( R.id.tv_nameProfile );
-                mTextName.setText( taskOwnerName );
-                TextView mTextEmail = (TextView) findViewById( R.id.tv_emailProfile );
-                mTextEmail.setText( email );
-                navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
+                TextView mTextName = (TextView) findViewById(R.id.tv_nameProfile);
+                mTextName.setText(taskOwnerName);
+                TextView mTextEmail = (TextView) findViewById(R.id.tv_emailProfile);
+                mTextEmail.setText(email);
+                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_today:
-                                Intent iToday = new Intent( getApplicationContext(), TodayTaskActivity.class );
-                                startActivity( iToday );
+                                Intent iToday = new Intent(getApplicationContext(), TodayTaskActivity.class);
+                                startActivity(iToday);
                                 break;
                             case R.id.nav_idea:
-                                Intent iIdea = new Intent( getApplicationContext(), ViewIdeasActivity.class );
-                                startActivity( iIdea );
+                                Intent iIdea = new Intent(getApplicationContext(), ViewIdeasActivity.class);
+                                startActivity(iIdea);
                                 break;
                             case R.id.nav_thisweek:
-                                Toast.makeText( getApplicationContext(), "Selected The Thisweek", Toast.LENGTH_LONG ).show();
+                                Toast.makeText(getApplicationContext(), "Selected The Thisweek", Toast.LENGTH_LONG).show();
                                 break;
                             case R.id.nav_taskfilter:
-                                Intent iTaskfilter = new Intent( getApplicationContext(), TaskAddListActivity.class );
-                                startActivity( iTaskfilter );
+                                Intent iTaskfilter = new Intent(getApplicationContext(), TaskAddListActivity.class);
+                                startActivity(iTaskfilter);
                                 break;
                             case R.id.nav_project:
-                                Intent iProjects = new Intent( getApplicationContext(), ProjectFooterActivity.class );
-                                startActivity( iProjects );
+                                Intent iProjects = new Intent(getApplicationContext(), ProjectFooterActivity.class);
+                                startActivity(iProjects);
                                 break;
                             case R.id.nav_individuals:
-                                Intent iIndividuals = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
-                                startActivity( iIndividuals );
+                                Intent iIndividuals = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
+                                startActivity(iIndividuals);
                                 break;
                             case R.id.nav_insights:
-                                Intent iInsights = new Intent( getApplicationContext(), InsightsChart.class );
-                                startActivity( iInsights );
+                                Intent iInsights = new Intent(getApplicationContext(), InsightsChart.class);
+                                startActivity(iInsights);
                                 break;
                             case R.id.nav_timeLine:
-                                Intent iTimeLine = new Intent( getApplicationContext(), TimeLineActivity.class );
-                                startActivity( iTimeLine );
+                                Intent iTimeLine = new Intent(getApplicationContext(), TimeLineActivity.class);
+                                startActivity(iTimeLine);
                                 break;
                             case R.id.nav_profile:
-                                Intent iprofile = new Intent( getApplicationContext(), AccountSettingActivity.class );
-                                startActivity( iprofile );
+                                Intent iprofile = new Intent(getApplicationContext(), AccountSettingActivity.class);
+                                startActivity(iprofile);
                                 break;
                             case R.id.nav_premium:
-                                Intent ipremium = new Intent( getApplicationContext(), PremiumActivity.class );
-                                startActivity( ipremium );
+                                Intent ipremium = new Intent(getApplicationContext(), PremiumActivity.class);
+                                startActivity(ipremium);
                                 break;
                             case R.id.nav_logout:
                                 session.logoutUser();
@@ -187,41 +191,41 @@ public class ThisWeekActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                } );
-                final DrawerLayout drawer = (DrawerLayout) findViewById( R.id.drawer_layoutWeekView );
-                if (drawer.isDrawerOpen( GravityCompat.START )) {
+                });
+                final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layoutWeekView);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
                 } else {
-                    drawer.openDrawer( GravityCompat.START );
+                    drawer.openDrawer(GravityCompat.START);
                 }
-                ImageView imgeClose = (ImageView) findViewById( R.id.nav_close );
-                imgeClose.setOnClickListener( new View.OnClickListener() {
+                ImageView imgeClose = (ImageView) findViewById(R.id.nav_close);
+                imgeClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (drawer.isDrawerOpen( GravityCompat.START )) {
-                            drawer.closeDrawer( GravityCompat.START );
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
                         } else {
-                            drawer.openDrawer( GravityCompat.START );
+                            drawer.openDrawer(GravityCompat.START);
                         }
                     }
-                } );
+                });
             }
-        } );
+        });
     }
 
     private void initializeViews() {
-        mProgressView = findViewById( R.id.progress_bar );
-        mContentLayout = findViewById( R.id.content_layout );
-        mImageBulbTask = findViewById( R.id.image_bulbTask );
-        mImageBulbTask.setOnClickListener( new View.OnClickListener() {
+        mProgressView = findViewById(R.id.progress_bar);
+        mContentLayout = findViewById(R.id.content_layout);
+        mImageBulbTask = findViewById(R.id.image_bulbTask);
+        mImageBulbTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent( getApplicationContext(), ViewIdeasActivity.class );
-                startActivity( i );
+                Intent i = new Intent(getApplicationContext(), ViewIdeasActivity.class);
+                startActivity(i);
             }
-        } );
+        });
 
-        mTaskQucikSearch = findViewById( R.id.edit_searchTask );
-        mTaskQucikSearch.addTextChangedListener( new TextWatcher() {
+        mTaskQucikSearch = findViewById(R.id.edit_searchTask);
+        mTaskQucikSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -238,29 +242,29 @@ public class ThisWeekActivity extends AppCompatActivity {
                 //filter(editable.toString());
 
             }
-        } );
-        fabThisTask = findViewById( R.id.fab_thisTaskadd );
-        fabThisTask.setOnClickListener( new View.OnClickListener() {
+        });
+        fabThisTask = findViewById(R.id.fab_thisTaskadd);
+        fabThisTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HashMap<String, String> userId = session.getUserDetails();
-                String id = userId.get( UserPrefUtils.ID );
-                String taskOwnerName = userId.get( UserPrefUtils.NAME );
-                Intent i = new Intent(getApplicationContext(), ViewTasksActivity.class );
-                i.putExtra( "id", id );
-                i.putExtra( "taskOwnerName", taskOwnerName );
-                startActivity( i );
+                String id = userId.get(UserPrefUtils.ID);
+                String taskOwnerName = userId.get(UserPrefUtils.NAME);
+                Intent i = new Intent(getApplicationContext(), ViewTasksActivity.class);
+                i.putExtra("id", id);
+                i.putExtra("taskOwnerName", taskOwnerName);
+                startActivity(i);
             }
-        } );
+        });
 
-        mButtonAdavancedSearch = findViewById( R.id.button_searchTask );
-        mButtonAdavancedSearch.setOnClickListener( new View.OnClickListener() {
+        mButtonAdavancedSearch = findViewById(R.id.button_searchTask);
+        mButtonAdavancedSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent( getApplicationContext(), AdvancedSearchActivity.class );
-                startActivity( i );
+                Intent i = new Intent(getApplicationContext(), AdvancedSearchActivity.class);
+                startActivity(i);
             }
-        } );
+        });
        /* mThisweekrecyclerView = findViewById( R.id.thisweek_recyclerView );
         mThisweekrecyclerView.setHasFixedSize( true );
         mLayoutManager = new LinearLayoutManager( this );
@@ -551,14 +555,49 @@ public class ThisWeekActivity extends AppCompatActivity {
     }*/
 
     private void appFooter() {
-        FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_marignBottom);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+        View btnMe = findViewById(R.id.btn_me);
+        btnMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityToady();
+            }
+        });
+        View btnProject = findViewById(R.id.btn_projects);
+        btnProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityProject();
+            }
+        });
+        View btnTask = findViewById(R.id.btn_task);
+        btnTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityTasks();
+            }
+        });
+        View btnIndividuals = findViewById(R.id.btn_individuals);
+        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityIndividuals();
+            }
+        });
+        /*View btnInsights = findViewById(R.id.btn_insights);
+        btnInsights.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityInsights();
+            }
+        });*/
+        /*BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -579,37 +618,37 @@ public class ThisWeekActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     private void activityToady() {
-        Intent i = new Intent( getApplicationContext(), TodayTaskActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityProject() {
-        Intent i = new Intent( getApplicationContext(), ProjectFooterActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), ProjectFooterActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityTasks() {
-        Intent i = new Intent( getApplicationContext(), TaskAddListActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), TaskAddListActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityIndividuals() {
-        Intent i = new Intent( getApplicationContext(), ViewIndividualsActivity.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), ViewIndividualsActivity.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     private void activityInsights() {
-        Intent i = new Intent( getApplicationContext(), InsightsChart.class );
-        startActivity( i );
-        overridePendingTransition( R.anim.from_right_in, R.anim.from_left_out );
+        Intent i = new Intent(getApplicationContext(), InsightsChart.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.from_right_in, R.anim.from_left_out);
     }
 
     @Override
@@ -617,7 +656,6 @@ public class ThisWeekActivity extends AppCompatActivity {
         super.onBackPressed();
 
     }
-
 
 
 }

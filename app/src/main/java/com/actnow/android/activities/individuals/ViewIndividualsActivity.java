@@ -445,7 +445,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
     }
 
     private void appFooter() {
-       /* View btnMe = findViewById(R.id.btn_me);
+        View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -473,17 +473,17 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 activityIndividuals();
             }
         });
-        View btnInsights = findViewById(R.id.btn_insights);
+       /* View btnInsights = findViewById(R.id.btn_insights);
         btnInsights.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activityInsights();
             }
-        });
+        });*/
         ImageView imgProject = (ImageView) findViewById(R.id.img_individuals);
-        imgProject.setImageResource(R.drawable.ic_individuals_red);
+        imgProject.setImageResource(R.drawable.ic_individuals);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_individuals);
-        txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));*/
+        txtIndividual.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -491,7 +491,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+     /*   BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -512,7 +512,7 @@ public class ViewIndividualsActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
     private void activityToady() {
         Intent i = new Intent(getApplicationContext(), TodayTaskActivity.class);

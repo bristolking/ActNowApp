@@ -396,7 +396,8 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
     }
 
     private void appFooter() {
-       /* View btnMe = findViewById(R.id.btn_me);
+
+        View btnMe = findViewById(R.id.btn_me);
         btnMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -424,7 +425,7 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
                 activityIndividuals();
             }
         });
-        View btnInsights = findViewById(R.id.btn_insights);
+       /* View btnInsights = findViewById(R.id.btn_insights);
         btnInsights.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -435,7 +436,6 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
         imgProject.setImageResource(R.drawable.ic_insight_red);
         TextView txtIndividual = (TextView) findViewById(R.id.txt_insights);
         txtIndividual.setTextColor(getResources().getColor(R.color.colorAccent));*/
-
         FloatingActionButton floatingActionButton =(FloatingActionButton)findViewById(R.id.fab_marignBottom);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -443,7 +443,7 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
+       /* BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -464,7 +464,7 @@ public class IndividualsInsightsActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     private void activityToady() {

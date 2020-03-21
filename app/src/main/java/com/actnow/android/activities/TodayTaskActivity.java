@@ -280,28 +280,46 @@ public class TodayTaskActivity extends AppCompatActivity {
                 activityInsights();
             }
         });
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.bottomNavigationToday:
-                        activityToady();
-                        return true;
-                    case R.id.bottomNavigationProjects:
-                        activityProject();
-                        return true;
-                    case R.id.bottomNavigationTask:
-                        activityTasks();
-                        return true;
-                    case R.id.bottomNavigationIndividuals:
-                        activityIndividuals();
-                        return true;
 
-                }
-                return false;
+        View btnMe = findViewById(R.id.btn_me);
+        btnMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityToady();
             }
         });
+        View btnProject = findViewById(R.id.btn_projects);
+        btnProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityProject();
+            }
+        });
+        View btnTask = findViewById(R.id.btn_task);
+        btnTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityTasks();
+            }
+        });
+        View btnIndividuals = findViewById(R.id.btn_individuals);
+        btnIndividuals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityIndividuals();
+            }
+        });
+      /*  View btnInsights = findViewById(R.id.btn_insights);
+        btnInsights.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityInsights();
+            }
+        });*/
+        ImageView imgProject = (ImageView) findViewById(R.id.img_today);
+        imgProject.setImageResource(R.drawable.ic_today);
+        TextView txtIndividual = (TextView) findViewById(R.id.txt_today);
+        txtIndividual.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
     }
 
     private void activityToady() {

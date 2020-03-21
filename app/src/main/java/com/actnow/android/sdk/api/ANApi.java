@@ -21,6 +21,7 @@ import com.actnow.android.sdk.responses.TaskEditResponse;
 import com.actnow.android.sdk.responses.TaskInsightYearly;
 import com.actnow.android.sdk.responses.TaskListResponse;
 import com.actnow.android.sdk.responses.TimeLineTaskList;
+import com.actnow.android.sdk.responses.UpadteTaskOverdue;
 import com.actnow.android.sdk.responses.UserDeleted;
 import com.actnow.android.sdk.responses.UserDetailsResponse;
 
@@ -128,8 +129,8 @@ public interface ANApi {
     @POST("app/task/delete/{id}/{task_code}")
     Call<TaskDelete> checkTheDelete(@Path("id") String id,@Path("task_code")String task_code,@Field( "orgn_code")String  orgn_code);
 
-    /*@GET("app/task/updateoverduestatus/{id}")
-    Call<>*/
+    @GET("app/task/updateoverduestatus/{id}")
+    Call<UpadteTaskOverdue> checktheReshuduleApi(@Path("id")String id);
 
     /*Comment Api TASk and Project */
   /*  @Multipart
